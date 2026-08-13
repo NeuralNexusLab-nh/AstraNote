@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Note — AstraNote</title>
+    <link rel="icon" href="/asset/logo.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+    <script src="https://nexacaptcha.zone.id/captcha/gravity.js" defer></script>
+  </head>
+  <body data-page="note">
+    <main class="page">
+      <div class="shell">
+        <header class="page-head reveal">
+          <div>
+            <p class="eyebrow">
+              <i class="fa-solid fa-note-sticky"></i>
+              <span data-i18n="note"></span>
+            </p>
+            <h1 id="note-name" data-i18n="loading"></h1>
+            <div class="note-stats">
+              <span class="pill" id="note-encryption">—</span
+              ><span
+                ><i class="fa-solid fa-font"></i>
+                <span id="note-characters">—</span></span
+              ><span
+                ><i class="fa-solid fa-hard-drive"></i>
+                <span id="note-size">—</span></span
+              ><span
+                ><i class="fa-regular fa-clock"></i>
+                <span id="note-updated">—</span></span
+              >
+            </div>
+          </div>
+          <div class="note-actions">
+            <a class="btn btn-primary" id="edit-note"
+              ><i class="fa-solid fa-pen"></i><span data-i18n="edit"></span></a
+            ><button class="btn" id="share-note">
+              <i class="fa-solid fa-share-nodes"></i
+              ><span data-i18n="share"></span></button
+            ><button class="btn btn-danger" id="delete-note">
+              <i class="fa-solid fa-trash"></i
+              ><span data-i18n="delete"></span></button
+            ><span class="pill" id="share-state"></span>
+          </div>
+        </header>
+        <article class="note-paper reveal" id="note-content"></article>
+      </div>
+    </main>
+    <div
+      id="global-captcha"
+      class="nexa-captcha captcha-parking"
+      data-captcha-type="gravity"
+      data-callback="onActionCaptchaComplete"
+    ></div>
+  </body>
+</html>

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Create account — AstraNote</title>
+    <link rel="icon" href="/asset/logo.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+    <script src="https://nexacaptcha.zone.id/captcha/gravity.js" defer></script>
+  </head>
+  <body data-page="register">
+    <main class="page">
+      <div class="shell form-layout">
+        <section class="form-card reveal">
+          <p class="eyebrow">JOIN THE CONSTELLATION</p>
+          <h1 data-i18n="registerTitle"></h1>
+          <p class="muted" data-i18n="registerBody"></p>
+          <form id="auth-form" novalidate>
+            <div class="form-group">
+              <label for="username" data-i18n="username"></label
+              ><input
+                id="username"
+                name="username"
+                autocomplete="username"
+                minlength="3"
+                maxlength="24"
+                pattern="[A-Za-z0-9_]+"
+                required
+              />
+              <p class="field-help">3–24 · A–Z · 0–9 · _</p>
+            </div>
+            <div class="form-group">
+              <label for="email" data-i18n="email"></label
+              ><input
+                id="email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                maxlength="254"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="password" data-i18n="password"></label
+              ><input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="new-password"
+                minlength="10"
+                maxlength="256"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label
+                for="passwordConfirmation"
+                data-i18n="confirmPassword"
+              ></label
+              ><input
+                id="passwordConfirmation"
+                name="passwordConfirmation"
+                type="password"
+                autocomplete="new-password"
+                minlength="10"
+                maxlength="256"
+                required
+              />
+            </div>
+            <div class="check-row">
+              <input
+                id="acceptTerms"
+                name="acceptTerms"
+                type="checkbox"
+              /><label for="acceptTerms"
+                ><span data-i18n="agreeTerms"></span>
+                <a href="/terms" target="_blank">Terms</a> ·
+                <a href="/privacy" target="_blank">Privacy</a></label
+              >
+            </div>
+            <div class="check-row">
+              <input
+                id="legalCapacity"
+                name="legalCapacity"
+                type="checkbox"
+              /><label for="legalCapacity" data-i18n="agreeCapacity"></label>
+            </div>
+            <div class="captcha-box">
+              <div
+                class="nexa-captcha"
+                data-captcha-type="gravity"
+                data-callback="onCaptchaComplete"
+              ></div>
+            </div>
+            <p class="form-message" role="alert"></p>
+            <div class="form-actions">
+              <a class="muted" href="/login"
+                ><i class="fa-solid fa-arrow-right-to-bracket"></i>
+                <span data-i18n="login"></span
+              ></a>
+              <button class="btn btn-primary btn-lg" type="submit">
+                <i class="fa-solid fa-user-plus"></i
+                ><span data-i18n="register"></span>
+              </button>
+            </div>
+          </form>
+        </section>
+        <aside class="card reveal">
+          <p class="eyebrow">ACCOUNT LIMITS</p>
+          <h2>256 KiB</h2>
+          <p class="muted" data-i18n="limitBody"></p>
+        </aside>
+      </div>
+    </main>
+  </body>
+</html>

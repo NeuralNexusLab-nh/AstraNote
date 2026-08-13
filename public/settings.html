@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Settings — AstraNote</title>
+    <link rel="icon" href="/asset/logo.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+    <script src="https://nexacaptcha.zone.id/captcha/gravity.js" defer></script>
+  </head>
+  <body data-page="settings">
+    <main class="page">
+      <div class="shell">
+        <header class="page-head reveal">
+          <div>
+            <p class="eyebrow">
+              <i class="fa-solid fa-sliders"></i> PERSONALISE
+            </p>
+            <h1 data-i18n="settingsTitle"></h1>
+            <p class="muted" data-i18n="settingsBody"></p>
+          </div>
+        </header>
+        <form id="settings-form" class="settings-grid">
+          <section class="card reveal">
+            <div class="feature-icon"><i class="fa-solid fa-palette"></i></div>
+            <h3 data-i18n="appearance"></h3>
+            <div class="form-group">
+              <label for="theme" data-i18n="appearance"></label
+              ><select id="theme" name="theme">
+                <option value="dark" data-i18n="dark"></option>
+                <option value="light" data-i18n="light"></option>
+              </select>
+            </div>
+          </section>
+          <section class="card reveal">
+            <div class="feature-icon"><i class="fa-solid fa-language"></i></div>
+            <h3 data-i18n="language"></h3>
+            <div class="form-group">
+              <label for="settings-language" data-i18n="language"></label
+              ><select id="settings-language" name="language">
+                <option value="en">English</option>
+                <option value="zh-Hant">繁體中文</option>
+              </select>
+            </div>
+          </section>
+          <section class="card reveal">
+            <div class="feature-icon">
+              <i class="fa-solid fa-user-astronaut"></i>
+            </div>
+            <h3 data-i18n="publicIdentity"></h3>
+            <div class="form-group">
+              <label for="displayName" data-i18n="displayName"></label
+              ><input
+                id="displayName"
+                name="displayName"
+                maxlength="40"
+                required
+              />
+            </div>
+            <button class="btn btn-primary" type="submit">
+              <i class="fa-solid fa-floppy-disk"></i
+              ><span data-i18n="saveSettings"></span>
+            </button>
+          </section>
+          <section class="card danger-zone reveal">
+            <div class="danger-content">
+              <div>
+                <div class="feature-icon danger-text">
+                  <i class="fa-solid fa-user-slash"></i>
+                </div>
+                <h3 data-i18n="dangerZone"></h3>
+                <p class="muted" data-i18n="dangerBody"></p>
+              </div>
+              <button class="btn btn-danger" type="button" id="delete-account">
+                <i class="fa-solid fa-trash-can"></i
+                ><span data-i18n="requestDeletion"></span>
+              </button>
+            </div>
+          </section>
+        </form>
+        <button
+          class="btn btn-outline btn-lg logout-wide reveal"
+          id="logout-wide"
+        >
+          <i class="fa-solid fa-arrow-right-from-bracket"></i
+          ><span data-i18n="logout"></span>
+        </button>
+      </div>
+    </main>
+    <div
+      id="global-captcha"
+      class="nexa-captcha captcha-parking"
+      data-captcha-type="gravity"
+      data-callback="onActionCaptchaComplete"
+    ></div>
+  </body>
+</html>

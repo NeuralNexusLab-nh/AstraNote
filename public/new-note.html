@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>New note — AstraNote</title>
+    <link rel="icon" href="/asset/logo.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+    <script src="https://nexacaptcha.zone.id/captcha/gravity.js" defer></script>
+  </head>
+  <body data-page="new-note">
+    <main class="page">
+      <div class="shell form-layout">
+        <section class="form-card reveal">
+          <p class="eyebrow">NEW COORDINATE</p>
+          <h1 data-i18n="newNote"></h1>
+          <p class="muted" data-i18n="newNoteBody"></p>
+          <form id="note-form">
+            <div class="form-group">
+              <label for="name" data-i18n="noteName"></label
+              ><input id="name" name="name" maxlength="80" required autofocus />
+            </div>
+            <div class="form-group">
+              <label for="encryption" data-i18n="encryption"></label
+              ><select id="encryption" name="encryption">
+                <option value="none">No encryption</option>
+                <option value="aes-256-gcm">AES-256-GCM</option>
+                <option value="aes-128-gcm">AES-128-GCM</option>
+              </select>
+              <p class="field-help" data-i18n="encryptionHelp"></p>
+            </div>
+            <div class="captcha-box">
+              <div
+                class="nexa-captcha"
+                data-captcha-type="gravity"
+                data-callback="onCaptchaComplete"
+              ></div>
+            </div>
+            <p class="form-message" role="alert"></p>
+            <div class="form-actions">
+              <a class="btn" href="/notes"
+                ><i class="fa-solid fa-xmark"></i
+                ><span data-i18n="cancel"></span
+              ></a>
+              <button class="btn btn-primary btn-lg" type="submit">
+                <i class="fa-solid fa-plus"></i><span data-i18n="create"></span>
+              </button>
+            </div>
+          </form>
+        </section>
+        <aside class="card reveal">
+          <p class="eyebrow">ENCRYPTION</p>
+          <h2>AES-GCM</h2>
+          <p class="muted" data-i18n="encryptionHelp"></p>
+        </aside>
+      </div>
+    </main>
+    <div
+      id="global-captcha"
+      class="nexa-captcha captcha-parking"
+      data-captcha-type="gravity"
+      data-callback="onActionCaptchaComplete"
+    ></div>
+  </body>
+</html>

@@ -1,0 +1,2 @@
+/* Uses system fallbacks intentionally: no user data is sent to a font CDN. */
+@font-face { font-family:"Astra Display"; src:local("Segoe UI Variable Display"),local("Arial"); font-display:swap; }

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <title>Shared note — AstraNote</title>
+    <link rel="icon" href="/asset/logo.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body data-page="shared">
+    <main class="page">
+      <div class="shell">
+        <header class="page-head reveal">
+          <div>
+            <p class="eyebrow">
+              <i class="fa-solid fa-link"></i>
+              <span data-i18n="sharedNote"></span>
+            </p>
+            <h1 id="shared-name" data-i18n="loading"></h1>
+            <p class="muted" id="shared-author"></p>
+            <div class="note-stats">
+              <span class="pill" id="shared-encryption"></span
+              ><span
+                ><i class="fa-solid fa-font"></i>
+                <span id="shared-characters">—</span></span
+              ><span
+                ><i class="fa-regular fa-clock"></i>
+                <span id="shared-updated">—</span></span
+              >
+            </div>
+          </div>
+          <span class="pill"
+            ><i class="fa-solid fa-eye"></i>&nbsp;<span
+              data-i18n="readOnly"
+            ></span
+          ></span>
+        </header>
+        <article class="note-paper reveal" id="shared-content"></article>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="AstraNote is a focused, encrypted online notebook by NeuralNexusLab."
+    />
+    <title>AstraNote — Your thoughts, among the stars</title>
+    <link rel="icon" href="/asset/logo.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+    <script src="https://nexacaptcha.zone.id/captcha/gravity.js" defer></script>
+  </head>
+  <body data-page="home">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <main id="main">
+      <section class="hero">
+        <canvas
+          class="space-canvas"
+          id="space-canvas"
+          aria-hidden="true"
+        ></canvas>
+        <div class="nebula" aria-hidden="true"></div>
+        <div class="hero-content">
+          <span class="hero-kicker"
+            ><i class="fa-solid fa-star"></i
+            ><span>A PRIVATE CONSTELLATION FOR IDEAS</span></span
+          >
+          <h1>AstraNote</h1>
+          <p class="hero-lead" data-i18n="tagline"></p>
+          <p class="hero-lead" data-i18n="heroLead"></p>
+          <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" href="/register"
+              ><i class="fa-solid fa-pen-nib"></i
+              ><span data-i18n="begin"></span></a
+            ><a class="btn btn-outline btn-lg" href="#purpose"
+              ><i class="fa-solid fa-compass"></i
+              ><span data-i18n="explore"></span
+            ></a>
+          </div>
+        </div>
+        <a class="scroll-cue" href="#stats"
+          ><span data-i18n="scroll"></span><i class="fa-solid fa-arrow-down"></i
+        ></a>
+      </section>
+      <section class="home-section" id="stats">
+        <div class="shell stats-grid">
+          <article class="stat-card reveal">
+            <p class="eyebrow">
+              <i class="fa-solid fa-signal"></i><span data-i18n="today"></span>
+            </p>
+            <strong id="online-stat">—</strong
+            ><span class="muted" data-i18n="utc"></span>
+          </article>
+          <article class="stat-card reveal">
+            <p class="eyebrow">
+              <i class="fa-solid fa-users"></i
+              ><span data-i18n="registered"></span>
+            </p>
+            <strong id="users-stat">—</strong
+            ><span class="muted">AstraNote</span>
+          </article>
+        </div>
+      </section>
+      <section class="home-section" id="purpose">
+        <div class="shell">
+          <header class="section-head reveal">
+            <p class="eyebrow">
+              <i class="fa-solid fa-wand-magic-sparkles"></i
+              ><span data-i18n="purposeEyebrow"></span>
+            </p>
+            <h2 data-i18n="purposeTitle"></h2>
+          </header>
+          <div class="feature-grid">
+            <article class="card feature-card reveal">
+              <div class="feature-icon">
+                <i class="fa-solid fa-pen-nib"></i>
+              </div>
+              <h3 data-i18n="quickTitle"></h3>
+              <p data-i18n="quickBody"></p>
+            </article>
+            <article class="card feature-card reveal">
+              <div class="feature-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <h3 data-i18n="secureTitle"></h3>
+              <p data-i18n="secureBody"></p>
+            </article>
+            <article class="card feature-card reveal">
+              <div class="feature-icon">
+                <i class="fa-solid fa-share-nodes"></i>
+              </div>
+              <h3 data-i18n="shareTitle"></h3>
+              <p data-i18n="shareBody"></p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="home-section">
+        <div class="shell limit-panel">
+          <div class="reveal">
+            <p class="eyebrow" data-i18n="limitEyebrow"></p>
+            <h2 data-i18n="limitTitle"></h2>
+            <p class="muted" data-i18n="limitBody"></p>
+          </div>
+          <div class="limit-visual reveal">
+            <span class="muted"
+              ><i class="fa-solid fa-hard-drive"></i> ACCOUNT STORAGE</span
+            ><strong>256 KiB</strong>
+            <div class="meter"><span class="demo-progress"></span></div>
+            <p class="muted limit-caption">
+              <i class="fa-solid fa-note-sticky"></i> 100 NOTES · PLAIN TEXT ·
+              OPTIONAL AES-GCM
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div
+      id="global-captcha"
+      class="nexa-captcha captcha-parking"
+      data-captcha-type="gravity"
+      data-callback="onActionCaptchaComplete"
+    ></div>
+  </body>
+</html>

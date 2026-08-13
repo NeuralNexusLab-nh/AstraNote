@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Edit note — AstraNote</title>
+    <link rel="icon" href="/asset/logo.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+    <script src="https://nexacaptcha.zone.id/captcha/gravity.js" defer></script>
+  </head>
+  <body data-page="editor">
+    <main class="page">
+      <div class="shell">
+        <header class="page-head">
+          <div class="editor-heading">
+            <p class="eyebrow">
+              <i class="fa-solid fa-pen-to-square"></i> NOTE EDITOR
+            </p>
+            <input
+              class="note-title-input"
+              id="editor-name"
+              maxlength="80"
+              aria-label="Note name"
+            />
+            <div class="note-stats">
+              <span class="pill" id="editor-encryption"></span
+              ><span
+                ><i class="fa-solid fa-font"></i>
+                <span id="editor-count">0</span></span
+              >
+            </div>
+          </div>
+          <div class="note-actions">
+            <button class="btn btn-primary" id="save-note">
+              <i class="fa-solid fa-floppy-disk"></i
+              ><span data-i18n="save"></span></button
+            ><button class="btn btn-danger" id="discard-note">
+              <i class="fa-solid fa-xmark"></i><span data-i18n="discard"></span>
+            </button>
+          </div>
+        </header>
+        <textarea
+          class="note-editor"
+          id="editor-content"
+          spellcheck="true"
+          aria-label="Note content"
+        ></textarea>
+      </div>
+    </main>
+    <div
+      id="global-captcha"
+      class="nexa-captcha captcha-parking"
+      data-captcha-type="gravity"
+      data-callback="onActionCaptchaComplete"
+    ></div>
+  </body>
+</html>

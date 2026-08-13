@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Dashboard — AstraNote</title>
+    <link rel="icon" href="/asset/logo.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+    <script src="https://nexacaptcha.zone.id/captcha/gravity.js" defer></script>
+  </head>
+  <body data-page="dashboard">
+    <main class="page">
+      <div class="shell">
+        <header class="page-head reveal">
+          <div>
+            <p class="eyebrow">YOUR CONSTELLATION</p>
+            <h1 data-i18n="welcome"></h1>
+            <p class="muted" data-i18n="welcomeBody"></p>
+          </div>
+          <a class="btn btn-primary btn-lg" href="/notes/new"
+            ><i class="fa-solid fa-plus"></i><span data-i18n="createNote"></span
+          ></a>
+        </header>
+        <section class="summary-grid">
+          <article class="card summary-card reveal">
+            <span data-i18n="notebooks"></span><strong id="note-count">—</strong
+            ><small class="muted">MAX 100</small>
+          </article>
+          <article class="card summary-card reveal">
+            <span data-i18n="storage"></span
+            ><strong id="storage-count">—</strong>
+            <div class="meter"><span></span></div>
+          </article>
+          <article class="card summary-card reveal">
+            <span data-i18n="accountAge"></span
+            ><strong
+              ><span id="age-count">—</span>
+              <small data-i18n="days"></small></strong
+            ><small class="muted">UTC</small>
+          </article>
+        </section>
+        <section class="notes-panel reveal">
+          <header class="panel-head">
+            <h3 data-i18n="recent"></h3>
+            <a class="btn" href="/notes"
+              ><i class="fa-solid fa-arrow-right"></i
+              ><span data-i18n="viewAll"></span
+            ></a>
+          </header>
+          <div class="note-list" id="note-list">
+            <div class="empty-state" data-i18n="loading"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <div
+      id="global-captcha"
+      class="nexa-captcha captcha-parking"
+      data-captcha-type="gravity"
+      data-callback="onActionCaptchaComplete"
+    ></div>
+  </body>
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>My notes — AstraNote</title>
+    <link rel="icon" href="/asset/logo.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+    <script src="https://nexacaptcha.zone.id/captcha/gravity.js" defer></script>
+  </head>
+  <body data-page="notes">
+    <main class="page">
+      <div class="shell">
+        <header class="page-head reveal">
+          <div>
+            <p class="eyebrow">NOTE ARCHIVE</p>
+            <h1 data-i18n="allNotes"></h1>
+            <p class="muted" data-i18n="allNotesBody"></p>
+          </div>
+          <a class="btn btn-primary btn-lg" href="/notes/new"
+            ><i class="fa-solid fa-plus"></i><span data-i18n="createNote"></span
+          ></a>
+        </header>
+        <section class="notes-panel reveal">
+          <div class="note-list" id="note-list">
+            <div class="empty-state" data-i18n="loading"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <div
+      id="global-captcha"
+      class="nexa-captcha captcha-parking"
+      data-captcha-type="gravity"
+      data-callback="onActionCaptchaComplete"
+    ></div>
+  </body>
+</html>

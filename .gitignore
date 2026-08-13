@@ -1,0 +1,16 @@
+node_modules/
+.env
+.env.*
+!.env.example
+npm-debug.log*
+yarn-debug.log*
+.DS_Store
+Thumbs.db
+coverage/
+work-test-data/
+*.log
+
+# Never commit accounts, notes, IP addresses, sessions, or server secrets.
+data/*
+!data/.gitkeep
+!data/README.md
