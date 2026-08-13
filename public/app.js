@@ -32,7 +32,7 @@ const I18N = {
     limitEyebrow: "CLEAR BY DESIGN",
     limitTitle: "Small footprint. Deliberate limits.",
     limitBody:
-      "Each account includes 256 KiB across all account files and up to 100 notes. Encrypted notes commonly use about 1.4× the storage; very short notes may use more than 2×.",
+      "Each account includes 128 KiB across all account files and up to 24 notes. Encrypted notes commonly use about 1.4× the storage; very short notes may use more than 2×.",
     copyright: "© 2026 NeuralNexusLab. All service rights reserved.",
     terms: "Terms",
     privacy: "Privacy",
@@ -80,7 +80,7 @@ const I18N = {
     disableShare: "Disable sharing",
     deleteNoteTitle: "Permanently delete note?",
     deleteNoteBody:
-      "This note has no backup and cannot be restored. Complete Gravity to confirm permanent deletion.",
+      "This note has no backup and cannot be restored. Complete the human verification to confirm permanent deletion.",
     settingsTitle: "Settings",
     settingsBody: "Make AstraNote feel like your own.",
     appearance: "Appearance",
@@ -95,15 +95,15 @@ const I18N = {
       "Disable your account and request deletion. You can cancel by signing in within 7 days. After that, access is permanently lost; data is erased within 2 months.",
     requestDeletion: "Disable account and request deletion",
     logoutTitle: "Log out?",
-    logoutBody: "Complete Gravity to safely end this session.",
+    logoutBody: "This will end your current sign-in session.",
     deleteAccountTitle: "Disable this account?",
     deleteAccountBody:
-      "Enter your exact username and complete Gravity. All sessions and shared links will be revoked immediately.",
+      "Enter your exact username and complete the human verification. All sessions and shared links will be revoked immediately.",
     confirmUsername: "Confirm username",
     proceed: "Continue",
     cancel: "Cancel",
     close: "Close",
-    captchaNeeded: "Complete Gravity first.",
+    captchaNeeded: "Complete the human verification first.",
     loading: "Loading…",
     error: "Something went wrong. Please try again.",
     saved: "Saved.",
@@ -117,7 +117,7 @@ const I18N = {
       "AstraNote uses only essential cookies for sign-in, security, language, and appearance. We do not use advertising or analytics trackers.",
     accept: "Accept and continue",
     signInTitle: "Return to your notes",
-    signInBody: "Enter your account details and complete Gravity.",
+    signInBody: "Enter your account details and complete the human verification.",
     username: "Username",
     password: "Password",
     noRecovery:
@@ -131,12 +131,12 @@ const I18N = {
       "I am legally able to agree, or my legal guardian has read and approved these terms. For users under 7, a guardian must create and manage the account.",
     cancellationMode: "Cancel account deletion",
     cancellationBody:
-      "Enter the same account password and complete a new Gravity challenge to restore access during the 7-day reversal period.",
+      "Enter the same account password and complete a new human verification to restore access during the 7-day reversal period.",
     deletePending:
       "This account is awaiting deletion. Reloading the login page will let you cancel the request with a new CAPTCHA.",
     legalUpdated: "Effective and last updated: 13 August 2026",
     englishOnlyCaptcha:
-      "The third-party Gravity interface may appear in English.",
+      "Complete the human verification to save this note.",
     editorUnsaved: "You have unsaved changes. Close this page anyway?",
   },
   "zh-Hant": {
@@ -167,7 +167,7 @@ const I18N = {
     limitEyebrow: "清楚而有節制",
     limitTitle: "輕量空間，明確限制。",
     limitBody:
-      "每個帳號的所有檔案合計 256 KiB，最多 100 篇筆記。加密筆記通常約需 1.4 倍空間；很短的筆記可能超過 2 倍。",
+      "每個帳號的所有檔案合計 128 KiB，最多 24 篇筆記。加密筆記通常約需 1.4 倍空間；很短的筆記可能超過 2 倍。",
     copyright: "© 2026 NeuralNexusLab。保留所有服務相關權利。",
     terms: "使用者協議",
     privacy: "隱私政策",
@@ -214,7 +214,7 @@ const I18N = {
     disableShare: "關閉分享",
     deleteNoteTitle: "永久刪除筆記？",
     deleteNoteBody:
-      "這篇筆記沒有備份，刪除後無法復原。請完成 Gravity 確認永久刪除。",
+      "這篇筆記沒有備份，刪除後無法復原。請完成人類驗證以確認永久刪除。",
     settingsTitle: "設定",
     settingsBody: "讓 AstraNote 更貼近你的使用習慣。",
     appearance: "外觀",
@@ -229,15 +229,15 @@ const I18N = {
       "停用帳號並提出刪除申請。七天內重新登入可取消；之後將永久失去存取權，資料最長於兩個月內清除。",
     requestDeletion: "停用帳號並申請刪除",
     logoutTitle: "要登出嗎？",
-    logoutBody: "完成 Gravity 後安全結束這個登入階段。",
+    logoutBody: "這會結束目前的登入階段。",
     deleteAccountTitle: "要停用這個帳號嗎？",
     deleteAccountBody:
-      "輸入完整 Username 並完成 Gravity。所有登入階段與分享連結將立即失效。",
+      "輸入完整 Username 並完成人類驗證。所有登入階段與分享連結將立即失效。",
     confirmUsername: "確認 Username",
     proceed: "繼續",
     cancel: "取消",
     close: "關閉",
-    captchaNeeded: "請先完成 Gravity。",
+    captchaNeeded: "請先完成人類驗證。",
     loading: "載入中…",
     error: "發生錯誤，請再試一次。",
     saved: "已儲存。",
@@ -251,7 +251,7 @@ const I18N = {
       "AstraNote 只使用登入、安全、語言與外觀所需的必要 Cookie，不使用廣告或分析追蹤。",
     accept: "接受並繼續",
     signInTitle: "回到你的筆記",
-    signInBody: "輸入帳號資料並完成 Gravity。",
+    signInBody: "輸入帳號資料並完成人類驗證。",
     username: "Username",
     password: "密碼",
     noRecovery: "AstraNote 不提供密碼復原，請妥善保存密碼。",
@@ -264,14 +264,143 @@ const I18N = {
       "我具有同意能力，或法定代理人已閱讀並同意條款；未滿 7 歲者須由法定代理人建立及管理帳號。",
     cancellationMode: "取消帳號刪除",
     cancellationBody:
-      "在七天反悔期內輸入原帳號密碼並完成新的 Gravity，即可恢復存取。",
+      "在七天反悔期內輸入原帳號密碼並重新完成人類驗證，即可恢復存取。",
     deletePending:
       "此帳號正在等待刪除。系統將重新載入登入頁，讓你以新的 CAPTCHA 取消申請。",
     legalUpdated: "生效及最後更新：2026 年 8 月 13 日",
-    englishOnlyCaptcha: "第三方 Gravity 介面可能顯示英文。",
+    englishOnlyCaptcha: "請完成人類驗證以儲存筆記。",
     editorUnsaved: "尚有未儲存的變更，仍要關閉這個頁面嗎？",
   },
 };
+
+Object.assign(I18N.en, {
+  heroKicker: "ONLINE NOTEBOOK · FREE TO USE",
+  tagline: "Write it down. Find it whenever you need it.",
+  heroLead:
+    "AstraNote is a simple place for notes, quick references, and anything you want close at hand—available on every device you sign in to.",
+  begin: "Create a free account",
+  explore: "See what it does",
+  scroll: "Learn more",
+  utc: "Unique accounts · today in UTC",
+  purposeEyebrow: "MADE FOR EVERYDAY NOTES",
+  purposeTitle: "A clear, dependable place to keep what matters.",
+  quickTitle: "Capture it right away",
+  quickBody:
+    "Write down an idea, a reminder, a list, or a useful piece of information before it slips away.",
+  secureTitle: "Open it on another device",
+  secureBody:
+    "Sign in from your phone, tablet, or computer and your notes are ready when you need them.",
+  shareTitle: "Free to use",
+  shareBody:
+    "Create up to 24 notes with 128 KiB of account storage, with no advertising or analytics tracking.",
+  limitEyebrow: "SIMPLE, HONEST LIMITS",
+  limitTitle: "Enough room for the notes you reach for most.",
+  limitBody:
+    "Every account includes 128 KiB across all account files and up to 24 notes. If the account is full, existing notes remain readable, but new notes and saves are paused until space is freed.",
+  welcomeBody: "Your notes and account usage, clearly presented.",
+  noNotes: "No notes yet. Create one whenever you have something worth keeping.",
+  newNoteBody:
+    "Name the note and choose whether to encrypt it. The encryption option cannot be changed later.",
+  encryptionHelp:
+    "Encrypted notes usually use about 1.4× as much storage. Very short encrypted notes may use more than 2×.",
+  deleteNoteBody:
+    "This note has no backup and cannot be restored. Complete the human verification to delete it permanently.",
+  logoutBody: "This will end your current sign-in session.",
+  deleteAccountBody:
+    "Enter your exact username and complete the human verification. All sessions and shared links will be revoked immediately.",
+  captchaNeeded: "Complete the human verification first.",
+  signInBody: "Enter your account details and complete the human verification.",
+  registerBody: "Create a free account and keep useful notes within easy reach.",
+  cancellationBody:
+    "Enter the same account password and complete a new human verification to restore access during the 7-day reversal period.",
+  saveBody: "Save the latest name and content of this note?",
+  shareReadyTitle: "Your sharing link is ready",
+  shareReadyBody:
+    "Anyone with this link can read the note and see your public display name and masked email.",
+  shareStoppedTitle: "Sharing is off",
+  shareStoppedBody: "The previous sharing link no longer works.",
+  humanVerification: "Human verification",
+  dashboardEyebrow: "YOUR NOTES",
+  notesEyebrow: "NOTEBOOK",
+  newNoteEyebrow: "NEW NOTE",
+  editorEyebrow: "NOTE EDITOR",
+  settingsEyebrow: "PREFERENCES",
+  loginEyebrow: "ASTRANOTE ACCESS",
+  registerEyebrow: "JOIN ASTRANOTE",
+  accountLimitsEyebrow: "ACCOUNT LIMITS",
+  accountStorageLabel: "ACCOUNT STORAGE",
+  accountLimitCaption: "24 NOTES · FREE ACCOUNT · NO ADS",
+  maxNotesLabel: "MAX 24",
+  legalEyebrow: "LEGAL",
+  privacyEyebrow: "DATA PRACTICES",
+  notFoundEyebrow: "PAGE NOT FOUND",
+  notFoundBody: "The page you requested could not be found.",
+  noEncryptionOption: "No encryption",
+});
+
+Object.assign(I18N["zh-Hant"], {
+  heroKicker: "線上筆記本 · 免費使用",
+  tagline: "隨手記下，需要時隨時找得到。",
+  heroLead:
+    "AstraNote 適合記錄想法、待辦、常用資料，以及任何想隨時拿出來查看的內容；登入後，手機、平板和電腦都能使用。",
+  begin: "免費建立帳號",
+  explore: "了解功能",
+  scroll: "繼續了解",
+  today: "今日登入",
+  registered: "已註冊帳號",
+  utc: "不同帳號 · 以 UTC 計算今日",
+  purposeEyebrow: "為日常筆記而做",
+  purposeTitle: "清楚、可靠，讓重要內容一直在手邊。",
+  quickTitle: "想到就能立刻記下",
+  quickBody: "不論是靈感、提醒、清單或常用資料，都能在忘記以前迅速保存。",
+  secureTitle: "換一台裝置也能查看",
+  secureBody: "使用手機、平板或電腦登入，同一批筆記就會在需要時出現。",
+  shareTitle: "免費使用",
+  shareBody: "每個帳號可建立 24 篇筆記，享有 128 KiB 空間，沒有廣告與分析追蹤。",
+  limitEyebrow: "簡單而透明的限制",
+  limitTitle: "為最常用的筆記保留剛好的空間。",
+  limitBody:
+    "每個帳號的所有檔案合計 128 KiB，最多 24 篇筆記。空間用滿後仍可閱讀既有內容，但必須先釋放空間才能新增或儲存。",
+  welcomeBody: "清楚查看筆記和帳號用量。",
+  accountAge: "帳號已建立",
+  days: "天",
+  noNotes: "目前沒有筆記。有值得留下的內容時，就建立一篇吧。",
+  allNotesBody: "所有已保存的內容，都整齊放在這裡。",
+  newNoteBody: "輸入名稱並選擇是否加密；建立後無法更換加密方式。",
+  encryptionHelp: "加密筆記通常約需 1.4 倍空間；非常短的內容可能超過 2 倍。",
+  deleteNoteBody: "這篇筆記沒有備份，刪除後無法復原。請完成人類驗證以永久刪除。",
+  logoutBody: "這會結束目前的登入階段。",
+  deleteAccountBody:
+    "輸入完整 Username 並完成人類驗證。所有登入階段與分享連結將立即失效。",
+  captchaNeeded: "請先完成人類驗證。",
+  signInTitle: "登入並查看筆記",
+  signInBody: "輸入帳號資料並完成人類驗證。",
+  registerTitle: "建立 AstraNote 帳號",
+  registerBody: "免費建立帳號，讓常用的筆記隨時在手邊。",
+  cancellationBody: "在七天反悔期內輸入原密碼並重新完成人類驗證，即可恢復存取。",
+  saveBody: "要儲存這篇筆記目前的名稱與內容嗎？",
+  shareReadyTitle: "分享連結已建立",
+  shareReadyBody: "持有連結者可閱讀筆記，並看到你的公開顯示名稱與遮罩 Email。",
+  shareStoppedTitle: "分享已關閉",
+  shareStoppedBody: "先前的分享連結已經失效。",
+  humanVerification: "人類驗證",
+  dashboardEyebrow: "你的筆記",
+  notesEyebrow: "筆記本",
+  newNoteEyebrow: "新增筆記",
+  editorEyebrow: "筆記編輯",
+  settingsEyebrow: "偏好設定",
+  loginEyebrow: "ASTRANOTE 登入",
+  registerEyebrow: "加入 ASTRANOTE",
+  accountLimitsEyebrow: "帳號限制",
+  accountStorageLabel: "帳號儲存空間",
+  accountLimitCaption: "24 篇筆記 · 免費帳號 · 無廣告",
+  maxNotesLabel: "上限 24",
+  legalEyebrow: "法律文件",
+  privacyEyebrow: "資料處理方式",
+  notFoundEyebrow: "找不到頁面",
+  notFoundBody: "找不到你所要求的頁面。",
+  noEncryptionOption: "不加密",
+});
 
 const state = {
   session: null,
@@ -392,16 +521,19 @@ function buildNav() {
     { passive: true },
   );
   $("#nav-logout", nav)?.addEventListener("click", () =>
-    actionModal({
+    modal({
       title: t("logoutTitle"),
       body: t("logoutBody"),
       confirm: t("logout"),
       danger: false,
-      run: () =>
-        api("/api/logout", {
+      onConfirm: async (close) => {
+        const result = await api("/api/logout", {
           method: "POST",
-          body: { captcha: state.actionCaptcha },
-        }),
+          body: {},
+        });
+        close();
+        location.href = result.redirect;
+      },
     }),
   );
 }
@@ -434,6 +566,7 @@ function modal({
   confirm = t("proceed"),
   cancel = t("cancel"),
   danger = false,
+  showCancel = true,
   onConfirm,
 }) {
   document.body.classList.add("modal-open");
@@ -463,7 +596,8 @@ function modal({
   confirmButton.className = `btn ${danger ? "btn-danger-filled" : "btn-primary"}`;
   confirmButton.innerHTML = `<i class="fa-solid ${danger ? "fa-trash-can" : "fa-check"}"></i><span></span>`;
   confirmButton.querySelector("span").textContent = confirm;
-  actions.append(cancelButton, confirmButton);
+  if (showCancel) actions.append(cancelButton);
+  actions.append(confirmButton);
   dialog.append(actions);
   backdrop.append(dialog);
   document.body.append(backdrop);
@@ -533,9 +667,20 @@ function cookieBanner() {
 function noteRow(note, deletable = false) {
   const row = document.createElement("article");
   row.className = "note-row";
-  const main = document.createElement("a");
+  row.tabIndex = 0;
+  row.setAttribute("role", "link");
+  row.setAttribute("aria-label", `${t("open")}: ${note.name}`);
+  const destination = `/notes/${note.id}`;
+  const openNote = (event) => {
+    if (event.type === "click" && event.target.closest("button, a")) return;
+    if (event.type === "keydown" && !["Enter", " "].includes(event.key)) return;
+    if (event.type === "keydown") event.preventDefault();
+    location.href = destination;
+  };
+  row.addEventListener("click", openNote);
+  row.addEventListener("keydown", openNote);
+  const main = document.createElement("div");
   main.className = "note-main";
-  main.href = `/notes/${note.id}`;
   const name = document.createElement("strong");
   name.textContent = note.name;
   const tag = document.createElement("small");
@@ -545,10 +690,10 @@ function noteRow(note, deletable = false) {
       : note.encryption.toUpperCase();
   main.append(name, tag);
   const chars = document.createElement("span");
-  chars.className = "note-meta";
+  chars.className = "note-meta note-characters";
   chars.textContent = `${note.characters.toLocaleString()} ${t("characters")}`;
   const size = document.createElement("span");
-  size.className = "note-meta";
+  size.className = "note-meta note-size";
   size.textContent = formatBytes(note.bytes);
   row.append(main, chars, size);
   if (deletable) {
@@ -557,13 +702,16 @@ function noteRow(note, deletable = false) {
     del.type = "button";
     del.setAttribute("aria-label", t("delete"));
     del.innerHTML = '<i class="fa-solid fa-trash"></i>';
-    del.onclick = () => deleteNote(note);
+    del.onclick = (event) => {
+      event.stopPropagation();
+      deleteNote(note);
+    };
     row.append(del);
   } else {
-    const open = document.createElement("a");
-    open.className = "btn";
-    open.href = `/notes/${note.id}`;
-    open.innerHTML = `<i class="fa-solid fa-arrow-right"></i><span>${t("open")}</span>`;
+    const open = document.createElement("span");
+    open.className = "note-open";
+    open.setAttribute("aria-hidden", "true");
+    open.innerHTML = '<i class="fa-solid fa-arrow-right"></i>';
     row.append(open);
   }
   const updated = document.createElement("small");
@@ -587,6 +735,14 @@ function deleteNote(note) {
 }
 
 async function initHome() {
+  if (state.session?.authenticated) {
+    const primary = $("#hero-primary");
+    if (primary) {
+      primary.href = "/dashboard";
+      $("i", primary).className = "fa-solid fa-chart-line";
+      $("span", primary).dataset.i18n = "dashboard";
+    }
+  }
   const canvas = $("#space-canvas");
   if (canvas) startStars(canvas);
   const stats = await api("/api/stats").catch(() => ({
@@ -713,7 +869,7 @@ async function initDashboard() {
   if (!account) return;
   $("#note-count").textContent = `${account.noteCount} / ${account.maxNotes}`;
   $("#storage-count").textContent =
-    `${formatBytes(account.usedBytes)} / 256 KiB`;
+    `${formatBytes(account.usedBytes)} / 128 KiB`;
   $("#age-count").textContent = Math.max(
     0,
     Math.floor((Date.now() - Date.parse(account.createdAt)) / 864e5),
@@ -774,7 +930,9 @@ function currentNoteId() {
 async function initNote() {
   if (!(await requireAccount())) return;
   const note = await api(`/api/notes/${currentNoteId()}`);
-  $("#note-name").textContent = note.name;
+  const noteName = $("#note-name");
+  noteName.removeAttribute("data-i18n");
+  noteName.textContent = note.name;
   $("#note-content").textContent = note.content;
   $("#note-encryption").textContent =
     note.encryption === "none"
@@ -788,16 +946,56 @@ async function initNote() {
   $("#share-state").textContent = note.shared ? t("shared") : t("sharingOff");
   $("#delete-note").onclick = () => deleteNote(note);
   $("#share-note").onclick = () =>
-    actionModal({
+    modal({
       title: t("shareTitleModal"),
       body: note.shared ? t("shareDisableBody") : t("shareEnableBody"),
       confirm: note.shared ? t("disableShare") : t("enableShare"),
       danger: false,
-      run: () =>
-        api(`/api/notes/${note.id}/share`, {
+      onConfirm: async (close) => {
+        const result = await api(`/api/notes/${note.id}/share`, {
           method: "POST",
-          body: { enabled: !note.shared, captcha: state.actionCaptcha },
-        }),
+          body: { enabled: !note.shared },
+        });
+        note.shared = result.shared;
+        $("#share-state").textContent = note.shared
+          ? t("shared")
+          : t("sharingOff");
+        close();
+        if (!result.url) {
+          modal({
+            title: t("shareStoppedTitle"),
+            body: t("shareStoppedBody"),
+            confirm: t("close"),
+            showCancel: false,
+            onConfirm: (dismiss) => dismiss(),
+          });
+          return;
+        }
+        const url = new URL(result.url, location.origin).href;
+        const content = document.createElement("div");
+        content.className = "share-url";
+        const input = document.createElement("input");
+        input.readOnly = true;
+        input.value = url;
+        input.setAttribute("aria-label", t("share"));
+        const copy = document.createElement("button");
+        copy.className = "btn";
+        copy.type = "button";
+        copy.innerHTML = `<i class="fa-solid fa-copy"></i><span>${t("copy")}</span>`;
+        copy.onclick = async () => {
+          await navigator.clipboard.writeText(url);
+          toast(t("copied"));
+        };
+        content.append(input, copy);
+        modal({
+          title: t("shareReadyTitle"),
+          body: t("shareReadyBody"),
+          content,
+          confirm: t("close"),
+          showCancel: false,
+          onConfirm: (dismiss) => dismiss(),
+        });
+      },
     });
 }
 
@@ -824,26 +1022,22 @@ async function initEditor() {
   content.oninput = update;
   update();
   dirty = false;
-  $("#save-note").onclick = () =>
-    actionModal({
-      title: t("save"),
-      body: t("englishOnlyCaptcha"),
-      confirm: t("save"),
-      danger: false,
-      run: async () => {
-        const result = await api(`/api/notes/${note.id}`, {
-          method: "PUT",
-          body: {
-            name: name.value,
-            content: content.value,
-            captcha: state.actionCaptcha,
-          },
-        });
-        saved = true;
-        dirty = false;
-        return result;
-      },
-    });
+  $("#save-note").onclick = async () => {
+    const button = $("#save-note");
+    button.disabled = true;
+    try {
+      const result = await api(`/api/notes/${note.id}`, {
+        method: "PUT",
+        body: { name: name.value, content: content.value },
+      });
+      saved = true;
+      dirty = false;
+      location.href = result.redirect;
+    } catch (error) {
+      toast(error.message);
+      button.disabled = false;
+    }
+  };
   $("#discard-note").onclick = () =>
     modal({
       title: t("discard"),
@@ -888,16 +1082,19 @@ async function initSettings() {
     toast(t("saved"));
   });
   $("#logout-wide").onclick = () =>
-    actionModal({
+    modal({
       title: t("logoutTitle"),
       body: t("logoutBody"),
       confirm: t("logout"),
       danger: false,
-      run: () =>
-        api("/api/logout", {
+      onConfirm: async (close) => {
+        const result = await api("/api/logout", {
           method: "POST",
-          body: { captcha: state.actionCaptcha },
-        }),
+          body: {},
+        });
+        close();
+        location.href = result.redirect;
+      },
     });
   $("#delete-account").onclick = () => {
     const extra = document.createElement("div");
@@ -926,7 +1123,9 @@ async function initShared() {
   const token = location.pathname.split("/").filter(Boolean)[1];
   try {
     const note = await api(`/api/shared/${encodeURIComponent(token)}`);
-    $("#shared-name").textContent = note.name;
+    const sharedName = $("#shared-name");
+    sharedName.removeAttribute("data-i18n");
+    sharedName.textContent = note.name;
     $("#shared-content").textContent = note.content;
     $("#shared-author").textContent =
       `${t("by")} ${note.author} · ${note.email}`;
@@ -988,6 +1187,12 @@ async function boot() {
   };
   await initializers[page]?.();
   applyLocale();
+  if (["login", "register", "new-note"].includes(page)) {
+    setTimeout(() => {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 800);
+  }
 }
 
 boot().catch((error) => {

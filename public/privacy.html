@@ -14,7 +14,7 @@
         <header class="page-head reveal">
           <div>
             <p class="eyebrow">
-              <i class="fa-solid fa-shield-halved"></i> DATA PRACTICES
+              <i class="fa-solid fa-shield-halved"></i><span data-i18n="privacyEyebrow"></span>
             </p>
             <h1 data-i18n="privacy"></h1>
             <p class="muted" data-i18n="legalUpdated"></p>
@@ -85,11 +85,11 @@
             analytics cookie is used. The primary and backup domains have
             separate browser sessions.
           </p>
-          <h2>5. NexaCAPTCHA</h2>
+          <h2>5. Human verification</h2>
           <p>
-            For registration, login, logout, note creation, note saving, note
-            deletion, sharing changes, and account deletion, the browser loads
-            NexaCAPTCHA Gravity from <code>nexacaptcha.zone.id</code>. AstraNote
+            For registration, login, note creation, note deletion,
+            account-deletion requests, and cancellation of a pending deletion,
+            the browser loads a CAPTCHA from <code>nexacaptcha.zone.id</code>. AstraNote
             sends the resulting verification ID and one-time response token to
             NexaCAPTCHA’s fixed server verification endpoint. The token is
             intended to work once and expire after five minutes. Do not place
@@ -212,10 +212,10 @@
             通知的狀態。本服務不使用廣告、跨站追蹤、使用者輪廓或分析
             Cookie。主要與備用網域各自擁有獨立登入階段。
           </p>
-          <h2>五、NexaCAPTCHA</h2>
+          <h2>五、人類驗證</h2>
           <p>
-            註冊、登入、登出、新增、儲存、刪除筆記、變更分享及申請刪除帳號時，瀏覽器會從
-            <code>nexacaptcha.zone.id</code> 載入 Gravity。AstraNote 會將驗證 ID
+            註冊、登入、新增筆記、刪除筆記、申請刪除帳號及取消刪除申請時，瀏覽器會從
+            <code>nexacaptcha.zone.id</code> 載入 CAPTCHA。AstraNote 會將驗證 ID
             及一次性 Token 傳至 NexaCAPTCHA 固定的後端驗證端點。Token
             原則上僅可使用一次並於五分鐘後失效。請勿在 CAPTCHA
             欄位輸入個人資料。

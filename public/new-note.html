@@ -12,27 +12,28 @@
   </head>
   <body data-page="new-note">
     <main class="page">
-      <div class="shell form-layout">
+      <div class="shell form-layout form-layout-single">
         <section class="form-card reveal">
           <p class="eyebrow">
-            <i class="fa-solid fa-location-crosshairs"></i> NEW COORDINATE
+            <i class="fa-solid fa-note-sticky"></i><span data-i18n="newNoteEyebrow"></span>
           </p>
           <h1 data-i18n="newNote"></h1>
           <p class="muted" data-i18n="newNoteBody"></p>
           <form id="note-form">
             <div class="form-group">
               <label for="name" data-i18n="noteName"></label
-              ><input id="name" name="name" maxlength="80" required autofocus />
+              ><input id="name" name="name" maxlength="80" required />
             </div>
             <div class="form-group">
               <label for="encryption" data-i18n="encryption"></label
               ><select id="encryption" name="encryption">
-                <option value="none">No encryption</option>
+                <option value="none" data-i18n="noEncryptionOption"></option>
                 <option value="aes-256-gcm">AES-256-GCM</option>
                 <option value="aes-128-gcm">AES-128-GCM</option>
               </select>
               <p class="field-help" data-i18n="encryptionHelp"></p>
             </div>
+            <p class="captcha-heading"><i class="fa-solid fa-user-check"></i><span data-i18n="humanVerification"></span></p>
             <div class="captcha-box">
               <div
                 class="nexa-captcha"
@@ -52,20 +53,7 @@
             </div>
           </form>
         </section>
-        <aside class="card reveal">
-          <p class="eyebrow">
-            <i class="fa-solid fa-shield-halved"></i> ENCRYPTION
-          </p>
-          <h2>AES-GCM</h2>
-          <p class="muted" data-i18n="encryptionHelp"></p>
-        </aside>
       </div>
     </main>
-    <div
-      id="global-captcha"
-      class="nexa-captcha captcha-parking"
-      data-captcha-type="gravity"
-      data-callback="onActionCaptchaComplete"
-    ></div>
   </body>
 </html>

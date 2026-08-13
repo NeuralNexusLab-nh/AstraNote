@@ -8,7 +8,6 @@
     <link rel="icon" href="/asset/logo.svg" />
     <link rel="stylesheet" href="/style.css" />
     <script src="/app.js" defer></script>
-    <script src="https://nexacaptcha.zone.id/captcha/gravity.js" defer></script>
   </head>
   <body data-page="dashboard">
     <main class="page">
@@ -16,7 +15,7 @@
         <header class="page-head reveal">
           <div>
             <p class="eyebrow">
-              <i class="fa-solid fa-chart-line"></i> YOUR CONSTELLATION
+              <i class="fa-solid fa-chart-line"></i><span data-i18n="dashboardEyebrow"></span>
             </p>
             <h1 data-i18n="welcome"></h1>
             <p class="muted" data-i18n="welcomeBody"></p>
@@ -27,27 +26,19 @@
         </header>
         <section class="summary-grid">
           <article class="card summary-card reveal">
-            <span
-              ><i class="fa-solid fa-book"></i>
-              <span data-i18n="notebooks"></span></span
-            ><strong id="note-count">—</strong
-            ><small class="muted">MAX 100</small>
+            <div class="summary-label"><i class="fa-solid fa-book"></i><span data-i18n="notebooks"></span></div>
+            <div class="summary-value"><strong id="note-count">—</strong></div>
+            <small class="muted" data-i18n="maxNotesLabel"></small>
           </article>
           <article class="card summary-card reveal">
-            <span
-              ><i class="fa-solid fa-hard-drive"></i>
-              <span data-i18n="storage"></span></span
-            ><strong id="storage-count">—</strong>
+            <div class="summary-label"><i class="fa-solid fa-hard-drive"></i><span data-i18n="storage"></span></div>
+            <div class="summary-value"><strong id="storage-count">—</strong></div>
             <div class="meter"><span></span></div>
           </article>
           <article class="card summary-card reveal">
-            <span
-              ><i class="fa-solid fa-hourglass-half"></i>
-              <span data-i18n="accountAge"></span></span
-            ><strong
-              ><span id="age-count">—</span>
-              <small data-i18n="days"></small></strong
-            ><small class="muted">UTC</small>
+            <div class="summary-label"><i class="fa-solid fa-hourglass-half"></i><span data-i18n="accountAge"></span></div>
+            <div class="summary-value"><strong id="age-count">—</strong><span class="summary-unit" data-i18n="days"></span></div>
+            <small class="muted">UTC</small>
           </article>
         </section>
         <section class="notes-panel reveal">
@@ -64,11 +55,5 @@
         </section>
       </div>
     </main>
-    <div
-      id="global-captcha"
-      class="nexa-captcha captcha-parking"
-      data-captcha-type="gravity"
-      data-callback="onActionCaptchaComplete"
-    ></div>
   </body>
 </html>

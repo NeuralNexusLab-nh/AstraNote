@@ -16,7 +16,7 @@
         <header class="page-head reveal">
           <div>
             <p class="eyebrow">
-              <i class="fa-solid fa-sliders"></i> PERSONALISE
+              <i class="fa-solid fa-sliders"></i><span data-i18n="settingsEyebrow"></span>
             </p>
             <h1 data-i18n="settingsTitle"></h1>
             <p class="muted" data-i18n="settingsBody"></p>
@@ -24,8 +24,7 @@
         </header>
         <form id="settings-form" class="settings-grid">
           <section class="card reveal">
-            <div class="feature-icon"><i class="fa-solid fa-palette"></i></div>
-            <h3 data-i18n="appearance"></h3>
+            <h3 class="feature-heading"><span class="feature-icon"><i class="fa-solid fa-palette"></i></span><span data-i18n="appearance"></span></h3>
             <div class="form-group">
               <label for="theme" data-i18n="appearance"></label
               ><select id="theme" name="theme">
@@ -35,8 +34,7 @@
             </div>
           </section>
           <section class="card reveal">
-            <div class="feature-icon"><i class="fa-solid fa-language"></i></div>
-            <h3 data-i18n="language"></h3>
+            <h3 class="feature-heading"><span class="feature-icon"><i class="fa-solid fa-language"></i></span><span data-i18n="language"></span></h3>
             <div class="form-group">
               <label for="settings-language" data-i18n="language"></label
               ><select id="settings-language" name="language">
@@ -46,10 +44,7 @@
             </div>
           </section>
           <section class="card reveal">
-            <div class="feature-icon">
-              <i class="fa-solid fa-user-astronaut"></i>
-            </div>
-            <h3 data-i18n="publicIdentity"></h3>
+            <h3 class="feature-heading"><span class="feature-icon"><i class="fa-solid fa-id-card"></i></span><span data-i18n="publicIdentity"></span></h3>
             <div class="form-group">
               <label for="displayName" data-i18n="displayName"></label
               ><input
@@ -67,10 +62,7 @@
           <section class="card danger-zone reveal">
             <div class="danger-content">
               <div>
-                <div class="feature-icon danger-text">
-                  <i class="fa-solid fa-user-slash"></i>
-                </div>
-                <h3 data-i18n="dangerZone"></h3>
+                <h3 class="feature-heading danger-text"><span class="feature-icon"><i class="fa-solid fa-user-slash"></i></span><span data-i18n="dangerZone"></span></h3>
                 <p class="muted" data-i18n="dangerBody"></p>
               </div>
               <button class="btn btn-danger" type="button" id="delete-account">

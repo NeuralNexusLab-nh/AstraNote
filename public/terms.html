@@ -14,7 +14,7 @@
         <header class="page-head reveal">
           <div>
             <p class="eyebrow">
-              <i class="fa-solid fa-scale-balanced"></i> LEGAL
+              <i class="fa-solid fa-scale-balanced"></i><span data-i18n="legalEyebrow"></span>
             </p>
             <h1 data-i18n="terms"></h1>
             <p class="muted" data-i18n="legalUpdated"></p>
@@ -34,17 +34,16 @@
           <h2>1. Acceptance and legal capacity</h2>
           <p>
             By creating or using an account, you confirm that you have read and
-            accepted these Terms and the Privacy Policy. A person under seven
-            years of age must have an authorised legal representative create and
-            manage the account. A user aged seven to seventeen must obtain the
-            consent of a legal representative unless applicable law permits the
-            relevant act independently. A guardian who creates, approves, or
-            manages an account accepts responsibility for supervising its use.
+            accepted these Terms and the Privacy Policy. The service is available
+            to users of all ages. Where applicable law requires the consent or
+            involvement of a legal representative, that consent or involvement
+            must be obtained. A guardian who creates, approves, or manages an
+            account accepts responsibility for supervising its use.
           </p>
           <h2>2. Service</h2>
           <p>
             AstraNote is presently a free, plain-text online notebook. Each
-            account may hold no more than 100 notes and 256 KiB across the
+            account may hold no more than 24 notes and 128 KiB across the
             complete account directory, including metadata and encryption
             overhead. The Operator may introduce optional paid functionality
             only after giving separate, clear notice. No purchase or automatic
@@ -99,13 +98,14 @@
             reasonably believed necessary to protect users, systems, legal
             rights, or service availability.
           </p>
-          <h2>7. Third-party verification</h2>
+          <h2>7. Human verification</h2>
           <p>
-            Security-sensitive actions require NexaCAPTCHA Gravity. Verification
-            data is submitted to NexaCAPTCHA and checked server-side. The
-            component may appear in English and may be unavailable. Completing a
-            CAPTCHA does not create a right to have a request accepted; session,
-            CSRF, ownership, capacity, and rate-limit checks also apply.
+            Registration, login, note creation, note deletion, account-deletion
+            requests, and cancellation of a pending deletion require a CAPTCHA.
+            Verification data is submitted to the verification provider and
+            checked server-side. Completing a CAPTCHA does not create a right to
+            have a request accepted; session, CSRF, ownership, capacity, and
+            rate-limit checks also apply.
           </p>
           <h2>8. Availability, backups, and changes</h2>
           <p>
@@ -182,13 +182,13 @@
           </p>
           <h2>一、同意與行為能力</h2>
           <p>
-            建立或使用帳號即表示您已閱讀並接受本協議與隱私政策。未滿七歲者須由合法法定代理人代為建立及管理帳號；滿七歲未滿十八歲者，除所在地法律允許其獨立為相關行為外，須事先取得法定代理人同意。為未成年人建立、核准或管理帳號的法定代理人，同意負責監督其使用。
+            建立或使用帳號即表示您已閱讀並接受本協議與隱私政策。本服務開放所有年齡使用；如適用法律要求法定代理人同意或參與，使用者仍須依法取得。為未成年人建立、核准或管理帳號的法定代理人，同意負責監督其使用。
           </p>
           <h2>二、服務內容</h2>
           <p>
             AstraNote
-            現為免費純文字線上筆記服務。每個帳號最多一百篇筆記，整個帳號資料夾（含中繼資料及加密開銷）上限為
-            256
+            現為免費純文字線上筆記服務。每個帳號最多二十四篇筆記，整個帳號資料夾（含中繼資料及加密開銷）上限為
+            128
             KiB。未來如推出選擇性付費功能，營運者將另行清楚告知；本協議本身不成立任何購買或自動續費。
           </p>
           <h2>三、帳號與安全</h2>
@@ -215,10 +215,10 @@
             違法、侵害權利、威脅騷擾、散布不法內容、協助犯罪、儲存惡意程式、攻擊人員或系統、規避存取控制或速率限制、濫用自動化請求、未經書面授權探測或利用漏洞、妨害服務、存取他人帳號或筆記，或不合理耗用儲存、運算、頻寬、CAPTCHA
             及管理資源。使用者須自行承擔其行為與內容責任。為保護使用者、系統、合法權利或可用性，營運者得採取合理限制或終止措施。
           </p>
-          <h2>七、第三方驗證</h2>
+          <h2>七、人類驗證</h2>
           <p>
-            敏感操作須使用 NexaCAPTCHA Gravity，驗證資料會交由 NexaCAPTCHA 並由
-            AstraNote 後端確認。元件可能以英文呈現或暫時無法使用。完成 CAPTCHA
+            註冊、登入、新增筆記、刪除筆記、申請刪除帳號及取消刪除申請時須完成 CAPTCHA，驗證資料會交由驗證服務提供者並由
+            AstraNote 後端確認。完成 CAPTCHA
             不代表請求必然獲准；系統仍會檢查登入階段、CSRF、所有權、容量及速率限制。
           </p>
           <h2>八、可用性、備份與變更</h2>

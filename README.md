@@ -1,10 +1,10 @@
 # AstraNote
 
-> Your thoughts, among the stars.
+> Write it down. Find it whenever you need it.
 
 AstraNote is a bilingual, responsive online notebook built with Node.js and
 Express. It provides optional AES-GCM encryption, revocable read-only sharing,
-strict per-account storage limits, and NexaCAPTCHA Gravity verification for
+strict per-account storage limits, and server-verified CAPTCHA protection for
 security-sensitive actions.
 
 ## Highlights
@@ -14,11 +14,11 @@ security-sensitive actions.
 - Dark and light themes synchronized to signed-in accounts
 - Plain-text lined note reader and editor
 - No encryption, AES-256-GCM, or AES-128-GCM chosen at note creation
-- 100-note and 256 KiB full-account-directory limits
+- 24-note and 128 KiB full-account-directory limits
 - Unguessable, revocable, `noindex` read-only sharing links
 - Argon2id password hashing and server-managed authenticated sessions
 - CSRF, Origin, ownership, request-size, rate-limit, and security-header controls
-- NexaCAPTCHA Gravity with mandatory server-side `/api/siteverify` validation
+- Human verification with mandatory server-side `/api/siteverify` validation
 - Seven-day account-deletion reversal period and a two-month manual-erasure deadline
 - Locally served Font Awesome; no font, analytics, or advertising CDN
 

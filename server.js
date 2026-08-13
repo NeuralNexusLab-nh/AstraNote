@@ -24,8 +24,8 @@ const SHARES_FILE = path.join(DATA_DIR, "shares.json");
 const SECRET_FILE = path.join(DATA_DIR, ".server-secret");
 
 const MAX_ACCOUNTS = 60_000;
-const MAX_NOTES = 100;
-const MAX_ACCOUNT_BYTES = 256 * 1024;
+const MAX_NOTES = 24;
+const MAX_ACCOUNT_BYTES = 128 * 1024;
 const MAX_NOTE_NAME = 80;
 const MAX_DISPLAY_NAME = 40;
 const SESSION_INITIAL_MS = 14 * 864e5;
@@ -929,7 +929,6 @@ app.post(
   mutationLimiter,
   requireAuth,
   requireCsrf,
-  verifyCaptcha,
   async (req, res, next) => {
     try {
       await destroySessionToken(req.auth.token);
@@ -1035,7 +1034,7 @@ app.post(
         const metadata = await loadMetadata(username);
         if (metadata.notes.length >= MAX_NOTES)
           throw Object.assign(
-            new Error("You have reached the 100-note limit."),
+            new Error("You have reached the 24-note limit."),
             { status: 409 },
           );
         const id = crypto.randomBytes(12).toString("hex");
@@ -1056,7 +1055,7 @@ app.post(
           await saveMetadata(username, metadata);
           await fsp.unlink(noteFile(username, id));
           throw Object.assign(
-            new Error("This note would exceed your 256 KiB account limit."),
+            new Error("This note would exceed your 128 KiB account limit."),
             { status: 413 },
           );
         }
@@ -1076,7 +1075,6 @@ app.put(
   mutationLimiter,
   requireAuth,
   requireCsrf,
-  verifyCaptcha,
   async (req, res, next) => {
     const name = normalizeText(req.body.name, MAX_NOTE_NAME);
     const content =
@@ -1110,7 +1108,7 @@ app.put(
         if ((await directorySize(userDir(username))) > MAX_ACCOUNT_BYTES) {
           await atomicWrite(file, original);
           throw Object.assign(
-            new Error("Saving would exceed your 256 KiB account limit."),
+            new Error("Saving would exceed your 128 KiB account limit."),
             { status: 413 },
           );
         }
@@ -1160,7 +1158,6 @@ app.post(
   mutationLimiter,
   requireAuth,
   requireCsrf,
-  verifyCaptcha,
   async (req, res, next) => {
     try {
       const username = req.auth.session.username;

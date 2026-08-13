@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta
       name="description"
-      content="AstraNote is a focused, encrypted online notebook by NeuralNexusLab."
+      content="AstraNote is a free online notebook for ideas, reminders, lists, and useful information."
     />
-    <title>AstraNote — Your thoughts, among the stars</title>
+    <title>AstraNote — Notes ready when you need them</title>
     <link rel="icon" href="/asset/logo.svg" />
     <link rel="stylesheet" href="/style.css" />
     <script src="/app.js" defer></script>
-    <script src="https://nexacaptcha.zone.id/captcha/gravity.js" defer></script>
   </head>
   <body data-page="home">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -25,14 +24,14 @@
         <div class="nebula" aria-hidden="true"></div>
         <div class="hero-content">
           <span class="hero-kicker"
-            ><i class="fa-solid fa-star"></i
-            ><span>A PRIVATE CONSTELLATION FOR IDEAS</span></span
+            ><i class="fa-solid fa-note-sticky"></i
+            ><span data-i18n="heroKicker"></span></span
           >
           <h1>AstraNote</h1>
-          <p class="hero-lead" data-i18n="tagline"></p>
-          <p class="hero-lead" data-i18n="heroLead"></p>
+          <p class="hero-tagline" data-i18n="tagline"></p>
+          <p class="hero-description" data-i18n="heroLead"></p>
           <div class="hero-actions">
-            <a class="btn btn-primary btn-lg" href="/register"
+            <a class="btn btn-primary btn-lg" id="hero-primary" href="/register"
               ><i class="fa-solid fa-pen-nib"></i
               ><span data-i18n="begin"></span></a
             ><a class="btn btn-outline btn-lg" href="#purpose"
@@ -75,24 +74,24 @@
           </header>
           <div class="feature-grid">
             <article class="card feature-card reveal">
-              <div class="feature-icon">
-                <i class="fa-solid fa-pen-nib"></i>
-              </div>
-              <h3 data-i18n="quickTitle"></h3>
+              <h3 class="feature-heading">
+                <span class="feature-icon"><i class="fa-solid fa-pen-nib"></i></span>
+                <span data-i18n="quickTitle"></span>
+              </h3>
               <p data-i18n="quickBody"></p>
             </article>
             <article class="card feature-card reveal">
-              <div class="feature-icon">
-                <i class="fa-solid fa-shield-halved"></i>
-              </div>
-              <h3 data-i18n="secureTitle"></h3>
+              <h3 class="feature-heading">
+                <span class="feature-icon"><i class="fa-solid fa-mobile-screen-button"></i></span>
+                <span data-i18n="secureTitle"></span>
+              </h3>
               <p data-i18n="secureBody"></p>
             </article>
             <article class="card feature-card reveal">
-              <div class="feature-icon">
-                <i class="fa-solid fa-share-nodes"></i>
-              </div>
-              <h3 data-i18n="shareTitle"></h3>
+              <h3 class="feature-heading">
+                <span class="feature-icon"><i class="fa-solid fa-gift"></i></span>
+                <span data-i18n="shareTitle"></span>
+              </h3>
               <p data-i18n="shareBody"></p>
             </article>
           </div>
@@ -110,22 +109,15 @@
           </div>
           <div class="limit-visual reveal">
             <span class="muted"
-              ><i class="fa-solid fa-hard-drive"></i> ACCOUNT STORAGE</span
-            ><strong>256 KiB</strong>
+              ><i class="fa-solid fa-hard-drive"></i><span data-i18n="accountStorageLabel"></span></span
+            ><strong>128 KiB</strong>
             <div class="meter"><span class="demo-progress"></span></div>
             <p class="muted limit-caption">
-              <i class="fa-solid fa-note-sticky"></i> 100 NOTES · PLAIN TEXT ·
-              OPTIONAL AES-GCM
+              <i class="fa-solid fa-note-sticky"></i><span data-i18n="accountLimitCaption"></span>
             </p>
           </div>
         </div>
       </section>
     </main>
-    <div
-      id="global-captcha"
-      class="nexa-captcha captcha-parking"
-      data-captcha-type="gravity"
-      data-callback="onActionCaptchaComplete"
-    ></div>
   </body>
 </html>

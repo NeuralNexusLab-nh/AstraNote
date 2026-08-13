@@ -1,7 +1,7 @@
 {
   "name": "astranote",
   "version": "1.0.0",
-  "description": "A private, encrypted online notebook by NeuralNexusLab.",
+  "description": "A free bilingual online notebook by NeuralNexusLab.",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {

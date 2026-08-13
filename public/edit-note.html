@@ -8,7 +8,6 @@
     <link rel="icon" href="/asset/logo.svg" />
     <link rel="stylesheet" href="/style.css" />
     <script src="/app.js" defer></script>
-    <script src="https://nexacaptcha.zone.id/captcha/gravity.js" defer></script>
   </head>
   <body data-page="editor">
     <main class="page">
@@ -16,7 +15,7 @@
         <header class="page-head">
           <div class="editor-heading">
             <p class="eyebrow">
-              <i class="fa-solid fa-pen-to-square"></i> NOTE EDITOR
+              <i class="fa-solid fa-pen-to-square"></i><span data-i18n="editorEyebrow"></span>
             </p>
             <input
               class="note-title-input"
@@ -49,11 +48,5 @@
         ></textarea>
       </div>
     </main>
-    <div
-      id="global-captcha"
-      class="nexa-captcha captcha-parking"
-      data-captcha-type="gravity"
-      data-callback="onActionCaptchaComplete"
-    ></div>
   </body>
 </html>
