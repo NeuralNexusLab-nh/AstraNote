@@ -11,7 +11,7 @@ process.env.DATA_DIR = temporaryData;
 process.env.ASTRANOTE_SECRET =
   "test-only-secret-that-is-at-least-thirty-two-characters-long";
 
-const { app, ensureData, testables } = require("../server");
+const { app, ensureData, constants, testables } = require("../server");
 
 let server;
 let baseUrl;
@@ -91,6 +91,28 @@ test("authentication, CAPTCHA, and Origin protections fail closed", async () => 
   });
   assert.equal(badOrigin.status, 403);
   assert.equal((await badOrigin.json()).error, "origin_rejected");
+});
+
+test("registration rate limits repeated requests and advertises retry timing", async () => {
+  let response;
+  for (let attempt = 0; attempt < 11; attempt += 1) {
+    response = await fetch(`${baseUrl}/api/register`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-forwarded-for": "198.51.100.42",
+      },
+      body: "{}",
+    });
+  }
+  assert.equal(response.status, 429);
+  assert.equal((await response.json()).error, "rate_limited");
+  assert.ok(response.headers.get("retry-after"));
+});
+
+test("published account limits match the 24-note and 256 KiB policy", () => {
+  assert.equal(constants.MAX_NOTES, 24);
+  assert.equal(constants.MAX_ACCOUNT_BYTES, 256 * 1024);
 });
 
 test("invalid sharing and traversal-shaped identifiers reveal no data", async () => {

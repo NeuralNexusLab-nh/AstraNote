@@ -2,7 +2,7 @@
 
 const express = require("express");
 const helmet = require("helmet");
-const { rateLimit } = require("express-rate-limit");
+const { rateLimit, ipKeyGenerator } = require("express-rate-limit");
 const argon2 = require("argon2");
 const crypto = require("node:crypto");
 const fs = require("node:fs");
@@ -25,7 +25,7 @@ const SECRET_FILE = path.join(DATA_DIR, ".server-secret");
 
 const MAX_ACCOUNTS = 60_000;
 const MAX_NOTES = 24;
-const MAX_ACCOUNT_BYTES = 128 * 1024;
+const MAX_ACCOUNT_BYTES = 256 * 1024;
 const MAX_NOTE_NAME = 80;
 const MAX_DISPLAY_NAME = 40;
 const SESSION_INITIAL_MS = 14 * 864e5;
@@ -636,16 +636,17 @@ app.use((req, res, next) => {
   );
   next();
 });
-app.use(express.json({ limit: "300kb", strict: true }));
-app.use(express.urlencoded({ extended: false, limit: "20kb" }));
 app.use(
   rateLimit({
     windowMs: 60_000,
-    limit: 180,
+    limit: 600,
     standardHeaders: "draft-8",
     legacyHeaders: false,
+    handler: rateLimitHandler,
   }),
 );
+app.use(express.json({ limit: "300kb", strict: true }));
+app.use(express.urlencoded({ extended: false, limit: "20kb" }));
 app.use((req, res, next) => {
   const origin = req.get("origin");
   const local =
@@ -664,18 +665,77 @@ app.use((req, res, next) => {
   if (req.method === "OPTIONS") return res.sendStatus(204);
   next();
 });
-const authLimiter = rateLimit({
+const apiLimiter = rateLimit({
+  windowMs: 60_000,
+  limit: 360,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
+const loginIpLimiter = rateLimit({
   windowMs: 15 * 60_000,
   limit: 20,
   standardHeaders: "draft-8",
   legacyHeaders: false,
+  handler: rateLimitHandler,
 });
-const mutationLimiter = rateLimit({
-  windowMs: 60_000,
-  limit: 30,
+const loginUsernameLimiter = rateLimit({
+  windowMs: 15 * 60_000,
+  limit: 10,
+  skipSuccessfulRequests: true,
+  keyGenerator: (req) => {
+    const username = normalizeText(req.body?.username, 24);
+    return username && USERNAME_RE.test(username)
+      ? `username:${userKey(username)}`
+      : `ip:${ipKeyGenerator(req.ip)}`;
+  },
   standardHeaders: "draft-8",
   legacyHeaders: false,
+  handler: rateLimitHandler,
 });
+const registrationLimiter = rateLimit({
+  windowMs: 60 * 60_000,
+  limit: 10,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
+function accountRateKey(req) {
+  const username = req.auth?.session?.username;
+  return username
+    ? `account:${userKey(username)}`
+    : `ip:${ipKeyGenerator(req.ip)}`;
+}
+function accountLimiter(limit) {
+  return rateLimit({
+    windowMs: 60_000,
+    limit,
+    keyGenerator: accountRateKey,
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
+    handler: rateLimitHandler,
+  });
+}
+function rateLimitHandler(req, res) {
+  return jsonError(
+    res,
+    429,
+    "rate_limited",
+    "Too many requests. Please wait before trying again.",
+  );
+}
+const accountMutationLimiter = accountLimiter(120);
+const noteSaveLimiter = accountLimiter(40);
+const noteLifecycleLimiter = accountLimiter(20);
+const shareMutationLimiter = accountLimiter(30);
+const sharedReadLimiter = rateLimit({
+  windowMs: 60_000,
+  limit: 240,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
+app.use("/api", apiLimiter);
 app.use((req, res, next) => {
   if (!["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) return next();
   const origin = req.get("origin");
@@ -724,7 +784,7 @@ app.get("/api/session", async (req, res) => {
 
 app.post(
   "/api/register",
-  authLimiter,
+  registrationLimiter,
   verifyCaptcha,
   async (req, res, next) => {
     const username = normalizeText(req.body.username, 24);
@@ -811,7 +871,12 @@ app.post(
           lastLoginIp: requestIp(req),
           termsVersion: TERMS_VERSION,
           termsAcceptedAt: createdAt,
-          settings: { language: "en", theme: "dark" },
+          settings: {
+            language: ["en", "zh-Hant"].includes(req.body.language)
+              ? req.body.language
+              : "en",
+            theme: "dark",
+          },
           notes: [],
         };
         await saveMetadata(username, metadata);
@@ -845,54 +910,66 @@ app.post(
   },
 );
 
-app.post("/api/login", authLimiter, verifyCaptcha, async (req, res, next) => {
-  const username = normalizeText(req.body.username, 24);
-  const password =
-    typeof req.body.password === "string" ? req.body.password : "";
-  try {
-    const metadata = USERNAME_RE.test(username)
-      ? await loadMetadata(username)
-      : null;
-    const valid =
-      metadata &&
-      (await argon2.verify(metadata.passwordHash, password).catch(() => false));
-    if (!valid)
-      return jsonError(
-        res,
-        401,
-        "invalid_credentials",
-        "Username or password is incorrect.",
-      );
-    const deletion = await findDeletion(username);
-    if (deletion) {
-      if (deletion.status === "cooling_off") {
-        return res.status(409).json({
-          error: "deletion_pending",
-          message: "This account is pending deletion.",
-          reversibleUntil: deletion.reversibleUntil,
-        });
+app.post(
+  "/api/login",
+  loginIpLimiter,
+  loginUsernameLimiter,
+  verifyCaptcha,
+  async (req, res, next) => {
+    const username = normalizeText(req.body.username, 24);
+    const password =
+      typeof req.body.password === "string" ? req.body.password : "";
+    try {
+      const metadata = USERNAME_RE.test(username)
+        ? await loadMetadata(username)
+        : null;
+      const valid =
+        metadata &&
+        (await argon2
+          .verify(metadata.passwordHash, password)
+          .catch(() => false));
+      if (!valid)
+        return jsonError(
+          res,
+          401,
+          "invalid_credentials",
+          "Username or password is incorrect.",
+        );
+      const deletion = await findDeletion(username);
+      if (deletion) {
+        if (deletion.status === "cooling_off") {
+          return res.status(409).json({
+            error: "deletion_pending",
+            message: "This account is pending deletion.",
+            reversibleUntil: deletion.reversibleUntil,
+          });
+        }
+        return jsonError(
+          res,
+          401,
+          "invalid_credentials",
+          "Username or password is incorrect.",
+        );
       }
-      return jsonError(
-        res,
-        401,
-        "invalid_credentials",
-        "Username or password is incorrect.",
-      );
+      metadata.lastLoginAt = utcNow();
+      metadata.lastLoginIp = requestIp(req);
+      metadata.settings ||= { language: "en", theme: "dark" };
+      if (["en", "zh-Hant"].includes(req.body.language))
+        metadata.settings.language = req.body.language;
+      await saveMetadata(username, metadata);
+      const session = await createSession(username, req, res);
+      await updateOnlineUser(username);
+      res.json({ ok: true, csrf: session.csrf, redirect: "/dashboard" });
+    } catch (error) {
+      next(error);
     }
-    metadata.lastLoginAt = utcNow();
-    metadata.lastLoginIp = requestIp(req);
-    await saveMetadata(username, metadata);
-    const session = await createSession(username, req, res);
-    await updateOnlineUser(username);
-    res.json({ ok: true, csrf: session.csrf, redirect: "/dashboard" });
-  } catch (error) {
-    next(error);
-  }
-});
+  },
+);
 
 app.post(
   "/api/deletion/cancel",
-  authLimiter,
+  loginIpLimiter,
+  loginUsernameLimiter,
   verifyCaptcha,
   async (req, res, next) => {
     const username = normalizeText(req.body.username, 24);
@@ -915,6 +992,11 @@ app.post(
           "Username or password is incorrect.",
         );
       await cancelDeletion(username);
+      if (["en", "zh-Hant"].includes(req.body.language)) {
+        metadata.settings ||= { language: "en", theme: "dark" };
+        metadata.settings.language = req.body.language;
+        await saveMetadata(username, metadata);
+      }
       const session = await createSession(username, req, res);
       await updateOnlineUser(username);
       res.json({ ok: true, csrf: session.csrf, redirect: "/dashboard" });
@@ -926,8 +1008,8 @@ app.post(
 
 app.post(
   "/api/logout",
-  mutationLimiter,
   requireAuth,
+  accountMutationLimiter,
   requireCsrf,
   async (req, res, next) => {
     try {
@@ -949,8 +1031,8 @@ app.get("/api/account", requireAuth, async (req, res, next) => {
 });
 app.patch(
   "/api/settings",
-  mutationLimiter,
   requireAuth,
+  accountMutationLimiter,
   requireCsrf,
   async (req, res, next) => {
     try {
@@ -1012,8 +1094,8 @@ app.get("/api/notes/:id", requireAuth, async (req, res, next) => {
 
 app.post(
   "/api/notes",
-  mutationLimiter,
   requireAuth,
+  noteLifecycleLimiter,
   requireCsrf,
   verifyCaptcha,
   async (req, res, next) => {
@@ -1055,7 +1137,7 @@ app.post(
           await saveMetadata(username, metadata);
           await fsp.unlink(noteFile(username, id));
           throw Object.assign(
-            new Error("This note would exceed your 128 KiB account limit."),
+            new Error("This note would exceed your 256 KiB account limit."),
             { status: 413 },
           );
         }
@@ -1072,8 +1154,8 @@ app.post(
 
 app.put(
   "/api/notes/:id",
-  mutationLimiter,
   requireAuth,
+  noteSaveLimiter,
   requireCsrf,
   async (req, res, next) => {
     const name = normalizeText(req.body.name, MAX_NOTE_NAME);
@@ -1108,7 +1190,7 @@ app.put(
         if ((await directorySize(userDir(username))) > MAX_ACCOUNT_BYTES) {
           await atomicWrite(file, original);
           throw Object.assign(
-            new Error("Saving would exceed your 128 KiB account limit."),
+            new Error("Saving would exceed your 256 KiB account limit."),
             { status: 413 },
           );
         }
@@ -1122,8 +1204,8 @@ app.put(
 
 app.delete(
   "/api/notes/:id",
-  mutationLimiter,
   requireAuth,
+  noteLifecycleLimiter,
   requireCsrf,
   verifyCaptcha,
   async (req, res, next) => {
@@ -1155,8 +1237,8 @@ app.delete(
 
 app.post(
   "/api/notes/:id/share",
-  mutationLimiter,
   requireAuth,
+  shareMutationLimiter,
   requireCsrf,
   async (req, res, next) => {
     try {
@@ -1192,7 +1274,7 @@ app.post(
   },
 );
 
-app.get("/api/shared/:token", async (req, res, next) => {
+app.get("/api/shared/:token", sharedReadLimiter, async (req, res, next) => {
   if (!/^[A-Za-z0-9_-]{43}$/.test(req.params.token))
     return jsonError(res, 404, "not_found", "Shared note not found.");
   try {
@@ -1231,8 +1313,8 @@ app.get("/api/shared/:token", async (req, res, next) => {
 
 app.post(
   "/api/account/delete",
-  mutationLimiter,
   requireAuth,
+  accountMutationLimiter,
   requireCsrf,
   verifyCaptcha,
   async (req, res, next) => {

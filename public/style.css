@@ -461,6 +461,18 @@ body[data-page="home"] .site-nav:not(.scrolled) .nav-link.active {
 .section-head h2 {
   margin-bottom: 16px;
 }
+.product-intro {
+  max-width: 920px;
+  margin: -16px 0 48px;
+  padding-left: 22px;
+  border-left: 2px solid var(--primary);
+  color: var(--muted);
+  font-size: clamp(16px, 1.6vw, 18px);
+  line-height: 1.75;
+}
+.product-intro p:last-child {
+  margin-bottom: 0;
+}
 .feature-icon {
   width: 44px;
   height: 44px;
