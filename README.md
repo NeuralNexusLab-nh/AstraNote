@@ -14,7 +14,7 @@ security-sensitive actions.
 - Dark and light themes synchronized to signed-in accounts
 - Plain-text lined note reader and editor
 - No encryption, AES-256-GCM, or AES-128-GCM chosen at note creation
-- 24-note and 256 KiB full-account-directory limits
+- 48-note and 256 KiB full-account-directory limits
 - Unguessable, revocable, `noindex` read-only sharing links
 - Argon2id password hashing and server-managed authenticated sessions
 - CSRF, Origin, ownership, request-size, rate-limit, and security-header controls

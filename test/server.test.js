@@ -110,8 +110,8 @@ test("registration rate limits repeated requests and advertises retry timing", a
   assert.ok(response.headers.get("retry-after"));
 });
 
-test("published account limits match the 24-note and 256 KiB policy", () => {
-  assert.equal(constants.MAX_NOTES, 24);
+test("published account limits match the 48-note and 256 KiB policy", () => {
+  assert.equal(constants.MAX_NOTES, 48);
   assert.equal(constants.MAX_ACCOUNT_BYTES, 256 * 1024);
 });
 

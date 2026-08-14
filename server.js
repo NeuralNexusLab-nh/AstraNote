@@ -24,7 +24,7 @@ const SHARES_FILE = path.join(DATA_DIR, "shares.json");
 const SECRET_FILE = path.join(DATA_DIR, ".server-secret");
 
 const MAX_ACCOUNTS = 60_000;
-const MAX_NOTES = 24;
+const MAX_NOTES = 48;
 const MAX_ACCOUNT_BYTES = 256 * 1024;
 const MAX_NOTE_NAME = 80;
 const MAX_DISPLAY_NAME = 40;
@@ -1116,7 +1116,7 @@ app.post(
         const metadata = await loadMetadata(username);
         if (metadata.notes.length >= MAX_NOTES)
           throw Object.assign(
-            new Error("You have reached the 24-note limit."),
+            new Error("You have reached the 48-note limit."),
             { status: 409 },
           );
         const id = crypto.randomBytes(12).toString("hex");
