@@ -838,16 +838,24 @@ textarea {
 .note-actions {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: flex-end;
 }
-.share-panel {
-  margin-top: 18px;
-  padding: 20px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: var(--card);
+.note-controls {
+  width: min(620px, 100%);
+  display: grid;
+  justify-items: end;
+  gap: 12px;
+}
+.share-url {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
   animation: slideDown 0.25s ease;
+}
+.share-url[hidden] {
+  display: none;
 }
 @keyframes slideDown {
   from {
@@ -855,12 +863,72 @@ textarea {
     transform: translateY(-8px);
   }
 }
-.share-url {
-  display: flex;
-  gap: 8px;
-}
 .share-url input {
+  min-width: 0;
   font-size: 13px;
+  text-overflow: ellipsis;
+}
+.share-toggle {
+  position: relative;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  padding: 9px 14px 9px 16px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: var(--button);
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    transform 0.2s,
+    border-color 0.2s,
+    opacity 0.2s;
+}
+.share-toggle:hover {
+  transform: translateY(-2px);
+  border-color: var(--border);
+}
+.share-toggle input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.toggle-track {
+  width: 42px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border-radius: 99px;
+  background: var(--border);
+  transition: background 0.22s ease;
+}
+.toggle-knob {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.28);
+  transition: transform 0.22s ease;
+}
+.share-toggle input:checked + .toggle-track {
+  background: var(--primary);
+}
+.share-toggle input:checked + .toggle-track .toggle-knob {
+  transform: translateX(18px);
+}
+.share-toggle input:focus-visible + .toggle-track {
+  box-shadow: 0 0 0 4px rgba(82, 102, 235, 0.18);
+}
+.share-toggle:has(input:disabled) {
+  opacity: 0.55;
+  cursor: wait;
+  transform: none;
 }
 .settings-grid {
   display: grid;
@@ -1142,6 +1210,22 @@ html[lang="zh-Hant"] [data-lang="en"] {
   }
   .note-actions {
     justify-content: flex-start;
+    width: 100%;
+  }
+  .note-controls {
+    width: 100%;
+    justify-items: stretch;
+  }
+  .note-actions .btn,
+  .share-toggle {
+    padding-inline: 12px;
+    font-size: 14px;
+  }
+  .share-url {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .share-url .btn {
+    padding-inline: 14px;
   }
   .danger-zone .danger-content {
     align-items: flex-start;

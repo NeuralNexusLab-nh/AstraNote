@@ -956,60 +956,51 @@ async function initNote() {
   $("#note-size").textContent = formatBytes(note.bytes);
   $("#note-updated").textContent = formatUtc(note.updatedAt);
   $("#edit-note").href = `/notes/${note.id}/edit`;
-  $("#share-state").textContent = note.shared ? t("shared") : t("sharingOff");
   $("#delete-note").onclick = () => deleteNote(note);
-  $("#share-note").onclick = () =>
-    modal({
-      title: t("shareTitleModal"),
-      body: note.shared ? t("shareDisableBody") : t("shareEnableBody"),
-      confirm: note.shared ? t("disableShare") : t("enableShare"),
-      danger: false,
-      onConfirm: async (close) => {
-        const result = await api(`/api/notes/${note.id}/share`, {
-          method: "POST",
-          body: { enabled: !note.shared },
-        });
-        note.shared = result.shared;
-        $("#share-state").textContent = note.shared
-          ? t("shared")
-          : t("sharingOff");
-        close();
-        if (!result.url) {
-          modal({
-            title: t("shareStoppedTitle"),
-            body: t("shareStoppedBody"),
-            confirm: t("close"),
-            showCancel: false,
-            onConfirm: (dismiss) => dismiss(),
-          });
-          return;
-        }
-        const url = new URL(result.url, location.origin).href;
-        const content = document.createElement("div");
-        content.className = "share-url";
-        const input = document.createElement("input");
-        input.readOnly = true;
-        input.value = url;
-        input.setAttribute("aria-label", t("share"));
-        const copy = document.createElement("button");
-        copy.className = "btn";
-        copy.type = "button";
-        copy.innerHTML = `<i class="fa-solid fa-copy"></i><span>${t("copy")}</span>`;
-        copy.onclick = async () => {
-          await navigator.clipboard.writeText(url);
-          toast(t("copied"));
-        };
-        content.append(input, copy);
-        modal({
-          title: t("shareReadyTitle"),
-          body: t("shareReadyBody"),
-          content,
-          confirm: t("close"),
-          showCancel: false,
-          onConfirm: (dismiss) => dismiss(),
-        });
-      },
-    });
+  const shareToggle = $("#share-note");
+  const shareRow = $("#share-url-row");
+  const shareInput = $("#share-url");
+  const showShareUrl = (url) => {
+    shareInput.value = url ? new URL(url, location.origin).href : "";
+    shareRow.hidden = !url;
+  };
+  shareToggle.checked = note.shared;
+  shareToggle.setAttribute("aria-label", t("share"));
+  showShareUrl(note.shareUrl);
+  $("#copy-share-url").onclick = async () => {
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(shareInput.value);
+    } catch {
+      shareInput.focus();
+      shareInput.select();
+      if (!document.execCommand("copy")) {
+        toast(t("error"));
+        return;
+      }
+      shareInput.setSelectionRange(0, 0);
+    }
+    toast(t("copied"));
+  };
+  shareToggle.onchange = async () => {
+    const enabled = shareToggle.checked;
+    shareToggle.disabled = true;
+    try {
+      const result = await api(`/api/notes/${note.id}/share`, {
+        method: "POST",
+        body: { enabled },
+      });
+      note.shared = result.shared;
+      note.shareUrl = result.url;
+      shareToggle.checked = result.shared;
+      showShareUrl(result.url);
+    } catch (error) {
+      shareToggle.checked = !enabled;
+      toast(error.message);
+    } finally {
+      shareToggle.disabled = false;
+    }
+  };
 }
 
 async function initEditor() {

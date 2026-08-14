@@ -34,16 +34,31 @@
               >
             </div>
           </div>
-          <div class="note-actions">
-            <a class="btn btn-primary" id="edit-note"
-              ><i class="fa-solid fa-pen"></i><span data-i18n="edit"></span></a
-            ><button class="btn" id="share-note">
-              <i class="fa-solid fa-share-nodes"></i
-              ><span data-i18n="share"></span></button
-            ><button class="btn btn-danger" id="delete-note">
-              <i class="fa-solid fa-trash"></i
-              ><span data-i18n="delete"></span></button
-            ><span class="pill" id="share-state"></span>
+          <div class="note-controls">
+            <div class="share-url" id="share-url-row" hidden>
+              <input id="share-url" readonly aria-label="Share URL" />
+              <button class="btn" type="button" id="copy-share-url">
+                <i class="fa-solid fa-copy"></i
+                ><span data-i18n="copy"></span>
+              </button>
+            </div>
+            <div class="note-actions">
+              <label class="share-toggle" for="share-note">
+                <i class="fa-solid fa-share-nodes"></i
+                ><span data-i18n="share"></span>
+                <input id="share-note" type="checkbox" role="switch" />
+                <span class="toggle-track" aria-hidden="true"
+                  ><span class="toggle-knob"></span
+                ></span>
+              </label>
+              <a class="btn btn-primary" id="edit-note"
+                ><i class="fa-solid fa-pen"></i
+                ><span data-i18n="edit"></span></a
+              ><button class="btn btn-danger" id="delete-note">
+                <i class="fa-solid fa-trash"></i
+                ><span data-i18n="delete"></span>
+              </button>
+            </div>
           </div>
         </header>
         <article class="note-paper reveal" id="note-content"></article>

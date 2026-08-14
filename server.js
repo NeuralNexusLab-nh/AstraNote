@@ -1084,6 +1084,7 @@ app.get("/api/notes/:id", requireAuth, async (req, res, next) => {
       content,
       shareToken: undefined,
       shared: Boolean(note.shareToken),
+      shareUrl: note.shareToken ? `/shared/${note.shareToken}` : null,
       characters: characterCount(content),
       bytes: (await fsp.stat(noteFile(username, note.id))).size,
     });
