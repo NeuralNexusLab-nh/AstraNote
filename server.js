@@ -23,7 +23,7 @@ const DELETES_FILE = path.join(DATA_DIR, "deletes.json");
 const SHARES_FILE = path.join(DATA_DIR, "shares.json");
 const SECRET_FILE = path.join(DATA_DIR, ".server-secret");
 
-const MAX_ACCOUNTS = 60_000;
+const MAX_ACCOUNTS = 50_000;
 const MAX_NOTES = 48;
 const MAX_ACCOUNT_BYTES = 256 * 1024;
 const MAX_NOTE_NAME = 80;
