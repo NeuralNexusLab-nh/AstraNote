@@ -36,7 +36,7 @@ const DELETE_ERASE_MS = 62 * 864e5;
 const TERMS_VERSION = "2026-08-13";
 const CAPTCHA_VERIFY_URL = "https://nexacaptcha.zone.id/api/siteverify";
 const ALLOWED_ORIGINS = new Set([
-  "https://astranote.zone.id",
+  "https://astranote.nxlabtw.com",
   "https://astranote.zeabur.app",
 ]);
 const USERNAME_RE = /^[A-Za-z0-9_]{3,24}$/;
@@ -570,48 +570,48 @@ app.use(
         objectSrc: ["'none'"],
         scriptSrc: [
           "'self'",
-          "https://astranote.zone.id",
+          "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
           "https://nexacaptcha.zone.id",
         ],
         styleSrc: [
           "'self'",
-          "https://astranote.zone.id",
+          "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
         ],
         imgSrc: [
           "'self'",
           "data:",
           "blob:",
-          "https://astranote.zone.id",
+          "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
           "https://nexacaptcha.zone.id",
         ],
         fontSrc: [
           "'self'",
           "data:",
-          "https://astranote.zone.id",
+          "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
         ],
         connectSrc: [
           "'self'",
-          "https://astranote.zone.id",
+          "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
           "https://nexacaptcha.zone.id",
         ],
         frameSrc: [
-          "https://astranote.zone.id",
+          "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
           "https://nexacaptcha.zone.id",
         ],
         frameAncestors: [
           "'self'",
-          "https://astranote.zone.id",
+          "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
         ],
         formAction: [
           "'self'",
-          "https://astranote.zone.id",
+          "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
         ],
         manifestSrc: ["'self'"],

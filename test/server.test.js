@@ -53,18 +53,18 @@ test("security headers allow only the configured application and CAPTCHA sources
   const response = await fetch(`${baseUrl}/`);
   const csp = response.headers.get("content-security-policy");
   assert.match(csp, /default-src 'self'/);
-  assert.match(csp, /https:\/\/astranote\.zone\.id/);
+  assert.match(csp, /https:\/\/astranote\.nxlabtw\.com/);
   assert.match(csp, /https:\/\/astranote\.zeabur\.app/);
   assert.match(csp, /frame-src[^;]*https:\/\/nexacaptcha\.zone\.id/);
   assert.equal(response.headers.get("x-content-type-options"), "nosniff");
   assert.match(response.headers.get("permissions-policy"), /camera=\(\)/);
 
   const cors = await fetch(`${baseUrl}/api/stats`, {
-    headers: { origin: "https://astranote.zone.id" },
+    headers: { origin: "https://astranote.nxlabtw.com" },
   });
   assert.equal(
     cors.headers.get("access-control-allow-origin"),
-    "https://astranote.zone.id",
+    "https://astranote.nxlabtw.com",
   );
   assert.equal(cors.headers.get("access-control-allow-credentials"), "true");
 });

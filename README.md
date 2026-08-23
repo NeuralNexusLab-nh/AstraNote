@@ -57,7 +57,7 @@ Open `http://localhost:3000`.
    recommended custom environment variable. If omitted, AstraNote creates a
    secret file in the persistent data directory; losing that file makes
    existing encrypted notes unreadable.
-5. Route both `https://astranote.zone.id` and
+5. Route both `https://astranote.nxlabtw.com` and
    `https://astranote.zeabur.app` to the service.
 
 Do not deploy without persistent storage. Redeploying against an ephemeral
