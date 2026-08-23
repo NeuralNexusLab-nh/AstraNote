@@ -34,7 +34,7 @@ const SESSION_MAX_MS = 28 * 864e5;
 const DELETE_REVERSAL_MS = 7 * 864e5;
 const DELETE_ERASE_MS = 62 * 864e5;
 const TERMS_VERSION = "2026-08-13";
-const CAPTCHA_VERIFY_URL = "https://nexacaptcha.zone.id/api/siteverify";
+const CAPTCHA_VERIFY_URL = "https://nexacaptcha.nxlabtw.com/api/siteverify";
 const ALLOWED_ORIGINS = new Set([
   "https://astranote.nxlabtw.com",
   "https://astranote.zeabur.app",
@@ -572,7 +572,7 @@ app.use(
           "'self'",
           "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
-          "https://nexacaptcha.zone.id",
+          "https://nexacaptcha.nxlabtw.com",
         ],
         styleSrc: [
           "'self'",
@@ -585,7 +585,7 @@ app.use(
           "blob:",
           "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
-          "https://nexacaptcha.zone.id",
+          "https://nexacaptcha.nxlabtw.com",
         ],
         fontSrc: [
           "'self'",
@@ -597,12 +597,12 @@ app.use(
           "'self'",
           "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
-          "https://nexacaptcha.zone.id",
+          "https://nexacaptcha.nxlabtw.com",
         ],
         frameSrc: [
           "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
-          "https://nexacaptcha.zone.id",
+          "https://nexacaptcha.nxlabtw.com",
         ],
         frameAncestors: [
           "'self'",

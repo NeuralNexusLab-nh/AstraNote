@@ -100,7 +100,7 @@ directory and deletion entry no longer exist.
 
 - CAPTCHA success in the browser is never trusted. The backend submits the
   16-character verification ID and 64-character one-time token to
-  `https://nexacaptcha.zone.id/api/siteverify` and proceeds only when the
+  `https://nexacaptcha.nxlabtw.com/api/siteverify` and proceeds only when the
   response is exactly `success: true`.
 - AES-GCM keys are derived from the server secret, username, note ID, and key
   size. Encryption is server-managed, not end-to-end or zero-knowledge.
