@@ -74,6 +74,43 @@ function safeEqual(a, b) {
 function userKey(username) {
   return username.toLowerCase();
 }
+function normalizeLanguage(value) {
+  const language = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replaceAll("_", "-");
+  if (language === "zh" || language.startsWith("zh-")) return "zh-Hant";
+  if (language === "en" || language.startsWith("en-")) return "en";
+  return null;
+}
+function requestLanguage(req) {
+  const preferences = String(req.get("accept-language") || "")
+    .split(",")
+    .map((entry, index) => {
+      const [language, ...parameters] = entry.trim().split(";");
+      const qualityParameter = parameters.find((parameter) =>
+        parameter.trim().toLowerCase().startsWith("q="),
+      );
+      const quality = qualityParameter
+        ? Number.parseFloat(qualityParameter.split("=")[1])
+        : 1;
+      return {
+        language,
+        quality: Number.isFinite(quality) ? quality : 0,
+        index,
+      };
+    })
+    .filter((preference) => preference.quality > 0)
+    .sort(
+      (left, right) =>
+        right.quality - left.quality || left.index - right.index,
+    );
+  for (const preference of preferences) {
+    const language = normalizeLanguage(preference.language);
+    if (language) return language;
+  }
+  return "en";
+}
 function userDir(username) {
   return path.join(DATA_DIR, userKey(username));
 }
@@ -548,7 +585,14 @@ async function accountPayload(username) {
     email: metadata.email,
     displayName: metadata.displayName || metadata.username,
     createdAt: metadata.createdAt,
-    settings: metadata.settings,
+    settings: {
+      language: ["en", "zh-Hant"].includes(metadata.settings?.language)
+        ? metadata.settings.language
+        : null,
+      theme: ["dark", "light"].includes(metadata.settings?.theme)
+        ? metadata.settings.theme
+        : "dark",
+    },
     noteCount: summaries.length,
     usedBytes,
     maxBytes: MAX_ACCOUNT_BYTES,
@@ -768,17 +812,19 @@ app.get("/api/stats", async (req, res, next) => {
   }
 });
 app.get("/api/session", async (req, res) => {
+  const preferredLanguage = requestLanguage(req);
   const token = parseCookies(req.headers.cookie).astranote_session;
-  if (!token) return res.json({ authenticated: false });
+  if (!token) return res.json({ authenticated: false, preferredLanguage });
   const session = (await readSessions())[sha256(token)];
   if (!session || Date.now() >= Date.parse(session.expiresAt))
-    return res.json({ authenticated: false });
+    return res.json({ authenticated: false, preferredLanguage });
   const deletion = await findDeletion(session.username);
   res.json({
     authenticated: true,
     username: session.username,
     csrf: session.csrf,
     deletion,
+    preferredLanguage,
   });
 });
 
@@ -872,9 +918,8 @@ app.post(
           termsVersion: TERMS_VERSION,
           termsAcceptedAt: createdAt,
           settings: {
-            language: ["en", "zh-Hant"].includes(req.body.language)
-              ? req.body.language
-              : "en",
+            language:
+              normalizeLanguage(req.body.language) || requestLanguage(req),
             theme: "dark",
           },
           notes: [],
@@ -953,9 +998,9 @@ app.post(
       }
       metadata.lastLoginAt = utcNow();
       metadata.lastLoginIp = requestIp(req);
-      metadata.settings ||= { language: "en", theme: "dark" };
-      if (["en", "zh-Hant"].includes(req.body.language))
-        metadata.settings.language = req.body.language;
+      metadata.settings ||= { theme: "dark" };
+      if (normalizeLanguage(req.body.language))
+        metadata.settings.language = normalizeLanguage(req.body.language);
       await saveMetadata(username, metadata);
       const session = await createSession(username, req, res);
       await updateOnlineUser(username);
@@ -992,9 +1037,9 @@ app.post(
           "Username or password is incorrect.",
         );
       await cancelDeletion(username);
-      if (["en", "zh-Hant"].includes(req.body.language)) {
-        metadata.settings ||= { language: "en", theme: "dark" };
-        metadata.settings.language = req.body.language;
+      if (normalizeLanguage(req.body.language)) {
+        metadata.settings ||= { theme: "dark" };
+        metadata.settings.language = normalizeLanguage(req.body.language);
         await saveMetadata(username, metadata);
       }
       const session = await createSession(username, req, res);
@@ -1039,6 +1084,7 @@ app.patch(
       const username = req.auth.session.username;
       await withLock(`user:${username}`, async () => {
         const metadata = await loadMetadata(username);
+        metadata.settings ||= { theme: "dark" };
         if (["en", "zh-Hant"].includes(req.body.language))
           metadata.settings.language = req.body.language;
         if (["dark", "light"].includes(req.body.theme))

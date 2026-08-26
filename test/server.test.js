@@ -49,6 +49,21 @@ test("health, statistics, and 404 routes respond correctly", async () => {
   assert.match(await missing.text(), /404 — AstraNote/);
 });
 
+test("session language follows Accept-Language when no saved preference exists", async () => {
+  const traditionalChinese = await fetch(`${baseUrl}/api/session`, {
+    headers: { "accept-language": "fr;q=0.4, zh-TW;q=0.9, en;q=0.8" },
+  });
+  assert.deepEqual(await traditionalChinese.json(), {
+    authenticated: false,
+    preferredLanguage: "zh-Hant",
+  });
+
+  const english = await fetch(`${baseUrl}/api/session`, {
+    headers: { "accept-language": "en-US,en;q=0.9" },
+  });
+  assert.equal((await english.json()).preferredLanguage, "en");
+});
+
 test("security headers allow only the configured application and CAPTCHA sources", async () => {
   const response = await fetch(`${baseUrl}/`);
   const csp = response.headers.get("content-security-policy");

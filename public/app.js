@@ -434,6 +434,38 @@ const formatUtc = (value) =>
     timeZone: "UTC",
   }).format(new Date(value)) + " UTC";
 
+function getStoredPreference(key) {
+  try {
+    return window.localStorage?.getItem(key) || null;
+  } catch {
+    return null;
+  }
+}
+function setStoredPreference(key, value) {
+  try {
+    window.localStorage?.setItem(key, value);
+  } catch {
+    // The selected preference still applies for this page when storage is unavailable.
+  }
+}
+function normalizeBrowserLanguage(value) {
+  const language = String(value || "").toLowerCase().replaceAll("_", "-");
+  if (language === "zh" || language.startsWith("zh-")) return "zh-Hant";
+  if (language === "en" || language.startsWith("en-")) return "en";
+  return null;
+}
+function preferredBrowserLanguage() {
+  const candidates = [
+    ...(Array.isArray(navigator.languages) ? navigator.languages : []),
+    navigator.language,
+  ];
+  for (const candidate of candidates) {
+    const language = normalizeBrowserLanguage(candidate);
+    if (language) return language;
+  }
+  return null;
+}
+
 window.onCaptchaComplete = (result) => {
   state.captcha = result?.success
     ? {
@@ -513,7 +545,7 @@ function buildNav() {
   );
   $("#language-select", nav).addEventListener("change", async (event) => {
     state.language = event.target.value;
-    localStorage.setItem("astranote_language", state.language);
+    setStoredPreference("astranote_language", state.language);
     applyLocale();
     if (authenticated)
       await api("/api/settings", {
@@ -664,14 +696,14 @@ function actionModal({ title, body, confirm, danger = true, extra, run }) {
 }
 
 function cookieBanner() {
-  if (localStorage.getItem("astranote_cookie_notice")) return;
+  if (getStoredPreference("astranote_cookie_notice")) return;
   const banner = document.createElement("aside");
   banner.className = "cookie-banner";
   banner.innerHTML = `<h3><i class="fa-solid fa-cookie-bite"></i> <span data-i18n="cookieTitle"></span></h3><p class="muted" data-i18n="cookieBody"></p><button class="btn btn-primary"><i class="fa-solid fa-check"></i><span data-i18n="accept"></span></button>`;
   document.body.append(banner);
   applyLocale();
   $("button", banner).onclick = () => {
-    localStorage.setItem("astranote_cookie_notice", "accepted");
+    setStoredPreference("astranote_cookie_notice", "accepted");
     banner.remove();
   };
 }
@@ -848,7 +880,9 @@ async function initAuthForm(kind) {
     button.disabled = true;
     const data = Object.fromEntries(new FormData(form));
     data.captcha = state.captcha;
-    data.language = state.language;
+    const storedLanguage = getStoredPreference("astranote_language");
+    if (storedLanguage || kind === "register")
+      data.language = storedLanguage || state.language;
     if (kind === "register") {
       data.acceptTerms = form.acceptTerms.checked;
       data.legalCapacity = form.legalCapacity.checked;
@@ -1066,8 +1100,8 @@ async function initSettings() {
   if (!account) return;
   const form = $("#settings-form");
   form.displayName.value = account.displayName;
-  form.theme.value = account.settings.theme;
-  form.language.value = account.settings.language;
+  form.theme.value = account.settings.theme || state.theme;
+  form.language.value = account.settings.language || state.language;
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     await api("/api/settings", {
@@ -1080,8 +1114,8 @@ async function initSettings() {
     });
     state.theme = form.theme.value;
     state.language = form.language.value;
-    localStorage.setItem("astranote_theme", state.theme);
-    localStorage.setItem("astranote_language", state.language);
+    setStoredPreference("astranote_theme", state.theme);
+    setStoredPreference("astranote_language", state.language);
     applyLocale();
     toast(t("saved"));
   });
@@ -1160,9 +1194,10 @@ function initReveal() {
 }
 
 async function boot() {
-  const browserLanguage = localStorage.getItem("astranote_language");
-  state.language = browserLanguage || "en";
-  state.theme = localStorage.getItem("astranote_theme") || "dark";
+  const storedLanguage = getStoredPreference("astranote_language");
+  const browserLanguage = preferredBrowserLanguage();
+  state.language = storedLanguage || browserLanguage || "en";
+  state.theme = getStoredPreference("astranote_theme") || "dark";
   state.session = await api("/api/session").catch(() => ({
     authenticated: false,
   }));
@@ -1170,11 +1205,21 @@ async function boot() {
     state.account = await api("/api/account").catch(() => null);
     if (state.account) {
       state.language =
-        browserLanguage || state.account.settings.language || state.language;
-      if (!browserLanguage)
-        localStorage.setItem("astranote_language", state.language);
+        storedLanguage ||
+        state.account.settings.language ||
+        browserLanguage ||
+        state.session.preferredLanguage ||
+        "en";
+      if (!storedLanguage)
+        setStoredPreference("astranote_language", state.language);
       state.theme = state.account.settings.theme || state.theme;
     }
+  } else {
+    state.language =
+      storedLanguage ||
+      browserLanguage ||
+      state.session.preferredLanguage ||
+      "en";
   }
   buildNav();
   buildFooter();
