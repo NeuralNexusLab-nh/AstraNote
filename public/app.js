@@ -92,13 +92,13 @@ const I18N = {
     light: "Light",
     dangerZone: "Account deletion",
     dangerBody:
-      "Disable your account and request deletion. You can cancel by signing in within 7 days. After that, access is permanently lost; data is erased within 2 months.",
-    requestDeletion: "Disable account and request deletion",
+      "Permanently delete your account and all of its notes immediately. This cannot be cancelled or undone.",
+    requestDeletion: "Permanently delete account",
     logoutTitle: "Log out?",
     logoutBody: "This will end your current sign-in session.",
-    deleteAccountTitle: "Disable this account?",
+    deleteAccountTitle: "Permanently delete this account?",
     deleteAccountBody:
-      "Enter your exact username and complete the human verification. All sessions and shared links will be revoked immediately.",
+      "Enter your exact username and current password, then complete the human verification. The account, notes, sessions, and sharing links will be removed immediately and cannot be restored.",
     confirmUsername: "Confirm username",
     proceed: "Continue",
     cancel: "Cancel",
@@ -134,7 +134,7 @@ const I18N = {
       "Enter the same account password and complete a new human verification to restore access during the 7-day reversal period.",
     deletePending:
       "This account is awaiting deletion. Reloading the login page will let you cancel the request with a new CAPTCHA.",
-    legalUpdated: "Effective and last updated: 13 August 2026",
+    legalUpdated: "Effective and last updated: 29 August 2026",
     englishOnlyCaptcha:
       "Complete the human verification to save this note.",
     editorUnsaved: "You have unsaved changes. Close this page anyway?",
@@ -226,13 +226,13 @@ const I18N = {
     light: "淺色",
     dangerZone: "帳號刪除",
     dangerBody:
-      "停用帳號並提出刪除申請。七天內重新登入可取消；之後將永久失去存取權，資料最長於兩個月內清除。",
-    requestDeletion: "停用帳號並申請刪除",
+      "立即永久刪除帳號及所有筆記；此操作不能取消或復原。",
+    requestDeletion: "永久刪除帳號",
     logoutTitle: "要登出嗎？",
     logoutBody: "這會結束目前的登入階段。",
-    deleteAccountTitle: "要停用這個帳號嗎？",
+    deleteAccountTitle: "要永久刪除這個帳號嗎？",
     deleteAccountBody:
-      "輸入完整 Username 並完成人類驗證。所有登入階段與分享連結將立即失效。",
+      "輸入完整 Username 與目前密碼，再完成人類驗證。帳號、筆記、登入階段與分享連結將立即移除，且無法復原。",
     confirmUsername: "確認 Username",
     proceed: "繼續",
     cancel: "取消",
@@ -267,7 +267,7 @@ const I18N = {
       "在七天反悔期內輸入原帳號密碼並重新完成人類驗證，即可恢復存取。",
     deletePending:
       "此帳號正在等待刪除。系統將重新載入登入頁，讓你以新的 CAPTCHA 取消申請。",
-    legalUpdated: "生效及最後更新：2026 年 8 月 13 日",
+    legalUpdated: "生效及最後更新：2026 年 8 月 29 日",
     englishOnlyCaptcha: "請完成人類驗證以儲存筆記。",
     editorUnsaved: "尚有未儲存的變更，仍要關閉這個頁面嗎？",
   },
@@ -313,7 +313,7 @@ Object.assign(I18N.en, {
     "This note has no backup and cannot be restored. Complete the human verification to delete it permanently.",
   logoutBody: "This will end your current sign-in session.",
   deleteAccountBody:
-    "Enter your exact username and complete the human verification. All sessions and shared links will be revoked immediately.",
+    "Enter your exact username and current password, then complete the human verification. The account, notes, sessions, and sharing links will be removed immediately and cannot be restored.",
   captchaNeeded: "Complete the human verification first.",
   signInBody: "Enter your account details and complete the human verification.",
   registerBody: "Create a free account and keep useful notes within easy reach.",
@@ -342,6 +342,39 @@ Object.assign(I18N.en, {
   notFoundEyebrow: "PAGE NOT FOUND",
   notFoundBody: "The page you requested could not be found.",
   noEncryptionOption: "No encryption",
+  vaultPin: "Vault PIN (4–6 digits)",
+  confirmVaultPin: "Confirm Vault PIN",
+  vaultTitle: "AstraConfidential SCHybrid",
+  vaultExplanation:
+    "Your device combines your account details and Vault PIN with a temporary factor protected by AstraNote's independent server secret. The note title and content are encrypted on this device before upload; AstraNote stores those two fields only as ciphertext.",
+  vaultPinWarning:
+    "AstraNote does not store or recover this PIN. Losing it makes the note permanently inaccessible. A 6-digit PIN is recommended, and you should enter it only on a device you trust.",
+  vaultNoSharing:
+    "Sharing is unavailable because this encryption is bound to the owner's account, PIN, and AstraNote server secret.",
+  vaultPinInvalid: "Enter a 4–6 digit Vault PIN.",
+  noteNameRequired: "Note name is required.",
+  vaultPinMismatch: "The Vault PIN entries do not match.",
+  vaultCryptoUnavailable:
+    "Secure browser encryption is unavailable on this device.",
+  vaultUnavailable:
+    "AstraConfidential SCHybrid is not configured on this server.",
+  unlockVaultTitle: "Unlock AstraConfidential note",
+  unlockVaultBody:
+    "Enter this note's 4–6 digit Vault PIN. AstraNote does not store or recover it.",
+  unlock: "Unlock",
+  trustedDeviceOnly: "Only enter this PIN on a device you trust.",
+  vaultUnlockFailed: "The Vault PIN is incorrect or the encrypted note is damaged.",
+  confidentialNote: "AstraConfidential encrypted note",
+  hiddenCharacters: "Hidden until unlocked",
+  vaultSharingUnavailable:
+    "Sharing is unavailable for AstraConfidential SCHybrid notes because their encryption is bound to the owner's account and Vault PIN.",
+  dangerBody:
+    "Permanently delete your account and all of its notes immediately. This cannot be cancelled or undone.",
+  requestDeletion: "Permanently delete account",
+  deleteAccountTitle: "Permanently delete this account?",
+  deleteAccountBody:
+    "Enter your exact username and current password, then complete the human verification. The account, notes, sessions, and sharing links will be removed immediately and cannot be restored.",
+  confirmCurrentPassword: "Confirm current password",
 });
 
 Object.assign(I18N["zh-Hant"], {
@@ -383,7 +416,7 @@ Object.assign(I18N["zh-Hant"], {
   deleteNoteBody: "這篇筆記沒有備份，刪除後無法復原。請完成人類驗證以永久刪除。",
   logoutBody: "這會結束目前的登入階段。",
   deleteAccountBody:
-    "輸入完整 Username 並完成人類驗證。所有登入階段與分享連結將立即失效。",
+    "輸入完整 Username 與目前密碼，再完成人類驗證。帳號、筆記、登入階段與分享連結將立即移除，且無法復原。",
   captchaNeeded: "請先完成人類驗證。",
   signInTitle: "登入並查看筆記",
   signInBody: "輸入帳號資料並完成人類驗證。",
@@ -412,6 +445,36 @@ Object.assign(I18N["zh-Hant"], {
   notFoundEyebrow: "找不到頁面",
   notFoundBody: "找不到你所要求的頁面。",
   noEncryptionOption: "不加密",
+  vaultPin: "Vault PIN（4–6 位數）",
+  confirmVaultPin: "再次輸入 Vault PIN",
+  vaultTitle: "AstraConfidential SCHybrid",
+  vaultExplanation:
+    "你的裝置會將帳號資料與 Vault PIN，結合由 AstraNote 獨立伺服器祕密保護的臨時因子。筆記名稱與內容會先在此裝置完成加密，再上傳至 AstraNote；這兩個欄位只會以密文保存。",
+  vaultPinWarning:
+    "AstraNote 不會儲存或協助找回這組 PIN。遺失後，筆記將永久無法開啟。建議使用 6 位 PIN，並且只在你信任的裝置上輸入。",
+  vaultNoSharing:
+    "此加密方式與擁有者帳號、PIN 及 AstraNote 伺服器祕密綁定，因此不提供分享功能。",
+  vaultPinInvalid: "請輸入 4–6 位數的 Vault PIN。",
+  noteNameRequired: "請輸入筆記名稱。",
+  vaultPinMismatch: "兩次輸入的 Vault PIN 不相同。",
+  vaultCryptoUnavailable: "此裝置無法使用安全的瀏覽器加密功能。",
+  vaultUnavailable: "伺服器尚未設定 AstraConfidential SCHybrid。",
+  unlockVaultTitle: "解鎖 AstraConfidential 筆記",
+  unlockVaultBody:
+    "請輸入這篇筆記的 4–6 位 Vault PIN。AstraNote 不會儲存或協助找回這組 PIN。",
+  unlock: "解鎖",
+  trustedDeviceOnly: "請只在你信任的裝置上輸入這組 PIN。",
+  vaultUnlockFailed: "Vault PIN 不正確，或加密筆記已損壞。",
+  confidentialNote: "AstraConfidential 加密筆記",
+  hiddenCharacters: "解鎖後顯示",
+  vaultSharingUnavailable:
+    "此筆記的加密與擁有者帳號及 Vault PIN 綁定，因此 AstraConfidential SCHybrid 不提供分享功能。",
+  dangerBody: "立即永久刪除帳號及所有筆記；此操作不能取消或復原。",
+  requestDeletion: "永久刪除帳號",
+  deleteAccountTitle: "要永久刪除這個帳號嗎？",
+  deleteAccountBody:
+    "輸入完整 Username 與目前密碼，再完成人類驗證。帳號、筆記、登入階段與分享連結將立即移除，且無法復原。",
+  confirmCurrentPassword: "確認目前密碼",
 });
 
 const state = {
@@ -422,6 +485,7 @@ const state = {
   language: "en",
   theme: "dark",
 };
+const SCHYBRID_MODE = "astra-confidential-schybrid-v1";
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const page = document.body.dataset.page || "";
@@ -433,6 +497,140 @@ const formatUtc = (value) =>
     timeStyle: "short",
     timeZone: "UTC",
   }).format(new Date(value)) + " UTC";
+
+const textEncoder = new TextEncoder();
+const textDecoder = new TextDecoder("utf-8", { fatal: true });
+
+function bytesToBase64(bytes, urlSafe = false) {
+  let binary = "";
+  for (let index = 0; index < bytes.length; index += 8192)
+    binary += String.fromCharCode(...bytes.subarray(index, index + 8192));
+  const encoded = btoa(binary);
+  return urlSafe
+    ? encoded.replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/u, "")
+    : encoded;
+}
+function base64ToBytes(value) {
+  const normalized = String(value || "").replaceAll("-", "+").replaceAll("_", "/");
+  const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
+  const binary = atob(padded);
+  return Uint8Array.from(binary, (character) => character.charCodeAt(0));
+}
+function randomHex(bytes) {
+  return [...crypto.getRandomValues(new Uint8Array(bytes))]
+    .map((value) => value.toString(16).padStart(2, "0"))
+    .join("");
+}
+function randomBase64Url(bytes) {
+  return bytesToBase64(crypto.getRandomValues(new Uint8Array(bytes)), true);
+}
+async function sha256Hex(value) {
+  const digest = new Uint8Array(
+    await crypto.subtle.digest("SHA-256", textEncoder.encode(value)),
+  );
+  return [...digest]
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+function encryptionLabel(mode) {
+  if (mode === "none") return t("unencrypted");
+  if (mode === SCHYBRID_MODE) return "AstraConfidential SCHybrid";
+  return mode.toUpperCase();
+}
+async function deriveSchybridKey(noteId, clientSalt, pin) {
+  if (!/^\d{4,6}$/u.test(pin)) throw new Error(t("vaultPinInvalid"));
+  if (!state.account) throw new Error(t("error"));
+  if (!window.hashwasm?.argon2id) throw new Error(t("vaultCryptoUnavailable"));
+  const clientHash = await sha256Hex(
+    [
+      state.account.username.toLowerCase(),
+      state.account.email.toLowerCase(),
+      pin,
+      noteId,
+      clientSalt,
+    ].join("\0"),
+  );
+  const { serverFactor } = await api("/api/vault/key-factor", {
+    method: "POST",
+    body: { noteId, clientSalt, clientHash },
+  });
+  const keyBytes = await window.hashwasm.argon2id({
+    password: `${pin}\0${serverFactor}`,
+    salt: base64ToBytes(clientSalt),
+    parallelism: 1,
+    iterations: 3,
+    memorySize: 65536,
+    hashLength: 32,
+    outputType: "binary",
+  });
+  return crypto.subtle.importKey("raw", keyBytes, "AES-GCM", false, [
+    "encrypt",
+    "decrypt",
+  ]);
+}
+function schybridAdditionalData(noteId) {
+  return textEncoder.encode(
+    `AstraConfidential SCHybrid v1\0${state.account.username.toLowerCase()}\0${noteId}`,
+  );
+}
+async function encryptSchybridPayload(noteId, clientSalt, pin, payload) {
+  const key = await deriveSchybridKey(noteId, clientSalt, pin);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encrypted = new Uint8Array(
+    await crypto.subtle.encrypt(
+      {
+        name: "AES-GCM",
+        iv,
+        additionalData: schybridAdditionalData(noteId),
+        tagLength: 128,
+      },
+      key,
+      textEncoder.encode(JSON.stringify(payload)),
+    ),
+  );
+  const tag = encrypted.slice(-16);
+  const ciphertext = encrypted.slice(0, -16);
+  return {
+    iv: bytesToBase64(iv),
+    ciphertext: bytesToBase64(ciphertext),
+    tag: bytesToBase64(tag),
+  };
+}
+async function decryptSchybridPayload(note, pin) {
+  try {
+    const key = await deriveSchybridKey(note.id, note.clientSalt, pin);
+    const ciphertext = base64ToBytes(note.encrypted.ciphertext);
+    const tag = base64ToBytes(note.encrypted.tag);
+    const combined = new Uint8Array(ciphertext.length + tag.length);
+    combined.set(ciphertext);
+    combined.set(tag, ciphertext.length);
+    const decrypted = await crypto.subtle.decrypt(
+      {
+        name: "AES-GCM",
+        iv: base64ToBytes(note.encrypted.iv),
+        additionalData: schybridAdditionalData(note.id),
+        tagLength: 128,
+      },
+      key,
+      combined,
+    );
+    const payload = JSON.parse(textDecoder.decode(decrypted));
+    if (
+      typeof payload.name !== "string" ||
+      !payload.name.trim() ||
+      payload.name.length > 80 ||
+      typeof payload.content !== "string"
+    )
+      throw new Error("Invalid payload");
+    return {
+      name: payload.name.normalize("NFC").trim(),
+      content: payload.content.normalize("NFC"),
+    };
+  } catch (error) {
+    if (error.status === 429 || error.code === "vault_unavailable") throw error;
+    throw new Error(t("vaultUnlockFailed"));
+  }
+}
 
 function getStoredPreference(key) {
   try {
@@ -612,6 +810,7 @@ function modal({
   danger = false,
   showCancel = true,
   onConfirm,
+  onCancel,
 }) {
   document.body.classList.add("modal-open");
   const backdrop = document.createElement("div");
@@ -654,9 +853,13 @@ function modal({
     backdrop.remove();
     document.body.classList.remove("modal-open");
   };
-  cancelButton.onclick = close;
+  const cancelDialog = () => {
+    close();
+    onCancel?.();
+  };
+  cancelButton.onclick = cancelDialog;
   backdrop.addEventListener("click", (e) => {
-    if (e.target === backdrop) close();
+    if (e.target === backdrop) cancelDialog();
   });
   confirmButton.onclick = async () => {
     confirmButton.disabled = true;
@@ -670,6 +873,45 @@ function modal({
   return { close, dialog, confirmButton };
 }
 
+function unlockSchybrid(note) {
+  return new Promise((resolve, reject) => {
+    const content = document.createElement("div");
+    content.className = "vault-unlock";
+    const label = document.createElement("label");
+    label.textContent = t("vaultPin");
+    const input = document.createElement("input");
+    input.type = "password";
+    input.inputMode = "numeric";
+    input.autocomplete = "off";
+    input.minLength = 4;
+    input.maxLength = 6;
+    input.pattern = "[0-9]{4,6}";
+    const warning = document.createElement("p");
+    warning.className = "field-help";
+    warning.textContent = t("trustedDeviceOnly");
+    content.append(label, input, warning);
+    const dialog = modal({
+      title: t("unlockVaultTitle"),
+      body: t("unlockVaultBody"),
+      content,
+      confirm: t("unlock"),
+      danger: false,
+      onCancel: () => reject(Object.assign(new Error("cancelled"), { cancelled: true })),
+      onConfirm: async (close) => {
+        if (!/^\d{4,6}$/u.test(input.value))
+          throw new Error(t("vaultPinInvalid"));
+        const payload = await decryptSchybridPayload(note, input.value);
+        const result = { payload, pin: input.value };
+        input.value = "";
+        close();
+        resolve(result);
+      },
+    });
+    requestAnimationFrame(() => input.focus());
+    return dialog;
+  });
+}
+
 function actionModal({ title, body, confirm, danger = true, extra, run }) {
   state.actionCaptcha = null;
   const content = document.createElement("div");
@@ -679,7 +921,7 @@ function actionModal({ title, body, confirm, danger = true, extra, run }) {
     captcha.classList.remove("captcha-parking");
     content.append(captcha);
   }
-  return modal({
+  const result = modal({
     title,
     body,
     content,
@@ -693,6 +935,16 @@ function actionModal({ title, body, confirm, danger = true, extra, run }) {
       else location.reload();
     },
   });
+  const focusTarget = extra?.querySelector("input, select, textarea");
+  const restoreStart = () => {
+    if (focusTarget) focusTarget.focus({ preventScroll: true });
+    else result.dialog.focus({ preventScroll: true });
+    result.dialog.scrollTop = 0;
+  };
+  result.dialog.tabIndex = -1;
+  requestAnimationFrame(restoreStart);
+  setTimeout(restoreStart, 250);
+  return result;
 }
 
 function cookieBanner() {
@@ -713,7 +965,8 @@ function noteRow(note, deletable = false) {
   row.className = "note-row";
   row.tabIndex = 0;
   row.setAttribute("role", "link");
-  row.setAttribute("aria-label", `${t("open")}: ${note.name}`);
+  const visibleName = note.name || t("confidentialNote");
+  row.setAttribute("aria-label", `${t("open")}: ${visibleName}`);
   const destination = `/notes/${note.id}`;
   const openNote = (event) => {
     if (event.type === "click" && event.target.closest("button, a")) return;
@@ -726,16 +979,16 @@ function noteRow(note, deletable = false) {
   const main = document.createElement("div");
   main.className = "note-main";
   const name = document.createElement("strong");
-  name.textContent = note.name;
+  name.textContent = visibleName;
   const tag = document.createElement("small");
-  tag.textContent =
-    note.encryption === "none"
-      ? t("unencrypted")
-      : note.encryption.toUpperCase();
+  tag.textContent = encryptionLabel(note.encryption);
   main.append(name, tag);
   const chars = document.createElement("span");
   chars.className = "note-meta note-characters";
-  chars.textContent = `${note.characters.toLocaleString()} ${t("characters")}`;
+  chars.textContent =
+    note.characters === null
+      ? t("hiddenCharacters")
+      : `${note.characters.toLocaleString()} ${t("characters")}`;
   const size = document.createElement("span");
   size.className = "note-meta note-size";
   size.textContent = formatBytes(note.bytes);
@@ -943,8 +1196,21 @@ async function initNotes() {
 }
 
 async function initNewNote() {
-  if (!(await requireAccount())) return;
+  const account = await requireAccount();
+  if (!account) return;
   const form = $("#note-form");
+  const encryption = form.encryption;
+  const vaultFields = $("#vault-fields");
+  const vaultOption = encryption.querySelector(`[value="${SCHYBRID_MODE}"]`);
+  if (!account.vaultAvailable) vaultOption.disabled = true;
+  const updateEncryptionFields = () => {
+    const enabled = encryption.value === SCHYBRID_MODE;
+    vaultFields.hidden = !enabled;
+    form.vaultPin.required = enabled;
+    form.vaultPinConfirmation.required = enabled;
+  };
+  encryption.addEventListener("change", updateEncryptionFields);
+  updateEncryptionFields();
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const message = $(".form-message", form);
@@ -955,14 +1221,36 @@ async function initNewNote() {
     const button = form.querySelector("[type=submit]");
     button.disabled = true;
     try {
+      const mode = encryption.value;
+      const body = {
+        name: form.name.value,
+        encryption: mode,
+        captcha: state.captcha,
+      };
+      if (mode === SCHYBRID_MODE) {
+        if (!account.vaultAvailable) throw new Error(t("vaultUnavailable"));
+        const normalizedName = form.name.value.normalize("NFC").trim();
+        if (!normalizedName) throw new Error(t("noteNameRequired"));
+        const pin = form.vaultPin.value;
+        if (!/^\d{4,6}$/u.test(pin)) throw new Error(t("vaultPinInvalid"));
+        if (pin !== form.vaultPinConfirmation.value)
+          throw new Error(t("vaultPinMismatch"));
+        const id = randomHex(12);
+        const clientSalt = randomBase64Url(32);
+        body.id = id;
+        body.clientSalt = clientSalt;
+        body.encrypted = await encryptSchybridPayload(id, clientSalt, pin, {
+          name: normalizedName,
+          content: "",
+        });
+        delete body.name;
+      }
       const result = await api("/api/notes", {
         method: "POST",
-        body: {
-          name: form.name.value,
-          encryption: form.encryption.value,
-          captcha: state.captcha,
-        },
+        body,
       });
+      form.vaultPin.value = "";
+      form.vaultPinConfirmation.value = "";
       location.href = result.redirect;
     } catch (error) {
       message.textContent = error.message;
@@ -977,14 +1265,24 @@ function currentNoteId() {
 async function initNote() {
   if (!(await requireAccount())) return;
   const note = await api(`/api/notes/${currentNoteId()}`);
+  if (note.encryption === SCHYBRID_MODE) {
+    try {
+      const unlocked = await unlockSchybrid(note);
+      note.name = unlocked.payload.name;
+      note.content = unlocked.payload.content;
+      note.characters = Array.from(note.content).filter(
+        (character) => !/\s/u.test(character),
+      ).length;
+    } catch (error) {
+      if (error.cancelled) location.href = "/notes";
+      return;
+    }
+  }
   const noteName = $("#note-name");
   noteName.removeAttribute("data-i18n");
   noteName.textContent = note.name;
   $("#note-content").textContent = note.content;
-  $("#note-encryption").textContent =
-    note.encryption === "none"
-      ? t("unencrypted")
-      : note.encryption.toUpperCase();
+  $("#note-encryption").textContent = encryptionLabel(note.encryption);
   $("#note-characters").textContent =
     `${note.characters.toLocaleString()} ${t("characters")}`;
   $("#note-size").textContent = formatBytes(note.bytes);
@@ -998,6 +1296,10 @@ async function initNote() {
     shareInput.value = url ? new URL(url, location.origin).href : "";
     shareRow.hidden = !url;
   };
+  if (note.encryption === SCHYBRID_MODE) {
+    shareToggle.closest(".share-toggle").hidden = true;
+    $("#share-unavailable").hidden = false;
+  }
   shareToggle.checked = note.shared;
   shareToggle.setAttribute("aria-label", t("share"));
   showShareUrl(note.shareUrl);
@@ -1040,14 +1342,23 @@ async function initNote() {
 async function initEditor() {
   if (!(await requireAccount())) return;
   const note = await api(`/api/notes/${currentNoteId()}`);
+  let vaultPin = null;
+  if (note.encryption === SCHYBRID_MODE) {
+    try {
+      const unlocked = await unlockSchybrid(note);
+      note.name = unlocked.payload.name;
+      note.content = unlocked.payload.content;
+      vaultPin = unlocked.pin;
+    } catch (error) {
+      if (error.cancelled) location.href = `/notes/${note.id}`;
+      return;
+    }
+  }
   const name = $("#editor-name");
   const content = $("#editor-content");
   name.value = note.name;
   content.value = note.content;
-  $("#editor-encryption").textContent =
-    note.encryption === "none"
-      ? t("unencrypted")
-      : note.encryption.toUpperCase();
+  $("#editor-encryption").textContent = encryptionLabel(note.encryption);
   let dirty = false,
     saved = false;
   const update = () => {
@@ -1064,9 +1375,25 @@ async function initEditor() {
     const button = $("#save-note");
     button.disabled = true;
     try {
+      const body = { name: name.value, content: content.value };
+      if (note.encryption === SCHYBRID_MODE) {
+        const normalizedName = name.value.normalize("NFC").trim();
+        if (!normalizedName) throw new Error(t("noteNameRequired"));
+        body.encrypted = await encryptSchybridPayload(
+          note.id,
+          note.clientSalt,
+          vaultPin,
+          {
+            name: normalizedName,
+            content: content.value.normalize("NFC"),
+          },
+        );
+        delete body.name;
+        delete body.content;
+      }
       const result = await api(`/api/notes/${note.id}`, {
         method: "PUT",
-        body: { name: name.value, content: content.value },
+        body,
       });
       saved = true;
       dirty = false;
@@ -1136,13 +1463,24 @@ async function initSettings() {
     });
   $("#delete-account").onclick = () => {
     const extra = document.createElement("div");
-    extra.className = "form-group";
-    const label = document.createElement("label");
-    label.textContent = t("confirmUsername");
-    const input = document.createElement("input");
-    input.autocomplete = "off";
-    input.placeholder = account.username;
-    extra.append(label, input);
+    extra.className = "modal-form-stack";
+    const usernameGroup = document.createElement("div");
+    usernameGroup.className = "form-group";
+    const usernameLabel = document.createElement("label");
+    usernameLabel.textContent = t("confirmUsername");
+    const usernameInput = document.createElement("input");
+    usernameInput.autocomplete = "off";
+    usernameInput.placeholder = account.username;
+    usernameGroup.append(usernameLabel, usernameInput);
+    const passwordGroup = document.createElement("div");
+    passwordGroup.className = "form-group";
+    const passwordLabel = document.createElement("label");
+    passwordLabel.textContent = t("confirmCurrentPassword");
+    const passwordInput = document.createElement("input");
+    passwordInput.type = "password";
+    passwordInput.autocomplete = "current-password";
+    passwordGroup.append(passwordLabel, passwordInput);
+    extra.append(usernameGroup, passwordGroup);
     actionModal({
       title: t("deleteAccountTitle"),
       body: t("deleteAccountBody"),
@@ -1151,7 +1489,11 @@ async function initSettings() {
       run: () =>
         api("/api/account/delete", {
           method: "POST",
-          body: { username: input.value, captcha: state.actionCaptcha },
+          body: {
+            username: usernameInput.value,
+            password: passwordInput.value,
+            captcha: state.actionCaptcha,
+          },
         }),
     });
   };
@@ -1167,10 +1509,7 @@ async function initShared() {
     $("#shared-content").textContent = note.content;
     $("#shared-author").textContent =
       `${t("by")} ${note.author} · ${note.email}`;
-    $("#shared-encryption").textContent =
-      note.encryption === "none"
-        ? t("unencrypted")
-        : note.encryption.toUpperCase();
+    $("#shared-encryption").textContent = encryptionLabel(note.encryption);
     $("#shared-updated").textContent = formatUtc(note.updatedAt);
     $("#shared-characters").textContent =
       `${note.characters.toLocaleString()} ${t("characters")}`;

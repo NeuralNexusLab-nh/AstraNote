@@ -10,6 +10,8 @@ const temporaryData = path.join(os.tmpdir(), `astranote-test-${process.pid}`);
 process.env.DATA_DIR = temporaryData;
 process.env.ASTRANOTE_SECRET =
   "test-only-secret-that-is-at-least-thirty-two-characters-long";
+process.env.ASTRANOTE_VAULT_SECRET =
+  "test-only-independent-vault-secret-that-is-longer-than-sixty-four-characters-123456789";
 
 const { app, ensureData, constants, testables } = require("../server");
 
@@ -71,6 +73,7 @@ test("security headers allow only the configured application and CAPTCHA sources
   assert.match(csp, /https:\/\/astranote\.nxlabtw\.com/);
   assert.match(csp, /https:\/\/astranote\.zeabur\.app/);
   assert.match(csp, /frame-src[^;]*https:\/\/nexacaptcha\.nxlabtw\.com/);
+  assert.match(csp, /script-src[^;]*'wasm-unsafe-eval'/);
   assert.equal(response.headers.get("x-content-type-options"), "nosniff");
   assert.match(response.headers.get("permissions-policy"), /camera=\(\)/);
 
@@ -169,4 +172,81 @@ test("AES-GCM modes authenticate and restore Unicode note content", async () => 
   }
   assert.equal(testables.maskEmail("eaton@example.com"), "ea***@example.com");
   assert.equal(testables.characterCount("星 海\nA B"), 4);
+});
+
+test("every AES mode stores the title and content inside one authenticated payload", () => {
+  for (const mode of ["aes-256-gcm", "aes-128-gcm"]) {
+    const note = {
+      id: "abcdef0123456789abcdef01",
+      encryption: mode,
+      name: "legacy plaintext title",
+    };
+    testables.writeServerNotePayload(
+      note,
+      "test_user",
+      "銀行與密碼",
+      "Both fields belong in ciphertext.",
+    );
+    assert.equal(note.payloadVersion, 2);
+    assert.equal(Object.hasOwn(note, "name"), false);
+    const serialized = JSON.stringify(note);
+    assert.doesNotMatch(serialized, /銀行與密碼|Both fields belong/);
+    assert.deepEqual(testables.readServerNotePayload(note, "test_user"), {
+      name: "銀行與密碼",
+      content: "Both fields belong in ciphertext.",
+    });
+  }
+});
+
+test("SCHybrid factor is account-bound and encrypted envelopes are strictly validated", () => {
+  const metadata = {
+    username: "Test_User",
+    email: "owner@example.com",
+    passwordHash: "$argon2id$test-password-hash",
+  };
+  const noteId = "abcdef0123456789abcdef01";
+  const clientSalt = "A".repeat(43);
+  const factor = testables.deriveVaultFactor(
+    metadata,
+    noteId,
+    clientSalt,
+    "b".repeat(64),
+  );
+  assert.equal(typeof factor, "string");
+  assert.equal(factor.length, 43);
+  assert.equal(
+    factor,
+    testables.deriveVaultFactor(
+      metadata,
+      noteId,
+      clientSalt,
+      "b".repeat(64),
+    ),
+  );
+  assert.notEqual(
+    factor,
+    testables.deriveVaultFactor(
+      metadata,
+      noteId,
+      clientSalt,
+      "c".repeat(64),
+    ),
+  );
+  assert.equal(
+    testables.validSchybridEnvelope({
+      iv: Buffer.alloc(12).toString("base64"),
+      tag: Buffer.alloc(16).toString("base64"),
+      ciphertext: Buffer.from("ciphertext").toString("base64"),
+    }),
+    true,
+  );
+  assert.equal(
+    testables.validSchybridEnvelope({
+      iv: Buffer.alloc(11).toString("base64"),
+      tag: Buffer.alloc(16).toString("base64"),
+      ciphertext: Buffer.from("ciphertext").toString("base64"),
+    }),
+    false,
+  );
+  assert.equal(constants.SCHYBRID_MODE, "astra-confidential-schybrid-v1");
 });

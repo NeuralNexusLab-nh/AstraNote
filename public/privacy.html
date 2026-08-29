@@ -52,18 +52,16 @@
             </li>
             <li>
               <strong>Content:</strong> note names and content, encryption
-              selection, update time, and optional share token. Server-managed
-              encrypted notes are stored as ciphertext with nonce and
-              authentication tag.
+              selection, update time, and optional share token. In every
+              encrypted mode, both the title and content are stored as
+              ciphertext with nonce and authentication tag. SCHybrid also
+              stores a random client salt; the Vault PIN and final browser key
+              are not stored.
             </li>
             <li>
               <strong>Security:</strong> rate-limit events, CAPTCHA verification
               identifiers and tokens, error and operational records reasonably
               necessary to prevent abuse.
-            </li>
-            <li>
-              <strong>Deletion:</strong> username, request time, reversal
-              deadline, permanent-lock time, erasure deadline, and status.
             </li>
           </ul>
           <h2>3. Purposes and legal bases</h2>
@@ -87,8 +85,8 @@
           </p>
           <h2>5. Human verification</h2>
           <p>
-            For registration, login, note creation, note deletion,
-            account-deletion requests, and cancellation of a pending deletion,
+            For registration, login, note creation, note deletion, and permanent
+            account deletion,
             the browser loads a CAPTCHA from <code>nexacaptcha.nxlabtw.com</code>. AstraNote
             sends the resulting verification ID and one-time response token to
             NexaCAPTCHA’s fixed server verification endpoint. The token is
@@ -107,25 +105,28 @@
           </p>
           <h2>7. Retention</h2>
           <p>
-            Account and security data is retained while the account exists. A
-            deletion request begins a seven-day cancellation period. After seven
-            days, access is permanently disabled. Identifiable account files are
-            manually erased no later than two months after the request, unless a
-            longer period is required by law or necessary for legal claims.
-            Individual deleted notes are removed immediately from the live
-            account and have no service backup. Session records expire no later
-            than twenty-eight days after login. Daily-login uniqueness records
-            reset at UTC 00:00.
+            Account and security data is retained while the account exists.
+            Confirmed account deletion immediately removes the live account
+            directory and notes and revokes its sessions and sharing links; it
+            cannot be cancelled or restored, and AstraNote has no service
+            backup. Individual deleted notes are likewise removed immediately.
+            Records may be retained only where required by law or necessary for
+            legal claims. Session records expire no later than twenty-eight days
+            after login. Daily-login uniqueness records reset at UTC 00:00.
           </p>
           <h2>8. Security</h2>
           <p>
             AstraNote uses password hashing, authenticated encryption, opaque
             sessions, CSRF and Origin checks, server-side CAPTCHA verification,
             rate limits, access-control checks, restrictive security headers,
-            atomic writes, and request-size limits. No system is completely
-            secure. Users should use a unique password, avoid placing
-            irreplaceable material in the service, and retain independent
-            copies.
+            atomic writes, and request-size limits. The server-managed AES modes
+            can technically be decrypted by the Operator. SCHybrid encrypts
+            titles and content in the browser using the user's Vault PIN and a
+            server-assisted factor, but it is not a zero-knowledge guarantee and
+            still requires trust in the application and server while unlocking.
+            No system is completely secure. Users should use a unique password,
+            avoid keeping the only copy of irreplaceable material in the
+            service, and retain independent copies.
           </p>
           <h2>9. Children and guardians</h2>
           <p>
@@ -142,7 +143,7 @@
             Subject to applicable law, you may request access, a copy,
             correction, cessation of processing, restriction, objection, or
             deletion. Settings provide correction of display name, language, and
-            theme, and a deletion-request process. Requests may be sent to the
+            theme, and an immediate permanent account-deletion control. Requests may be sent to the
             contact email. Identity may be verified using account credentials or
             other proportionate information. You may also complain to a
             competent data-protection or consumer authority.
@@ -189,16 +190,13 @@
             </li>
             <li>
               <strong>內容：</strong
-              >筆記名稱、內容、加密選項、更新時間及選擇性分享代碼。伺服器管理的加密筆記會以密文、Nonce
-              及驗證標籤保存。
+              >筆記名稱、內容、加密選項、更新時間及選擇性分享代碼。所有加密模式都會將名稱與內容以密文、Nonce
+              及驗證標籤保存；SCHybrid 另保存隨機用戶端 Salt，但不保存 Vault PIN
+              或最終瀏覽器金鑰。
             </li>
             <li>
               <strong>安全：</strong>速率限制事件、CAPTCHA 驗證 ID 與
               Token，以及防止濫用所合理必要的錯誤及運作紀錄。
-            </li>
-            <li>
-              <strong>刪除：</strong
-              >Username、申請時間、反悔期限、永久鎖定時間、最遲清除時間及狀態。
             </li>
           </ul>
           <h2>三、目的與依據</h2>
@@ -214,7 +212,7 @@
           </p>
           <h2>五、人類驗證</h2>
           <p>
-            註冊、登入、新增筆記、刪除筆記、申請刪除帳號及取消刪除申請時，瀏覽器會從
+            註冊、登入、新增筆記、刪除筆記及永久刪除帳號時，瀏覽器會從
             <code>nexacaptcha.nxlabtw.com</code> 載入 CAPTCHA。AstraNote 會將驗證 ID
             及一次性 Token 傳至 NexaCAPTCHA 固定的後端驗證端點。Token
             原則上僅可使用一次並於五分鐘後失效。請勿在 CAPTCHA
@@ -229,7 +227,8 @@
           </p>
           <h2>七、保存期限</h2>
           <p>
-            帳號存在期間保存帳號與安全資料。刪除申請有七日反悔期；七日後永久停止存取。可識別帳號檔案最遲於申請後兩個月由管理員清除，法律要求或法律請求所必要者除外。個別刪除的筆記會立即移出現行帳號且沒有服務備份。Session
+            帳號存在期間保存帳號與安全資料。確認永久刪除帳號後，現行帳號資料夾及筆記會立即移除，所有登入階段與分享連結同時失效；此操作不能取消或復原，AstraNote
+            亦無服務備份。個別刪除的筆記同樣立即移除。僅於法律要求或法律請求所必要時可能保留必要紀錄。Session
             最遲於該次登入後二十八日失效。每日不同登入帳號紀錄於 UTC 00:00
             重置。
           </p>
@@ -237,7 +236,9 @@
           <p>
             AstraNote 採用密碼雜湊、具認證加密、不透明 Session、CSRF 與 Origin
             檢查、後端 CAPTCHA
-            驗證、速率限制、權限確認、嚴格安全標頭、原子寫入及請求大小限制。任何系統均無法保證絕對安全；請使用獨立密碼、勿將不可取代資料只存於本服務，並自行保存副本。
+            驗證、速率限制、權限確認、嚴格安全標頭、原子寫入及請求大小限制。伺服器管理的 AES
+            模式在技術上可由營運者解密；SCHybrid 會用 Vault PIN
+            與伺服器協助因子在瀏覽器加密名稱與內容，但並非零知識保證，解鎖時仍須信任應用程式與伺服器。任何系統均無法保證絕對安全；請使用獨立密碼、勿將不可取代資料只存於本服務，並自行保存副本。
           </p>
           <h2>九、兒童與法定代理人</h2>
           <p>
@@ -245,7 +246,7 @@
           </p>
           <h2>十、您的權利</h2>
           <p>
-            依適用法律，您可能享有查詢、閱覽、取得複本、更正、停止處理、限制、反對或刪除的權利。設定頁可更正公開名稱、語言及主題，並可提出刪除申請。其他請求可寄至聯絡信箱；營運者可能使用帳號憑證或合比例資料確認身分。您亦可向有管轄權的個資或消費者主管機關申訴。
+            依適用法律，您可能享有查詢、閱覽、取得複本、更正、停止處理、限制、反對或刪除的權利。設定頁可更正公開名稱、語言及主題，並可立即永久刪除帳號。其他請求可寄至聯絡信箱；營運者可能使用帳號憑證或合比例資料確認身分。您亦可向有管轄權的個資或消費者主管機關申訴。
           </p>
           <h2>十一、跨境存取</h2>
           <p>

@@ -3,8 +3,9 @@
 > Write it down. Find it whenever you need it.
 
 AstraNote is a bilingual, responsive online notebook built with Node.js and
-Express. It provides optional AES-GCM encryption, revocable read-only sharing,
-strict per-account storage limits, and server-verified CAPTCHA protection for
+Express. It provides optional authenticated encryption, a client-side
+AstraConfidential SCHybrid mode, revocable read-only sharing, strict
+per-account storage limits, and server-verified CAPTCHA protection for
 security-sensitive actions.
 
 ## Highlights
@@ -13,14 +14,15 @@ security-sensitive actions.
 - Animated, scroll-reactive starfield landing page
 - Dark and light themes synchronized to signed-in accounts
 - Plain-text lined note reader and editor
-- No encryption, AES-256-GCM, or AES-128-GCM chosen at note creation
+- No encryption, AES-128-GCM, AES-256-GCM, or AstraConfidential SCHybrid chosen at note creation
+- Every encrypted mode protects both the note title and content
 - 48-note and 256 KiB full-account-directory limits
 - Unguessable, revocable, `noindex` read-only sharing links
 - Argon2id password hashing and server-managed authenticated sessions
 - CSRF, Origin, ownership, request-size, rate-limit, and security-header controls
 - Layered IP, username, account, note-write, sharing, and public-read rate limits
 - Human verification with mandatory server-side `/api/siteverify` validation
-- Seven-day account-deletion reversal period and a two-month manual-erasure deadline
+- Immediate permanent account deletion after username, password, and CAPTCHA confirmation
 - Locally served Font Awesome; no font, analytics, or advertising CDN
 
 ## Project structure
@@ -53,11 +55,13 @@ Open `http://localhost:3000`.
 2. Mount `data/` on a persistent volume. Alternatively point `DATA_DIR` at the
    mounted directory.
 3. Zeabur supplies `PORT`; AstraNote reads `process.env.PORT` automatically.
-4. Set one long random `ASTRANOTE_SECRET` in production. This is the only
-   recommended custom environment variable. If omitted, AstraNote creates a
-   secret file in the persistent data directory; losing that file makes
-   existing encrypted notes unreadable.
-5. Route both `https://astranote.nxlabtw.com` and
+4. Set long, independent `ASTRANOTE_SECRET` and
+   `ASTRANOTE_VAULT_SECRET` values in production. If `ASTRANOTE_SECRET` is
+   omitted, AstraNote creates a secret file in the persistent data directory.
+   SCHybrid stays unavailable when `ASTRANOTE_VAULT_SECRET` is missing.
+5. Generate the SCHybrid secret with:
+   `node -e "console.log(require('node:crypto').randomBytes(64).toString('base64url'))"`
+6. Route both `https://astranote.nxlabtw.com` and
    `https://astranote.zeabur.app` to the service.
 
 Do not deploy without persistent storage. Redeploying against an ephemeral
@@ -84,17 +88,10 @@ data/
 Never publish runtime data. It can contain email and IP addresses, password
 hashes, sessions, note content, and encrypted material.
 
-### Manual account erasure
-
-`deletes.json` records `requestedAt`, `reversibleUntil`, `lockedAt`, `eraseBy`,
-and `status`. Once the seven-day reversal window has passed, the user cannot
-sign in. The administrator must permanently remove the matching
-`data/{username}/` directory no later than `eraseBy`, then remove the matching
-entry from `deletes.json`. Review `shares.json` and `sessions.json` as a safety
-check, although the application revokes both when the request is created.
-
-Username and email may be registered again only after the entire account
-directory and deletion entry no longer exist.
+`deletes.json` is retained only for compatibility with deletion requests made
+by older versions. New deletions immediately remove the account directory,
+sessions, and share mappings. A username or email can be registered again only
+after no matching account directory remains.
 
 ## Security notes
 
@@ -102,8 +99,19 @@ directory and deletion entry no longer exist.
   16-character verification ID and 64-character one-time token to
   `https://nexacaptcha.nxlabtw.com/api/siteverify` and proceeds only when the
   response is exactly `success: true`.
-- AES-GCM keys are derived from the server secret, username, note ID, and key
-  size. Encryption is server-managed, not end-to-end or zero-knowledge.
+- AES-GCM note titles and content are encrypted together with keys derived from
+  the server secret, username, note ID, and key size. These AES modes are
+  server-managed, not end-to-end or zero-knowledge.
+- AstraConfidential SCHybrid encrypts the title and content in the browser with
+  AES-256-GCM. Its Argon2id-derived browser key combines the user's 4–6 digit
+  Vault PIN with a temporary server factor bound to the account, note, password
+  hash, and independent `ASTRANOTE_VAULT_SECRET`. The server stores no PIN or
+  final browser key, and SCHybrid notes cannot be shared. It is server-assisted
+  encryption rather than a zero-knowledge design: the web application and
+  factor endpoint must still be trusted while the note is unlocked.
+- Losing a Vault PIN or either production secret can make encrypted notes
+  permanently unreadable. Keep both environment secrets stable and backed up
+  outside the application data volume.
 - Main and backup domains use separate browser cookies. A user may sign into
   both with the same account.
 - The repository intentionally contains no credential, user database, or

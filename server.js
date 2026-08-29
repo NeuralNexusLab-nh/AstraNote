@@ -33,14 +33,20 @@ const SESSION_EXTENSION_MS = 2 * 864e5;
 const SESSION_MAX_MS = 28 * 864e5;
 const DELETE_REVERSAL_MS = 7 * 864e5;
 const DELETE_ERASE_MS = 62 * 864e5;
-const TERMS_VERSION = "2026-08-13";
+const TERMS_VERSION = "2026-08-29";
 const CAPTCHA_VERIFY_URL = "https://nexacaptcha.nxlabtw.com/api/siteverify";
+const SCHYBRID_MODE = "astra-confidential-schybrid-v1";
 const ALLOWED_ORIGINS = new Set([
   "https://astranote.nxlabtw.com",
   "https://astranote.zeabur.app",
 ]);
 const USERNAME_RE = /^[A-Za-z0-9_]{3,24}$/;
-const ENCRYPTION_TYPES = new Set(["none", "aes-256-gcm", "aes-128-gcm"]);
+const ENCRYPTION_TYPES = new Set([
+  "none",
+  "aes-256-gcm",
+  "aes-128-gcm",
+  SCHYBRID_MODE,
+]);
 const COMMON_PASSWORDS = new Set([
   "password123",
   "1234567890",
@@ -56,6 +62,7 @@ const COMMON_PASSWORDS = new Set([
 const locks = new Map();
 
 let appSecret;
+let vaultSecret;
 
 function utcNow() {
   return new Date().toISOString();
@@ -225,6 +232,12 @@ async function ensureData() {
     appSecret = crypto.randomBytes(48).toString("base64url");
     await atomicWrite(SECRET_FILE, `${appSecret}\n`);
   }
+  vaultSecret =
+    typeof process.env.ASTRANOTE_VAULT_SECRET === "string" &&
+    process.env.ASTRANOTE_VAULT_SECRET.length >= 64
+      ? process.env.ASTRANOTE_VAULT_SECRET
+      : null;
+  await migrateLegacyEncryptedNotes();
 }
 
 function deriveKey(username, noteId, bits) {
@@ -260,16 +273,149 @@ function encryptContent(content, username, id, mode) {
 function decryptContent(stored, username, id, mode) {
   if (mode === "none") return typeof stored === "string" ? stored : "";
   const bits = mode === "aes-128-gcm" ? 128 : 256;
+  if (
+    !stored ||
+    Buffer.from(stored.iv || "", "base64").length !== 12 ||
+    Buffer.from(stored.tag || "", "base64").length !== 16
+  )
+    throw new Error("Encrypted note data is invalid.");
   const decipher = crypto.createDecipheriv(
     `aes-${bits}-gcm`,
     deriveKey(username, id, bits),
     Buffer.from(stored.iv, "base64"),
+    { authTagLength: 16 },
   );
   decipher.setAuthTag(Buffer.from(stored.tag, "base64"));
   return Buffer.concat([
     decipher.update(Buffer.from(stored.ciphertext, "base64")),
     decipher.final(),
   ]).toString("utf8");
+}
+
+function readServerNotePayload(note, username) {
+  if (note.encryption === SCHYBRID_MODE) return null;
+  if (note.encryption === "none") {
+    return {
+      name: normalizeText(note.name, MAX_NOTE_NAME),
+      content: typeof note.content === "string" ? note.content : "",
+    };
+  }
+  const decrypted = decryptContent(
+    note.content,
+    username,
+    note.id,
+    note.encryption,
+  );
+  if (note.payloadVersion === 2) {
+    const payload = JSON.parse(decrypted);
+    return {
+      name: normalizeText(payload.name, MAX_NOTE_NAME),
+      content:
+        typeof payload.content === "string"
+          ? payload.content.normalize("NFC")
+          : "",
+    };
+  }
+  return {
+    name: normalizeText(note.name, MAX_NOTE_NAME),
+    content: decrypted,
+  };
+}
+
+function writeServerNotePayload(note, username, name, content) {
+  if (note.encryption === "none") {
+    note.name = name;
+    note.content = content;
+    delete note.payloadVersion;
+    return;
+  }
+  note.content = encryptContent(
+    JSON.stringify({ name, content }),
+    username,
+    note.id,
+    note.encryption,
+  );
+  note.payloadVersion = 2;
+  delete note.name;
+}
+
+async function migrateLegacyEncryptedNotes() {
+  const entries = await fsp.readdir(DATA_DIR, { withFileTypes: true });
+  for (const entry of entries) {
+    if (!entry.isDirectory() || !USERNAME_RE.test(entry.name)) continue;
+    const metadata = await loadMetadata(entry.name);
+    if (!metadata?.notes?.length) continue;
+    for (const reference of metadata.notes) {
+      const file = noteFile(entry.name, reference.id);
+      const note = await readJson(file, null);
+      if (
+        !note ||
+        !["aes-128-gcm", "aes-256-gcm"].includes(note.encryption) ||
+        note.payloadVersion === 2
+      )
+        continue;
+      try {
+        const payload = readServerNotePayload(note, entry.name);
+        writeServerNotePayload(
+          note,
+          entry.name,
+          payload.name || "Encrypted note",
+          payload.content,
+        );
+        await writeJson(file, note);
+      } catch (error) {
+        console.error(
+          `[${utcNow()}] Could not migrate encrypted note ${reference.id}:`,
+          error.message,
+        );
+      }
+    }
+  }
+}
+
+function validBase64(value, minimum, maximum) {
+  if (
+    typeof value !== "string" ||
+    value.length > maximum * 2 ||
+    value.length % 4 !== 0 ||
+    !/^[A-Za-z0-9+/]*={0,2}$/.test(value)
+  )
+    return false;
+  try {
+    const bytes = Buffer.from(value, "base64");
+    return bytes.length >= minimum && bytes.length <= maximum;
+  } catch {
+    return false;
+  }
+}
+
+function validSchybridEnvelope(value) {
+  return Boolean(
+    value &&
+      typeof value === "object" &&
+      validBase64(value.iv, 12, 12) &&
+      validBase64(value.tag, 16, 16) &&
+      validBase64(value.ciphertext, 1, MAX_ACCOUNT_BYTES),
+  );
+}
+
+function deriveVaultFactor(metadata, noteId, clientSalt, clientHash) {
+  if (!vaultSecret) return null;
+  return crypto
+    .createHmac("sha256", vaultSecret)
+    .update("AstraConfidential SCHybrid v1\0")
+    .update(userKey(metadata.username))
+    .update("\0")
+    .update(metadata.email.toLowerCase())
+    .update("\0")
+    .update(metadata.passwordHash)
+    .update("\0")
+    .update(noteId)
+    .update("\0")
+    .update(clientSalt)
+    .update("\0")
+    .update(clientHash)
+    .digest("base64url");
 }
 
 async function readSessions() {
@@ -556,21 +702,25 @@ async function accountEmailExists(email) {
 async function noteSummary(username, reference) {
   const note = await readJson(noteFile(username, reference.id), null);
   if (!note) return null;
-  let content = "";
+  let payload = null;
   try {
-    content = decryptContent(note.content, username, note.id, note.encryption);
+    payload = readServerNotePayload(note, username);
   } catch {
-    content = "";
+    payload = null;
   }
   const bytes = (await fsp.stat(noteFile(username, note.id))).size;
   return {
     id: note.id,
-    name: note.name,
+    name:
+      note.encryption === SCHYBRID_MODE
+        ? null
+        : payload?.name || "Encrypted note",
     encryption: note.encryption,
     updatedAt: note.updatedAt,
-    characters: characterCount(content),
+    characters: payload ? characterCount(payload.content) : null,
     bytes,
-    shared: Boolean(note.shareToken),
+    shared:
+      note.encryption === SCHYBRID_MODE ? false : Boolean(note.shareToken),
   };
 }
 async function accountPayload(username) {
@@ -597,6 +747,7 @@ async function accountPayload(username) {
     usedBytes,
     maxBytes: MAX_ACCOUNT_BYTES,
     maxNotes: MAX_NOTES,
+    vaultAvailable: Boolean(vaultSecret),
     notes: summaries,
   };
 }
@@ -614,6 +765,7 @@ app.use(
         objectSrc: ["'none'"],
         scriptSrc: [
           "'self'",
+          "'wasm-unsafe-eval'",
           "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
           "https://nexacaptcha.nxlabtw.com",
@@ -772,6 +924,23 @@ const accountMutationLimiter = accountLimiter(120);
 const noteSaveLimiter = accountLimiter(40);
 const noteLifecycleLimiter = accountLimiter(20);
 const shareMutationLimiter = accountLimiter(30);
+const vaultKeyIpLimiter = rateLimit({
+  windowMs: 15 * 60_000,
+  limit: 30,
+  keyGenerator: (req) => `vault-ip:${ipKeyGenerator(req.ip)}`,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
+const vaultKeyNoteLimiter = rateLimit({
+  windowMs: 15 * 60_000,
+  limit: 10,
+  keyGenerator: (req) =>
+    `vault-note:${userKey(req.auth?.session?.username || "unknown")}:${String(req.body?.noteId || "invalid")}`,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
 const sharedReadLimiter = rateLimit({
   windowMs: 60_000,
   limit: 240,
@@ -1109,6 +1278,62 @@ app.patch(
   },
 );
 
+app.post(
+  "/api/vault/key-factor",
+  requireAuth,
+  vaultKeyIpLimiter,
+  vaultKeyNoteLimiter,
+  requireCsrf,
+  async (req, res, next) => {
+    const noteId = String(req.body.noteId || "");
+    const clientSalt = String(req.body.clientSalt || "");
+    const clientHash = String(req.body.clientHash || "").toLowerCase();
+    if (
+      !/^[a-f0-9]{24}$/.test(noteId) ||
+      !/^[A-Za-z0-9_-]{43}$/.test(clientSalt) ||
+      !/^[a-f0-9]{64}$/.test(clientHash)
+    )
+      return jsonError(
+        res,
+        400,
+        "invalid_vault_request",
+        "Vault key request is invalid.",
+      );
+    if (!vaultSecret)
+      return jsonError(
+        res,
+        503,
+        "vault_unavailable",
+        "AstraConfidential SCHybrid is not configured.",
+      );
+    try {
+      const username = req.auth.session.username;
+      const metadata = await loadMetadata(username);
+      const reference = metadata.notes.find((item) => item.id === noteId);
+      if (reference) {
+        const note = await readJson(noteFile(username, noteId), null);
+        if (
+          !note ||
+          note.encryption !== SCHYBRID_MODE ||
+          !safeEqual(note.clientSalt, clientSalt)
+        )
+          return jsonError(res, 404, "not_found", "Note not found.");
+      } else if (await exists(noteFile(username, noteId))) {
+        return jsonError(res, 409, "note_id_unavailable", "Note ID is unavailable.");
+      }
+      const serverFactor = deriveVaultFactor(
+        metadata,
+        noteId,
+        clientSalt,
+        clientHash,
+      );
+      res.json({ serverFactor, version: 1 });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
 app.get("/api/notes/:id", requireAuth, async (req, res, next) => {
   if (!/^[a-f0-9]{24}$/.test(req.params.id))
     return jsonError(res, 404, "not_found", "Note not found.");
@@ -1119,19 +1344,31 @@ app.get("/api/notes/:id", requireAuth, async (req, res, next) => {
       return jsonError(res, 404, "not_found", "Note not found.");
     const note = await readJson(noteFile(username, req.params.id), null);
     if (!note) return jsonError(res, 404, "not_found", "Note not found.");
-    const content = decryptContent(
-      note.content,
-      username,
-      note.id,
-      note.encryption,
-    );
+    if (note.encryption === SCHYBRID_MODE) {
+      return res.json({
+        id: note.id,
+        encryption: note.encryption,
+        createdAt: note.createdAt,
+        updatedAt: note.updatedAt,
+        clientSalt: note.clientSalt,
+        encrypted: note.content,
+        shared: false,
+        shareUrl: null,
+        characters: null,
+        bytes: (await fsp.stat(noteFile(username, note.id))).size,
+      });
+    }
+    const payload = readServerNotePayload(note, username);
     res.json({
-      ...note,
-      content,
-      shareToken: undefined,
+      id: note.id,
+      name: payload.name,
+      content: payload.content,
+      encryption: note.encryption,
+      createdAt: note.createdAt,
+      updatedAt: note.updatedAt,
       shared: Boolean(note.shareToken),
       shareUrl: note.shareToken ? `/shared/${note.shareToken}` : null,
-      characters: characterCount(content),
+      characters: characterCount(payload.content),
       bytes: (await fsp.stat(noteFile(username, note.id))).size,
     });
   } catch (error) {
@@ -1146,16 +1383,34 @@ app.post(
   requireCsrf,
   verifyCaptcha,
   async (req, res, next) => {
-    const name = normalizeText(req.body.name, MAX_NOTE_NAME);
     const encryption = String(req.body.encryption || "none").toLowerCase();
-    if (!name)
-      return jsonError(res, 400, "name_required", "Note name is required.");
     if (!ENCRYPTION_TYPES.has(encryption))
       return jsonError(
         res,
         400,
         "invalid_encryption",
         "Encryption option is invalid.",
+      );
+    const schybrid = encryption === SCHYBRID_MODE;
+    const name = normalizeText(req.body.name, MAX_NOTE_NAME);
+    if (!schybrid && !name)
+      return jsonError(res, 400, "name_required", "Note name is required.");
+    const requestedId = String(req.body.id || "");
+    const clientSalt = String(req.body.clientSalt || "");
+    if (
+      schybrid &&
+      (!vaultSecret ||
+        !/^[a-f0-9]{24}$/.test(requestedId) ||
+        !/^[A-Za-z0-9_-]{43}$/.test(clientSalt) ||
+        !validSchybridEnvelope(req.body.encrypted))
+    )
+      return jsonError(
+        res,
+        vaultSecret ? 400 : 503,
+        vaultSecret ? "invalid_encrypted_note" : "vault_unavailable",
+        vaultSecret
+          ? "Encrypted note data is invalid."
+          : "AstraConfidential SCHybrid is not configured.",
       );
     try {
       const username = req.auth.session.username;
@@ -1166,16 +1421,30 @@ app.post(
             new Error("You have reached the 48-note limit."),
             { status: 409 },
           );
-        const id = crypto.randomBytes(12).toString("hex");
+        const id = schybrid
+          ? requestedId
+          : crypto.randomBytes(12).toString("hex");
+        if (
+          metadata.notes.some((reference) => reference.id === id) ||
+          (await exists(noteFile(username, id)))
+        )
+          throw Object.assign(new Error("Note ID is unavailable."), {
+            status: 409,
+          });
         const note = {
           id,
-          name,
           encryption,
           createdAt: utcNow(),
           updatedAt: utcNow(),
-          content: encryptContent("", username, id, encryption),
           shareToken: null,
         };
+        if (schybrid) {
+          note.clientSalt = clientSalt;
+          note.content = req.body.encrypted;
+          note.payloadVersion = 1;
+        } else {
+          writeServerNotePayload(note, username, name, "");
+        }
         await writeJson(noteFile(username, id), note);
         metadata.notes.unshift({ id, path: `notes/${id}.json` });
         await saveMetadata(username, metadata);
@@ -1205,15 +1474,8 @@ app.put(
   noteSaveLimiter,
   requireCsrf,
   async (req, res, next) => {
-    const name = normalizeText(req.body.name, MAX_NOTE_NAME);
-    const content =
-      typeof req.body.content === "string"
-        ? req.body.content.normalize("NFC")
-        : "";
-    if (!name)
-      return jsonError(res, 400, "name_required", "Note name is required.");
-    if (Buffer.byteLength(content, "utf8") > MAX_ACCOUNT_BYTES)
-      return jsonError(res, 413, "content_too_large", "Note is too large.");
+    if (!/^[a-f0-9]{24}$/.test(req.params.id))
+      return jsonError(res, 404, "not_found", "Note not found.");
     try {
       const username = req.auth.session.username;
       await withLock(`user:${username}`, async () => {
@@ -1225,14 +1487,31 @@ app.put(
         if (!note)
           throw Object.assign(new Error("Note not found."), { status: 404 });
         const original = await fsp.readFile(file, "utf8");
-        note.name = name;
+        if (note.encryption === SCHYBRID_MODE) {
+          if (!validSchybridEnvelope(req.body.encrypted))
+            throw Object.assign(new Error("Encrypted note data is invalid."), {
+              status: 400,
+            });
+          note.content = req.body.encrypted;
+          note.shareToken = null;
+          delete note.name;
+        } else {
+          const name = normalizeText(req.body.name, MAX_NOTE_NAME);
+          const content =
+            typeof req.body.content === "string"
+              ? req.body.content.normalize("NFC")
+              : "";
+          if (!name)
+            throw Object.assign(new Error("Note name is required."), {
+              status: 400,
+            });
+          if (Buffer.byteLength(content, "utf8") > MAX_ACCOUNT_BYTES)
+            throw Object.assign(new Error("Note is too large."), {
+              status: 413,
+            });
+          writeServerNotePayload(note, username, name, content);
+        }
         note.updatedAt = utcNow();
-        note.content = encryptContent(
-          content,
-          username,
-          note.id,
-          note.encryption,
-        );
         await writeJson(file, note);
         if ((await directorySize(userDir(username))) > MAX_ACCOUNT_BYTES) {
           await atomicWrite(file, original);
@@ -1296,6 +1575,13 @@ app.post(
         if (!metadata.notes.some((ref) => ref.id === req.params.id))
           throw Object.assign(new Error("Note not found."), { status: 404 });
         const note = await readJson(noteFile(username, req.params.id), null);
+        if (note?.encryption === SCHYBRID_MODE)
+          throw Object.assign(
+            new Error(
+              "Sharing is unavailable for AstraConfidential SCHybrid notes.",
+            ),
+            { status: 409 },
+          );
         if (req.body.enabled === true)
           note.shareToken =
             note.shareToken || crypto.randomBytes(32).toString("base64url");
@@ -1331,24 +1617,20 @@ app.get("/api/shared/:token", sharedReadLimiter, async (req, res, next) => {
       const note = await readJson(noteFile(target.username, target.id), null);
       if (
         metadata &&
+        note?.encryption !== SCHYBRID_MODE &&
         note?.shareToken &&
         safeEqual(note.shareToken, req.params.token)
       ) {
-        const content = decryptContent(
-          note.content,
-          target.username,
-          note.id,
-          note.encryption,
-        );
+        const payload = readServerNotePayload(note, target.username);
         res.setHeader("X-Robots-Tag", "noindex, nofollow, noarchive");
         return res.json({
-          name: note.name,
-          content,
+          name: payload.name,
+          content: payload.content,
           encryption: note.encryption,
           updatedAt: note.updatedAt,
           author: metadata.displayName || metadata.username,
           email: maskEmail(metadata.email),
-          characters: characterCount(content),
+          characters: characterCount(payload.content),
         });
       }
     }
@@ -1366,6 +1648,8 @@ app.post(
   verifyCaptcha,
   async (req, res, next) => {
     const username = req.auth.session.username;
+    const password =
+      typeof req.body.password === "string" ? req.body.password : "";
     if (
       !safeEqual(
         normalizeText(req.body.username, 24).toLowerCase(),
@@ -1380,27 +1664,53 @@ app.post(
       );
     }
     try {
+      const current = await loadMetadata(username);
+      const passwordValid =
+        current &&
+        (await argon2
+          .verify(current.passwordHash, password)
+          .catch(() => false));
+      if (!passwordValid)
+        return jsonError(
+          res,
+          401,
+          "invalid_credentials",
+          "Username or password is incorrect.",
+        );
       await withLock(`user:${username}`, async () => {
         const metadata = await loadMetadata(username);
-        for (const ref of metadata.notes) {
-          const note = await readJson(noteFile(username, ref.id), null);
-          if (note?.shareToken) {
-            await updateShares((shares) => {
-              delete shares[sha256(note.shareToken)];
-            });
-            note.shareToken = null;
-            await writeJson(noteFile(username, ref.id), note);
-          }
-        }
-        await markDeletion(username);
+        if (!metadata)
+          throw Object.assign(new Error("Account not found."), { status: 404 });
+        await updateShares((shares) => {
+          for (const [key, target] of Object.entries(shares))
+            if (target.username === userKey(username)) delete shares[key];
+        });
+        const target = path.resolve(userDir(username));
+        if (path.dirname(target) !== DATA_DIR)
+          throw new Error("Unsafe account deletion target.");
+        await fsp.rm(target, { recursive: true, force: true });
       });
       await destroyUserSessions(username);
+      await cancelDeletion(username);
+      await withLock("registration", async () => {
+        const count =
+          Number.parseInt(await fsp.readFile(USERS_FILE, "utf8"), 10) || 0;
+        await atomicWrite(USERS_FILE, `${Math.max(0, count - 1)}\n`);
+      });
+      await withLock("online", async () => {
+        const record = await readJson(ONLINE_USERS_FILE, {
+          date: utcDay(),
+          users: [],
+        });
+        record.users = record.users.filter(
+          (entry) => entry !== userKey(username),
+        );
+        await writeJson(ONLINE_USERS_FILE, record);
+        await atomicWrite(ONLINE_FILE, `${record.users.length}\n`);
+      });
       res.clearCookie("astranote_session", { path: "/" });
       res.json({
         ok: true,
-        reversibleUntil: new Date(
-          Date.now() + DELETE_REVERSAL_MS,
-        ).toISOString(),
         redirect: "/",
       });
     } catch (error) {
@@ -1423,6 +1733,14 @@ app.use(
     path.join(ROOT, "node_modules", "@fortawesome", "fontawesome-free"),
     { immutable: true, maxAge: "30d", dotfiles: "deny" },
   ),
+);
+app.use(
+  "/vendor/hash-wasm",
+  express.static(path.join(ROOT, "node_modules", "hash-wasm", "dist"), {
+    immutable: true,
+    maxAge: "30d",
+    dotfiles: "deny",
+  }),
 );
 app.use(express.static(PUBLIC_DIR, { extensions: false, dotfiles: "deny" }));
 
@@ -1480,6 +1798,21 @@ module.exports = {
   app,
   start,
   ensureData,
-  constants: { DATA_DIR, MAX_ACCOUNT_BYTES, MAX_ACCOUNTS, MAX_NOTES },
-  testables: { encryptContent, decryptContent, maskEmail, characterCount },
+  constants: {
+    DATA_DIR,
+    MAX_ACCOUNT_BYTES,
+    MAX_ACCOUNTS,
+    MAX_NOTES,
+    SCHYBRID_MODE,
+  },
+  testables: {
+    encryptContent,
+    decryptContent,
+    readServerNotePayload,
+    writeServerNotePayload,
+    validSchybridEnvelope,
+    deriveVaultFactor,
+    maskEmail,
+    characterCount,
+  },
 };

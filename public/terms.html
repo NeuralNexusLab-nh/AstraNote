@@ -66,13 +66,21 @@
             only the limited licence necessary to host, process, encrypt,
             decrypt, transmit, display, protect, and delete that content in
             order to provide the service. Available protection is no encryption,
-            AES-128-GCM, or AES-256-GCM. Encryption is selected when a note is
-            created and cannot later be changed. Keys are managed by the server;
-            this is not end-to-end or zero-knowledge encryption, and the
-            Operator may technically decrypt server-managed encrypted content.
-            Encryption normally increases storage consumption to approximately
-            1.4 times the unencrypted UTF-8 content, while very short notes may
-            exceed twice the size.
+            AES-128-GCM, AES-256-GCM, or AstraConfidential SCHybrid. Encryption
+            is selected when a note is created and cannot later be changed. All
+            encrypted modes protect both the note title and content. The AES
+            modes are managed by the server and are not end-to-end or
+            zero-knowledge encryption; the Operator may technically decrypt
+            them. SCHybrid encrypts the title and content in the browser using a
+            key derived with Argon2id from a 4–6 digit Vault PIN and a temporary
+            server factor bound to the account, note, password hash, and an
+            independent server secret. The PIN and final browser key are not
+            stored by AstraNote. SCHybrid is server-assisted client-side
+            encryption, not a zero-knowledge guarantee: the browser application
+            and server must still be trusted while unlocking, and loss of the
+            PIN, account access, or required server secret may make the note
+            permanently unreadable. Encryption increases storage use; short
+            notes may have proportionally larger overhead.
           </p>
           <h2>5. Sharing</h2>
           <p>
@@ -82,7 +90,9 @@
             possesses the link. Shared pages request that search engines not
             index them, but no guarantee is made that third parties will comply.
             You are responsible for the material you share. Revoking sharing,
-            deleting a note, or disabling an account invalidates the link.
+            deleting a note, or deleting an account invalidates the link.
+            Sharing is unavailable for AstraConfidential SCHybrid notes because
+            their decryption is bound to the owner's account and Vault PIN.
           </p>
           <h2>6. Prohibited conduct</h2>
           <p>
@@ -100,8 +110,8 @@
           </p>
           <h2>7. Human verification</h2>
           <p>
-            Registration, login, note creation, note deletion, account-deletion
-            requests, and cancellation of a pending deletion require a CAPTCHA.
+            Registration, login, note creation, note deletion, and permanent
+            account deletion require a CAPTCHA.
             Verification data is submitted to the verification provider and
             checked server-side. Completing a CAPTCHA does not create a right to
             have a request accepted; session, CSRF, ownership, capacity, and
@@ -129,18 +139,17 @@
             not lawfully be excluded, including liability arising from
             intentional misconduct or gross negligence where applicable.
           </p>
-          <h2>10. Account disabling and deletion</h2>
+          <h2>10. Account deletion</h2>
           <p>
-            A confirmed deletion request immediately revokes sessions and
-            sharing. For seven days, valid login credentials and a new CAPTCHA
-            may cancel the request. After that period, the account is
-            permanently inaccessible and cannot be restored. Identifiable
-            account data is retained only for the deletion process and is
-            manually erased no later than two months after the request, subject
-            to a longer period required by law or necessary for the
-            establishment, exercise, or defence of legal claims. Until physical
-            erasure, the username and email remain unavailable for registration;
-            afterward they may be reused.
+            Account deletion requires an authenticated session, the exact
+            username, the current password, and a CAPTCHA. Confirmation
+            immediately and permanently removes the live account directory and
+            notes, revokes all sessions and sharing links, and cannot be
+            cancelled or restored. AstraNote provides no service backup.
+            Username and email may be registered again after no matching account
+            directory remains. Separate records may be retained only where
+            required by law or necessary for the establishment, exercise, or
+            defence of legal claims.
           </p>
           <h2>11. Intellectual property and open source</h2>
           <p>
@@ -199,15 +208,19 @@
           </p>
           <h2>四、使用者內容與加密</h2>
           <p>
-            筆記內容仍歸您所有。您僅授予營運者為提供服務所必要的有限權利，包括託管、處理、加密、解密、傳輸、顯示、保護及刪除內容。可選擇不加密、AES-128-GCM
-            或
-            AES-256-GCM；加密方式於建立時決定且之後不得更換。金鑰由伺服器管理，因此並非端對端或零知識加密，營運者在技術上可能解密。加密後通常約占未加密
-            UTF-8 內容的 1.4 倍；極短內容可能超過兩倍。
+            筆記內容仍歸您所有。您僅授予營運者為提供服務所必要的有限權利，包括託管、處理、加密、解密、傳輸、顯示、保護及刪除內容。可選擇不加密、AES-128-GCM、AES-256-GCM
+            或 AstraConfidential SCHybrid；加密方式於建立時決定且之後不得更換。所有加密方式都會同時保護筆記名稱與內容。AES
+            模式由伺服器管理，並非端對端或零知識加密，營運者在技術上可能解密。SCHybrid
+            會在瀏覽器中，以 Argon2id 將 4–6 位 Vault PIN
+            與綁定帳號、筆記、密碼雜湊及獨立伺服器祕密的臨時因子結合，再加密名稱與內容；AstraNote
+            不儲存 PIN 或最終瀏覽器金鑰。SCHybrid
+            屬於伺服器協助的用戶端加密，而非零知識保證；解鎖時仍須信任瀏覽器程式與伺服器，且遺失 PIN、帳號存取權或必要伺服器祕密，均可能使筆記永久無法讀取。加密會增加儲存用量，短內容的比例開銷可能更高。
           </p>
           <h2>五、分享</h2>
           <p>
             分享預設關閉。開啟後會產生難以猜測的唯讀連結，任何持有者可看到該筆記、您的公開顯示名稱及遮罩
-            Email。分享頁會要求搜尋引擎不收錄，但無法保證第三方遵循。您須對分享內容負責。關閉分享、刪除筆記或停用帳號時，連結立即失效。
+            Email。分享頁會要求搜尋引擎不收錄，但無法保證第三方遵循。您須對分享內容負責。關閉分享、刪除筆記或刪除帳號時，連結立即失效。AstraConfidential
+            SCHybrid 因解密與擁有者帳號及 Vault PIN 綁定，不提供分享功能。
           </p>
           <h2>六、禁止行為</h2>
           <p>
@@ -217,7 +230,7 @@
           </p>
           <h2>七、人類驗證</h2>
           <p>
-            註冊、登入、新增筆記、刪除筆記、申請刪除帳號及取消刪除申請時須完成 CAPTCHA，驗證資料會交由驗證服務提供者並由
+            註冊、登入、新增筆記、刪除筆記及永久刪除帳號時須完成 CAPTCHA，驗證資料會交由驗證服務提供者並由
             AstraNote 後端確認。完成 CAPTCHA
             不代表請求必然獲准；系統仍會檢查登入階段、CSRF、所有權、容量及速率限制。
           </p>
@@ -230,12 +243,12 @@
           <p>
             在法律允許的最大範圍內，本服務按「現況」及「現有」提供，不保證永久、不間斷、無錯誤或絕對安全。對於非營運者可合理控制之事由、第三方服務、使用者遺失憑證、自行分享、裝置不相容或未自行備份造成的損失，營運者依法得免責或限制責任。本條不排除法律禁止免除之責任，包括依法不得免除的故意或重大過失責任。
           </p>
-          <h2>十、停用與刪除</h2>
+          <h2>十、帳號刪除</h2>
           <p>
-            確認申請後，所有登入階段及分享立即失效。七日內可用有效帳密及新的
-            CAPTCHA
-            取消；期限屆滿後帳號永久無法登入或復原。可識別帳號資料僅為完成刪除程序而保留，最遲於申請後兩個月由管理員清除；法律要求或為法律請求之主張、行使或防禦所必要者除外。實體清除前
-            Username 與 Email 不得重用；完全清除後可重新註冊。
+            永久刪除帳號須具有效登入階段、輸入完整 Username、目前密碼並完成
+            CAPTCHA。確認後，現行帳號資料夾及全部筆記會立即永久移除，所有登入階段與分享連結同時失效，且不能取消或復原。AstraNote
+            不提供服務備份。確認沒有同名帳號資料夾後，Username 與 Email
+            得重新註冊；僅於法律要求或為法律請求之主張、行使或防禦所必要時，可能另行保留必要紀錄。
           </p>
           <h2>十一、智慧財產與開源</h2>
           <p>
