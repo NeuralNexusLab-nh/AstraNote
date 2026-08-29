@@ -359,6 +359,7 @@ Object.assign(I18N.en, {
   vaultUnavailable:
     "AstraConfidential SCHybrid is not configured on this server.",
   unlockVaultTitle: "Unlock AstraConfidential note",
+  unlockNamedNote: "Unlock {name}",
   unlockVaultBody:
     "Enter this note's 4–6 digit Vault PIN. AstraNote does not store or recover it.",
   unlock: "Unlock",
@@ -460,6 +461,7 @@ Object.assign(I18N["zh-Hant"], {
   vaultCryptoUnavailable: "此裝置無法使用安全的瀏覽器加密功能。",
   vaultUnavailable: "伺服器尚未設定 AstraConfidential SCHybrid。",
   unlockVaultTitle: "解鎖 AstraConfidential 筆記",
+  unlockNamedNote: "解鎖{name}",
   unlockVaultBody:
     "請輸入這篇筆記的 4–6 位 Vault PIN。AstraNote 不會儲存或協助找回這組 PIN。",
   unlock: "解鎖",
@@ -677,8 +679,13 @@ function preferredBrowserLanguage() {
 
 function requireManualPinEntry(input) {
   input.value = "";
+  input.type = "text";
+  input.classList.add("vault-pin-input");
   input.autocomplete = "off";
   input.readOnly = true;
+  input.spellcheck = false;
+  input.setAttribute("autocapitalize", "off");
+  input.setAttribute("aria-autocomplete", "none");
   input.setAttribute("data-1p-ignore", "true");
   input.setAttribute("data-lpignore", "true");
   input.setAttribute("data-bwignore", "true");
@@ -689,6 +696,9 @@ function requireManualPinEntry(input) {
   input.addEventListener("pointerdown", enable, { once: true });
   input.addEventListener("keydown", enable, { once: true });
   input.addEventListener("focus", enable, { once: true });
+  input.addEventListener("input", () => {
+    if (document.activeElement !== input) input.value = "";
+  });
 }
 
 window.onCaptchaComplete = (result) => {
@@ -907,7 +917,7 @@ function unlockSchybrid(note) {
     const label = document.createElement("label");
     label.textContent = t("vaultPin");
     const input = document.createElement("input");
-    input.type = "password";
+    input.type = "text";
     input.inputMode = "numeric";
     input.autocomplete = "off";
     input.minLength = 4;
@@ -919,7 +929,10 @@ function unlockSchybrid(note) {
     warning.textContent = t("trustedDeviceOnly");
     content.append(label, input, warning);
     const dialog = modal({
-      title: t("unlockVaultTitle"),
+      title: t("unlockNamedNote").replace(
+        "{name}",
+        note.name || t("confidentialNote"),
+      ),
       body: t("unlockVaultBody"),
       content,
       confirm: t("unlock"),

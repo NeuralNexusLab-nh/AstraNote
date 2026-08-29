@@ -648,6 +648,9 @@ textarea {
   font-size: 20px;
   text-align: center;
 }
+.vault-pin-input {
+  -webkit-text-security: disc;
+}
 .modal-form-stack {
   display: grid;
   gap: 2px;
