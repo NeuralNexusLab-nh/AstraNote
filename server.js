@@ -88,6 +88,7 @@ function normalizeLanguage(value) {
     .replaceAll("_", "-");
   if (language === "zh" || language.startsWith("zh-")) return "zh-Hant";
   if (language === "en" || language.startsWith("en-")) return "en";
+  if (language === "ja" || language.startsWith("ja-")) return "ja";
   return null;
 }
 function requestLanguage(req) {
@@ -731,7 +732,7 @@ async function accountPayload(username) {
     displayName: metadata.displayName || metadata.username,
     createdAt: metadata.createdAt,
     settings: {
-      language: ["en", "zh-Hant"].includes(metadata.settings?.language)
+      language: ["en", "zh-Hant", "ja"].includes(metadata.settings?.language)
         ? metadata.settings.language
         : null,
       theme: ["dark", "light"].includes(metadata.settings?.theme)
@@ -1249,7 +1250,7 @@ app.patch(
       await withLock(`user:${username}`, async () => {
         const metadata = await loadMetadata(username);
         metadata.settings ||= { theme: "dark" };
-        if (["en", "zh-Hant"].includes(req.body.language))
+        if (["en", "zh-Hant", "ja"].includes(req.body.language))
           metadata.settings.language = req.body.language;
         if (["dark", "light"].includes(req.body.theme))
           metadata.settings.theme = req.body.theme;
@@ -1749,6 +1750,17 @@ app.use(
     dotfiles: "deny",
   }),
 );
+app.use(
+  "/vendor/qrcode-generator",
+  express.static(
+    path.join(ROOT, "node_modules", "qrcode-generator", "dist"),
+    {
+      immutable: true,
+      maxAge: "30d",
+      dotfiles: "deny",
+    },
+  ),
+);
 app.use(express.static(PUBLIC_DIR, { extensions: false, dotfiles: "deny" }));
 
 const pages = {
@@ -1761,6 +1773,7 @@ const pages = {
   "/settings": "settings.html",
   "/terms": "terms.html",
   "/privacy": "privacy.html",
+  "/donate": "donate.html",
 };
 for (const [route, file] of Object.entries(pages))
   app.get(route, (req, res) => res.sendFile(path.join(PUBLIC_DIR, file)));

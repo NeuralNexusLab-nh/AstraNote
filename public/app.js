@@ -376,6 +376,25 @@ Object.assign(I18N.en, {
   deleteAccountBody:
     "Enter your exact username and current password, then complete the human verification. The account, notes, sessions, and sharing links will be removed immediately and cannot be restored.",
   confirmCurrentPassword: "Confirm current password",
+  donateNav: "DONATE",
+  donatePageLabel: "DONATE",
+  donateTitle: "Support AstraNote",
+  donateDescription:
+    "If AstraNote is useful to you, you can support its continued development with Bitcoin.",
+  donateBitcoinLabel: "Bitcoin",
+  donateAddressLabel: "Bitcoin Address",
+  donateCopyLabel: "Copy Bitcoin address",
+  donateCopy: "Copy",
+  donateCopied: "Copied",
+  donateWallet: "Open in Bitcoin wallet",
+  donateNetwork: "Bitcoin network only",
+  donateQrLabel: "Bitcoin donation QR code for AstraNote",
+  donateNetworkAria: "Bitcoin mainnet",
+  donateSeoTitle: "Support AstraNote — Bitcoin donation",
+  skipContent: "Skip to content",
+  primaryNavigation: "Primary navigation",
+  menu: "Menu",
+  languageSelector: "Language",
 });
 
 Object.assign(I18N["zh-Hant"], {
@@ -477,7 +496,66 @@ Object.assign(I18N["zh-Hant"], {
   deleteAccountBody:
     "輸入完整 Username 與目前密碼，再完成人類驗證。帳號、筆記、登入階段與分享連結將立即移除，且無法復原。",
   confirmCurrentPassword: "確認目前密碼",
+  donateNav: "贊助",
+  donatePageLabel: "贊助",
+  donateTitle: "贊助 AstraNote",
+  donateDescription:
+    "如果 AstraNote 對你有幫助，你可以透過 Bitcoin 贊助我們持續開發。",
+  donateBitcoinLabel: "Bitcoin",
+  donateAddressLabel: "Bitcoin 地址",
+  donateCopyLabel: "複製 Bitcoin 地址",
+  donateCopy: "複製",
+  donateCopied: "已複製",
+  donateWallet: "在 Bitcoin 錢包中開啟",
+  donateNetwork: "僅限 Bitcoin 網路",
+  donateQrLabel: "AstraNote Bitcoin 贊助 QR Code",
+  donateNetworkAria: "Bitcoin 主網",
+  donateSeoTitle: "贊助 AstraNote — Bitcoin 贊助",
+  skipContent: "跳至主要內容",
+  primaryNavigation: "主要導覽",
+  menu: "選單",
+  languageSelector: "語言",
 });
+
+I18N.ja = {
+  home: "ホーム",
+  dashboard: "ダッシュボード",
+  notes: "マイノート",
+  settings: "設定",
+  login: "ログイン",
+  register: "アカウント作成",
+  logout: "ログアウト",
+  copyright: "© 2026 NeuralNexusLab. サービスに関するすべての権利を留保します。",
+  terms: "利用規約",
+  privacy: "プライバシー",
+  source: "ソースコード",
+  cookieTitle: "必須 Cookie",
+  cookieBody:
+    "AstraNote は、ログイン、セキュリティ、言語、表示設定に必要な Cookie のみを使用します。広告やアクセス解析のトラッカーは使用しません。",
+  accept: "同意して続行",
+  logoutTitle: "ログアウトしますか？",
+  logoutBody: "現在のログインセッションを終了します。",
+  error: "問題が発生しました。もう一度お試しください。",
+  donateNav: "寄付",
+  donatePageLabel: "寄付",
+  donateTitle: "AstraNote に寄付",
+  donateDescription:
+    "AstraNote が役に立った場合、Bitcoin で継続的な開発を支援できます。",
+  donateBitcoinLabel: "Bitcoin",
+  donateAddressLabel: "Bitcoin アドレス",
+  donateCopyLabel: "Bitcoin アドレスをコピー",
+  donateCopy: "コピー",
+  donateCopied: "コピーしました",
+  donateWallet: "Bitcoin ウォレットで開く",
+  donateNetwork: "Bitcoin ネットワークのみ",
+  donateQrLabel: "AstraNote Bitcoin 寄付用 QR コード",
+  donateNetworkAria: "Bitcoin メインネット",
+  donateSeoTitle: "AstraNote に寄付 — Bitcoin 寄付",
+  skipContent: "メインコンテンツへ移動",
+  primaryNavigation: "メインナビゲーション",
+  menu: "メニュー",
+  languageSelector: "言語",
+};
 
 const state = {
   session: null,
@@ -488,17 +566,26 @@ const state = {
   theme: "dark",
 };
 const SCHYBRID_MODE = "astra-confidential-schybrid-v1";
+const BITCOIN_ADDRESS = "bc1qh3g3uhy90f93dqt00w5m0j2vh550r6t4dmqlqm";
+const BITCOIN_URI = `bitcoin:${BITCOIN_ADDRESS}`;
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const page = document.body.dataset.page || "";
 const t = (key) => I18N[state.language]?.[key] || I18N.en[key] || key;
 const formatBytes = (bytes) => `${(Number(bytes || 0) / 1024).toFixed(2)} KiB`;
 const formatUtc = (value) =>
-  new Intl.DateTimeFormat(state.language === "zh-Hant" ? "zh-TW" : "en", {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: "UTC",
-  }).format(new Date(value)) + " UTC";
+  new Intl.DateTimeFormat(
+    state.language === "zh-Hant"
+      ? "zh-TW"
+      : state.language === "ja"
+        ? "ja-JP"
+        : "en",
+    {
+      dateStyle: "medium",
+      timeStyle: "short",
+      timeZone: "UTC",
+    },
+  ).format(new Date(value)) + " UTC";
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder("utf-8", { fatal: true });
@@ -663,6 +750,7 @@ function normalizeBrowserLanguage(value) {
   const language = String(value || "").toLowerCase().replaceAll("_", "-");
   if (language === "zh" || language.startsWith("zh-")) return "zh-Hant";
   if (language === "en" || language.startsWith("en-")) return "en";
+  if (language === "ja" || language.startsWith("ja-")) return "ja";
   return null;
 }
 function preferredBrowserLanguage() {
@@ -744,6 +832,22 @@ async function api(url, options = {}) {
   return data;
 }
 
+function applyPageSeo() {
+  if (page !== "donate") return;
+  const title = t("donateSeoTitle");
+  const description = t("donateDescription");
+  document.title = title;
+  const setMeta = (selector, value) => {
+    const element = $(selector);
+    if (element) element.setAttribute("content", value);
+  };
+  setMeta('meta[name="description"]', description);
+  setMeta('meta[property="og:title"]', title);
+  setMeta('meta[property="og:description"]', description);
+  setMeta('meta[name="twitter:title"]', title);
+  setMeta('meta[name="twitter:description"]', description);
+}
+
 function applyLocale() {
   document.documentElement.lang = state.language;
   document.documentElement.dataset.theme = state.theme;
@@ -754,8 +858,12 @@ function applyLocale() {
   $$("[data-i18n-placeholder]").forEach(
     (el) => (el.placeholder = t(el.dataset.i18nPlaceholder)),
   );
+  $$("[data-i18n-aria-label]").forEach((el) =>
+    el.setAttribute("aria-label", t(el.dataset.i18nAriaLabel)),
+  );
   const selector = $("#language-select");
   if (selector) selector.value = state.language;
+  applyPageSeo();
 }
 
 function buildNav() {
@@ -768,16 +876,18 @@ function buildNav() {
     : "";
   const nav = document.createElement("nav");
   nav.className = `site-nav ${page === "home" ? "" : "solid"}`;
-  nav.setAttribute("aria-label", "Primary navigation");
+  nav.dataset.i18nAriaLabel = "primaryNavigation";
   nav.innerHTML = `<a class="brand" href="/"><img src="/asset/logo.svg" alt=""><span>AstraNote</span></a>
-    <button class="mobile-toggle" type="button" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
-    <div class="nav-links"><a class="nav-link" href="/"><i class="fa-solid fa-house"></i> <span data-i18n="home"></span></a>${protectedLinks}</div>
-    <div class="nav-actions"><i class="fa-solid fa-language" aria-hidden="true"></i><select class="lang-select" id="language-select" aria-label="Language"><option value="en">EN</option><option value="zh-Hant">繁中</option></select>
+    <button class="mobile-toggle" type="button" data-i18n-aria-label="menu" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>
+    <div class="nav-links"><a class="nav-link" href="/"><i class="fa-solid fa-house" aria-hidden="true"></i> <span data-i18n="home"></span></a>${protectedLinks}<a class="nav-link donate-nav-link" href="/donate"><i class="fa-brands fa-bitcoin" aria-hidden="true"></i> <span data-i18n="donateNav"></span></a></div>
+    <div class="nav-actions"><i class="fa-solid fa-language" aria-hidden="true"></i><select class="lang-select" id="language-select" data-i18n-aria-label="languageSelector"><option value="en">EN</option><option value="zh-Hant">繁中</option><option value="ja">日本語</option></select>
     ${authenticated ? '<button class="btn" id="nav-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i><span data-i18n="logout"></span></button>' : '<a class="nav-link" href="/login"><i class="fa-solid fa-arrow-right-to-bracket"></i> <span data-i18n="login"></span></a><a class="btn btn-primary" href="/register"><i class="fa-solid fa-user-plus"></i><span data-i18n="register"></span></a>'}</div>`;
   document.body.prepend(nav);
-  $(".mobile-toggle", nav).addEventListener("click", () =>
-    nav.classList.toggle("open"),
-  );
+  const mobileToggle = $(".mobile-toggle", nav);
+  mobileToggle.addEventListener("click", () => {
+    const open = nav.classList.toggle("open");
+    mobileToggle.setAttribute("aria-expanded", String(open));
+  });
   $("#language-select", nav).addEventListener("change", async (event) => {
     state.language = event.target.value;
     setStoredPreference("astranote_language", state.language);
@@ -793,6 +903,10 @@ function buildNav() {
   $$(".nav-link", nav).forEach((link) => {
     if (link.getAttribute("href") === location.pathname)
       link.classList.add("active");
+    link.addEventListener("click", () => {
+      nav.classList.remove("open");
+      mobileToggle.setAttribute("aria-expanded", "false");
+    });
   });
   window.addEventListener(
     "scroll",
@@ -1581,6 +1695,82 @@ async function initShared() {
   }
 }
 
+function drawDonationQr() {
+  if (typeof window.qrcode !== "function") throw new Error("QR unavailable");
+  const qr = window.qrcode(0, "H");
+  qr.addData(BITCOIN_URI);
+  qr.make();
+
+  const canvas = $("#donate-qr-canvas");
+  const context = canvas.getContext("2d", { alpha: false });
+  const quietZone = 4;
+  const modules = qr.getModuleCount();
+  const totalModules = modules + quietZone * 2;
+  const cssSize = 176;
+  const pixelRatio = Math.max(1, window.devicePixelRatio || 1);
+  const modulePixels = Math.max(
+    8,
+    Math.ceil((cssSize * pixelRatio) / totalModules),
+  );
+  const outputSize = totalModules * modulePixels;
+
+  canvas.width = outputSize;
+  canvas.height = outputSize;
+  canvas.style.width = `${cssSize}px`;
+  canvas.style.height = `${cssSize}px`;
+  context.imageSmoothingEnabled = false;
+  context.fillStyle = "#fff";
+  context.fillRect(0, 0, outputSize, outputSize);
+  context.fillStyle = "#000";
+  for (let row = 0; row < modules; row += 1) {
+    for (let column = 0; column < modules; column += 1) {
+      if (!qr.isDark(row, column)) continue;
+      context.fillRect(
+        (column + quietZone) * modulePixels,
+        (row + quietZone) * modulePixels,
+        modulePixels,
+        modulePixels,
+      );
+    }
+  }
+}
+
+async function copyBitcoinAddress() {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(BITCOIN_ADDRESS);
+    return;
+  }
+  const fallback = document.createElement("textarea");
+  fallback.value = BITCOIN_ADDRESS;
+  fallback.setAttribute("readonly", "");
+  fallback.style.position = "fixed";
+  fallback.style.inset = "-9999px auto auto -9999px";
+  document.body.append(fallback);
+  fallback.select();
+  const copied = document.execCommand("copy");
+  fallback.remove();
+  if (!copied) throw new Error("Copy unavailable");
+}
+
+function initDonate() {
+  drawDonationQr();
+  const feedback = $("#donate-copy-feedback");
+  const copyButton = $("#copy-bitcoin-address");
+  let feedbackTimer = 0;
+  copyButton.addEventListener("click", async () => {
+    try {
+      await copyBitcoinAddress();
+      window.clearTimeout(feedbackTimer);
+      feedback.textContent = t("donateCopied");
+      feedbackTimer = window.setTimeout(() => {
+        feedback.textContent = "";
+      }, 1800);
+    } catch {
+      feedback.textContent = t("error");
+    }
+  });
+}
+
 function initReveal() {
   const observer = new IntersectionObserver(
     (entries) =>
@@ -1639,6 +1829,7 @@ async function boot() {
     editor: initEditor,
     settings: initSettings,
     shared: initShared,
+    donate: initDonate,
   };
   await initializers[page]?.();
   applyLocale();

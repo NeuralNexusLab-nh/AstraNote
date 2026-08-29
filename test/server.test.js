@@ -64,6 +64,21 @@ test("session language follows Accept-Language when no saved preference exists",
     headers: { "accept-language": "en-US,en;q=0.9" },
   });
   assert.equal((await english.json()).preferredLanguage, "en");
+
+  const japanese = await fetch(`${baseUrl}/api/session`, {
+    headers: { "accept-language": "ja-JP,ja;q=0.9,en;q=0.7" },
+  });
+  assert.equal((await japanese.json()).preferredLanguage, "ja");
+});
+
+test("donation route and local QR library are served by AstraNote", async () => {
+  const donation = await fetch(`${baseUrl}/donate`);
+  assert.equal(donation.status, 200);
+  assert.match(await donation.text(), /data-page="donate"/u);
+
+  const library = await fetch(`${baseUrl}/vendor/qrcode-generator/qrcode.js`);
+  assert.equal(library.status, 200);
+  assert.match(await library.text(), /var qrcode = function/u);
 });
 
 test("security headers allow only the configured application and CAPTCHA sources", async () => {
