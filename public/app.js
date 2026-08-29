@@ -468,7 +468,7 @@ Object.assign(I18N["zh-Hant"], {
   confidentialNote: "AstraConfidential 加密筆記",
   hiddenCharacters: "解鎖後顯示",
   vaultSharingUnavailable:
-    "此筆記的加密與擁有者帳號及 Vault PIN 綁定，因此 AstraConfidential SCHybrid 不提供分享功能。",
+    "此筆記的加密與擁有者帳號及 Vault PIN 綁定，\n因此 AstraConfidential SCHybrid 不提供分享功能。",
   dangerBody: "立即永久刪除帳號及所有筆記；此操作不能取消或復原。",
   requestDeletion: "永久刪除帳號",
   deleteAccountTitle: "要永久刪除這個帳號嗎？",
@@ -662,6 +662,22 @@ function preferredBrowserLanguage() {
     if (language) return language;
   }
   return null;
+}
+
+function requireManualPinEntry(input) {
+  input.value = "";
+  input.autocomplete = "off";
+  input.readOnly = true;
+  input.setAttribute("data-1p-ignore", "true");
+  input.setAttribute("data-lpignore", "true");
+  input.setAttribute("data-bwignore", "true");
+  input.setAttribute("data-form-type", "other");
+  const enable = () => {
+    input.readOnly = false;
+  };
+  input.addEventListener("pointerdown", enable, { once: true });
+  input.addEventListener("keydown", enable, { once: true });
+  input.addEventListener("focus", enable, { once: true });
 }
 
 window.onCaptchaComplete = (result) => {
@@ -886,6 +902,7 @@ function unlockSchybrid(note) {
     input.minLength = 4;
     input.maxLength = 6;
     input.pattern = "[0-9]{4,6}";
+    requireManualPinEntry(input);
     const warning = document.createElement("p");
     warning.className = "field-help";
     warning.textContent = t("trustedDeviceOnly");
@@ -1202,6 +1219,8 @@ async function initNewNote() {
   const encryption = form.encryption;
   const vaultFields = $("#vault-fields");
   const vaultOption = encryption.querySelector(`[value="${SCHYBRID_MODE}"]`);
+  requireManualPinEntry(form.vaultPin);
+  requireManualPinEntry(form.vaultPinConfirmation);
   if (!account.vaultAvailable) vaultOption.disabled = true;
   const updateEncryptionFields = () => {
     const enabled = encryption.value === SCHYBRID_MODE;
