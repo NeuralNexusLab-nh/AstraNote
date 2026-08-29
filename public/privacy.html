@@ -52,8 +52,8 @@
             </li>
             <li>
               <strong>Content:</strong> note names and content, encryption
-              selection, update time, and optional share token. In every
-              encrypted mode, both the title and content are stored as
+              selection, update time, and optional share token. Titles remain
+              plaintext in every mode. Encrypted content is stored as
               ciphertext with nonce and authentication tag. SCHybrid also
               stores a random client salt; the Vault PIN and final browser key
               are not stored.
@@ -121,7 +121,7 @@
             rate limits, access-control checks, restrictive security headers,
             atomic writes, and request-size limits. The server-managed AES modes
             can technically be decrypted by the Operator. SCHybrid encrypts
-            titles and content in the browser using the user's Vault PIN and a
+            content in the browser using the user's Vault PIN and a
             server-assisted factor, but it is not a zero-knowledge guarantee and
             still requires trust in the application and server while unlocking.
             No system is completely secure. Users should use a unique password,
@@ -190,8 +190,8 @@
             </li>
             <li>
               <strong>內容：</strong
-              >筆記名稱、內容、加密選項、更新時間及選擇性分享代碼。所有加密模式都會將名稱與內容以密文、Nonce
-              及驗證標籤保存；SCHybrid 另保存隨機用戶端 Salt，但不保存 Vault PIN
+              >筆記名稱、內容、加密選項、更新時間及選擇性分享代碼。所有模式的筆記名稱都會保持明文；加密內容會以密文、Nonce
+              及驗證標籤保存。SCHybrid 另保存隨機用戶端 Salt，但不保存 Vault PIN
               或最終瀏覽器金鑰。
             </li>
             <li>
@@ -238,7 +238,7 @@
             檢查、後端 CAPTCHA
             驗證、速率限制、權限確認、嚴格安全標頭、原子寫入及請求大小限制。伺服器管理的 AES
             模式在技術上可由營運者解密；SCHybrid 會用 Vault PIN
-            與伺服器協助因子在瀏覽器加密名稱與內容，但並非零知識保證，解鎖時仍須信任應用程式與伺服器。任何系統均無法保證絕對安全；請使用獨立密碼、勿將不可取代資料只存於本服務，並自行保存副本。
+            與伺服器協助因子在瀏覽器加密內容，但並非零知識保證，解鎖時仍須信任應用程式與伺服器。筆記名稱維持明文。任何系統均無法保證絕對安全；請使用獨立密碼、勿將不可取代資料只存於本服務，並自行保存副本。
           </p>
           <h2>九、兒童與法定代理人</h2>
           <p>

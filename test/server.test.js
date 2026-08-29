@@ -174,7 +174,7 @@ test("AES-GCM modes authenticate and restore Unicode note content", async () => 
   assert.equal(testables.characterCount("星 海\nA B"), 4);
 });
 
-test("every AES mode stores the title and content inside one authenticated payload", () => {
+test("every AES mode leaves the title visible and encrypts only content", () => {
   for (const mode of ["aes-256-gcm", "aes-128-gcm"]) {
     const note = {
       id: "abcdef0123456789abcdef01",
@@ -185,16 +185,41 @@ test("every AES mode stores the title and content inside one authenticated paylo
       note,
       "test_user",
       "銀行與密碼",
-      "Both fields belong in ciphertext.",
+      "Only this content belongs in ciphertext.",
     );
-    assert.equal(note.payloadVersion, 2);
-    assert.equal(Object.hasOwn(note, "name"), false);
+    assert.equal(note.payloadVersion, 3);
+    assert.equal(note.name, "銀行與密碼");
     const serialized = JSON.stringify(note);
-    assert.doesNotMatch(serialized, /銀行與密碼|Both fields belong/);
+    assert.match(serialized, /銀行與密碼/);
+    assert.doesNotMatch(serialized, /Only this content belongs/);
     assert.deepEqual(testables.readServerNotePayload(note, "test_user"), {
       name: "銀行與密碼",
-      content: "Both fields belong in ciphertext.",
+      content: "Only this content belongs in ciphertext.",
     });
+
+    const oldEncryptedTitleNote = {
+      id: "abcdef0123456789abcdef01",
+      encryption: mode,
+      payloadVersion: 2,
+      content: testables.encryptContent(
+        JSON.stringify({ name: "舊版密文標題", content: "舊版內容" }),
+        "test_user",
+        "abcdef0123456789abcdef01",
+        mode,
+      ),
+    };
+    const oldPayload = testables.readServerNotePayload(
+      oldEncryptedTitleNote,
+      "test_user",
+    );
+    testables.writeServerNotePayload(
+      oldEncryptedTitleNote,
+      "test_user",
+      oldPayload.name,
+      oldPayload.content,
+    );
+    assert.equal(oldEncryptedTitleNote.name, "舊版密文標題");
+    assert.equal(oldEncryptedTitleNote.payloadVersion, 3);
   }
 });
 

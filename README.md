@@ -15,7 +15,7 @@ security-sensitive actions.
 - Dark and light themes synchronized to signed-in accounts
 - Plain-text lined note reader and editor
 - No encryption, AES-128-GCM, AES-256-GCM, or AstraConfidential SCHybrid chosen at note creation
-- Every encrypted mode protects both the note title and content
+- Every encrypted mode protects note content; titles remain plaintext for identification
 - 48-note and 256 KiB full-account-directory limits
 - Unguessable, revocable, `noindex` read-only sharing links
 - Argon2id password hashing and server-managed authenticated sessions
@@ -99,13 +99,14 @@ after no matching account directory remains.
   16-character verification ID and 64-character one-time token to
   `https://nexacaptcha.nxlabtw.com/api/siteverify` and proceeds only when the
   response is exactly `success: true`.
-- AES-GCM note titles and content are encrypted together with keys derived from
-  the server secret, username, note ID, and key size. These AES modes are
+- AES-GCM note content is encrypted with keys derived from the server secret,
+  username, note ID, and key size. Titles remain plaintext. These AES modes are
   server-managed, not end-to-end or zero-knowledge.
-- AstraConfidential SCHybrid encrypts the title and content in the browser with
+- AstraConfidential SCHybrid encrypts note content in the browser with
   AES-256-GCM. Its Argon2id-derived browser key combines the user's 4–6 digit
   Vault PIN with a temporary server factor bound to the account, note, password
-  hash, and independent `ASTRANOTE_VAULT_SECRET`. The server stores no PIN or
+  hash, and independent `ASTRANOTE_VAULT_SECRET`. Titles remain plaintext so
+  note lists can identify them. The server stores no PIN or
   final browser key, and SCHybrid notes cannot be shared. It is server-assisted
   encryption rather than a zero-knowledge design: the web application and
   factor endpoint must still be trusted while the note is unlocked.

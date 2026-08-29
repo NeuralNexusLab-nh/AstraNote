@@ -329,14 +329,9 @@ function writeServerNotePayload(note, username, name, content) {
     delete note.payloadVersion;
     return;
   }
-  note.content = encryptContent(
-    JSON.stringify({ name, content }),
-    username,
-    note.id,
-    note.encryption,
-  );
-  note.payloadVersion = 2;
-  delete note.name;
+  note.name = name;
+  note.content = encryptContent(content, username, note.id, note.encryption);
+  note.payloadVersion = 3;
 }
 
 async function migrateLegacyEncryptedNotes() {
@@ -351,7 +346,7 @@ async function migrateLegacyEncryptedNotes() {
       if (
         !note ||
         !["aes-128-gcm", "aes-256-gcm"].includes(note.encryption) ||
-        note.payloadVersion === 2
+        note.payloadVersion !== 2
       )
         continue;
       try {
@@ -365,7 +360,7 @@ async function migrateLegacyEncryptedNotes() {
         await writeJson(file, note);
       } catch (error) {
         console.error(
-          `[${utcNow()}] Could not migrate encrypted note ${reference.id}:`,
+          `[${utcNow()}] Could not expose the title of encrypted note ${reference.id}:`,
           error.message,
         );
       }
@@ -713,7 +708,7 @@ async function noteSummary(username, reference) {
     id: note.id,
     name:
       note.encryption === SCHYBRID_MODE
-        ? null
+        ? normalizeText(note.name, MAX_NOTE_NAME) || null
         : payload?.name || "Encrypted note",
     encryption: note.encryption,
     updatedAt: note.updatedAt,
@@ -1347,7 +1342,9 @@ app.get("/api/notes/:id", requireAuth, async (req, res, next) => {
     if (note.encryption === SCHYBRID_MODE) {
       return res.json({
         id: note.id,
+        name: normalizeText(note.name, MAX_NOTE_NAME) || null,
         encryption: note.encryption,
+        payloadVersion: note.payloadVersion || 1,
         createdAt: note.createdAt,
         updatedAt: note.updatedAt,
         clientSalt: note.clientSalt,
@@ -1393,7 +1390,7 @@ app.post(
       );
     const schybrid = encryption === SCHYBRID_MODE;
     const name = normalizeText(req.body.name, MAX_NOTE_NAME);
-    if (!schybrid && !name)
+    if (!name)
       return jsonError(res, 400, "name_required", "Note name is required.");
     const requestedId = String(req.body.id || "");
     const clientSalt = String(req.body.clientSalt || "");
@@ -1439,9 +1436,10 @@ app.post(
           shareToken: null,
         };
         if (schybrid) {
+          note.name = name;
           note.clientSalt = clientSalt;
           note.content = req.body.encrypted;
-          note.payloadVersion = 1;
+          note.payloadVersion = 2;
         } else {
           writeServerNotePayload(note, username, name, "");
         }
@@ -1488,13 +1486,22 @@ app.put(
           throw Object.assign(new Error("Note not found."), { status: 404 });
         const original = await fsp.readFile(file, "utf8");
         if (note.encryption === SCHYBRID_MODE) {
+          const name = normalizeText(req.body.name, MAX_NOTE_NAME);
+          if (!name)
+            throw Object.assign(new Error("Note name is required."), {
+              status: 400,
+            });
           if (!validSchybridEnvelope(req.body.encrypted))
             throw Object.assign(new Error("Encrypted note data is invalid."), {
               status: 400,
             });
+          const preserveTimestamp =
+            req.body.migrationOnly === true && note.payloadVersion !== 2;
+          note.name = name;
           note.content = req.body.encrypted;
+          note.payloadVersion = 2;
           note.shareToken = null;
-          delete note.name;
+          if (!preserveTimestamp) note.updatedAt = utcNow();
         } else {
           const name = normalizeText(req.body.name, MAX_NOTE_NAME);
           const content =
@@ -1510,8 +1517,8 @@ app.put(
               status: 413,
             });
           writeServerNotePayload(note, username, name, content);
+          note.updatedAt = utcNow();
         }
-        note.updatedAt = utcNow();
         await writeJson(file, note);
         if ((await directorySize(userDir(username))) > MAX_ACCOUNT_BYTES) {
           await atomicWrite(file, original);

@@ -346,9 +346,9 @@ Object.assign(I18N.en, {
   confirmVaultPin: "Confirm Vault PIN",
   vaultTitle: "AstraConfidential SCHybrid",
   vaultExplanation:
-    "Your device combines your account details and Vault PIN with a temporary factor protected by AstraNote's independent server secret. The note title and content are encrypted on this device before upload; AstraNote stores those two fields only as ciphertext.",
+    "Your device combines your account details and Vault PIN with a temporary factor protected by AstraNote's independent server secret. The note content is encrypted on this device before upload; the title remains visible so you can identify the note in your list.",
   vaultPinWarning:
-    "AstraNote does not store or recover this PIN. Losing it makes the note permanently inaccessible. A 6-digit PIN is recommended, and you should enter it only on a device you trust.",
+    "AstraNote does not store or recover this PIN. Losing it makes the encrypted content permanently unreadable. A 6-digit PIN is recommended, and you should enter it only on a device you trust.",
   vaultNoSharing:
     "Sharing is unavailable because this encryption is bound to the owner's account, PIN, and AstraNote server secret.",
   vaultPinInvalid: "Enter a 4–6 digit Vault PIN.",
@@ -449,9 +449,9 @@ Object.assign(I18N["zh-Hant"], {
   confirmVaultPin: "再次輸入 Vault PIN",
   vaultTitle: "AstraConfidential SCHybrid",
   vaultExplanation:
-    "你的裝置會將帳號資料與 Vault PIN，結合由 AstraNote 獨立伺服器祕密保護的臨時因子。筆記名稱與內容會先在此裝置完成加密，再上傳至 AstraNote；這兩個欄位只會以密文保存。",
+    "你的裝置會將帳號資料與 Vault PIN，結合由 AstraNote 獨立伺服器祕密保護的臨時因子。筆記內容會先在此裝置完成加密，再上傳至 AstraNote；標題保持可見，方便你在清單中辨認筆記。",
   vaultPinWarning:
-    "AstraNote 不會儲存或協助找回這組 PIN。遺失後，筆記將永久無法開啟。建議使用 6 位 PIN，並且只在你信任的裝置上輸入。",
+    "AstraNote 不會儲存或協助找回這組 PIN。遺失後，加密內容將永久無法讀取。建議使用 6 位 PIN，並且只在你信任的裝置上輸入。",
   vaultNoSharing:
     "此加密方式與擁有者帳號、PIN 及 AstraNote 伺服器祕密綁定，因此不提供分享功能。",
   vaultPinInvalid: "請輸入 4–6 位數的 Vault PIN。",
@@ -573,8 +573,14 @@ function schybridAdditionalData(noteId) {
     `AstraConfidential SCHybrid v1\0${state.account.username.toLowerCase()}\0${noteId}`,
   );
 }
-async function encryptSchybridPayload(noteId, clientSalt, pin, payload) {
-  const key = await deriveSchybridKey(noteId, clientSalt, pin);
+async function encryptSchybridPayload(
+  noteId,
+  clientSalt,
+  pin,
+  payload,
+  existingKey = null,
+) {
+  const key = existingKey || (await deriveSchybridKey(noteId, clientSalt, pin));
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const encrypted = new Uint8Array(
     await crypto.subtle.encrypt(
@@ -615,16 +621,21 @@ async function decryptSchybridPayload(note, pin) {
       combined,
     );
     const payload = JSON.parse(textDecoder.decode(decrypted));
+    const legacy = note.payloadVersion !== 2;
+    const name = legacy ? payload.name : note.name;
     if (
-      typeof payload.name !== "string" ||
-      !payload.name.trim() ||
-      payload.name.length > 80 ||
+      typeof name !== "string" ||
+      !name.trim() ||
+      name.length > 80 ||
       typeof payload.content !== "string"
     )
       throw new Error("Invalid payload");
     return {
-      name: payload.name.normalize("NFC").trim(),
-      content: payload.content.normalize("NFC"),
+      key,
+      payload: {
+        name: name.normalize("NFC").trim(),
+        content: payload.content.normalize("NFC"),
+      },
     };
   } catch (error) {
     if (error.status === 429 || error.code === "vault_unavailable") throw error;
@@ -917,8 +928,32 @@ function unlockSchybrid(note) {
       onConfirm: async (close) => {
         if (!/^\d{4,6}$/u.test(input.value))
           throw new Error(t("vaultPinInvalid"));
-        const payload = await decryptSchybridPayload(note, input.value);
-        const result = { payload, pin: input.value };
+        const decrypted = await decryptSchybridPayload(note, input.value);
+        if (note.payloadVersion !== 2) {
+          try {
+            const encrypted = await encryptSchybridPayload(
+              note.id,
+              note.clientSalt,
+              input.value,
+              { content: decrypted.payload.content },
+              decrypted.key,
+            );
+            await api(`/api/notes/${note.id}`, {
+              method: "PUT",
+              body: {
+                name: decrypted.payload.name,
+                encrypted,
+                migrationOnly: true,
+              },
+            });
+            note.name = decrypted.payload.name;
+            note.encrypted = encrypted;
+            note.payloadVersion = 2;
+          } catch (error) {
+            console.warn("Could not migrate the legacy SCHybrid title.", error);
+          }
+        }
+        const result = { payload: decrypted.payload, pin: input.value };
         input.value = "";
         close();
         resolve(result);
@@ -1259,10 +1294,8 @@ async function initNewNote() {
         body.id = id;
         body.clientSalt = clientSalt;
         body.encrypted = await encryptSchybridPayload(id, clientSalt, pin, {
-          name: normalizedName,
           content: "",
         });
-        delete body.name;
       }
       const result = await api("/api/notes", {
         method: "POST",
@@ -1403,11 +1436,9 @@ async function initEditor() {
           note.clientSalt,
           vaultPin,
           {
-            name: normalizedName,
             content: content.value.normalize("NFC"),
           },
         );
-        delete body.name;
         delete body.content;
       }
       const result = await api(`/api/notes/${note.id}`, {
