@@ -566,7 +566,7 @@ const state = {
   theme: "dark",
 };
 const SCHYBRID_MODE = "astra-confidential-schybrid-v1";
-const BITCOIN_ADDRESS = "bc1qh3g3uhy90f93dqt00w5m0j2vh550r6t4dmqlqm";
+const BITCOIN_ADDRESS = "bc1qazdfwsgju2e9c6nje63nwkx6n9mnfgzu37tlu6";
 const BITCOIN_URI = `bitcoin:${BITCOIN_ADDRESS}`;
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];

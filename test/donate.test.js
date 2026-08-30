@@ -8,7 +8,7 @@ const qrcode = require("qrcode-generator");
 const jsQR = require("jsqr");
 
 const ROOT = path.join(__dirname, "..");
-const ADDRESS = "bc1qh3g3uhy90f93dqt00w5m0j2vh550r6t4dmqlqm";
+const ADDRESS = "bc1qazdfwsgju2e9c6nje63nwkx6n9mnfgzu37tlu6";
 const URI = `bitcoin:${ADDRESS}`;
 
 test("donation QR remains decodable with its centered logo isolation area", () => {
