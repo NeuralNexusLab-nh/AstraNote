@@ -123,6 +123,71 @@
           </div>
         </div>
       </section>
+      <section class="home-section encryption-section" id="encryption">
+        <div class="shell">
+          <header class="section-head encryption-section-head reveal">
+            <p class="eyebrow">
+              <i class="fa-solid fa-shield-halved" aria-hidden="true"></i
+              ><span data-i18n="encryptionEyebrow"></span>
+            </p>
+            <h2 data-i18n="encryptionTitle"></h2>
+            <p class="muted encryption-lead" data-i18n="encryptionIntro"></p>
+          </header>
+          <aside class="title-visibility-note reveal">
+            <i class="fa-solid fa-eye" aria-hidden="true"></i>
+            <div>
+              <strong data-i18n="encryptionTitleNoticeTitle"></strong>
+              <p data-i18n="encryptionTitleNoticeBody"></p>
+            </div>
+          </aside>
+          <div class="encryption-table-wrap reveal">
+            <table class="encryption-table" data-i18n-aria-label="encryptionTableLabel">
+              <thead>
+                <tr>
+                  <th scope="col" data-i18n="encryptionModeColumn"></th>
+                  <th scope="col" data-i18n="encryptionMethodColumn"></th>
+                  <th scope="col" data-i18n="encryptionExposureColumn"></th>
+                  <th scope="col" data-i18n="encryptionSecurityColumn"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row" data-label-key="encryptionModeColumn"><span class="encryption-mode-icon plain" aria-hidden="true"><i class="fa-solid fa-file-lines"></i></span><span data-i18n="encryptionNoneName"></span></th>
+                  <td data-label-key="encryptionMethodColumn" data-i18n="encryptionNoneMethod"></td>
+                  <td data-label-key="encryptionExposureColumn" data-i18n="encryptionNoneExposure"></td>
+                  <td data-label-key="encryptionSecurityColumn"><span class="security-level security-none"><i class="fa-solid fa-lock-open" aria-hidden="true"></i><span data-i18n="encryptionNoneSecurity"></span></span></td>
+                </tr>
+                <tr>
+                  <th scope="row" data-label-key="encryptionModeColumn"><span class="encryption-mode-icon" aria-hidden="true"><i class="fa-solid fa-lock"></i></span><span>AES-128-GCM</span></th>
+                  <td data-label-key="encryptionMethodColumn" data-i18n="encryptionAes128Method"></td>
+                  <td data-label-key="encryptionExposureColumn" data-i18n="encryptionAesExposure"></td>
+                  <td data-label-key="encryptionSecurityColumn"><span class="security-level"><i class="fa-solid fa-shield" aria-hidden="true"></i><span data-i18n="encryptionAes128Security"></span></span></td>
+                </tr>
+                <tr>
+                  <th scope="row" data-label-key="encryptionModeColumn"><span class="encryption-mode-icon" aria-hidden="true"><i class="fa-solid fa-lock"></i></span><span>AES-256-GCM</span></th>
+                  <td data-label-key="encryptionMethodColumn" data-i18n="encryptionAes256Method"></td>
+                  <td data-label-key="encryptionExposureColumn" data-i18n="encryptionAesExposure"></td>
+                  <td data-label-key="encryptionSecurityColumn"><span class="security-level"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><span data-i18n="encryptionAes256Security"></span></span></td>
+                </tr>
+                <tr class="schybrid-row">
+                  <th scope="row" data-label-key="encryptionModeColumn"><span class="encryption-mode-icon confidential" aria-hidden="true"><i class="fa-solid fa-user-shield"></i></span><span>AstraConfidential SCHybrid</span></th>
+                  <td data-label-key="encryptionMethodColumn" data-i18n="encryptionSchybridMethod"></td>
+                  <td data-label-key="encryptionExposureColumn" data-i18n="encryptionSchybridExposure"></td>
+                  <td data-label-key="encryptionSecurityColumn"><span class="security-level security-layered"><i class="fa-solid fa-layer-group" aria-hidden="true"></i><span data-i18n="encryptionSchybridSecurity"></span></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="schybrid-explainer reveal">
+            <div class="schybrid-explainer-icon" aria-hidden="true"><i class="fa-solid fa-fingerprint"></i></div>
+            <div>
+              <h3 data-i18n="encryptionSchybridTitle"></h3>
+              <p data-i18n="encryptionSchybridBody"></p>
+              <p class="muted" data-i18n="encryptionSchybridCaution"></p>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   </body>
 </html>

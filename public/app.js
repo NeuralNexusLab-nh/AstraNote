@@ -303,6 +303,42 @@ Object.assign(I18N.en, {
   limitTitle: "Enough room for the notes you reach for most.",
   limitBody:
     "Every account includes 256 KiB across all account files and up to 48 notes. If the account is full, existing notes remain readable, but new notes and saves are paused until space is freed.",
+  encryptionEyebrow: "CHOOSE YOUR PROTECTION",
+  encryptionTitle: "Four ways to store a note, with clear trade-offs.",
+  encryptionIntro:
+    "Choose the protection that fits each note when you create it. Encryption protects note content at rest, while the way keys are created and used determines what an attacker would need to recover the original text.",
+  encryptionTitleNoticeTitle: "Note titles are never encrypted",
+  encryptionTitleNoticeBody:
+    "In every mode, the note title remains readable in AstraNote's stored files so it can appear in your note list. Do not place secrets in a title.",
+  encryptionTableLabel: "Comparison of AstraNote encryption modes",
+  encryptionModeColumn: "Mode",
+  encryptionMethodColumn: "How the content is protected",
+  encryptionExposureColumn: "What an attacker would need",
+  encryptionSecurityColumn: "Security",
+  encryptionNoneName: "No encryption",
+  encryptionNoneMethod:
+    "The note content is stored as readable plain text. It is the simplest option, with no encryption overhead.",
+  encryptionNoneExposure:
+    "Access to the note file is enough to read the original content.",
+  encryptionNoneSecurity: "No confidentiality",
+  encryptionAes128Method:
+    "The server encrypts and authenticates the content with AES-128-GCM using a per-note key derived from AstraNote's server secret.",
+  encryptionAes256Method:
+    "The server encrypts and authenticates the content with AES-256-GCM using a per-note key derived from AstraNote's server secret.",
+  encryptionAesExposure:
+    "The encrypted note files together with AstraNote's server secret, or control of the running server while the note is used. The server can decrypt this mode during normal operation.",
+  encryptionAes128Security: "Strong at rest",
+  encryptionAes256Security: "Stronger key margin",
+  encryptionSchybridMethod:
+    "The browser combines a per-note salt, account-bound server factor, and Vault PIN through Argon2id, then encrypts the content locally with AES-256-GCM before upload.",
+  encryptionSchybridExposure:
+    "The complete encrypted note and account metadata, AstraNote's independent Vault secret, and the correct—or successfully guessed—PIN; or a trusted device/session compromised while the note is unlocked.",
+  encryptionSchybridSecurity: "Most layered",
+  encryptionSchybridTitle: "Why AstraConfidential SCHybrid adds another barrier",
+  encryptionSchybridBody:
+    "The Vault PIN itself is used only in the browser and is never sent to AstraNote or stored in plain text. The server receives a one-way client hash, then combines it with the account data—including the password hash—the note identity, a per-note salt, and an independent Vault secret to return an account- and note-bound factor. The browser uses memory-hard Argon2id to derive the final key and encrypts the content before upload. AstraNote stores only the encrypted envelope and does not retain the PIN or final browser key. Sharing is unavailable for this mode.",
+  encryptionSchybridCaution:
+    "This layered design greatly reduces the value of stealing only files or only an environment secret, but security still depends on a unique 6-digit PIN, a trusted device, protected server secrets, and uncompromised website code.",
   welcomeBody: "Your notes and account usage, clearly presented.",
   noNotes: "No notes yet. Create one whenever you have something worth keeping.",
   newNoteBody:
@@ -426,6 +462,40 @@ Object.assign(I18N["zh-Hant"], {
   limitTitle: "為最常用的筆記保留剛好的空間。",
   limitBody:
     "每個帳號的所有檔案合計 256 KiB，最多 48 篇筆記。空間用滿後仍可閱讀既有內容，但必須先釋放空間才能新增或儲存。",
+  encryptionEyebrow: "選擇適合的保護方式",
+  encryptionTitle: "四種儲存方式，清楚看見每一種取捨。",
+  encryptionIntro:
+    "建立筆記時，可以依內容選擇適合的保護方式。加密能保護靜態儲存的筆記內容，而密鑰如何產生及使用，會決定駭客還必須取得哪些資料才能還原原文。",
+  encryptionTitleNoticeTitle: "所有模式的筆記標題都不會加密",
+  encryptionTitleNoticeBody:
+    "無論選擇哪一種方式，筆記標題都會以可讀形式保留在 AstraNote 的儲存檔案中，才能顯示於筆記清單。請勿把機密資訊寫進標題。",
+  encryptionTableLabel: "AstraNote 加密方式比較",
+  encryptionModeColumn: "方式",
+  encryptionMethodColumn: "內容如何受到保護",
+  encryptionExposureColumn: "駭客需要取得什麼",
+  encryptionSecurityColumn: "安全性",
+  encryptionNoneName: "不加密",
+  encryptionNoneMethod: "筆記內容以可直接閱讀的純文字儲存，最簡單且沒有加密額外用量。",
+  encryptionNoneExposure: "只要取得筆記檔案，就能直接讀取原文。",
+  encryptionNoneSecurity: "不提供機密性",
+  encryptionAes128Method:
+    "伺服器使用 AES-128-GCM 加密並驗證內容完整性；每篇筆記的密鑰由 AstraNote 伺服器祕密衍生。",
+  encryptionAes256Method:
+    "伺服器使用 AES-256-GCM 加密並驗證內容完整性；每篇筆記的密鑰由 AstraNote 伺服器祕密衍生。",
+  encryptionAesExposure:
+    "同時取得加密筆記檔案與 AstraNote 伺服器祕密，或在筆記使用期間控制正在運作的伺服器。伺服器在正常運作時能解密此模式。",
+  encryptionAes128Security: "強大的靜態加密",
+  encryptionAes256Security: "更大的密鑰安全餘裕",
+  encryptionSchybridMethod:
+    "瀏覽器把每篇筆記的 Salt、綁定帳號的伺服器因子與 Vault PIN 透過 Argon2id 混合，再於上傳前以 AES-256-GCM 在本機加密內容。",
+  encryptionSchybridExposure:
+    "完整的加密筆記及帳號資料、AstraNote 獨立 Vault 祕密，以及正確或成功猜中的 PIN；或在筆記已解鎖時入侵受信任的裝置或工作階段。",
+  encryptionSchybridSecurity: "最多層的保護",
+  encryptionSchybridTitle: "AstraConfidential SCHybrid 為何多了一道難題",
+  encryptionSchybridBody:
+    "Vault PIN 本身只在瀏覽器中使用，不會傳送給 AstraNote，也不會以明文儲存。伺服器接收單向 Client Hash 後，會將它與帳號資料（包含密碼 Hash）、筆記識別資料、每篇筆記的 Salt，以及獨立 Vault 祕密混合，回傳綁定帳號與筆記的臨時因子。瀏覽器再以需要大量記憶體的 Argon2id 衍生最終密鑰，於上傳前完成內容加密。AstraNote 只保存加密封包，不保存 PIN 或最終瀏覽器密鑰；此模式不提供分享功能。",
+  encryptionSchybridCaution:
+    "這種分層設計能大幅降低只竊取檔案或只竊取單一環境祕密的價值，但安全性仍取決於 6 位數 PIN、受信任的裝置、妥善保護的伺服器祕密，以及未遭竄改的網站程式。",
   welcomeBody: "清楚查看筆記和帳號用量。",
   accountAge: "帳號已建立",
   days: "天",
@@ -551,6 +621,41 @@ I18N.ja = {
   donateQrLabel: "AstraNote Bitcoin 寄付用 QR コード",
   donateNetworkAria: "Bitcoin メインネット",
   donateSeoTitle: "AstraNote に寄付 — Bitcoin 寄付",
+  encryptionEyebrow: "保護方法を選択",
+  encryptionTitle: "4 つの保存方法と、それぞれの違い。",
+  encryptionIntro:
+    "ノートの作成時に、内容に合った保護方法を選べます。保存データの暗号化方式と鍵の作成・利用方法によって、攻撃者が原文を復元するために必要なものが変わります。",
+  encryptionTitleNoticeTitle: "どの方式でもノートのタイトルは暗号化されません",
+  encryptionTitleNoticeBody:
+    "ノート一覧に表示できるよう、タイトルは AstraNote の保存ファイル内で読み取り可能な状態に保たれます。タイトルに機密情報を書かないでください。",
+  encryptionTableLabel: "AstraNote の暗号化方式の比較",
+  encryptionModeColumn: "方式",
+  encryptionMethodColumn: "内容の保護方法",
+  encryptionExposureColumn: "攻撃者に必要なもの",
+  encryptionSecurityColumn: "安全性",
+  encryptionNoneName: "暗号化なし",
+  encryptionNoneMethod:
+    "ノートの内容を読み取り可能なプレーンテキストで保存します。暗号化による容量増加はありません。",
+  encryptionNoneExposure: "ノートファイルを取得するだけで原文を読めます。",
+  encryptionNoneSecurity: "機密性なし",
+  encryptionAes128Method:
+    "サーバーが AES-128-GCM で内容を暗号化・認証します。ノートごとの鍵は AstraNote のサーバー秘密から導出されます。",
+  encryptionAes256Method:
+    "サーバーが AES-256-GCM で内容を暗号化・認証します。ノートごとの鍵は AstraNote のサーバー秘密から導出されます。",
+  encryptionAesExposure:
+    "暗号化されたノートファイルと AstraNote のサーバー秘密の両方、またはノート利用中の稼働サーバーの制御。通常動作ではサーバーがこの方式を復号できます。",
+  encryptionAes128Security: "強力な保存時暗号化",
+  encryptionAes256Security: "より大きな鍵の余裕",
+  encryptionSchybridMethod:
+    "ブラウザがノート固有の Salt、アカウントに結び付いたサーバー要素、Vault PIN を Argon2id で組み合わせ、アップロード前に AES-256-GCM でローカル暗号化します。",
+  encryptionSchybridExposure:
+    "暗号化ノートと完全なアカウント情報、AstraNote の独立した Vault 秘密、正しい、または推測に成功した PIN、もしくはノート解錠中の信頼済み端末やセッションの侵害。",
+  encryptionSchybridSecurity: "最も多層的",
+  encryptionSchybridTitle: "AstraConfidential SCHybrid がもう一つの障壁になる理由",
+  encryptionSchybridBody:
+    "Vault PIN 自体はブラウザ内だけで使用され、AstraNote へ送信されず、平文でも保存されません。サーバーは一方向の Client Hash を受け取り、パスワード Hash を含むアカウント情報、ノート識別情報、ノート固有の Salt、独立した Vault 秘密と組み合わせて、アカウントとノートに結び付いた要素を返します。ブラウザはメモリ負荷の高い Argon2id で最終鍵を導出し、アップロード前に内容を暗号化します。AstraNote は暗号化データだけを保存し、PIN や最終ブラウザ鍵を保持しません。この方式では共有機能を利用できません。",
+  encryptionSchybridCaution:
+    "この多層設計により、ファイルだけ、または単一の環境秘密だけを盗んでも価値は大きく下がります。ただし、安全性には 6 桁の PIN、信頼できる端末、保護されたサーバー秘密、改ざんされていないサイトコードが必要です。",
   skipContent: "メインコンテンツへ移動",
   primaryNavigation: "メインナビゲーション",
   menu: "メニュー",
@@ -861,6 +966,9 @@ function applyLocale() {
   $$("[data-i18n-aria-label]").forEach((el) =>
     el.setAttribute("aria-label", t(el.dataset.i18nAriaLabel)),
   );
+  $$("[data-label-key]").forEach((el) =>
+    el.setAttribute("data-label", t(el.dataset.labelKey)),
+  );
   const selector = $("#language-select");
   if (selector) selector.value = state.language;
   applyPageSeo();
@@ -872,14 +980,18 @@ function buildNav() {
     ? `
     <a class="nav-link" href="/dashboard"><i class="fa-solid fa-chart-line"></i> <span data-i18n="dashboard"></span></a>
     <a class="nav-link" href="/notes"><i class="fa-solid fa-book"></i> <span data-i18n="notes"></span></a>
+    <a class="nav-link donate-nav-link" href="/donate"><i class="fa-brands fa-bitcoin" aria-hidden="true"></i> <span data-i18n="donateNav"></span></a>
     <a class="nav-link" href="/settings"><i class="fa-solid fa-gear"></i> <span data-i18n="settings"></span></a>`
     : "";
+  const publicDonateLink = authenticated
+    ? ""
+    : '<a class="nav-link donate-nav-link" href="/donate"><i class="fa-brands fa-bitcoin" aria-hidden="true"></i> <span data-i18n="donateNav"></span></a>';
   const nav = document.createElement("nav");
   nav.className = `site-nav ${page === "home" ? "" : "solid"}`;
   nav.dataset.i18nAriaLabel = "primaryNavigation";
   nav.innerHTML = `<a class="brand" href="/"><img src="/asset/logo.svg" alt=""><span>AstraNote</span></a>
     <button class="mobile-toggle" type="button" data-i18n-aria-label="menu" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>
-    <div class="nav-links"><a class="nav-link" href="/"><i class="fa-solid fa-house" aria-hidden="true"></i> <span data-i18n="home"></span></a>${protectedLinks}<a class="nav-link donate-nav-link" href="/donate"><i class="fa-brands fa-bitcoin" aria-hidden="true"></i> <span data-i18n="donateNav"></span></a></div>
+    <div class="nav-links"><a class="nav-link" href="/"><i class="fa-solid fa-house" aria-hidden="true"></i> <span data-i18n="home"></span></a>${protectedLinks}${publicDonateLink}</div>
     <div class="nav-actions"><i class="fa-solid fa-language" aria-hidden="true"></i><select class="lang-select" id="language-select" data-i18n-aria-label="languageSelector"><option value="en">EN</option><option value="zh-Hant">繁中</option><option value="ja">日本語</option></select>
     ${authenticated ? '<button class="btn" id="nav-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i><span data-i18n="logout"></span></button>' : '<a class="nav-link" href="/login"><i class="fa-solid fa-arrow-right-to-bracket"></i> <span data-i18n="login"></span></a><a class="btn btn-primary" href="/register"><i class="fa-solid fa-user-plus"></i><span data-i18n="register"></span></a>'}</div>`;
   document.body.prepend(nav);
