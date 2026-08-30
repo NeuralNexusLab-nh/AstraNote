@@ -19,14 +19,19 @@ test("home page compares every supported encryption mode and discloses visible t
   assert.match(app, /Note titles are never encrypted/u);
   assert.match(app, /所有模式的筆記標題都不會加密/u);
   assert.match(app, /どの方式でもノートのタイトルは暗号化されません/u);
-  assert.match(app, /The PIN itself is never sent or stored/u);
+  assert.match(app, /AstraNote does not store the PIN itself and cannot recover it/u);
   assert.equal((html.match(/class="matrix-value yes"/gu) || []).length, 8);
   assert.equal((html.match(/class="matrix-value no"/gu) || []).length, 8);
   assert.equal((html.match(/class="schybrid-flow"/gu) || []).length, 1);
   assert.match(app, /Browser-side encryption/u);
   assert.match(app, /瀏覽器端加密/u);
-  assert.match(app, /AstraConfidential SCHybrid 有什麼不同/u);
-  assert.match(app, /still be brute-forced offline/u);
+  assert.match(app, /AstraConfidential SCHybrid 的特點/u);
+  assert.match(app, /still be guessed offline/u);
+  assert.doesNotMatch(app, /Note file \+ ASTRANOTE_SECRET/u);
+  assert.doesNotMatch(app, /筆記檔案 \+ ASTRANOTE_SECRET/u);
+  assert.doesNotMatch(app, /Client Hash is mixed/u);
+  assert.doesNotMatch(app, /Client Hash 再與/u);
+  assert.doesNotMatch(app, /Vault 祕密/u);
 });
 
 test("authenticated navigation places Donate immediately before Settings", () => {

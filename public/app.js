@@ -326,24 +326,24 @@ Object.assign(I18N.en, {
   encryptionNoneExposure: "The note file alone",
   encryptionNoneSecurity: "None",
   encryptionAesExposure:
-    "Note file + ASTRANOTE_SECRET, or control of the running server",
+    "Note file + the server encryption key, or control of the running server",
   encryptionAes128Security: "Strong",
   encryptionAes256Security: "Very strong",
   encryptionSchybridExposure:
-    "Even with all server data and the Vault secret, plaintext is not directly available. The attacker must still guess or obtain the PIN, or control a device while the PIN is entered or the note is unlocked.",
+    "Even with all server data, plaintext is not directly available. The attacker must still guess or obtain the PIN, or control a device while the PIN is entered or the note is unlocked.",
   encryptionSchybridSecurity: "Highest level",
-  encryptionSchybridTitle: "Why AstraConfidential SCHybrid is different",
-  encryptionSchybridStepOneTitle: "PIN stays on the device",
+  encryptionSchybridTitle: "AstraConfidential SCHybrid features",
+  encryptionSchybridStepOneTitle: "The PIN stays with you",
   encryptionSchybridStepOneBody:
-    "Account identity, note Salt, and PIN form a Client Hash. The PIN itself is never sent or stored.",
-  encryptionSchybridStepTwoTitle: "Server adds its factor",
+    "The PIN is used in your browser to unlock the note. AstraNote does not store the PIN itself and cannot recover it.",
+  encryptionSchybridStepTwoTitle: "Several protections work together",
   encryptionSchybridStepTwoBody:
-    "The Client Hash is mixed with account data, the Password Hash, note identity, and an independent Vault secret.",
+    "Your account, note, PIN, and AstraNote's server-side protection create a note-specific key. Stealing only one part is not enough.",
   encryptionSchybridStepThreeTitle: "Browser encrypts before upload",
   encryptionSchybridStepThreeBody:
-    "Argon2id derives an AES-256-GCM key; only encrypted content is uploaded.",
+    "The note content is encrypted on your device first. The server receives and stores only encrypted content.",
   encryptionSchybridCaution:
-    "Without the PIN or control of the PIN-entry device, stolen server data cannot be directly decrypted. A 4–6 digit PIN can still be brute-forced offline, so use a unique 6-digit PIN and only trusted devices.",
+    "Even if all server data is stolen, it does not directly reveal the plaintext. The attacker still needs the PIN or control of a PIN-entry or unlocked device. A 4–6 digit PIN can still be guessed offline, so use a unique 6-digit PIN and only trusted devices.",
   welcomeBody: "Your notes and account usage, clearly presented.",
   noNotes: "No notes yet. Create one whenever you have something worth keeping.",
   newNoteBody:
@@ -490,24 +490,24 @@ Object.assign(I18N["zh-Hant"], {
   encryptionNoneExposure: "只需筆記檔案",
   encryptionNoneSecurity: "無",
   encryptionAesExposure:
-    "筆記檔案 + ASTRANOTE_SECRET，或控制運作中的伺服器",
+    "筆記檔案 + 伺服器端加密金鑰，或控制運作中的伺服器",
   encryptionAes128Security: "強",
   encryptionAes256Security: "很強",
   encryptionSchybridExposure:
-    "即使取得所有伺服器資料與 Vault 祕密，也不能直接看到明文；仍須猜中或取得 PIN，或控制正在輸入 PIN／已解鎖筆記的裝置。",
+    "即使取得所有伺服器資料，也不能直接看到明文；仍須猜中或取得 PIN，或控制正在輸入 PIN／已解鎖筆記的裝置。",
   encryptionSchybridSecurity: "最高層級",
-  encryptionSchybridTitle: "AstraConfidential SCHybrid 有什麼不同",
-  encryptionSchybridStepOneTitle: "PIN 留在裝置",
+  encryptionSchybridTitle: "AstraConfidential SCHybrid 的特點",
+  encryptionSchybridStepOneTitle: "PIN 由你掌握",
   encryptionSchybridStepOneBody:
-    "帳號識別、筆記 Salt 與 PIN 形成 Client Hash；PIN 本身不傳送或儲存。",
-  encryptionSchybridStepTwoTitle: "伺服器加入因子",
+    "PIN 只在瀏覽器中用來解鎖筆記；AstraNote 不會保存 PIN 本身，也無法協助找回。",
+  encryptionSchybridStepTwoTitle: "多道保護共同作用",
   encryptionSchybridStepTwoBody:
-    "Client Hash 再與帳號資料、Password Hash、筆記識別及獨立 Vault 祕密混合。",
+    "帳號、筆記、PIN 與 AstraNote 的伺服器端保護共同產生每篇筆記的專屬密鑰；只竊取其中一部分並不足夠。",
   encryptionSchybridStepThreeTitle: "上傳前由瀏覽器加密",
   encryptionSchybridStepThreeBody:
-    "Argon2id 衍生 AES-256-GCM 密鑰，只上傳加密後的內容。",
+    "筆記內容會先在你的裝置完成加密，伺服器只接收並保存加密後的內容。",
   encryptionSchybridCaution:
-    "沒有 PIN，也沒有控制輸入 PIN 的裝置時，遭竊的伺服器資料不能被直接解密。但 4–6 位數 PIN 仍可能遭離線暴力猜測，請使用不重複的 6 位數 PIN，並只在信任的裝置輸入。",
+    "即使所有伺服器資料遭竊，也不會直接顯示明文；攻擊者仍需 PIN，或控制正在輸入 PIN／已解鎖筆記的裝置。但 4–6 位數 PIN 仍可能遭離線猜測，請使用不重複的 6 位數 PIN，並只在信任的裝置輸入。",
   welcomeBody: "清楚查看筆記和帳號用量。",
   accountAge: "帳號已建立",
   days: "天",
@@ -656,24 +656,24 @@ I18N.ja = {
   encryptionNoneExposure: "ノートファイルのみ",
   encryptionNoneSecurity: "なし",
   encryptionAesExposure:
-    "ノートファイル + ASTRANOTE_SECRET、または稼働サーバーの制御",
+    "ノートファイル + サーバー側の暗号鍵、または稼働サーバーの制御",
   encryptionAes128Security: "強い",
   encryptionAes256Security: "非常に強い",
   encryptionSchybridExposure:
-    "すべてのサーバーデータと Vault 秘密を取得しても平文は直接読めません。PIN を推測・入手するか、PIN 入力中または解錠済みの端末を制御する必要があります。",
+    "すべてのサーバーデータを取得しても平文は直接読めません。PIN を推測・入手するか、PIN 入力中または解錠済みの端末を制御する必要があります。",
   encryptionSchybridSecurity: "最高レベル",
-  encryptionSchybridTitle: "AstraConfidential SCHybrid の違い",
-  encryptionSchybridStepOneTitle: "PIN は端末内に保持",
+  encryptionSchybridTitle: "AstraConfidential SCHybrid の特長",
+  encryptionSchybridStepOneTitle: "PIN は利用者が保持",
   encryptionSchybridStepOneBody:
-    "アカウント識別情報、ノート Salt、PIN から Client Hash を作成し、PIN 自体は送信・保存しません。",
-  encryptionSchybridStepTwoTitle: "サーバー要素を追加",
+    "PIN はブラウザでノートを解錠するためだけに使われます。AstraNote は PIN 自体を保存せず、復元もできません。",
+  encryptionSchybridStepTwoTitle: "複数の保護を組み合わせる",
   encryptionSchybridStepTwoBody:
-    "Client Hash をアカウント情報、Password Hash、ノート識別情報、独立した Vault 秘密と組み合わせます。",
+    "アカウント、ノート、PIN、AstraNote のサーバー側保護からノート専用鍵を作ります。一部分だけ盗んでも十分ではありません。",
   encryptionSchybridStepThreeTitle: "アップロード前に暗号化",
   encryptionSchybridStepThreeBody:
-    "Argon2id で AES-256-GCM 鍵を導出し、暗号化済みの内容だけを送信します。",
+    "ノート内容は端末上で先に暗号化され、サーバーは暗号化済みの内容だけを受信・保存します。",
   encryptionSchybridCaution:
-    "PIN も PIN 入力端末の制御もなければ、盗まれたサーバーデータを直接復号できません。ただし 4～6 桁の PIN はオフライン総当たりの可能性があるため、固有の 6 桁 PIN を信頼できる端末だけで使ってください。",
+    "すべてのサーバーデータが盗まれても平文は直接表示されません。攻撃者には PIN、または PIN 入力中・解錠済み端末の制御が必要です。ただし 4～6 桁の PIN はオフラインで推測される可能性があるため、固有の 6 桁 PIN を信頼できる端末だけで使ってください。",
   skipContent: "メインコンテンツへ移動",
   primaryNavigation: "メインナビゲーション",
   menu: "メニュー",

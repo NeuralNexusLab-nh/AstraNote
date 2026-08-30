@@ -72,16 +72,15 @@
             be identified in lists; only the content is encrypted. The AES
             modes are managed by the server and are not end-to-end or
             zero-knowledge encryption; the Operator may technically decrypt
-            them. SCHybrid encrypts the content in the browser using a
-            key derived with Argon2id from a 4–6 digit Vault PIN and a temporary
-            server factor bound to the account, note, password hash, and an
-            independent server secret. The PIN and final browser key are not
-            stored by AstraNote. SCHybrid is server-assisted client-side
+            them. SCHybrid encrypts the content in the browser using a 4–6
+            digit Vault PIN together with server-side protection bound to the
+            account and note. The PIN and final browser key are not stored by
+            AstraNote. SCHybrid is server-assisted client-side
             encryption, not a zero-knowledge guarantee: the browser application
             and server must still be trusted while unlocking, and loss of the
-            PIN, account access, or required server secret may make its content
-            permanently unreadable. Encryption increases storage use; short
-            notes may have proportionally larger overhead.
+            PIN, account access, or required server-side protection may make
+            its content permanently unreadable. Encryption increases storage
+            use; short notes may have proportionally larger overhead.
           </p>
           <h2>5. Sharing</h2>
           <p>
@@ -212,10 +211,9 @@
             筆記內容仍歸您所有。您僅授予營運者為提供服務所必要的有限權利，包括託管、處理、加密、解密、傳輸、顯示、保護及刪除內容。可選擇不加密、AES-128-GCM、AES-256-GCM
             或 AstraConfidential SCHybrid；加密方式於建立時決定且之後不得更換。所有加密方式都會讓筆記名稱保持明文，以便在清單中辨認；只有內容會加密。AES
             模式由伺服器管理，並非端對端或零知識加密，營運者在技術上可能解密。SCHybrid
-            會在瀏覽器中，以 Argon2id 將 4–6 位 Vault PIN
-            與綁定帳號、筆記、密碼雜湊及獨立伺服器祕密的臨時因子結合，再加密內容；AstraNote
+            會在瀏覽器中使用 4–6 位 Vault PIN，並配合綁定帳號與筆記的伺服器端保護來加密內容；AstraNote
             不儲存 PIN 或最終瀏覽器金鑰。SCHybrid
-            屬於伺服器協助的用戶端加密，而非零知識保證；解鎖時仍須信任瀏覽器程式與伺服器，且遺失 PIN、帳號存取權或必要伺服器祕密，均可能使筆記內容永久無法讀取。加密會增加儲存用量，短內容的比例開銷可能更高。
+            屬於伺服器協助的用戶端加密，而非零知識保證；解鎖時仍須信任瀏覽器程式與伺服器，且遺失 PIN、帳號存取權或必要的伺服器端保護，均可能使筆記內容永久無法讀取。加密會增加儲存用量，短內容的比例開銷可能更高。
           </p>
           <h2>五、分享</h2>
           <p>
