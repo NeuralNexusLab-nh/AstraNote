@@ -19,7 +19,10 @@ test("home page compares every supported encryption mode and discloses visible t
   assert.match(app, /Note titles are never encrypted/u);
   assert.match(app, /所有模式的筆記標題都不會加密/u);
   assert.match(app, /どの方式でもノートのタイトルは暗号化されません/u);
-  assert.match(app, /PIN itself is used only in the browser and is never sent/u);
+  assert.match(app, /The PIN itself is never sent or stored/u);
+  assert.equal((html.match(/class="matrix-value yes"/gu) || []).length, 10);
+  assert.equal((html.match(/class="matrix-value no"/gu) || []).length, 6);
+  assert.equal((html.match(/class="schybrid-flow"/gu) || []).length, 1);
 });
 
 test("authenticated navigation places Donate immediately before Settings", () => {
