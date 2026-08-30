@@ -20,9 +20,13 @@ test("home page compares every supported encryption mode and discloses visible t
   assert.match(app, /所有模式的筆記標題都不會加密/u);
   assert.match(app, /どの方式でもノートのタイトルは暗号化されません/u);
   assert.match(app, /The PIN itself is never sent or stored/u);
-  assert.equal((html.match(/class="matrix-value yes"/gu) || []).length, 10);
-  assert.equal((html.match(/class="matrix-value no"/gu) || []).length, 6);
+  assert.equal((html.match(/class="matrix-value yes"/gu) || []).length, 8);
+  assert.equal((html.match(/class="matrix-value no"/gu) || []).length, 8);
   assert.equal((html.match(/class="schybrid-flow"/gu) || []).length, 1);
+  assert.match(app, /Browser-side encryption/u);
+  assert.match(app, /瀏覽器端加密/u);
+  assert.match(app, /AstraConfidential SCHybrid 有什麼不同/u);
+  assert.match(app, /still be brute-forced offline/u);
 });
 
 test("authenticated navigation places Donate immediately before Settings", () => {
