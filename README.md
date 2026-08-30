@@ -16,7 +16,7 @@ security-sensitive actions.
 - Plain-text lined note reader and editor
 - No encryption, AES-128-GCM, AES-256-GCM, or AstraConfidential SCHybrid chosen at note creation
 - Every encrypted mode protects note content; titles remain plaintext for identification
-- 48-note and 256 KiB full-account-directory limits
+- 20-note and 200 KiB full-account-directory limits
 - Unguessable, revocable, `noindex` read-only sharing links
 - Argon2id password hashing and server-managed authenticated sessions
 - CSRF, Origin, ownership, request-size, rate-limit, and security-header controls

@@ -24,8 +24,8 @@ const SHARES_FILE = path.join(DATA_DIR, "shares.json");
 const SECRET_FILE = path.join(DATA_DIR, ".server-secret");
 
 const MAX_ACCOUNTS = 50_000;
-const MAX_NOTES = 48;
-const MAX_ACCOUNT_BYTES = 256 * 1024;
+const MAX_NOTES = 20;
+const MAX_ACCOUNT_BYTES = 200 * 1024;
 const MAX_NOTE_NAME = 80;
 const MAX_DISPLAY_NAME = 40;
 const SESSION_INITIAL_MS = 14 * 864e5;
@@ -33,7 +33,7 @@ const SESSION_EXTENSION_MS = 2 * 864e5;
 const SESSION_MAX_MS = 28 * 864e5;
 const DELETE_REVERSAL_MS = 7 * 864e5;
 const DELETE_ERASE_MS = 62 * 864e5;
-const TERMS_VERSION = "2026-08-29";
+const TERMS_VERSION = "2026-08-30";
 const CAPTCHA_VERIFY_URL = "https://nexacaptcha.nxlabtw.com/api/siteverify";
 const SCHYBRID_MODE = "astra-confidential-schybrid-v1";
 const ALLOWED_ORIGINS = new Set([
@@ -1416,7 +1416,7 @@ app.post(
         const metadata = await loadMetadata(username);
         if (metadata.notes.length >= MAX_NOTES)
           throw Object.assign(
-            new Error("You have reached the 48-note limit."),
+            new Error("You have reached the 20-note limit."),
             { status: 409 },
           );
         const id = schybrid
@@ -1452,7 +1452,7 @@ app.post(
           await saveMetadata(username, metadata);
           await fsp.unlink(noteFile(username, id));
           throw Object.assign(
-            new Error("This note would exceed your 256 KiB account limit."),
+            new Error("This note would exceed your 200 KiB account limit."),
             { status: 413 },
           );
         }
@@ -1524,7 +1524,7 @@ app.put(
         if ((await directorySize(userDir(username))) > MAX_ACCOUNT_BYTES) {
           await atomicWrite(file, original);
           throw Object.assign(
-            new Error("Saving would exceed your 256 KiB account limit."),
+            new Error("Saving would exceed your 200 KiB account limit."),
             { status: 413 },
           );
         }

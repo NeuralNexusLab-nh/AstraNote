@@ -32,7 +32,7 @@ const I18N = {
     limitEyebrow: "CLEAR BY DESIGN",
     limitTitle: "Small footprint. Deliberate limits.",
     limitBody:
-      "Each account includes 256 KiB across all account files and up to 48 notes. Encrypted notes commonly use about 1.4× the storage; very short notes may use more than 2×.",
+      "Each account includes 200 KiB across all account files and up to 20 notes. Encrypted notes commonly use about 1.4× the storage; very short notes may use more than 2×.",
     copyright: "© 2026 NeuralNexusLab. All service rights reserved.",
     terms: "Terms",
     privacy: "Privacy",
@@ -135,6 +135,7 @@ const I18N = {
     deletePending:
       "This account is awaiting deletion. Reloading the login page will let you cancel the request with a new CAPTCHA.",
     legalUpdated: "Effective and last updated: 29 August 2026",
+    termsUpdated: "Effective and last updated: 30 August 2026",
     englishOnlyCaptcha:
       "Complete the human verification to save this note.",
     editorUnsaved: "You have unsaved changes. Close this page anyway?",
@@ -167,7 +168,7 @@ const I18N = {
     limitEyebrow: "清楚而有節制",
     limitTitle: "輕量空間，明確限制。",
     limitBody:
-      "每個帳號的所有檔案合計 256 KiB，最多 48 篇筆記。加密筆記通常約需 1.4 倍空間；很短的筆記可能超過 2 倍。",
+      "每個帳號的所有檔案合計 200 KiB，最多 20 篇筆記。加密筆記通常約需 1.4 倍空間；很短的筆記可能超過 2 倍。",
     copyright: "© 2026 NeuralNexusLab。保留所有服務相關權利。",
     terms: "使用者協議",
     privacy: "隱私政策",
@@ -268,6 +269,7 @@ const I18N = {
     deletePending:
       "此帳號正在等待刪除。系統將重新載入登入頁，讓你以新的 CAPTCHA 取消申請。",
     legalUpdated: "生效及最後更新：2026 年 8 月 29 日",
+    termsUpdated: "生效及最後更新：2026 年 8 月 30 日",
     englishOnlyCaptcha: "請完成人類驗證以儲存筆記。",
     editorUnsaved: "尚有未儲存的變更，仍要關閉這個頁面嗎？",
   },
@@ -289,7 +291,7 @@ Object.assign(I18N.en, {
   purposeIntroTwo:
     "Whether it is a passing idea, something you must remember, or information you reach for often, it can stay together in your AstraNote account. Sign in on a phone, tablet, or computer to read and edit the same notes without repeatedly sending files between devices.",
   purposeIntroThree:
-    "AstraNote focuses on a simple, clear plain-text experience. Every account currently includes up to 48 notes and 256 KiB of storage for free, without advertising or analytics tracking. Notes may also be encrypted or shared through a read-only link that you can revoke at any time.",
+    "AstraNote focuses on a simple, clear plain-text experience. Every account currently includes up to 20 notes and 200 KiB of storage for free, without advertising or analytics tracking. Notes may also be encrypted or shared through a read-only link that you can revoke at any time.",
   quickTitle: "Capture it right away",
   quickBody:
     "Write down an idea, a reminder, a list, or a useful piece of information before it slips away.",
@@ -298,11 +300,11 @@ Object.assign(I18N.en, {
     "Sign in from your phone, tablet, or computer and your notes are ready when you need them.",
   shareTitle: "Free to use",
   shareBody:
-    "Create up to 48 notes with 256 KiB of account storage, with no advertising or analytics tracking.",
+    "Create up to 20 notes with 200 KiB of account storage, with no advertising or analytics tracking.",
   limitEyebrow: "SIMPLE, HONEST LIMITS",
   limitTitle: "Enough room for the notes you reach for most.",
   limitBody:
-    "Every account includes 256 KiB across all account files and up to 48 notes. If the account is full, existing notes remain readable, but new notes and saves are paused until space is freed.",
+    "Every account includes 200 KiB across all account files and up to 20 notes. If the account is full, existing notes remain readable, but new notes and saves are paused until space is freed.",
   encryptionEyebrow: "CHOOSE YOUR PROTECTION",
   encryptionTitle: "Four protection levels, explained clearly.",
   encryptionIntro:
@@ -376,8 +378,8 @@ Object.assign(I18N.en, {
   registerEyebrow: "JOIN ASTRANOTE",
   accountLimitsEyebrow: "ACCOUNT LIMITS",
   accountStorageLabel: "ACCOUNT STORAGE",
-  accountLimitCaption: "48 NOTES · FREE ACCOUNT · NO ADS",
-  maxNotesLabel: "MAX 48",
+  accountLimitCaption: "20 NOTES · FREE ACCOUNT · NO ADS",
+  maxNotesLabel: "MAX 20",
   legalEyebrow: "LEGAL",
   privacyEyebrow: "DATA PRACTICES",
   notFoundEyebrow: "PAGE NOT FOUND",
@@ -456,17 +458,17 @@ Object.assign(I18N["zh-Hant"], {
   purposeIntroTwo:
     "無論是突然想到的靈感、需要記住的事情，還是經常需要拿出來查看的資訊，都能集中保存在自己的 AstraNote 帳號中。登入後，即可在手機、平板或電腦上查看與編輯同一批筆記，不必把重要內容留在單一裝置，也不需要反覆傳送檔案。",
   purposeIntroThree:
-    "AstraNote 專注於簡單、清楚且容易使用的純文字筆記體驗。目前每個帳號免費提供最多 48 篇筆記與 256 KiB 儲存空間，沒有廣告，也不使用分析追蹤；使用者亦可選擇加密筆記，或建立能隨時關閉的唯讀分享連結。",
+    "AstraNote 專注於簡單、清楚且容易使用的純文字筆記體驗。目前每個帳號免費提供最多 20 篇筆記與 200 KiB 儲存空間，沒有廣告，也不使用分析追蹤；使用者亦可選擇加密筆記，或建立能隨時關閉的唯讀分享連結。",
   quickTitle: "想到就能立刻記下",
   quickBody: "不論是靈感、提醒、清單或常用資料，都能在忘記以前迅速保存。",
   secureTitle: "換一台裝置也能查看",
   secureBody: "使用手機、平板或電腦登入，同一批筆記就會在需要時出現。",
   shareTitle: "免費使用",
-  shareBody: "每個帳號可建立 48 篇筆記，享有 256 KiB 空間，沒有廣告與分析追蹤。",
+  shareBody: "每個帳號可建立 20 篇筆記，享有 200 KiB 空間，沒有廣告與分析追蹤。",
   limitEyebrow: "簡單而透明的限制",
   limitTitle: "為最常用的筆記保留剛好的空間。",
   limitBody:
-    "每個帳號的所有檔案合計 256 KiB，最多 48 篇筆記。空間用滿後仍可閱讀既有內容，但必須先釋放空間才能新增或儲存。",
+    "每個帳號的所有檔案合計 200 KiB，最多 20 篇筆記。空間用滿後仍可閱讀既有內容，但必須先釋放空間才能新增或儲存。",
   encryptionEyebrow: "選擇適合的保護方式",
   encryptionTitle: "四種保護層級，一眼看懂差異。",
   encryptionIntro:
@@ -540,8 +542,8 @@ Object.assign(I18N["zh-Hant"], {
   registerEyebrow: "加入 ASTRANOTE",
   accountLimitsEyebrow: "帳號限制",
   accountStorageLabel: "帳號儲存空間",
-  accountLimitCaption: "48 篇筆記 · 免費帳號 · 無廣告",
-  maxNotesLabel: "上限 48",
+  accountLimitCaption: "20 篇筆記 · 免費帳號 · 無廣告",
+  maxNotesLabel: "上限 20",
   legalEyebrow: "法律文件",
   privacyEyebrow: "資料處理方式",
   notFoundEyebrow: "找不到頁面",
@@ -610,6 +612,7 @@ I18N.ja = {
   copyright: "© 2026 NeuralNexusLab. サービスに関するすべての権利を留保します。",
   terms: "利用規約",
   privacy: "プライバシー",
+  termsUpdated: "発効・最終更新：2026年8月30日",
   source: "ソースコード",
   cookieTitle: "必須 Cookie",
   cookieBody:
@@ -1478,7 +1481,7 @@ async function initDashboard() {
   if (!account) return;
   $("#note-count").textContent = `${account.noteCount} / ${account.maxNotes}`;
   $("#storage-count").textContent =
-    `${formatBytes(account.usedBytes)} / 256 KiB`;
+    `${formatBytes(account.usedBytes)} / 200 KiB`;
   $("#age-count").textContent = Math.max(
     0,
     Math.floor((Date.now() - Date.parse(account.createdAt)) / 864e5),
