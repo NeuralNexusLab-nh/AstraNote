@@ -385,21 +385,21 @@ Object.assign(I18N.en, {
   notFoundEyebrow: "PAGE NOT FOUND",
   notFoundBody: "The page you requested could not be found.",
   noEncryptionOption: "No encryption",
-  vaultPin: "Vault PIN (4–16 ASCII characters)",
-  legacyVaultPin: "Vault PIN (4–6 digits)",
-  confirmVaultPin: "Confirm Vault PIN",
+  vaultPin: "PIN (4–16 ASCII characters)",
+  legacyVaultPin: "PIN (4–6 digits)",
+  confirmVaultPin: "Confirm PIN",
   vaultTitle: "AstraConfidential",
   vaultExplanation:
-    "Your device combines your account details and Vault PIN with a temporary factor protected by AstraNote's independent server secret. The note content is encrypted on this device before upload; the title remains visible so you can identify the note in your list.",
+    "Your device combines your account details and PIN with a temporary factor protected by AstraNote's independent server secret. The note content is encrypted on this device before upload; the title remains visible so you can identify the note in your list.",
   vaultPinWarning:
     "AstraNote does not store or recover this case-sensitive PIN. Use 12–16 random letters, numbers, and symbols when possible, save it securely, and enter it only on a device you trust.",
   vaultNoSharing:
     "Sharing is unavailable because this encryption is bound to the owner's account, PIN, and AstraNote's server-side protection.",
   vaultPinInvalid:
     "Enter 4–16 case-sensitive ASCII letters, numbers, or symbols with no spaces.",
-  legacyVaultPinInvalid: "Enter the original 4–6 digit Vault PIN.",
+  legacyVaultPinInvalid: "Enter the original 4–6 digit PIN.",
   noteNameRequired: "Note name is required.",
-  vaultPinMismatch: "The Vault PIN entries do not match.",
+  vaultPinMismatch: "The PIN entries do not match.",
   vaultCryptoUnavailable:
     "Secure browser encryption is unavailable on this device.",
   vaultUnavailable:
@@ -407,16 +407,16 @@ Object.assign(I18N.en, {
   unlockVaultTitle: "Unlock AstraConfidential note",
   unlockNamedNote: "Unlock {name}",
   unlockVaultBody:
-    "Enter this note's 4–16 character, case-sensitive Vault PIN. AstraNote does not store or recover it.",
+    "Enter this note's 4–16 character, case-sensitive PIN. AstraNote does not store or recover it.",
   unlockLegacyVaultBody:
-    "Enter this legacy note's original 4–6 digit Vault PIN. AstraNote does not store or recover it.",
+    "Enter this legacy note's original 4–6 digit PIN. AstraNote does not store or recover it.",
   unlock: "Unlock",
   trustedDeviceOnly: "Only enter this PIN on a device you trust.",
-  vaultUnlockFailed: "The Vault PIN is incorrect or the encrypted note is damaged.",
+  vaultUnlockFailed: "The PIN is incorrect or the encrypted note is damaged.",
   confidentialNote: "AstraConfidential encrypted note",
   hiddenCharacters: "Hidden until unlocked",
   vaultSharingUnavailable:
-    "Sharing is unavailable for AstraConfidential notes because their encryption is bound to the owner's account and Vault PIN.",
+    "Sharing is unavailable for AstraConfidential notes because their encryption is bound to the owner's account and PIN.",
   dangerBody:
     "Permanently delete your account and all of its notes immediately. This cannot be cancelled or undone.",
   requestDeletion: "Permanently delete account",
@@ -478,7 +478,7 @@ Object.assign(I18N["zh-Hant"], {
   encryptionEyebrow: "選擇適合的保護方式",
   encryptionTitle: "四種保護層級，一眼看懂差異。",
   encryptionIntro:
-    "不加密會直接儲存可讀內容；AES-128-GCM 與 AES-256-GCM 由 AstraNote 伺服器自動加密；AstraConfidential 則在上傳前由瀏覽器端加密，並加入只有使用者掌握的 Vault PIN。",
+    "不加密會直接儲存可讀內容；AES-128-GCM 與 AES-256-GCM 由 AstraNote 伺服器自動加密；AstraConfidential 則在上傳前由瀏覽器端加密，並加入只有使用者掌握的 PIN。",
   encryptionTitleNoticeTitle: "所有模式的筆記標題都不會加密",
   encryptionTitleNoticeBody:
     "標題會保持可讀，才能顯示在筆記清單中。請勿把機密資訊寫進標題。",
@@ -555,36 +555,36 @@ Object.assign(I18N["zh-Hant"], {
   notFoundEyebrow: "找不到頁面",
   notFoundBody: "找不到你所要求的頁面。",
   noEncryptionOption: "不加密",
-  vaultPin: "Vault PIN（4–16 個 ASCII 字元）",
-  legacyVaultPin: "Vault PIN（原有 4–6 位數）",
-  confirmVaultPin: "再次輸入 Vault PIN",
+  vaultPin: "PIN（4–16 個 ASCII 字元）",
+  legacyVaultPin: "PIN（原有 4–6 位數）",
+  confirmVaultPin: "再次輸入 PIN",
   vaultTitle: "AstraConfidential",
   vaultExplanation:
-    "你的裝置會將帳號資料與 Vault PIN，結合由 AstraNote 獨立伺服器祕密保護的臨時因子。筆記內容會先在此裝置完成加密，再上傳至 AstraNote；標題保持可見，方便你在清單中辨認筆記。",
+    "你的裝置會將帳號資料與 PIN，結合由 AstraNote 獨立伺服器祕密保護的臨時因子。筆記內容會先在此裝置完成加密，再上傳至 AstraNote；標題保持可見，方便你在清單中辨認筆記。",
   vaultPinWarning:
     "AstraNote 不會儲存或協助找回這組區分大小寫的 PIN。建議使用隨機產生的 12–16 個英文字母、數字與符號，妥善保存，並只在信任的裝置輸入。",
   vaultNoSharing:
     "此加密方式與擁有者帳號、PIN 及 AstraNote 的伺服器端保護綁定，因此不提供分享功能。",
   vaultPinInvalid:
     "請輸入 4–16 個區分大小寫的 ASCII 英文字母、數字或符號，不可包含空格。",
-  legacyVaultPinInvalid: "請輸入這篇舊版筆記原有的 4–6 位數 Vault PIN。",
+  legacyVaultPinInvalid: "請輸入這篇舊版筆記原有的 4–6 位數 PIN。",
   noteNameRequired: "請輸入筆記名稱。",
-  vaultPinMismatch: "兩次輸入的 Vault PIN 不相同。",
+  vaultPinMismatch: "兩次輸入的 PIN 不相同。",
   vaultCryptoUnavailable: "此裝置無法使用安全的瀏覽器加密功能。",
   vaultUnavailable: "伺服器尚未設定 AstraConfidential。",
   unlockVaultTitle: "解鎖 AstraConfidential 筆記",
   unlockNamedNote: "解鎖{name}",
   unlockVaultBody:
-    "請輸入這篇筆記區分大小寫的 4–16 字元 Vault PIN。AstraNote 不會儲存或協助找回這組 PIN。",
+    "請輸入這篇筆記區分大小寫的 4–16 字元 PIN。AstraNote 不會儲存或協助找回這組 PIN。",
   unlockLegacyVaultBody:
-    "請輸入這篇舊版筆記原有的 4–6 位數 Vault PIN。AstraNote 不會儲存或協助找回這組 PIN。",
+    "請輸入這篇舊版筆記原有的 4–6 位數 PIN。AstraNote 不會儲存或協助找回這組 PIN。",
   unlock: "解鎖",
   trustedDeviceOnly: "請只在你信任的裝置上輸入這組 PIN。",
-  vaultUnlockFailed: "Vault PIN 不正確，或加密筆記已損壞。",
+  vaultUnlockFailed: "PIN 不正確，或加密筆記已損壞。",
   confidentialNote: "AstraConfidential 加密筆記",
   hiddenCharacters: "解鎖後顯示",
   vaultSharingUnavailable:
-    "此筆記的加密與擁有者帳號及 Vault PIN 綁定，\n因此 AstraConfidential 不提供分享功能。",
+    "此筆記的加密與擁有者帳號及 PIN 綁定，\n因此 AstraConfidential 不提供分享功能。",
   dangerBody: "立即永久刪除帳號及所有筆記；此操作不能取消或復原。",
   requestDeletion: "永久刪除帳號",
   deleteAccountTitle: "要永久刪除這個帳號嗎？",
@@ -651,7 +651,7 @@ I18N.ja = {
   encryptionEyebrow: "保護方法を選択",
   encryptionTitle: "4 つの保護レベルを明確に比較。",
   encryptionIntro:
-    "暗号化なしは読める状態で保存されます。AES-128-GCM と AES-256-GCM は AstraNote サーバーが自動暗号化します。AstraConfidential はアップロード前にブラウザで暗号化し、利用者だけが知る Vault PIN を追加します。",
+    "暗号化なしは読める状態で保存されます。AES-128-GCM と AES-256-GCM は AstraNote サーバーが自動暗号化します。AstraConfidential はアップロード前にブラウザで暗号化し、利用者だけが知る PIN を追加します。",
   encryptionTitleNoticeTitle: "どの方式でもノートのタイトルは暗号化されません",
   encryptionTitleNoticeBody:
     "一覧に表示するため、タイトルは読み取り可能な状態です。機密情報をタイトルに書かないでください。",
@@ -689,34 +689,34 @@ I18N.ja = {
     "ノート内容は端末上で先に暗号化され、サーバーは暗号化済みの内容だけを受信・保存します。",
   encryptionSchybridCaution:
     "サーバーデータが盗まれても、PIN または解錠中の端末を制御しない限り、平文は直接表示されません。短く予測しやすい PIN は推測されやすいため、固有でランダムな 12～16 文字の PIN を信頼できる端末でのみ使用してください。",
-  vaultPin: "Vault PIN（4～16 文字の ASCII）",
-  legacyVaultPin: "Vault PIN（従来の4～6桁）",
-  confirmVaultPin: "Vault PIN を再入力",
+  vaultPin: "PIN（4～16 文字の ASCII）",
+  legacyVaultPin: "PIN（従来の4～6桁）",
+  confirmVaultPin: "PIN を再入力",
   vaultTitle: "AstraConfidential",
   vaultExplanation:
-    "端末はアカウント情報と Vault PIN を AstraNote のサーバー側保護と組み合わせます。ノート内容はアップロード前にこの端末で暗号化され、タイトルは一覧表示のため読み取り可能なままです。",
+    "端末はアカウント情報と PIN を AstraNote のサーバー側保護と組み合わせます。ノート内容はアップロード前にこの端末で暗号化され、タイトルは一覧表示のため読み取り可能なままです。",
   vaultPinWarning:
     "AstraNote は大文字と小文字を区別する PIN を保存・復元しません。可能であればランダムな12～16文字の英字、数字、記号を使い、安全に保管してください。",
   vaultNoSharing:
     "この暗号化は所有者のアカウント、PIN、AstraNote のサーバー側保護に結び付くため、共有できません。",
   vaultPinInvalid:
     "空白を含まない4～16文字の ASCII 英字、数字、記号を入力してください。",
-  legacyVaultPinInvalid: "従来の4～6桁の Vault PIN を入力してください。",
-  vaultPinMismatch: "Vault PIN が一致しません。",
+  legacyVaultPinInvalid: "従来の4～6桁の PIN を入力してください。",
+  vaultPinMismatch: "PIN が一致しません。",
   vaultCryptoUnavailable: "この端末では安全なブラウザ暗号化を使用できません。",
   vaultUnavailable: "サーバーに AstraConfidential が設定されていません。",
   unlockNamedNote: "{name} を解錠",
   unlockVaultBody:
-    "このノートの大文字と小文字を区別する4～16文字の Vault PIN を入力してください。AstraNote は PIN を保存・復元しません。",
+    "このノートの大文字と小文字を区別する4～16文字の PIN を入力してください。AstraNote は PIN を保存・復元しません。",
   unlockLegacyVaultBody:
-    "この従来ノートで使用していた4～6桁の Vault PIN を入力してください。AstraNote は PIN を保存・復元しません。",
+    "この従来ノートで使用していた4～6桁の PIN を入力してください。AstraNote は PIN を保存・復元しません。",
   unlock: "解錠",
   trustedDeviceOnly: "この PIN は信頼できる端末でのみ入力してください。",
-  vaultUnlockFailed: "Vault PIN が違うか、暗号化ノートが破損しています。",
+  vaultUnlockFailed: "PIN が違うか、暗号化ノートが破損しています。",
   confidentialNote: "AstraConfidential 暗号化ノート",
   hiddenCharacters: "解錠後に表示",
   vaultSharingUnavailable:
-    "このノートの暗号化は所有者のアカウントと Vault PIN に結び付いているため、\nAstraConfidential では共有できません。",
+    "このノートの暗号化は所有者のアカウントと PIN に結び付いているため、\nAstraConfidential では共有できません。",
   skipContent: "メインコンテンツへ移動",
   primaryNavigation: "メインナビゲーション",
   menu: "メニュー",

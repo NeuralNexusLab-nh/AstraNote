@@ -107,7 +107,7 @@ after no matching account directory remains.
   AES-256-GCM. Titles remain plaintext, and these modes are not end-to-end or
   zero-knowledge.
 - AstraConfidential encrypts note content in the browser with AES-256-GCM. Its
-  case-sensitive 4–16 character Vault PIN supports printable ASCII letters,
+  case-sensitive 4–16 character PIN supports printable ASCII letters,
   numbers, and symbols. A memory-hard browser derivation combines the PIN with
   account-bound server protection. The server stores neither the PIN nor the
   final browser key, and AstraConfidential notes cannot be shared. This is
@@ -117,7 +117,7 @@ after no matching account directory remains.
 - Existing AstraConfidential SCHybrid notes retain their original encryption
   identifier, 4–6 digit PIN rule, and `ASTRANOTE_VAULT_SECRET` derivation. They
   remain readable and editable but are no longer offered for new notes.
-- Losing a Vault PIN or a required production secret can make encrypted notes
+- Losing a PIN or a required production secret can make encrypted notes
   permanently unreadable. Keep all three environment secrets stable and backed
   up outside the application data volume.
 - Main and backup domains use separate browser cookies. A user may sign into

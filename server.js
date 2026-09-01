@@ -1341,7 +1341,7 @@ app.post(
         res,
         400,
         "invalid_vault_request",
-        "Vault key request is invalid.",
+        "Encryption key request is invalid.",
       );
     try {
       const username = req.auth.session.username;
@@ -1363,7 +1363,7 @@ app.post(
           res,
           400,
           "invalid_vault_request",
-          "Vault key request is invalid.",
+          "Encryption key request is invalid.",
         );
       }
       const available =

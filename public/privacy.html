@@ -56,7 +56,7 @@
               plaintext in every mode. Encrypted content is stored as
               ciphertext with nonce and authentication tag. AstraConfidential
               and legacy SCHybrid notes also store a random client salt; the
-              Vault PIN and final browser key are not stored.
+              PIN and final browser key are not stored.
             </li>
             <li>
               <strong>Security:</strong> rate-limit events, CAPTCHA verification
@@ -121,8 +121,8 @@
             rate limits, access-control checks, restrictive security headers,
             atomic writes, and request-size limits. The server-managed AES modes
             can technically be decrypted by the Operator. AstraConfidential and
-            legacy SCHybrid encrypt content in the browser using the user's Vault
-            PIN and server-assisted protection, but they are not a zero-knowledge
+            legacy SCHybrid encrypt content in the browser using the user's PIN
+            and server-assisted protection, but they are not a zero-knowledge
             guarantee and still require trust in the application and server while
             unlocking.
             No system is completely secure. Users should use a unique password,
@@ -192,7 +192,7 @@
             <li>
               <strong>內容：</strong
               >筆記名稱、內容、加密選項、更新時間及選擇性分享代碼。所有模式的筆記名稱都會保持明文；加密內容會以密文、Nonce
-              及驗證標籤保存。AstraConfidential 與舊版 SCHybrid 另保存隨機用戶端 Salt，但不保存 Vault PIN
+              及驗證標籤保存。AstraConfidential 與舊版 SCHybrid 另保存隨機用戶端 Salt，但不保存 PIN
               或最終瀏覽器金鑰。
             </li>
             <li>
@@ -238,7 +238,7 @@
             AstraNote 採用密碼雜湊、具認證加密、不透明 Session、CSRF 與 Origin
             檢查、後端 CAPTCHA
             驗證、速率限制、權限確認、嚴格安全標頭、原子寫入及請求大小限制。伺服器管理的 AES
-            模式在技術上可由營運者解密；AstraConfidential 與舊版 SCHybrid 會用 Vault PIN
+            模式在技術上可由營運者解密；AstraConfidential 與舊版 SCHybrid 會用 PIN
             與伺服器端保護在瀏覽器加密內容，但並非零知識保證，解鎖時仍須信任應用程式與伺服器。筆記名稱維持明文。任何系統均無法保證絕對安全；請使用獨立密碼、勿將不可取代資料只存於本服務，並自行保存副本。
           </p>
           <h2>九、兒童與法定代理人</h2>
