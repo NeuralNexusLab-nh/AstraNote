@@ -12,6 +12,8 @@ process.env.ASTRANOTE_SECRET =
   "test-only-secret-that-is-at-least-thirty-two-characters-long";
 process.env.ASTRANOTE_VAULT_SECRET =
   "test-only-independent-vault-secret-that-is-longer-than-sixty-four-characters-123456789";
+process.env.ASTRA_CONFIDENTIAL_KEY =
+  "test-only-new-confidential-key-that-is-independent-and-longer-than-sixty-four-characters-987654321";
 
 const { app, ensureData, constants, testables } = require("../server");
 
@@ -156,9 +158,14 @@ test("invalid sharing and traversal-shaped identifiers reveal no data", async ()
   );
 });
 
-test("AES-GCM modes authenticate and restore Unicode note content", async () => {
+test("legacy and current AES-GCM modes authenticate and restore Unicode content", async () => {
   const content = "星海中的想法\nA thought among the stars ✦";
-  for (const mode of ["aes-256-gcm", "aes-128-gcm"]) {
+  for (const mode of [
+    "aes-256-gcm",
+    "aes-128-gcm",
+    "aes-256-gcm-new",
+    "aes-128-gcm-new",
+  ]) {
     const encrypted = testables.encryptContent(
       content,
       "test_user",
@@ -187,10 +194,44 @@ test("AES-GCM modes authenticate and restore Unicode note content", async () => 
   }
   assert.equal(testables.maskEmail("eaton@example.com"), "ea***@example.com");
   assert.equal(testables.characterCount("星 海\nA B"), 4);
+
+  const legacyCiphertext = testables.encryptContent(
+    content,
+    "test_user",
+    "abcdef0123456789abcdef01",
+    "aes-256-gcm",
+  );
+  assert.throws(() =>
+    testables.decryptContent(
+      legacyCiphertext,
+      "test_user",
+      "abcdef0123456789abcdef01",
+      "aes-256-gcm-new",
+    ),
+  );
+
+  assert.equal(
+    testables.decryptContent(
+      {
+        ciphertext: "36ED0x3a9fZmD5ztVVyb8S9J",
+        iv: "AAECAwQFBgcICQoL",
+        tag: "E8uH6y7JpAQe5rCZB7wQYw==",
+      },
+      "test_user",
+      "abcdef0123456789abcdef01",
+      "aes-256-gcm",
+    ),
+    "Legacy note 相容",
+  );
 });
 
-test("every AES mode leaves the title visible and encrypts only content", () => {
-  for (const mode of ["aes-256-gcm", "aes-128-gcm"]) {
+test("every AES version leaves the title visible and encrypts only content", () => {
+  for (const mode of [
+    "aes-256-gcm",
+    "aes-128-gcm",
+    "aes-256-gcm-new",
+    "aes-128-gcm-new",
+  ]) {
     const note = {
       id: "abcdef0123456789abcdef01",
       encryption: mode,
@@ -238,7 +279,7 @@ test("every AES mode leaves the title visible and encrypts only content", () => 
   }
 });
 
-test("SCHybrid factor is account-bound and encrypted envelopes are strictly validated", () => {
+test("legacy SCHybrid and current AstraConfidential factors stay versioned", () => {
   const metadata = {
     username: "Test_User",
     email: "owner@example.com",
@@ -254,6 +295,7 @@ test("SCHybrid factor is account-bound and encrypted envelopes are strictly vali
   );
   assert.equal(typeof factor, "string");
   assert.equal(factor.length, 43);
+  assert.equal(factor, "gJ3emVQ3OpFjVw2xktx7jlHA8N-uguxf4rGqbG1babs");
   assert.equal(
     factor,
     testables.deriveVaultFactor(
@@ -272,6 +314,16 @@ test("SCHybrid factor is account-bound and encrypted envelopes are strictly vali
       "c".repeat(64),
     ),
   );
+  const currentFactor = testables.deriveVaultFactor(
+    metadata,
+    noteId,
+    clientSalt,
+    "b".repeat(64),
+    constants.CONFIDENTIAL_MODE,
+  );
+  assert.equal(typeof currentFactor, "string");
+  assert.equal(currentFactor.length, 43);
+  assert.notEqual(currentFactor, factor);
   assert.equal(
     testables.validSchybridEnvelope({
       iv: Buffer.alloc(12).toString("base64"),
@@ -289,4 +341,13 @@ test("SCHybrid factor is account-bound and encrypted envelopes are strictly vali
     false,
   );
   assert.equal(constants.SCHYBRID_MODE, "astra-confidential-schybrid-v1");
+  assert.equal(constants.CONFIDENTIAL_MODE, "astra-confidential-v2");
+  assert.equal(
+    testables.isClientEncryptedMode(constants.LEGACY_SCHYBRID_MODE),
+    true,
+  );
+  assert.equal(
+    testables.isClientEncryptedMode(constants.CONFIDENTIAL_MODE),
+    true,
+  );
 });

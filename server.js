@@ -33,19 +33,28 @@ const SESSION_EXTENSION_MS = 2 * 864e5;
 const SESSION_MAX_MS = 28 * 864e5;
 const DELETE_REVERSAL_MS = 7 * 864e5;
 const DELETE_ERASE_MS = 62 * 864e5;
-const TERMS_VERSION = "2026-08-30";
+const TERMS_VERSION = "2026-09-01";
 const CAPTCHA_VERIFY_URL = "https://nexacaptcha.nxlabtw.com/api/siteverify";
-const SCHYBRID_MODE = "astra-confidential-schybrid-v1";
+const LEGACY_SCHYBRID_MODE = "astra-confidential-schybrid-v1";
+const CONFIDENTIAL_MODE = "astra-confidential-v2";
+const LEGACY_AES_MODES = new Set(["aes-128-gcm", "aes-256-gcm"]);
+const CURRENT_AES_MODES = new Set([
+  "aes-128-gcm-new",
+  "aes-256-gcm-new",
+]);
+const CLIENT_ENCRYPTED_MODES = new Set([
+  LEGACY_SCHYBRID_MODE,
+  CONFIDENTIAL_MODE,
+]);
 const ALLOWED_ORIGINS = new Set([
   "https://astranote.nxlabtw.com",
   "https://astranote.zeabur.app",
 ]);
 const USERNAME_RE = /^[A-Za-z0-9_]{3,24}$/;
-const ENCRYPTION_TYPES = new Set([
+const CREATABLE_ENCRYPTION_TYPES = new Set([
   "none",
-  "aes-256-gcm",
-  "aes-128-gcm",
-  SCHYBRID_MODE,
+  ...CURRENT_AES_MODES,
+  CONFIDENTIAL_MODE,
 ]);
 const COMMON_PASSWORDS = new Set([
   "password123",
@@ -63,6 +72,7 @@ const locks = new Map();
 
 let appSecret;
 let vaultSecret;
+let confidentialSecret;
 
 function utcNow() {
   return new Date().toISOString();
@@ -238,27 +248,47 @@ async function ensureData() {
     process.env.ASTRANOTE_VAULT_SECRET.length >= 64
       ? process.env.ASTRANOTE_VAULT_SECRET
       : null;
+  confidentialSecret =
+    typeof process.env.ASTRA_CONFIDENTIAL_KEY === "string" &&
+    process.env.ASTRA_CONFIDENTIAL_KEY.length >= 64
+      ? process.env.ASTRA_CONFIDENTIAL_KEY
+      : null;
   await migrateLegacyEncryptedNotes();
 }
 
-function deriveKey(username, noteId, bits) {
+function aesBits(mode) {
+  return mode.startsWith("aes-128-gcm") ? 128 : 256;
+}
+function isClientEncryptedMode(mode) {
+  return CLIENT_ENCRYPTED_MODES.has(mode);
+}
+function encryptionSecret(mode) {
+  return CURRENT_AES_MODES.has(mode) ? confidentialSecret : appSecret;
+}
+function deriveKey(username, noteId, mode) {
+  const bits = aesBits(mode);
+  const secret = encryptionSecret(mode);
+  if (!secret) throw new Error("The encryption key is not configured.");
+  const context = CURRENT_AES_MODES.has(mode)
+    ? `AstraNote:server-aes:v2:${noteId}:${bits}`
+    : `AstraNote:${noteId}:${bits}`;
   return Buffer.from(
     crypto.hkdfSync(
       "sha256",
-      Buffer.from(appSecret),
+      Buffer.from(secret),
       Buffer.from(userKey(username)),
-      Buffer.from(`AstraNote:${noteId}:${bits}`),
+      Buffer.from(context),
       bits / 8,
     ),
   );
 }
 function encryptContent(content, username, id, mode) {
   if (mode === "none") return content;
-  const bits = mode === "aes-128-gcm" ? 128 : 256;
+  const bits = aesBits(mode);
   const iv = crypto.randomBytes(12);
   const cipher = crypto.createCipheriv(
     `aes-${bits}-gcm`,
-    deriveKey(username, id, bits),
+    deriveKey(username, id, mode),
     iv,
   );
   const encrypted = Buffer.concat([
@@ -273,7 +303,7 @@ function encryptContent(content, username, id, mode) {
 }
 function decryptContent(stored, username, id, mode) {
   if (mode === "none") return typeof stored === "string" ? stored : "";
-  const bits = mode === "aes-128-gcm" ? 128 : 256;
+  const bits = aesBits(mode);
   if (
     !stored ||
     Buffer.from(stored.iv || "", "base64").length !== 12 ||
@@ -282,7 +312,7 @@ function decryptContent(stored, username, id, mode) {
     throw new Error("Encrypted note data is invalid.");
   const decipher = crypto.createDecipheriv(
     `aes-${bits}-gcm`,
-    deriveKey(username, id, bits),
+    deriveKey(username, id, mode),
     Buffer.from(stored.iv, "base64"),
     { authTagLength: 16 },
   );
@@ -294,7 +324,7 @@ function decryptContent(stored, username, id, mode) {
 }
 
 function readServerNotePayload(note, username) {
-  if (note.encryption === SCHYBRID_MODE) return null;
+  if (isClientEncryptedMode(note.encryption)) return null;
   if (note.encryption === "none") {
     return {
       name: normalizeText(note.name, MAX_NOTE_NAME),
@@ -346,7 +376,7 @@ async function migrateLegacyEncryptedNotes() {
       const note = await readJson(file, null);
       if (
         !note ||
-        !["aes-128-gcm", "aes-256-gcm"].includes(note.encryption) ||
+        !LEGACY_AES_MODES.has(note.encryption) ||
         note.payloadVersion !== 2
       )
         continue;
@@ -395,11 +425,27 @@ function validSchybridEnvelope(value) {
   );
 }
 
-function deriveVaultFactor(metadata, noteId, clientSalt, clientHash) {
-  if (!vaultSecret) return null;
+function deriveVaultFactor(
+  metadata,
+  noteId,
+  clientSalt,
+  clientHash,
+  mode = LEGACY_SCHYBRID_MODE,
+) {
+  const secret =
+    mode === CONFIDENTIAL_MODE
+      ? confidentialSecret
+      : mode === LEGACY_SCHYBRID_MODE
+        ? vaultSecret
+        : null;
+  if (!secret) return null;
+  const context =
+    mode === CONFIDENTIAL_MODE
+      ? "AstraConfidential v2\0"
+      : "AstraConfidential SCHybrid v1\0";
   return crypto
-    .createHmac("sha256", vaultSecret)
-    .update("AstraConfidential SCHybrid v1\0")
+    .createHmac("sha256", secret)
+    .update(context)
     .update(userKey(metadata.username))
     .update("\0")
     .update(metadata.email.toLowerCase())
@@ -708,15 +754,16 @@ async function noteSummary(username, reference) {
   return {
     id: note.id,
     name:
-      note.encryption === SCHYBRID_MODE
+      isClientEncryptedMode(note.encryption)
         ? normalizeText(note.name, MAX_NOTE_NAME) || null
         : payload?.name || "Encrypted note",
     encryption: note.encryption,
     updatedAt: note.updatedAt,
     characters: payload ? characterCount(payload.content) : null,
     bytes,
-    shared:
-      note.encryption === SCHYBRID_MODE ? false : Boolean(note.shareToken),
+    shared: isClientEncryptedMode(note.encryption)
+      ? false
+      : Boolean(note.shareToken),
   };
 }
 async function accountPayload(username) {
@@ -743,7 +790,7 @@ async function accountPayload(username) {
     usedBytes,
     maxBytes: MAX_ACCOUNT_BYTES,
     maxNotes: MAX_NOTES,
-    vaultAvailable: Boolean(vaultSecret),
+    vaultAvailable: Boolean(confidentialSecret),
     notes: summaries,
   };
 }
@@ -1284,6 +1331,7 @@ app.post(
     const noteId = String(req.body.noteId || "");
     const clientSalt = String(req.body.clientSalt || "");
     const clientHash = String(req.body.clientHash || "").toLowerCase();
+    let mode = String(req.body.encryption || "").toLowerCase();
     if (
       !/^[a-f0-9]{24}$/.test(noteId) ||
       !/^[A-Za-z0-9_-]{43}$/.test(clientSalt) ||
@@ -1295,13 +1343,6 @@ app.post(
         "invalid_vault_request",
         "Vault key request is invalid.",
       );
-    if (!vaultSecret)
-      return jsonError(
-        res,
-        503,
-        "vault_unavailable",
-        "AstraConfidential SCHybrid is not configured.",
-      );
     try {
       const username = req.auth.session.username;
       const metadata = await loadMetadata(username);
@@ -1310,20 +1351,45 @@ app.post(
         const note = await readJson(noteFile(username, noteId), null);
         if (
           !note ||
-          note.encryption !== SCHYBRID_MODE ||
+          !isClientEncryptedMode(note.encryption) ||
           !safeEqual(note.clientSalt, clientSalt)
         )
           return jsonError(res, 404, "not_found", "Note not found.");
+        mode = note.encryption;
       } else if (await exists(noteFile(username, noteId))) {
         return jsonError(res, 409, "note_id_unavailable", "Note ID is unavailable.");
+      } else if (mode !== CONFIDENTIAL_MODE) {
+        return jsonError(
+          res,
+          400,
+          "invalid_vault_request",
+          "Vault key request is invalid.",
+        );
       }
+      const available =
+        mode === CONFIDENTIAL_MODE
+          ? Boolean(confidentialSecret)
+          : mode === LEGACY_SCHYBRID_MODE
+            ? Boolean(vaultSecret)
+            : false;
+      if (!available)
+        return jsonError(
+          res,
+          503,
+          "vault_unavailable",
+          "This AstraConfidential encryption version is not configured.",
+        );
       const serverFactor = deriveVaultFactor(
         metadata,
         noteId,
         clientSalt,
         clientHash,
+        mode,
       );
-      res.json({ serverFactor, version: 1 });
+      res.json({
+        serverFactor,
+        version: mode === CONFIDENTIAL_MODE ? 2 : 1,
+      });
     } catch (error) {
       next(error);
     }
@@ -1340,7 +1406,7 @@ app.get("/api/notes/:id", requireAuth, async (req, res, next) => {
       return jsonError(res, 404, "not_found", "Note not found.");
     const note = await readJson(noteFile(username, req.params.id), null);
     if (!note) return jsonError(res, 404, "not_found", "Note not found.");
-    if (note.encryption === SCHYBRID_MODE) {
+    if (isClientEncryptedMode(note.encryption)) {
       return res.json({
         id: note.id,
         name: normalizeText(note.name, MAX_NOTE_NAME) || null,
@@ -1382,33 +1448,41 @@ app.post(
   verifyCaptcha,
   async (req, res, next) => {
     const encryption = String(req.body.encryption || "none").toLowerCase();
-    if (!ENCRYPTION_TYPES.has(encryption))
+    if (!CREATABLE_ENCRYPTION_TYPES.has(encryption))
       return jsonError(
         res,
         400,
         "invalid_encryption",
         "Encryption option is invalid.",
       );
-    const schybrid = encryption === SCHYBRID_MODE;
+    const confidential = encryption === CONFIDENTIAL_MODE;
+    const currentAes = CURRENT_AES_MODES.has(encryption);
     const name = normalizeText(req.body.name, MAX_NOTE_NAME);
     if (!name)
       return jsonError(res, 400, "name_required", "Note name is required.");
     const requestedId = String(req.body.id || "");
     const clientSalt = String(req.body.clientSalt || "");
     if (
-      schybrid &&
-      (!vaultSecret ||
+      confidential &&
+      (!confidentialSecret ||
         !/^[a-f0-9]{24}$/.test(requestedId) ||
         !/^[A-Za-z0-9_-]{43}$/.test(clientSalt) ||
         !validSchybridEnvelope(req.body.encrypted))
     )
       return jsonError(
         res,
-        vaultSecret ? 400 : 503,
-        vaultSecret ? "invalid_encrypted_note" : "vault_unavailable",
-        vaultSecret
+        confidentialSecret ? 400 : 503,
+        confidentialSecret ? "invalid_encrypted_note" : "vault_unavailable",
+        confidentialSecret
           ? "Encrypted note data is invalid."
-          : "AstraConfidential SCHybrid is not configured.",
+          : "AstraConfidential is not configured.",
+      );
+    if (currentAes && !confidentialSecret)
+      return jsonError(
+        res,
+        503,
+        "encryption_unavailable",
+        "The current AES encryption key is not configured.",
       );
     try {
       const username = req.auth.session.username;
@@ -1419,7 +1493,7 @@ app.post(
             new Error("You have reached the 20-note limit."),
             { status: 409 },
           );
-        const id = schybrid
+        const id = confidential
           ? requestedId
           : crypto.randomBytes(12).toString("hex");
         if (
@@ -1436,7 +1510,7 @@ app.post(
           updatedAt: utcNow(),
           shareToken: null,
         };
-        if (schybrid) {
+        if (confidential) {
           note.name = name;
           note.clientSalt = clientSalt;
           note.content = req.body.encrypted;
@@ -1486,7 +1560,7 @@ app.put(
         if (!note)
           throw Object.assign(new Error("Note not found."), { status: 404 });
         const original = await fsp.readFile(file, "utf8");
-        if (note.encryption === SCHYBRID_MODE) {
+        if (isClientEncryptedMode(note.encryption)) {
           const name = normalizeText(req.body.name, MAX_NOTE_NAME);
           if (!name)
             throw Object.assign(new Error("Note name is required."), {
@@ -1583,10 +1657,10 @@ app.post(
         if (!metadata.notes.some((ref) => ref.id === req.params.id))
           throw Object.assign(new Error("Note not found."), { status: 404 });
         const note = await readJson(noteFile(username, req.params.id), null);
-        if (note?.encryption === SCHYBRID_MODE)
+        if (isClientEncryptedMode(note?.encryption))
           throw Object.assign(
             new Error(
-              "Sharing is unavailable for AstraConfidential SCHybrid notes.",
+              "Sharing is unavailable for AstraConfidential notes.",
             ),
             { status: 409 },
           );
@@ -1625,7 +1699,7 @@ app.get("/api/shared/:token", sharedReadLimiter, async (req, res, next) => {
       const note = await readJson(noteFile(target.username, target.id), null);
       if (
         metadata &&
-        note?.encryption !== SCHYBRID_MODE &&
+        !isClientEncryptedMode(note?.encryption) &&
         note?.shareToken &&
         safeEqual(note.shareToken, req.params.token)
       ) {
@@ -1823,7 +1897,11 @@ module.exports = {
     MAX_ACCOUNT_BYTES,
     MAX_ACCOUNTS,
     MAX_NOTES,
-    SCHYBRID_MODE,
+    SCHYBRID_MODE: LEGACY_SCHYBRID_MODE,
+    LEGACY_SCHYBRID_MODE,
+    CONFIDENTIAL_MODE,
+    LEGACY_AES_MODES,
+    CURRENT_AES_MODES,
   },
   testables: {
     encryptContent,
@@ -1832,6 +1910,7 @@ module.exports = {
     writeServerNotePayload,
     validSchybridEnvelope,
     deriveVaultFactor,
+    isClientEncryptedMode,
     maskEmail,
     characterCount,
   },

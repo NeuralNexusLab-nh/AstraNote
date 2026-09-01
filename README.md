@@ -4,7 +4,7 @@
 
 AstraNote is a bilingual, responsive online notebook built with Node.js and
 Express. It provides optional authenticated encryption, a client-side
-AstraConfidential SCHybrid mode, revocable read-only sharing, strict
+AstraConfidential mode, revocable read-only sharing, strict
 per-account storage limits, and server-verified CAPTCHA protection for
 security-sensitive actions.
 
@@ -14,7 +14,7 @@ security-sensitive actions.
 - Animated, scroll-reactive starfield landing page
 - Dark and light themes synchronized to signed-in accounts
 - Plain-text lined note reader and editor
-- No encryption, AES-128-GCM, AES-256-GCM, or AstraConfidential SCHybrid chosen at note creation
+- No encryption, AES-128-GCM, AES-256-GCM, or AstraConfidential chosen at note creation
 - Every encrypted mode protects note content; titles remain plaintext for identification
 - 20-note and 200 KiB full-account-directory limits
 - Unguessable, revocable, `noindex` read-only sharing links
@@ -55,11 +55,13 @@ Open `http://localhost:3000`.
 2. Mount `data/` on a persistent volume. Alternatively point `DATA_DIR` at the
    mounted directory.
 3. Zeabur supplies `PORT`; AstraNote reads `process.env.PORT` automatically.
-4. Set long, independent `ASTRANOTE_SECRET` and
-   `ASTRANOTE_VAULT_SECRET` values in production. If `ASTRANOTE_SECRET` is
-   omitted, AstraNote creates a secret file in the persistent data directory.
-   SCHybrid stays unavailable when `ASTRANOTE_VAULT_SECRET` is missing.
-5. Generate the SCHybrid secret with:
+4. Keep the existing `ASTRANOTE_SECRET` and `ASTRANOTE_VAULT_SECRET` values
+   unchanged so legacy AES and SCHybrid notes remain readable. If
+   `ASTRANOTE_SECRET` is omitted, AstraNote creates a secret file in the
+   persistent data directory.
+5. Set a new, independent `ASTRA_CONFIDENTIAL_KEY`. Newly created AES and
+   AstraConfidential notes use versioned, domain-separated keys derived from
+   this value. Generate it with:
    `node -e "console.log(require('node:crypto').randomBytes(64).toString('base64url'))"`
 6. Route both `https://astranote.nxlabtw.com` and
    `https://astranote.zeabur.app` to the service.
@@ -99,20 +101,25 @@ after no matching account directory remains.
   16-character verification ID and 64-character one-time token to
   `https://nexacaptcha.nxlabtw.com/api/siteverify` and proceeds only when the
   response is exactly `success: true`.
-- AES-GCM note content is encrypted with keys derived from the server secret,
-  username, note ID, and key size. Titles remain plaintext. These AES modes are
-  server-managed, not end-to-end or zero-knowledge.
-- AstraConfidential SCHybrid encrypts note content in the browser with
-  AES-256-GCM. Its Argon2id-derived browser key combines the user's 4–6 digit
-  Vault PIN with a temporary server factor bound to the account, note, password
-  hash, and independent `ASTRANOTE_VAULT_SECRET`. Titles remain plaintext so
-  note lists can identify them. The server stores no PIN or
-  final browser key, and SCHybrid notes cannot be shared. It is server-assisted
-  encryption rather than a zero-knowledge design: the web application and
-  factor endpoint must still be trusted while the note is unlocked.
-- Losing a Vault PIN or either production secret can make encrypted notes
-  permanently unreadable. Keep both environment secrets stable and backed up
-  outside the application data volume.
+- AES-GCM note content is encrypted with server-managed keys. New notes use the
+  versioned `*-new` formats and `ASTRA_CONFIDENTIAL_KEY`; legacy AES formats
+  continue using `ASTRANOTE_SECRET`. The visible labels remain AES-128-GCM and
+  AES-256-GCM. Titles remain plaintext, and these modes are not end-to-end or
+  zero-knowledge.
+- AstraConfidential encrypts note content in the browser with AES-256-GCM. Its
+  case-sensitive 4–16 character Vault PIN supports printable ASCII letters,
+  numbers, and symbols. A memory-hard browser derivation combines the PIN with
+  account-bound server protection. The server stores neither the PIN nor the
+  final browser key, and AstraConfidential notes cannot be shared. This is
+  server-assisted browser encryption rather than a zero-knowledge design: the
+  web application and factor endpoint must still be trusted while a note is
+  unlocked.
+- Existing AstraConfidential SCHybrid notes retain their original encryption
+  identifier, 4–6 digit PIN rule, and `ASTRANOTE_VAULT_SECRET` derivation. They
+  remain readable and editable but are no longer offered for new notes.
+- Losing a Vault PIN or a required production secret can make encrypted notes
+  permanently unreadable. Keep all three environment secrets stable and backed
+  up outside the application data volume.
 - Main and backup domains use separate browser cookies. A user may sign into
   both with the same account.
 - The repository intentionally contains no credential, user database, or

@@ -29,10 +29,10 @@
               <label for="encryption" data-i18n="encryption"></label
               ><select id="encryption" name="encryption">
                 <option value="none" data-i18n="noEncryptionOption"></option>
-                <option value="aes-256-gcm">AES-256-GCM</option>
-                <option value="aes-128-gcm">AES-128-GCM</option>
-                <option value="astra-confidential-schybrid-v1">
-                  AstraConfidential SCHybrid
+                <option value="aes-256-gcm-new">AES-256-GCM</option>
+                <option value="aes-128-gcm-new">AES-128-GCM</option>
+                <option value="astra-confidential-v2">
+                  AstraConfidential
                 </option>
               </select>
               <p class="field-help" data-i18n="encryptionHelp"></p>
@@ -45,10 +45,10 @@
                   name="vaultPin"
                   type="text"
                   class="vault-pin-input"
-                  inputmode="numeric"
-                  pattern="[0-9]{4,6}"
+                  inputmode="text"
+                  pattern="[!-~]{4,16}"
                   minlength="4"
-                  maxlength="6"
+                  maxlength="16"
                   autocomplete="off"
                   readonly
                   data-1p-ignore="true"
@@ -64,10 +64,10 @@
                   name="vaultPinConfirmation"
                   type="text"
                   class="vault-pin-input"
-                  inputmode="numeric"
-                  pattern="[0-9]{4,6}"
+                  inputmode="text"
+                  pattern="[!-~]{4,16}"
                   minlength="4"
-                  maxlength="6"
+                  maxlength="16"
                   autocomplete="off"
                   readonly
                   data-1p-ignore="true"

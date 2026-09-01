@@ -11,7 +11,7 @@ const I18N = {
     logout: "Log out",
     tagline: "Your thoughts, among the stars.",
     heroLead:
-      "Capture ideas, protect what matters, and keep every thought within reach.",
+      "A free, convenient notebook with powerful encryption when your notes need stronger protection.",
     begin: "Begin writing",
     explore: "Explore AstraNote",
     scroll: "Scroll to explore",
@@ -23,9 +23,9 @@ const I18N = {
     quickTitle: "Write without friction",
     quickBody:
       "A focused, lined writing space for plain text—fast, familiar, and free of visual noise.",
-    secureTitle: "Encryption by choice",
+    secureTitle: "Powerful encryption when you need it",
     secureBody:
-      "Keep a note plain or protect it with authenticated AES-128-GCM or AES-256-GCM encryption.",
+      "Choose server-managed AES or browser-side AstraConfidential protection for sensitive notes.",
     shareTitle: "Share on your terms",
     shareBody:
       "Create a private-looking, unguessable read-only link, then revoke it whenever you choose.",
@@ -134,8 +134,8 @@ const I18N = {
       "Enter the same account password and complete a new human verification to restore access during the 7-day reversal period.",
     deletePending:
       "This account is awaiting deletion. Reloading the login page will let you cancel the request with a new CAPTCHA.",
-    legalUpdated: "Effective and last updated: 29 August 2026",
-    termsUpdated: "Effective and last updated: 30 August 2026",
+    legalUpdated: "Effective and last updated: 1 September 2026",
+    termsUpdated: "Effective and last updated: 1 September 2026",
     englishOnlyCaptcha:
       "Complete the human verification to save this note.",
     editorUnsaved: "You have unsaved changes. Close this page anyway?",
@@ -149,7 +149,7 @@ const I18N = {
     register: "建立帳號",
     logout: "登出",
     tagline: "讓每個想法，在星海中找到位置。",
-    heroLead: "隨手記錄、安心保存，讓重要的思緒永遠觸手可及。",
+    heroLead: "免費、方便的線上筆記本，也為重要內容提供強大的加密保護。",
     begin: "開始書寫",
     explore: "探索 AstraNote",
     scroll: "向下探索",
@@ -160,9 +160,9 @@ const I18N = {
     purposeTitle: "思緒所需的一切，沒有多餘干擾。",
     quickTitle: "流暢記錄",
     quickBody: "專注、帶橫線的純文字書寫空間；快速、熟悉，不受視覺雜訊干擾。",
-    secureTitle: "自由選擇加密",
+    secureTitle: "需要時，使用強大加密",
     secureBody:
-      "保持純文字，或使用具認證保護的 AES-128-GCM、AES-256-GCM 加密。",
+      "敏感筆記可選擇伺服器管理的 AES，或由瀏覽器端加密的 AstraConfidential。",
     shareTitle: "由你掌控分享",
     shareBody: "建立難以猜測的唯讀連結，並隨時撤銷公開存取。",
     limitEyebrow: "清楚而有節制",
@@ -268,8 +268,8 @@ const I18N = {
       "在七天反悔期內輸入原帳號密碼並重新完成人類驗證，即可恢復存取。",
     deletePending:
       "此帳號正在等待刪除。系統將重新載入登入頁，讓你以新的 CAPTCHA 取消申請。",
-    legalUpdated: "生效及最後更新：2026 年 8 月 29 日",
-    termsUpdated: "生效及最後更新：2026 年 8 月 30 日",
+    legalUpdated: "生效及最後更新：2026 年 9 月 1 日",
+    termsUpdated: "生效及最後更新：2026 年 9 月 1 日",
     englishOnlyCaptcha: "請完成人類驗證以儲存筆記。",
     editorUnsaved: "尚有未儲存的變更，仍要關閉這個頁面嗎？",
   },
@@ -279,7 +279,7 @@ Object.assign(I18N.en, {
   heroKicker: "ONLINE NOTEBOOK · FREE TO USE",
   tagline: "Write it down. Find it whenever you need it.",
   heroLead:
-    "AstraNote is a free online notebook for ideas, reminders, lists, work, study, and useful information—ready on every device you sign in to.",
+    "AstraNote is a free, convenient online notebook with powerful encryption available for the notes that matter most.",
   begin: "Create a free account",
   explore: "See what it does",
   scroll: "Learn more",
@@ -291,13 +291,13 @@ Object.assign(I18N.en, {
   purposeIntroTwo:
     "Whether it is a passing idea, something you must remember, or information you reach for often, it can stay together in your AstraNote account. Sign in on a phone, tablet, or computer to read and edit the same notes without repeatedly sending files between devices.",
   purposeIntroThree:
-    "AstraNote focuses on a simple, clear plain-text experience. Every account currently includes up to 20 notes and 200 KiB of storage for free, without advertising or analytics tracking. Notes may also be encrypted or shared through a read-only link that you can revoke at any time.",
+    "AstraNote keeps writing simple and free while giving sensitive notes stronger protection when you choose it. Each account includes up to 20 notes and 200 KiB of storage, with no advertising or analytics tracking.",
   quickTitle: "Capture it right away",
   quickBody:
     "Write down an idea, a reminder, a list, or a useful piece of information before it slips away.",
-  secureTitle: "Open it on another device",
+  secureTitle: "Strong encryption is ready",
   secureBody:
-    "Sign in from your phone, tablet, or computer and your notes are ready when you need them.",
+    "Protect sensitive notes with AES or AstraConfidential browser-side encryption whenever you choose.",
   shareTitle: "Free to use",
   shareBody:
     "Create up to 20 notes with 200 KiB of account storage, with no advertising or analytics tracking.",
@@ -308,7 +308,7 @@ Object.assign(I18N.en, {
   encryptionEyebrow: "CHOOSE YOUR PROTECTION",
   encryptionTitle: "Four protection levels, explained clearly.",
   encryptionIntro:
-    "No encryption stores readable content. AES-128-GCM and AES-256-GCM are encrypted automatically by the AstraNote server. AstraConfidential SCHybrid encrypts in your browser before upload and adds a Vault PIN known only to you.",
+    "No encryption stores readable content. AES-128-GCM and AES-256-GCM are encrypted automatically by the AstraNote server. AstraConfidential encrypts in your browser before upload and adds a PIN known only to you.",
   encryptionTitleNoticeTitle: "Note titles are never encrypted",
   encryptionTitleNoticeBody:
     "Titles remain readable so AstraNote can show them in your note list. Never put a secret in a title.",
@@ -334,7 +334,7 @@ Object.assign(I18N.en, {
   encryptionSchybridExposure:
     "Even with all server data, plaintext is not directly available. The attacker must still guess or obtain the PIN, or control a device while the PIN is entered or the note is unlocked.",
   encryptionSchybridSecurity: "Highest level",
-  encryptionSchybridTitle: "AstraConfidential SCHybrid features",
+  encryptionSchybridTitle: "AstraConfidential features",
   encryptionSchybridStepOneTitle: "The PIN stays with you",
   encryptionSchybridStepOneBody:
     "The PIN is used in your browser to unlock the note. AstraNote does not store the PIN itself and cannot recover it.",
@@ -345,7 +345,7 @@ Object.assign(I18N.en, {
   encryptionSchybridStepThreeBody:
     "The note content is encrypted on your device first. The server receives and stores only encrypted content.",
   encryptionSchybridCaution:
-    "Even if all server data is stolen, it does not directly reveal the plaintext. The attacker still needs the PIN or control of a PIN-entry or unlocked device. A 4–6 digit PIN can still be guessed offline, so use a unique 6-digit PIN and only trusted devices.",
+    "Stolen server data does not directly reveal the plaintext without the PIN or control of a device while the note is unlocked. Short or predictable PINs are easier to guess, so use a unique, randomly generated 12–16 character PIN and only trusted devices.",
   welcomeBody: "Your notes and account usage, clearly presented.",
   noNotes: "No notes yet. Create one whenever you have something worth keeping.",
   newNoteBody:
@@ -385,33 +385,38 @@ Object.assign(I18N.en, {
   notFoundEyebrow: "PAGE NOT FOUND",
   notFoundBody: "The page you requested could not be found.",
   noEncryptionOption: "No encryption",
-  vaultPin: "Vault PIN (4–6 digits)",
+  vaultPin: "Vault PIN (4–16 ASCII characters)",
+  legacyVaultPin: "Vault PIN (4–6 digits)",
   confirmVaultPin: "Confirm Vault PIN",
-  vaultTitle: "AstraConfidential SCHybrid",
+  vaultTitle: "AstraConfidential",
   vaultExplanation:
     "Your device combines your account details and Vault PIN with a temporary factor protected by AstraNote's independent server secret. The note content is encrypted on this device before upload; the title remains visible so you can identify the note in your list.",
   vaultPinWarning:
-    "AstraNote does not store or recover this PIN. Losing it makes the encrypted content permanently unreadable. A 6-digit PIN is recommended, and you should enter it only on a device you trust.",
+    "AstraNote does not store or recover this case-sensitive PIN. Use 12–16 random letters, numbers, and symbols when possible, save it securely, and enter it only on a device you trust.",
   vaultNoSharing:
-    "Sharing is unavailable because this encryption is bound to the owner's account, PIN, and AstraNote server secret.",
-  vaultPinInvalid: "Enter a 4–6 digit Vault PIN.",
+    "Sharing is unavailable because this encryption is bound to the owner's account, PIN, and AstraNote's server-side protection.",
+  vaultPinInvalid:
+    "Enter 4–16 case-sensitive ASCII letters, numbers, or symbols with no spaces.",
+  legacyVaultPinInvalid: "Enter the original 4–6 digit Vault PIN.",
   noteNameRequired: "Note name is required.",
   vaultPinMismatch: "The Vault PIN entries do not match.",
   vaultCryptoUnavailable:
     "Secure browser encryption is unavailable on this device.",
   vaultUnavailable:
-    "AstraConfidential SCHybrid is not configured on this server.",
+    "AstraConfidential is not configured on this server.",
   unlockVaultTitle: "Unlock AstraConfidential note",
   unlockNamedNote: "Unlock {name}",
   unlockVaultBody:
-    "Enter this note's 4–6 digit Vault PIN. AstraNote does not store or recover it.",
+    "Enter this note's 4–16 character, case-sensitive Vault PIN. AstraNote does not store or recover it.",
+  unlockLegacyVaultBody:
+    "Enter this legacy note's original 4–6 digit Vault PIN. AstraNote does not store or recover it.",
   unlock: "Unlock",
   trustedDeviceOnly: "Only enter this PIN on a device you trust.",
   vaultUnlockFailed: "The Vault PIN is incorrect or the encrypted note is damaged.",
   confidentialNote: "AstraConfidential encrypted note",
   hiddenCharacters: "Hidden until unlocked",
   vaultSharingUnavailable:
-    "Sharing is unavailable for AstraConfidential SCHybrid notes because their encryption is bound to the owner's account and Vault PIN.",
+    "Sharing is unavailable for AstraConfidential notes because their encryption is bound to the owner's account and Vault PIN.",
   dangerBody:
     "Permanently delete your account and all of its notes immediately. This cannot be cancelled or undone.",
   requestDeletion: "Permanently delete account",
@@ -444,7 +449,7 @@ Object.assign(I18N["zh-Hant"], {
   heroKicker: "線上筆記本 · 免費使用",
   tagline: "隨手記下，需要時隨時找得到。",
   heroLead:
-    "AstraNote 是一個免費的線上筆記本，適合記錄想法、提醒、清單、工作、學習與常用資料；登入後，每台裝置都能繼續使用。",
+    "AstraNote 是一個免費、方便的線上筆記本，也為最重要的筆記提供強大的加密保護。",
   begin: "免費建立帳號",
   explore: "了解功能",
   scroll: "繼續了解",
@@ -458,11 +463,12 @@ Object.assign(I18N["zh-Hant"], {
   purposeIntroTwo:
     "無論是突然想到的靈感、需要記住的事情，還是經常需要拿出來查看的資訊，都能集中保存在自己的 AstraNote 帳號中。登入後，即可在手機、平板或電腦上查看與編輯同一批筆記，不必把重要內容留在單一裝置，也不需要反覆傳送檔案。",
   purposeIntroThree:
-    "AstraNote 專注於簡單、清楚且容易使用的純文字筆記體驗。目前每個帳號免費提供最多 20 篇筆記與 200 KiB 儲存空間，沒有廣告，也不使用分析追蹤；使用者亦可選擇加密筆記，或建立能隨時關閉的唯讀分享連結。",
+    "AstraNote 保持簡單、清楚且免費，同時讓敏感筆記在需要時獲得更強的保護。每個帳號提供最多 20 篇筆記與 200 KiB 儲存空間，沒有廣告，也不使用分析追蹤。",
   quickTitle: "想到就能立刻記下",
   quickBody: "不論是靈感、提醒、清單或常用資料，都能在忘記以前迅速保存。",
-  secureTitle: "換一台裝置也能查看",
-  secureBody: "使用手機、平板或電腦登入，同一批筆記就會在需要時出現。",
+  secureTitle: "強大加密，隨時可選",
+  secureBody:
+    "敏感筆記可使用 AES，或選擇由瀏覽器端先加密的 AstraConfidential。",
   shareTitle: "免費使用",
   shareBody: "每個帳號可建立 20 篇筆記，享有 200 KiB 空間，沒有廣告與分析追蹤。",
   limitEyebrow: "簡單而透明的限制",
@@ -472,7 +478,7 @@ Object.assign(I18N["zh-Hant"], {
   encryptionEyebrow: "選擇適合的保護方式",
   encryptionTitle: "四種保護層級，一眼看懂差異。",
   encryptionIntro:
-    "不加密會直接儲存可讀內容；AES-128-GCM 與 AES-256-GCM 由 AstraNote 伺服器自動加密；AstraConfidential SCHybrid 則在上傳前由瀏覽器端加密，並加入只有使用者掌握的 Vault PIN。",
+    "不加密會直接儲存可讀內容；AES-128-GCM 與 AES-256-GCM 由 AstraNote 伺服器自動加密；AstraConfidential 則在上傳前由瀏覽器端加密，並加入只有使用者掌握的 Vault PIN。",
   encryptionTitleNoticeTitle: "所有模式的筆記標題都不會加密",
   encryptionTitleNoticeBody:
     "標題會保持可讀，才能顯示在筆記清單中。請勿把機密資訊寫進標題。",
@@ -498,7 +504,7 @@ Object.assign(I18N["zh-Hant"], {
   encryptionSchybridExposure:
     "即使取得所有伺服器資料，也不能直接看到明文；仍須猜中或取得 PIN，或控制正在輸入 PIN／已解鎖筆記的裝置。",
   encryptionSchybridSecurity: "最高層級",
-  encryptionSchybridTitle: "AstraConfidential SCHybrid 的特點",
+  encryptionSchybridTitle: "AstraConfidential 的特點",
   encryptionSchybridStepOneTitle: "PIN 由你掌握",
   encryptionSchybridStepOneBody:
     "PIN 只在瀏覽器中用來解鎖筆記；AstraNote 不會保存 PIN 本身，也無法協助找回。",
@@ -509,7 +515,7 @@ Object.assign(I18N["zh-Hant"], {
   encryptionSchybridStepThreeBody:
     "筆記內容會先在你的裝置完成加密，伺服器只接收並保存加密後的內容。",
   encryptionSchybridCaution:
-    "即使所有伺服器資料遭竊，也不會直接顯示明文；攻擊者仍需 PIN，或控制正在輸入 PIN／已解鎖筆記的裝置。但 4–6 位數 PIN 仍可能遭離線猜測，請使用不重複的 6 位數 PIN，並只在信任的裝置輸入。",
+    "伺服器資料遭竊時，攻擊者仍無法在沒有 PIN 或未控制解鎖中裝置的情況下直接看到明文。簡短或可預測的 PIN 較容易被猜中，請使用不重複、隨機產生的 12–16 字元 PIN，並只在信任的裝置輸入。",
   welcomeBody: "清楚查看筆記和帳號用量。",
   accountAge: "帳號已建立",
   days: "天",
@@ -549,31 +555,36 @@ Object.assign(I18N["zh-Hant"], {
   notFoundEyebrow: "找不到頁面",
   notFoundBody: "找不到你所要求的頁面。",
   noEncryptionOption: "不加密",
-  vaultPin: "Vault PIN（4–6 位數）",
+  vaultPin: "Vault PIN（4–16 個 ASCII 字元）",
+  legacyVaultPin: "Vault PIN（原有 4–6 位數）",
   confirmVaultPin: "再次輸入 Vault PIN",
-  vaultTitle: "AstraConfidential SCHybrid",
+  vaultTitle: "AstraConfidential",
   vaultExplanation:
     "你的裝置會將帳號資料與 Vault PIN，結合由 AstraNote 獨立伺服器祕密保護的臨時因子。筆記內容會先在此裝置完成加密，再上傳至 AstraNote；標題保持可見，方便你在清單中辨認筆記。",
   vaultPinWarning:
-    "AstraNote 不會儲存或協助找回這組 PIN。遺失後，加密內容將永久無法讀取。建議使用 6 位 PIN，並且只在你信任的裝置上輸入。",
+    "AstraNote 不會儲存或協助找回這組區分大小寫的 PIN。建議使用隨機產生的 12–16 個英文字母、數字與符號，妥善保存，並只在信任的裝置輸入。",
   vaultNoSharing:
-    "此加密方式與擁有者帳號、PIN 及 AstraNote 伺服器祕密綁定，因此不提供分享功能。",
-  vaultPinInvalid: "請輸入 4–6 位數的 Vault PIN。",
+    "此加密方式與擁有者帳號、PIN 及 AstraNote 的伺服器端保護綁定，因此不提供分享功能。",
+  vaultPinInvalid:
+    "請輸入 4–16 個區分大小寫的 ASCII 英文字母、數字或符號，不可包含空格。",
+  legacyVaultPinInvalid: "請輸入這篇舊版筆記原有的 4–6 位數 Vault PIN。",
   noteNameRequired: "請輸入筆記名稱。",
   vaultPinMismatch: "兩次輸入的 Vault PIN 不相同。",
   vaultCryptoUnavailable: "此裝置無法使用安全的瀏覽器加密功能。",
-  vaultUnavailable: "伺服器尚未設定 AstraConfidential SCHybrid。",
+  vaultUnavailable: "伺服器尚未設定 AstraConfidential。",
   unlockVaultTitle: "解鎖 AstraConfidential 筆記",
   unlockNamedNote: "解鎖{name}",
   unlockVaultBody:
-    "請輸入這篇筆記的 4–6 位 Vault PIN。AstraNote 不會儲存或協助找回這組 PIN。",
+    "請輸入這篇筆記區分大小寫的 4–16 字元 Vault PIN。AstraNote 不會儲存或協助找回這組 PIN。",
+  unlockLegacyVaultBody:
+    "請輸入這篇舊版筆記原有的 4–6 位數 Vault PIN。AstraNote 不會儲存或協助找回這組 PIN。",
   unlock: "解鎖",
   trustedDeviceOnly: "請只在你信任的裝置上輸入這組 PIN。",
   vaultUnlockFailed: "Vault PIN 不正確，或加密筆記已損壞。",
   confidentialNote: "AstraConfidential 加密筆記",
   hiddenCharacters: "解鎖後顯示",
   vaultSharingUnavailable:
-    "此筆記的加密與擁有者帳號及 Vault PIN 綁定，\n因此 AstraConfidential SCHybrid 不提供分享功能。",
+    "此筆記的加密與擁有者帳號及 Vault PIN 綁定，\n因此 AstraConfidential 不提供分享功能。",
   dangerBody: "立即永久刪除帳號及所有筆記；此操作不能取消或復原。",
   requestDeletion: "永久刪除帳號",
   deleteAccountTitle: "要永久刪除這個帳號嗎？",
@@ -612,7 +623,8 @@ I18N.ja = {
   copyright: "© 2026 NeuralNexusLab. サービスに関するすべての権利を留保します。",
   terms: "利用規約",
   privacy: "プライバシー",
-  termsUpdated: "発効・最終更新：2026年8月30日",
+  legalUpdated: "発効・最終更新：2026年9月1日",
+  termsUpdated: "発効・最終更新：2026年9月1日",
   source: "ソースコード",
   cookieTitle: "必須 Cookie",
   cookieBody:
@@ -639,7 +651,7 @@ I18N.ja = {
   encryptionEyebrow: "保護方法を選択",
   encryptionTitle: "4 つの保護レベルを明確に比較。",
   encryptionIntro:
-    "暗号化なしは読める状態で保存されます。AES-128-GCM と AES-256-GCM は AstraNote サーバーが自動暗号化します。AstraConfidential SCHybrid はアップロード前にブラウザで暗号化し、利用者だけが知る Vault PIN を追加します。",
+    "暗号化なしは読める状態で保存されます。AES-128-GCM と AES-256-GCM は AstraNote サーバーが自動暗号化します。AstraConfidential はアップロード前にブラウザで暗号化し、利用者だけが知る Vault PIN を追加します。",
   encryptionTitleNoticeTitle: "どの方式でもノートのタイトルは暗号化されません",
   encryptionTitleNoticeBody:
     "一覧に表示するため、タイトルは読み取り可能な状態です。機密情報をタイトルに書かないでください。",
@@ -665,7 +677,7 @@ I18N.ja = {
   encryptionSchybridExposure:
     "すべてのサーバーデータを取得しても平文は直接読めません。PIN を推測・入手するか、PIN 入力中または解錠済みの端末を制御する必要があります。",
   encryptionSchybridSecurity: "最高レベル",
-  encryptionSchybridTitle: "AstraConfidential SCHybrid の特長",
+  encryptionSchybridTitle: "AstraConfidential の特長",
   encryptionSchybridStepOneTitle: "PIN は利用者が保持",
   encryptionSchybridStepOneBody:
     "PIN はブラウザでノートを解錠するためだけに使われます。AstraNote は PIN 自体を保存せず、復元もできません。",
@@ -676,7 +688,35 @@ I18N.ja = {
   encryptionSchybridStepThreeBody:
     "ノート内容は端末上で先に暗号化され、サーバーは暗号化済みの内容だけを受信・保存します。",
   encryptionSchybridCaution:
-    "すべてのサーバーデータが盗まれても平文は直接表示されません。攻撃者には PIN、または PIN 入力中・解錠済み端末の制御が必要です。ただし 4～6 桁の PIN はオフラインで推測される可能性があるため、固有の 6 桁 PIN を信頼できる端末だけで使ってください。",
+    "サーバーデータが盗まれても、PIN または解錠中の端末を制御しない限り、平文は直接表示されません。短く予測しやすい PIN は推測されやすいため、固有でランダムな 12～16 文字の PIN を信頼できる端末でのみ使用してください。",
+  vaultPin: "Vault PIN（4～16 文字の ASCII）",
+  legacyVaultPin: "Vault PIN（従来の4～6桁）",
+  confirmVaultPin: "Vault PIN を再入力",
+  vaultTitle: "AstraConfidential",
+  vaultExplanation:
+    "端末はアカウント情報と Vault PIN を AstraNote のサーバー側保護と組み合わせます。ノート内容はアップロード前にこの端末で暗号化され、タイトルは一覧表示のため読み取り可能なままです。",
+  vaultPinWarning:
+    "AstraNote は大文字と小文字を区別する PIN を保存・復元しません。可能であればランダムな12～16文字の英字、数字、記号を使い、安全に保管してください。",
+  vaultNoSharing:
+    "この暗号化は所有者のアカウント、PIN、AstraNote のサーバー側保護に結び付くため、共有できません。",
+  vaultPinInvalid:
+    "空白を含まない4～16文字の ASCII 英字、数字、記号を入力してください。",
+  legacyVaultPinInvalid: "従来の4～6桁の Vault PIN を入力してください。",
+  vaultPinMismatch: "Vault PIN が一致しません。",
+  vaultCryptoUnavailable: "この端末では安全なブラウザ暗号化を使用できません。",
+  vaultUnavailable: "サーバーに AstraConfidential が設定されていません。",
+  unlockNamedNote: "{name} を解錠",
+  unlockVaultBody:
+    "このノートの大文字と小文字を区別する4～16文字の Vault PIN を入力してください。AstraNote は PIN を保存・復元しません。",
+  unlockLegacyVaultBody:
+    "この従来ノートで使用していた4～6桁の Vault PIN を入力してください。AstraNote は PIN を保存・復元しません。",
+  unlock: "解錠",
+  trustedDeviceOnly: "この PIN は信頼できる端末でのみ入力してください。",
+  vaultUnlockFailed: "Vault PIN が違うか、暗号化ノートが破損しています。",
+  confidentialNote: "AstraConfidential 暗号化ノート",
+  hiddenCharacters: "解錠後に表示",
+  vaultSharingUnavailable:
+    "このノートの暗号化は所有者のアカウントと Vault PIN に結び付いているため、\nAstraConfidential では共有できません。",
   skipContent: "メインコンテンツへ移動",
   primaryNavigation: "メインナビゲーション",
   menu: "メニュー",
@@ -691,7 +731,12 @@ const state = {
   language: "en",
   theme: "dark",
 };
-const SCHYBRID_MODE = "astra-confidential-schybrid-v1";
+const LEGACY_SCHYBRID_MODE = "astra-confidential-schybrid-v1";
+const CONFIDENTIAL_MODE = "astra-confidential-v2";
+const CURRENT_AES_MODES = new Map([
+  ["aes-128-gcm-new", "AES-128-GCM"],
+  ["aes-256-gcm-new", "AES-256-GCM"],
+]);
 const BITCOIN_ADDRESS = "bc1qazdfwsgju2e9c6nje63nwkx6n9mnfgzu37tlu6";
 const BITCOIN_URI = `bitcoin:${BITCOIN_ADDRESS}`;
 const $ = (selector, root = document) => root.querySelector(selector);
@@ -749,31 +794,46 @@ async function sha256Hex(value) {
 }
 function encryptionLabel(mode) {
   if (mode === "none") return t("unencrypted");
-  if (mode === SCHYBRID_MODE) return "AstraConfidential SCHybrid";
+  if (mode === LEGACY_SCHYBRID_MODE) return "AstraConfidential SCHybrid";
+  if (mode === CONFIDENTIAL_MODE) return "AstraConfidential";
+  if (CURRENT_AES_MODES.has(mode)) return CURRENT_AES_MODES.get(mode);
   return mode.toUpperCase();
 }
-async function deriveSchybridKey(noteId, clientSalt, pin) {
-  if (!/^\d{4,6}$/u.test(pin)) throw new Error(t("vaultPinInvalid"));
+function isClientEncryptedMode(mode) {
+  return mode === LEGACY_SCHYBRID_MODE || mode === CONFIDENTIAL_MODE;
+}
+function validVaultPin(pin, mode) {
+  return mode === LEGACY_SCHYBRID_MODE
+    ? /^\d{4,6}$/u.test(pin)
+    : /^[\x21-\x7e]{4,16}$/u.test(pin);
+}
+function vaultPinError(mode) {
+  return mode === LEGACY_SCHYBRID_MODE
+    ? t("legacyVaultPinInvalid")
+    : t("vaultPinInvalid");
+}
+async function deriveConfidentialKey(noteId, clientSalt, pin, mode) {
+  if (!validVaultPin(pin, mode)) throw new Error(vaultPinError(mode));
   if (!state.account) throw new Error(t("error"));
   if (!window.hashwasm?.argon2id) throw new Error(t("vaultCryptoUnavailable"));
-  const clientHash = await sha256Hex(
-    [
-      state.account.username.toLowerCase(),
-      state.account.email.toLowerCase(),
-      pin,
-      noteId,
-      clientSalt,
-    ].join("\0"),
-  );
+  const clientParts = [
+    state.account.username.toLowerCase(),
+    state.account.email.toLowerCase(),
+    pin,
+    noteId,
+    clientSalt,
+  ];
+  if (mode === CONFIDENTIAL_MODE) clientParts.unshift("AstraConfidential v2");
+  const clientHash = await sha256Hex(clientParts.join("\0"));
   const { serverFactor } = await api("/api/vault/key-factor", {
     method: "POST",
-    body: { noteId, clientSalt, clientHash },
+    body: { noteId, clientSalt, clientHash, encryption: mode },
   });
   const keyBytes = await window.hashwasm.argon2id({
     password: `${pin}\0${serverFactor}`,
     salt: base64ToBytes(clientSalt),
     parallelism: 1,
-    iterations: 3,
+    iterations: mode === CONFIDENTIAL_MODE ? 4 : 3,
     memorySize: 65536,
     hashLength: 32,
     outputType: "binary",
@@ -783,26 +843,33 @@ async function deriveSchybridKey(noteId, clientSalt, pin) {
     "decrypt",
   ]);
 }
-function schybridAdditionalData(noteId) {
+function confidentialAdditionalData(noteId, mode) {
   return textEncoder.encode(
-    `AstraConfidential SCHybrid v1\0${state.account.username.toLowerCase()}\0${noteId}`,
+    `${
+      mode === CONFIDENTIAL_MODE
+        ? "AstraConfidential v2"
+        : "AstraConfidential SCHybrid v1"
+    }\0${state.account.username.toLowerCase()}\0${noteId}`,
   );
 }
-async function encryptSchybridPayload(
+async function encryptConfidentialPayload(
   noteId,
   clientSalt,
   pin,
   payload,
+  mode,
   existingKey = null,
 ) {
-  const key = existingKey || (await deriveSchybridKey(noteId, clientSalt, pin));
+  const key =
+    existingKey ||
+    (await deriveConfidentialKey(noteId, clientSalt, pin, mode));
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const encrypted = new Uint8Array(
     await crypto.subtle.encrypt(
       {
         name: "AES-GCM",
         iv,
-        additionalData: schybridAdditionalData(noteId),
+        additionalData: confidentialAdditionalData(noteId, mode),
         tagLength: 128,
       },
       key,
@@ -817,9 +884,14 @@ async function encryptSchybridPayload(
     tag: bytesToBase64(tag),
   };
 }
-async function decryptSchybridPayload(note, pin) {
+async function decryptConfidentialPayload(note, pin) {
   try {
-    const key = await deriveSchybridKey(note.id, note.clientSalt, pin);
+    const key = await deriveConfidentialKey(
+      note.id,
+      note.clientSalt,
+      pin,
+      note.encryption,
+    );
     const ciphertext = base64ToBytes(note.encrypted.ciphertext);
     const tag = base64ToBytes(note.encrypted.tag);
     const combined = new Uint8Array(ciphertext.length + tag.length);
@@ -829,7 +901,7 @@ async function decryptSchybridPayload(note, pin) {
       {
         name: "AES-GCM",
         iv: base64ToBytes(note.encrypted.iv),
-        additionalData: schybridAdditionalData(note.id),
+        additionalData: confidentialAdditionalData(note.id, note.encryption),
         tagLength: 128,
       },
       key,
@@ -1157,19 +1229,26 @@ function modal({
   return { close, dialog, confirmButton };
 }
 
-function unlockSchybrid(note) {
+function unlockConfidential(note) {
   return new Promise((resolve, reject) => {
     const content = document.createElement("div");
     content.className = "vault-unlock";
     const label = document.createElement("label");
-    label.textContent = t("vaultPin");
+    label.textContent =
+      note.encryption === LEGACY_SCHYBRID_MODE
+        ? t("legacyVaultPin")
+        : t("vaultPin");
     const input = document.createElement("input");
     input.type = "text";
-    input.inputMode = "numeric";
+    input.inputMode =
+      note.encryption === LEGACY_SCHYBRID_MODE ? "numeric" : "text";
     input.autocomplete = "off";
     input.minLength = 4;
-    input.maxLength = 6;
-    input.pattern = "[0-9]{4,6}";
+    input.maxLength = note.encryption === LEGACY_SCHYBRID_MODE ? 6 : 16;
+    input.pattern =
+      note.encryption === LEGACY_SCHYBRID_MODE
+        ? "[0-9]{4,6}"
+        : "[!-~]{4,16}";
     requireManualPinEntry(input);
     const warning = document.createElement("p");
     warning.className = "field-help";
@@ -1180,22 +1259,26 @@ function unlockSchybrid(note) {
         "{name}",
         note.name || t("confidentialNote"),
       ),
-      body: t("unlockVaultBody"),
+      body:
+        note.encryption === LEGACY_SCHYBRID_MODE
+          ? t("unlockLegacyVaultBody")
+          : t("unlockVaultBody"),
       content,
       confirm: t("unlock"),
       danger: false,
       onCancel: () => reject(Object.assign(new Error("cancelled"), { cancelled: true })),
       onConfirm: async (close) => {
-        if (!/^\d{4,6}$/u.test(input.value))
-          throw new Error(t("vaultPinInvalid"));
-        const decrypted = await decryptSchybridPayload(note, input.value);
+        if (!validVaultPin(input.value, note.encryption))
+          throw new Error(vaultPinError(note.encryption));
+        const decrypted = await decryptConfidentialPayload(note, input.value);
         if (note.payloadVersion !== 2) {
           try {
-            const encrypted = await encryptSchybridPayload(
+            const encrypted = await encryptConfidentialPayload(
               note.id,
               note.clientSalt,
               input.value,
               { content: decrypted.payload.content },
+              note.encryption,
               decrypted.key,
             );
             await api(`/api/notes/${note.id}`, {
@@ -1210,7 +1293,7 @@ function unlockSchybrid(note) {
             note.encrypted = encrypted;
             note.payloadVersion = 2;
           } catch (error) {
-            console.warn("Could not migrate the legacy SCHybrid title.", error);
+            console.warn("Could not migrate the legacy encrypted title.", error);
           }
         }
         const result = { payload: decrypted.payload, pin: input.value };
@@ -1513,12 +1596,17 @@ async function initNewNote() {
   const form = $("#note-form");
   const encryption = form.encryption;
   const vaultFields = $("#vault-fields");
-  const vaultOption = encryption.querySelector(`[value="${SCHYBRID_MODE}"]`);
+  const protectedOptions = [
+    ...encryption.querySelectorAll('[value$="-new"], [value="astra-confidential-v2"]'),
+  ];
   requireManualPinEntry(form.vaultPin);
   requireManualPinEntry(form.vaultPinConfirmation);
-  if (!account.vaultAvailable) vaultOption.disabled = true;
+  if (!account.vaultAvailable)
+    protectedOptions.forEach((option) => {
+      option.disabled = true;
+    });
   const updateEncryptionFields = () => {
-    const enabled = encryption.value === SCHYBRID_MODE;
+    const enabled = encryption.value === CONFIDENTIAL_MODE;
     vaultFields.hidden = !enabled;
     form.vaultPin.required = enabled;
     form.vaultPinConfirmation.required = enabled;
@@ -1541,21 +1629,25 @@ async function initNewNote() {
         encryption: mode,
         captcha: state.captcha,
       };
-      if (mode === SCHYBRID_MODE) {
+      if (mode === CONFIDENTIAL_MODE) {
         if (!account.vaultAvailable) throw new Error(t("vaultUnavailable"));
         const normalizedName = form.name.value.normalize("NFC").trim();
         if (!normalizedName) throw new Error(t("noteNameRequired"));
         const pin = form.vaultPin.value;
-        if (!/^\d{4,6}$/u.test(pin)) throw new Error(t("vaultPinInvalid"));
+        if (!validVaultPin(pin, mode)) throw new Error(vaultPinError(mode));
         if (pin !== form.vaultPinConfirmation.value)
           throw new Error(t("vaultPinMismatch"));
         const id = randomHex(12);
         const clientSalt = randomBase64Url(32);
         body.id = id;
         body.clientSalt = clientSalt;
-        body.encrypted = await encryptSchybridPayload(id, clientSalt, pin, {
-          content: "",
-        });
+        body.encrypted = await encryptConfidentialPayload(
+          id,
+          clientSalt,
+          pin,
+          { content: "" },
+          mode,
+        );
       }
       const result = await api("/api/notes", {
         method: "POST",
@@ -1577,9 +1669,9 @@ function currentNoteId() {
 async function initNote() {
   if (!(await requireAccount())) return;
   const note = await api(`/api/notes/${currentNoteId()}`);
-  if (note.encryption === SCHYBRID_MODE) {
+  if (isClientEncryptedMode(note.encryption)) {
     try {
-      const unlocked = await unlockSchybrid(note);
+      const unlocked = await unlockConfidential(note);
       note.name = unlocked.payload.name;
       note.content = unlocked.payload.content;
       note.characters = Array.from(note.content).filter(
@@ -1608,7 +1700,7 @@ async function initNote() {
     shareInput.value = url ? new URL(url, location.origin).href : "";
     shareRow.hidden = !url;
   };
-  if (note.encryption === SCHYBRID_MODE) {
+  if (isClientEncryptedMode(note.encryption)) {
     shareToggle.closest(".share-toggle").hidden = true;
     $("#share-unavailable").hidden = false;
   }
@@ -1655,9 +1747,9 @@ async function initEditor() {
   if (!(await requireAccount())) return;
   const note = await api(`/api/notes/${currentNoteId()}`);
   let vaultPin = null;
-  if (note.encryption === SCHYBRID_MODE) {
+  if (isClientEncryptedMode(note.encryption)) {
     try {
-      const unlocked = await unlockSchybrid(note);
+      const unlocked = await unlockConfidential(note);
       note.name = unlocked.payload.name;
       note.content = unlocked.payload.content;
       vaultPin = unlocked.pin;
@@ -1688,16 +1780,17 @@ async function initEditor() {
     button.disabled = true;
     try {
       const body = { name: name.value, content: content.value };
-      if (note.encryption === SCHYBRID_MODE) {
+      if (isClientEncryptedMode(note.encryption)) {
         const normalizedName = name.value.normalize("NFC").trim();
         if (!normalizedName) throw new Error(t("noteNameRequired"));
-        body.encrypted = await encryptSchybridPayload(
+        body.encrypted = await encryptConfidentialPayload(
           note.id,
           note.clientSalt,
           vaultPin,
           {
             content: content.value.normalize("NFC"),
           },
+          note.encryption,
         );
         delete body.content;
       }
