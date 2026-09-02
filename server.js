@@ -23,9 +23,9 @@ const DELETES_FILE = path.join(DATA_DIR, "deletes.json");
 const SHARES_FILE = path.join(DATA_DIR, "shares.json");
 const SECRET_FILE = path.join(DATA_DIR, ".server-secret");
 
-const MAX_ACCOUNTS = 50_000;
+const MAX_ACCOUNTS = 75_000;
 const MAX_NOTES = 20;
-const MAX_ACCOUNT_BYTES = 200 * 1024;
+const MAX_ACCOUNT_BYTES = 128 * 1000;
 const MAX_NOTE_NAME = 80;
 const MAX_DISPLAY_NAME = 40;
 const SESSION_INITIAL_MS = 14 * 864e5;
@@ -33,7 +33,7 @@ const SESSION_EXTENSION_MS = 2 * 864e5;
 const SESSION_MAX_MS = 28 * 864e5;
 const DELETE_REVERSAL_MS = 7 * 864e5;
 const DELETE_ERASE_MS = 62 * 864e5;
-const TERMS_VERSION = "2026-09-01";
+const TERMS_VERSION = "2026-09-02";
 const CAPTCHA_VERIFY_URL = "https://nexacaptcha.nxlabtw.com/api/siteverify";
 const LEGACY_SCHYBRID_MODE = "astra-confidential-schybrid-v1";
 const CONFIDENTIAL_MODE = "astra-confidential-v2";
@@ -1526,7 +1526,7 @@ app.post(
           await saveMetadata(username, metadata);
           await fsp.unlink(noteFile(username, id));
           throw Object.assign(
-            new Error("This note would exceed your 200 KiB account limit."),
+            new Error("This note would exceed your 128 KB account limit."),
             { status: 413 },
           );
         }
@@ -1598,7 +1598,7 @@ app.put(
         if ((await directorySize(userDir(username))) > MAX_ACCOUNT_BYTES) {
           await atomicWrite(file, original);
           throw Object.assign(
-            new Error("Saving would exceed your 200 KiB account limit."),
+            new Error("Saving would exceed your 128 KB account limit."),
             { status: 413 },
           );
         }

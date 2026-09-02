@@ -32,7 +32,7 @@ const I18N = {
     limitEyebrow: "CLEAR BY DESIGN",
     limitTitle: "Small footprint. Deliberate limits.",
     limitBody:
-      "Each account includes 200 KiB across all account files and up to 20 notes. Encrypted notes commonly use about 1.4× the storage; very short notes may use more than 2×.",
+      "Each account includes 128 KB across all account files and up to 20 notes. Encrypted notes commonly use about 1.4× the storage; very short notes may use more than 2×.",
     copyright: "© 2026 NeuralNexusLab. All service rights reserved.",
     terms: "Terms",
     privacy: "Privacy",
@@ -135,7 +135,7 @@ const I18N = {
     deletePending:
       "This account is awaiting deletion. Reloading the login page will let you cancel the request with a new CAPTCHA.",
     legalUpdated: "Effective and last updated: 1 September 2026",
-    termsUpdated: "Effective and last updated: 1 September 2026",
+    termsUpdated: "Effective and last updated: 2 September 2026",
     englishOnlyCaptcha:
       "Complete the human verification to save this note.",
     editorUnsaved: "You have unsaved changes. Close this page anyway?",
@@ -168,7 +168,7 @@ const I18N = {
     limitEyebrow: "清楚而有節制",
     limitTitle: "輕量空間，明確限制。",
     limitBody:
-      "每個帳號的所有檔案合計 200 KiB，最多 20 篇筆記。加密筆記通常約需 1.4 倍空間；很短的筆記可能超過 2 倍。",
+      "每個帳號的所有檔案合計 128 KB，最多 20 篇筆記。加密筆記通常約需 1.4 倍空間；很短的筆記可能超過 2 倍。",
     copyright: "© 2026 NeuralNexusLab。保留所有服務相關權利。",
     terms: "使用者協議",
     privacy: "隱私政策",
@@ -269,7 +269,7 @@ const I18N = {
     deletePending:
       "此帳號正在等待刪除。系統將重新載入登入頁，讓你以新的 CAPTCHA 取消申請。",
     legalUpdated: "生效及最後更新：2026 年 9 月 1 日",
-    termsUpdated: "生效及最後更新：2026 年 9 月 1 日",
+    termsUpdated: "生效及最後更新：2026 年 9 月 2 日",
     englishOnlyCaptcha: "請完成人類驗證以儲存筆記。",
     editorUnsaved: "尚有未儲存的變更，仍要關閉這個頁面嗎？",
   },
@@ -291,7 +291,7 @@ Object.assign(I18N.en, {
   purposeIntroTwo:
     "Whether it is a passing idea, something you must remember, or information you reach for often, it can stay together in your AstraNote account. Sign in on a phone, tablet, or computer to read and edit the same notes without repeatedly sending files between devices.",
   purposeIntroThree:
-    "AstraNote keeps writing simple and free while giving sensitive notes stronger protection when you choose it. Each account includes up to 20 notes and 200 KiB of storage, with no advertising or analytics tracking.",
+    "AstraNote keeps writing simple and free while giving sensitive notes stronger protection when you choose it. Each account includes up to 20 notes and 128 KB of storage, with no advertising or analytics tracking.",
   quickTitle: "Capture it right away",
   quickBody:
     "Write down an idea, a reminder, a list, or a useful piece of information before it slips away.",
@@ -300,11 +300,11 @@ Object.assign(I18N.en, {
     "Protect sensitive notes with AES or AstraConfidential browser-side encryption whenever you choose.",
   shareTitle: "Free to use",
   shareBody:
-    "Create up to 20 notes with 200 KiB of account storage, with no advertising or analytics tracking.",
+    "Create up to 20 notes with 128 KB of account storage, with no advertising or analytics tracking.",
   limitEyebrow: "SIMPLE, HONEST LIMITS",
   limitTitle: "Enough room for the notes you reach for most.",
   limitBody:
-    "Every account includes 200 KiB across all account files and up to 20 notes. If the account is full, existing notes remain readable, but new notes and saves are paused until space is freed.",
+    "Every account includes 128 KB across all account files and up to 20 notes. If the account is full, existing notes remain readable, but new notes and saves are paused until space is freed.",
   encryptionEyebrow: "CHOOSE YOUR PROTECTION",
   encryptionTitle: "Four protection levels, explained clearly.",
   encryptionIntro:
@@ -463,18 +463,18 @@ Object.assign(I18N["zh-Hant"], {
   purposeIntroTwo:
     "無論是突然想到的靈感、需要記住的事情，還是經常需要拿出來查看的資訊，都能集中保存在自己的 AstraNote 帳號中。登入後，即可在手機、平板或電腦上查看與編輯同一批筆記，不必把重要內容留在單一裝置，也不需要反覆傳送檔案。",
   purposeIntroThree:
-    "AstraNote 保持簡單、清楚且免費，同時讓敏感筆記在需要時獲得更強的保護。每個帳號提供最多 20 篇筆記與 200 KiB 儲存空間，沒有廣告，也不使用分析追蹤。",
+    "AstraNote 保持簡單、清楚且免費，同時讓敏感筆記在需要時獲得更強的保護。每個帳號提供最多 20 篇筆記與 128 KB 儲存空間，沒有廣告，也不使用分析追蹤。",
   quickTitle: "想到就能立刻記下",
   quickBody: "不論是靈感、提醒、清單或常用資料，都能在忘記以前迅速保存。",
   secureTitle: "強大加密，隨時可選",
   secureBody:
     "敏感筆記可使用 AES，或選擇由瀏覽器端先加密的 AstraConfidential。",
   shareTitle: "免費使用",
-  shareBody: "每個帳號可建立 20 篇筆記，享有 200 KiB 空間，沒有廣告與分析追蹤。",
+  shareBody: "每個帳號可建立 20 篇筆記，享有 128 KB 空間，沒有廣告與分析追蹤。",
   limitEyebrow: "簡單而透明的限制",
   limitTitle: "為最常用的筆記保留剛好的空間。",
   limitBody:
-    "每個帳號的所有檔案合計 200 KiB，最多 20 篇筆記。空間用滿後仍可閱讀既有內容，但必須先釋放空間才能新增或儲存。",
+    "每個帳號的所有檔案合計 128 KB，最多 20 篇筆記。空間用滿後仍可閱讀既有內容，但必須先釋放空間才能新增或儲存。",
   encryptionEyebrow: "選擇適合的保護方式",
   encryptionTitle: "四種保護層級，一眼看懂差異。",
   encryptionIntro:
@@ -624,7 +624,7 @@ I18N.ja = {
   terms: "利用規約",
   privacy: "プライバシー",
   legalUpdated: "発効・最終更新：2026年9月1日",
-  termsUpdated: "発効・最終更新：2026年9月1日",
+  termsUpdated: "発効・最終更新：2026年9月2日",
   source: "ソースコード",
   cookieTitle: "必須 Cookie",
   cookieBody:
@@ -743,7 +743,8 @@ const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const page = document.body.dataset.page || "";
 const t = (key) => I18N[state.language]?.[key] || I18N.en[key] || key;
-const formatBytes = (bytes) => `${(Number(bytes || 0) / 1024).toFixed(2)} KiB`;
+const formatBytes = (bytes) =>
+  `${Number((Number(bytes || 0) / 1000).toFixed(2))} KB`;
 const formatUtc = (value) =>
   new Intl.DateTimeFormat(
     state.language === "zh-Hant"
@@ -1564,7 +1565,7 @@ async function initDashboard() {
   if (!account) return;
   $("#note-count").textContent = `${account.noteCount} / ${account.maxNotes}`;
   $("#storage-count").textContent =
-    `${formatBytes(account.usedBytes)} / 200 KiB`;
+    `${formatBytes(account.usedBytes)} / 128 KB`;
   $("#age-count").textContent = Math.max(
     0,
     Math.floor((Date.now() - Date.parse(account.createdAt)) / 864e5),

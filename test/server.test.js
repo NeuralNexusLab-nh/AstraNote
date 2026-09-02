@@ -145,9 +145,10 @@ test("registration rate limits repeated requests and advertises retry timing", a
   assert.ok(response.headers.get("retry-after"));
 });
 
-test("published account limits match the 20-note and 200 KiB policy", () => {
+test("published account limits match the 20-note, 128 KB, and 75,000-account policy", () => {
   assert.equal(constants.MAX_NOTES, 20);
-  assert.equal(constants.MAX_ACCOUNT_BYTES, 200 * 1024);
+  assert.equal(constants.MAX_ACCOUNT_BYTES, 128 * 1000);
+  assert.equal(constants.MAX_ACCOUNTS, 75_000);
 });
 
 test("invalid sharing and traversal-shaped identifiers reveal no data", async () => {
