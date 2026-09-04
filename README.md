@@ -18,6 +18,10 @@ security-sensitive actions.
 - Independent Plus and Pro day balances; Pro is consumed first and one month is always 30 days
 - Satora Bitcoin checkout with server-side status verification, validated coupon
   totals, and idempotent fulfilment
+- Compact, minified payment records: completed orders retain only the ownership,
+  product, amount, Satora reference, status, timestamps, and optional TXID needed
+  for audit and idempotent fulfilment. New-order requests are limited per account
+  and IP, with a persistent six-new-orders-per-hour account check.
 - No encryption, AES-128-GCM, AES-256-GCM, AstraSecret, or AstraConfidential at note creation
 - Every encrypted mode protects note content; titles remain plaintext for identification
 - Server-enforced overage locks and permanent deletion after 30 continuously locked days

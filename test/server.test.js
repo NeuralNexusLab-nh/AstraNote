@@ -501,3 +501,66 @@ test("Satora coupon pricing is verified without weakening order totals", () => {
   };
   assert.equal(testables.satoraPaidAmountMatchesOrder(regularPayment, order), true);
 });
+
+test("finished orders retain only compact audit and fulfilment fields", () => {
+  const fullOrder = {
+    orderId: "a".repeat(32),
+    username: "compact_user",
+    plan: "pro",
+    months: 12,
+    expectedSats: 72_000,
+    localStatus: "paid",
+    checkoutToken: "b".repeat(32),
+    idempotencyKey: `astranote:${"a".repeat(32)}`,
+    productSnapshot: "A long translated product name that is no longer needed",
+    paymentUrl: `https://satora.nxlabtw.com/payment/${"c".repeat(22)}`,
+    satoraPaymentId: "c".repeat(22),
+    createdAt: "2026-09-04T12:00:00.000Z",
+    updatedAt: "2026-09-04T12:05:00.000Z",
+    paidAt: "2026-09-04T12:04:00.000Z",
+    fulfilledAt: "2026-09-04T12:04:01.000Z",
+    txid: "d".repeat(64),
+    lastError: "obsolete_error",
+  };
+  const compact = testables.compactOrder(fullOrder);
+
+  assert.deepEqual(compact, {
+    orderId: fullOrder.orderId,
+    username: "compact_user",
+    plan: "pro",
+    months: 12,
+    expectedSats: 72_000,
+    localStatus: "paid",
+    createdAt: fullOrder.createdAt,
+    satoraPaymentId: fullOrder.satoraPaymentId,
+    paidAt: fullOrder.paidAt,
+    fulfilledAt: fullOrder.fulfilledAt,
+    txid: fullOrder.txid,
+  });
+  assert.equal("paymentUrl" in compact, false);
+  assert.equal("checkoutToken" in compact, false);
+  assert.equal("idempotencyKey" in compact, false);
+  assert.equal("productSnapshot" in compact, false);
+  assert.equal("updatedAt" in compact, false);
+
+  const pending = testables.compactOrder({
+    ...fullOrder,
+    localStatus: "pending",
+    lastError: null,
+  });
+  assert.equal(pending.checkoutToken, fullOrder.checkoutToken);
+  assert.equal(pending.paymentUrl, fullOrder.paymentUrl);
+});
+
+test("new order quota counts only the current account and time window", () => {
+  const now = Date.parse("2026-09-04T13:00:00.000Z");
+  const orders = [
+    { username: "buyer", createdAt: "2026-09-04T12:59:00.000Z" },
+    { username: "buyer", createdAt: "2026-09-04T12:01:00.000Z" },
+    { username: "buyer", createdAt: "2026-09-04T11:59:59.000Z" },
+    { username: "someone_else", createdAt: "2026-09-04T12:59:00.000Z" },
+  ];
+  assert.equal(testables.recentNewOrderCount(orders, "buyer", now), 2);
+  assert.equal(constants.ORDER_CREATION_WINDOW_MS, 60 * 60_000);
+  assert.equal(constants.MAX_NEW_ORDERS_PER_ACCOUNT_WINDOW, 6);
+});

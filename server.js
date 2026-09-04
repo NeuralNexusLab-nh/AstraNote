@@ -41,6 +41,8 @@ const SUPPORT_EMAIL = "astranote@nxlabtw.com";
 const PLAN_MONTH_MS = 30 * 864e5;
 const PLAN_LOCK_DELETE_MS = 30 * 864e5;
 const BILLING_MONTH_OPTIONS = Object.freeze([1, 3, 6, 9, 12, 24, 36]);
+const ORDER_CREATION_WINDOW_MS = 60 * 60_000;
+const MAX_NEW_ORDERS_PER_ACCOUNT_WINDOW = 6;
 const SATORA_BASE_URL = "https://satora.nxlabtw.com";
 const SATORA_RETURN_URL =
   "https://astranote.nxlabtw.com/plans/return";
@@ -438,6 +440,7 @@ async function ensureData() {
     process.env.ASTRA_CONFIDENTIAL_KEY.length >= 64
       ? process.env.ASTRA_CONFIDENTIAL_KEY
       : null;
+  await withLock("orders", async () => writeOrders(await readOrders()));
   await migrateLegacyEncryptedNotes();
 }
 
@@ -661,19 +664,61 @@ async function updateShares(mutator) {
 async function readOrders() {
   return readJson(ORDERS_FILE, []);
 }
+function storedOrderStatus(order) {
+  return (order.lastError || order.failureCode) && !order.satoraPaymentId
+    ? "failed"
+    : String(order.localStatus || "created");
+}
+function compactOrder(order) {
+  const localStatus = storedOrderStatus(order);
+  const compact = {
+    orderId: order.orderId,
+    username: order.username,
+    plan: order.plan,
+    months: order.months,
+    expectedSats: order.expectedSats,
+    localStatus,
+    createdAt: order.createdAt,
+  };
+  if (order.satoraPaymentId) compact.satoraPaymentId = order.satoraPaymentId;
+  if (["created", "confirming", "pending"].includes(localStatus)) {
+    if (order.checkoutToken) compact.checkoutToken = order.checkoutToken;
+    if (order.paymentUrl) compact.paymentUrl = order.paymentUrl;
+  }
+  if (order.paidAt) compact.paidAt = order.paidAt;
+  if (order.fulfilledAt) compact.fulfilledAt = order.fulfilledAt;
+  if (typeof order.txid === "string" && order.txid)
+    compact.txid = order.txid;
+  const failureCode = String(order.failureCode || order.lastError || "").slice(0, 60);
+  if (localStatus === "failed" && failureCode)
+    compact.failureCode = failureCode;
+  return compact;
+}
 async function writeOrders(orders) {
-  await writeJson(ORDERS_FILE, orders);
+  const compacted = orders.map(compactOrder);
+  await atomicWrite(ORDERS_FILE, `${JSON.stringify(compacted)}\n`);
+}
+function recentNewOrderCount(orders, username, now = Date.now()) {
+  const cutoff = now - ORDER_CREATION_WINDOW_MS;
+  return orders.filter(
+    (order) =>
+      order.username === username &&
+      Number.isFinite(Date.parse(order.createdAt)) &&
+      Date.parse(order.createdAt) >= cutoff,
+  ).length;
 }
 function publicOrder(order) {
+  const localStatus = storedOrderStatus(order);
   return {
     orderId: order.orderId,
     plan: order.plan,
     months: order.months,
     days: order.months * 30,
     expectedSats: order.expectedSats,
-    localStatus:
-      order.lastError && !order.satoraPaymentId ? "failed" : order.localStatus,
-    paymentUrl: order.paymentUrl || null,
+    localStatus,
+    paymentUrl: ["confirming", "pending"].includes(localStatus)
+      ? order.paymentUrl || null
+      : null,
     satoraPaymentId: order.satoraPaymentId || null,
     txid: order.txid || null,
     createdAt: order.createdAt,
@@ -1286,7 +1331,22 @@ const accountMutationLimiter = accountLimiter(120);
 const noteSaveLimiter = accountLimiter(40);
 const noteLifecycleLimiter = accountLimiter(20);
 const shareMutationLimiter = accountLimiter(30);
-const billingMutationLimiter = accountLimiter(10);
+const billingCreateAccountLimiter = rateLimit({
+  windowMs: ORDER_CREATION_WINDOW_MS,
+  limit: MAX_NEW_ORDERS_PER_ACCOUNT_WINDOW,
+  keyGenerator: accountRateKey,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
+const billingCreateIpLimiter = rateLimit({
+  windowMs: ORDER_CREATION_WINDOW_MS,
+  limit: 12,
+  keyGenerator: (req) => `billing-ip:${ipKeyGenerator(req.ip)}`,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
 const billingStatusLimiter = accountLimiter(30);
 const vaultKeyIpLimiter = rateLimit({
   windowMs: 15 * 60_000,
@@ -1671,7 +1731,8 @@ app.get(
 app.post(
   "/api/billing/create",
   requireAuth,
-  billingMutationLimiter,
+  billingCreateIpLimiter,
+  billingCreateAccountLimiter,
   requireCsrf,
   verifyCaptcha,
   async (req, res, next) => {
@@ -1704,6 +1765,14 @@ app.post(
             });
           if (order.paymentUrl) return publicOrder(order);
         } else {
+          if (
+            recentNewOrderCount(orders, username) >=
+            MAX_NEW_ORDERS_PER_ACCOUNT_WINDOW
+          )
+            throw Object.assign(
+              new Error("Too many new payment orders. Please try again later."),
+              { status: 429, code: "order_rate_limited" },
+            );
           const createdAt = utcNow();
           const orderId = newId(16);
           order = {
@@ -1711,31 +1780,29 @@ app.post(
             username,
             plan,
             months,
-            productSnapshot: `AstraNote ${plan === "plus" ? "Plus" : "Pro"} — ${months * 30} days`,
             expectedSats: PLAN_DEFINITIONS[plan].monthlySats * months,
             localStatus: "created",
             checkoutToken,
-            idempotencyKey: `astranote:${orderId}`,
             satoraPaymentId: null,
             paymentUrl: null,
             fulfilledAt: null,
             createdAt,
-            updatedAt: createdAt,
           };
           orders.push(order);
           await writeOrders(orders);
         }
+        const productSnapshot = `AstraNote ${order.plan === "plus" ? "Plus" : "Pro"} — ${order.months * 30} days`;
         const returnUrl = new URL(SATORA_RETURN_URL);
         returnUrl.searchParams.set("order_id", order.orderId);
         try {
           const created = await satoraRequest("/api/create", {
             method: "POST",
-            headers: { "idempotency-key": order.idempotencyKey },
+            headers: { "idempotency-key": `astranote:${order.orderId}` },
             body: JSON.stringify({
               product: {
-                en: order.productSnapshot,
-                "zh-TW": `AstraNote ${plan === "plus" ? "Plus" : "Pro"} — ${months * 30} 天`,
-                ja: `AstraNote ${plan === "plus" ? "Plus" : "Pro"} — ${months * 30}日`,
+                en: productSnapshot,
+                "zh-TW": `AstraNote ${order.plan === "plus" ? "Plus" : "Pro"} — ${order.months * 30} 天`,
+                ja: `AstraNote ${order.plan === "plus" ? "Plus" : "Pro"} — ${order.months * 30}日`,
               },
               price: order.expectedSats,
               return_url: returnUrl.href,
@@ -1755,13 +1822,11 @@ app.post(
           order.localStatus = ["confirming", "pending"].includes(created.status)
             ? created.status
             : "confirming";
-          order.updatedAt = utcNow();
           await writeOrders(orders);
           return publicOrder(order);
         } catch (error) {
           order.localStatus = "failed";
-          order.lastError = String(error.code || "billing_unavailable").slice(0, 120);
-          order.updatedAt = utcNow();
+          order.failureCode = String(error.code || "billing_unavailable").slice(0, 60);
           await writeOrders(orders);
           throw error;
         }
@@ -1828,14 +1893,12 @@ app.get(
         const validIdentity = satoraStatusMatchesOrder(status, order);
         if (!validIdentity) {
           order.localStatus = "verification_error";
-          order.updatedAt = utcNow();
           await writeOrders(orders);
           return order;
         }
         if (["confirming", "pending", "failed", "expired"].includes(status.status)) {
           order.localStatus = status.status;
           order.txid = typeof status.txid === "string" ? status.txid : null;
-          order.updatedAt = utcNow();
           await writeOrders(orders);
           return order;
         }
@@ -1861,12 +1924,10 @@ app.get(
           order.localStatus = "paid";
           order.paidAt = status.paid_at || utcNow();
           order.txid = typeof status.txid === "string" ? status.txid : null;
-          order.updatedAt = utcNow();
           await writeOrders(orders);
           return order;
         }
         order.localStatus = "verification_error";
-        order.updatedAt = utcNow();
         await writeOrders(orders);
         return order;
       });
@@ -2546,6 +2607,8 @@ module.exports = {
     PLAN_DEFINITIONS,
     PLAN_MONTH_MS,
     BILLING_MONTH_OPTIONS,
+    ORDER_CREATION_WINDOW_MS,
+    MAX_NEW_ORDERS_PER_ACCOUNT_WINDOW,
   },
   testables: {
     encryptContent,
@@ -2563,5 +2626,7 @@ module.exports = {
     satoraPricingMatchesOrder,
     satoraStatusMatchesOrder,
     satoraPaidAmountMatchesOrder,
+    compactOrder,
+    recentNewOrderCount,
   },
 };
