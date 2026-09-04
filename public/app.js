@@ -387,6 +387,7 @@ Object.assign(I18N.en, {
   accountStorageLabel: "ACCOUNT STORAGE",
   accountLimitCaption: "20 NOTES · FREE ACCOUNT · NO ADS",
   maxNotesLabel: "MAX 20",
+  maxNotesDynamic: "LIMIT {count}",
   legalEyebrow: "LEGAL",
   privacyEyebrow: "DATA PRACTICES",
   notFoundEyebrow: "PAGE NOT FOUND",
@@ -549,6 +550,7 @@ Object.assign(I18N["zh-Hant"], {
   accountStorageLabel: "帳號儲存空間",
   accountLimitCaption: "20 篇筆記 · 免費帳號 · 無廣告",
   maxNotesLabel: "上限 20",
+  maxNotesDynamic: "上限 {count}",
   legalEyebrow: "法律文件",
   privacyEyebrow: "資料處理方式",
   notFoundEyebrow: "找不到頁面",
@@ -825,6 +827,7 @@ Object.assign(I18N["zh-Hant"], {
 });
 
 Object.assign(I18N.ja, {
+  maxNotesDynamic: "上限 {count}件",
   today: "本日のアクティブアカウント",
   utc: "アクセスしたログイン済みアカウント（重複なし）· UTC基準",
   vaultPinWarning: "AstraNote はこの大文字と小文字を区別する PIN を保存・復元しません。可能であればランダムな16～24文字を安全に保管してください。",
@@ -1813,6 +1816,9 @@ async function initDashboard() {
   $("#note-count").textContent = account.maxNotes === null
     ? `${account.noteCount} / ${t("unlimited")}`
     : `${account.noteCount} / ${account.maxNotes}`;
+  $("#note-limit-caption").textContent = account.maxNotes === null
+    ? t("unlimited")
+    : t("maxNotesDynamic").replace("{count}", account.maxNotes);
   $("#storage-count").textContent =
     account.maxBytes === null
       ? `${formatBytes(account.usedBytes)} / ${t("unlimited")}`

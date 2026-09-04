@@ -31,8 +31,12 @@ test("billing and encryption secrets remain server-only placeholders", () => {
 
 test("plan UI includes backend-lock and deletion disclosures", () => {
   const app = fs.readFileSync(path.join(ROOT, "public", "app.js"), "utf8");
+  const dashboard = fs.readFileSync(path.join(ROOT, "public", "dashboard.html"), "utf8");
+  const style = fs.readFileSync(path.join(ROOT, "public", "style.css"), "utf8");
   const terms = fs.readFileSync(path.join(ROOT, "public", "terms.html"), "utf8");
   assert.match(app, /持續鎖定滿30天後會永久刪除/u);
   assert.match(terms, /locked by the\s+server from largest to smallest/u);
   assert.match(terms, /astranote@nxlabtw\.com/u);
+  assert.match(dashboard, /id="note-limit-caption"/u);
+  assert.match(style, /\.locked-warning\[hidden\]\s*\{\s*display:\s*none/u);
 });

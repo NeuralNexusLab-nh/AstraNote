@@ -39,6 +39,9 @@ html[data-theme="light"] {
 * {
   box-sizing: border-box;
 }
+[hidden] {
+  display: none !important;
+}
 html {
   scroll-behavior: smooth;
   background: var(--canvas);
@@ -1701,12 +1704,19 @@ html[lang="zh-Hant"] [data-lang="en"] {
 }
 
 .brand-plan {
-  padding-left: 9px;
-  border-left: 1px solid var(--line);
-  color: var(--muted);
-  font: 500 0.72rem/1 var(--body);
-  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  margin-left: 1px;
+  padding: 0 9px;
+  border: 1px solid color-mix(in srgb, var(--primary) 48%, var(--line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 16%, var(--button));
+  color: color-mix(in srgb, var(--primary) 76%, var(--text));
+  font: 650 0.7rem/1 var(--body);
+  letter-spacing: 0.075em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 .plans-nav-link i {
   color: var(--primary);
@@ -1895,6 +1905,9 @@ html[lang="zh-Hant"] [data-lang="en"] {
   align-items: center;
   margin-bottom: 24px;
 }
+.summary-grid {
+  margin-bottom: 32px;
+}
 .account-plan-main {
   display: flex;
   align-items: center;
@@ -1926,6 +1939,9 @@ html[lang="zh-Hant"] [data-lang="en"] {
   border: 1px solid color-mix(in srgb, var(--danger) 55%, var(--line));
   border-radius: var(--radius);
   background: color-mix(in srgb, var(--danger) 8%, var(--card));
+}
+.locked-warning[hidden] {
+  display: none;
 }
 .locked-warning > i {
   color: var(--danger);
