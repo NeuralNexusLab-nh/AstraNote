@@ -276,9 +276,9 @@ const I18N = {
 };
 
 Object.assign(I18N.en, {
-  vaultPinWarning: "AstraNote cannot store or recover this case-sensitive PIN. Use a random 16–24 character value when possible and keep it safe.",
+  vaultPinWarning: "AstraNote cannot store or recover this case-sensitive PIN. Use a random 12–16 character value when possible and keep it safe.",
   encryptionTitle: "Five protection levels, explained clearly.",
-  encryptionSecretExposure: "Account access, server protection, and the numeric PIN",
+  encryptionSecretExposure: "The account, server-side protection, and the user's 4–6 digit PIN",
   encryptionSecretSecurity: "Everyday",
   secureBody: "Choose server-managed AES, simple AstraSecret protection, or advanced AstraConfidential with Plus and Pro.",
   limitBody: "Free includes 128 KB and 20 notes. Plus and Pro add more room when your notebook grows.",
@@ -330,7 +330,8 @@ Object.assign(I18N.en, {
   encryptionYes: "Yes",
   encryptionNo: "No",
   encryptionNoPin: "No PIN",
-  encryptionUserHeldPin: "User-held PIN",
+  encryptionSecretPin: "4–6 digits · user-held",
+  encryptionUserHeldPin: "4–16 ASCII · user-held",
   encryptionNoneName: "No encryption",
   encryptionNoneExposure: "The note file alone",
   encryptionNoneSecurity: "None",
@@ -341,18 +342,18 @@ Object.assign(I18N.en, {
   encryptionSchybridExposure:
     "Even with all server data, plaintext is not directly available. The attacker must still guess or obtain the PIN, or control a device while the PIN is entered or the note is unlocked.",
   encryptionSchybridSecurity: "Highest level",
-  encryptionSchybridTitle: "AstraConfidential features",
-  encryptionSchybridStepOneTitle: "The PIN stays with you",
+  encryptionSchybridTitle: "AstraSecret and AstraConfidential features",
+  encryptionSchybridStepOneTitle: "Two PIN formats, both kept by you",
   encryptionSchybridStepOneBody:
-    "The PIN is used in your browser to unlock the note. AstraNote does not store the PIN itself and cannot recover it.",
-  encryptionSchybridStepTwoTitle: "Several protections work together",
+    "AstraSecret uses 4–6 digits. AstraConfidential uses 4–16 case-sensitive ASCII characters. You must save the PIN; AstraNote never stores or recovers it.",
+  encryptionSchybridStepTwoTitle: "Protection matched to the note",
   encryptionSchybridStepTwoBody:
-    "Your account, note, PIN, and AstraNote's server-side protection create a note-specific key. Stealing only one part is not enough.",
+    "AstraSecret is simpler for everyday privacy. AstraConfidential applies stronger key derivation for highly sensitive content and is available with Plus or Pro.",
   encryptionSchybridStepThreeTitle: "Browser encrypts before upload",
   encryptionSchybridStepThreeBody:
-    "The note content is encrypted on your device first. The server receives and stores only encrypted content.",
+    "Both modes encrypt the note content on your device before upload. The server receives and stores only encrypted content.",
   encryptionSchybridCaution:
-    "Stolen server data does not directly reveal the plaintext without the PIN or control of a device while the note is unlocked. Short or predictable PINs are easier to guess, so use a unique, randomly generated 16–24 character PIN and only trusted devices.",
+    "Neither mode makes a weak PIN strong. AstraSecret's short numeric PIN is easier to guess; for sensitive data, choose AstraConfidential with a unique random 12–16 character PIN and enter it only on trusted devices.",
   welcomeBody: "Your notes and account usage, clearly presented.",
   noNotes: "No notes yet. Create one whenever you have something worth keeping.",
   newNoteBody:
@@ -400,7 +401,7 @@ Object.assign(I18N.en, {
   vaultExplanation:
     "Your device combines your account details and PIN with a temporary factor protected by AstraNote's independent server secret. The note content is encrypted on this device before upload; the title remains visible so you can identify the note in your list.",
   vaultPinWarning:
-    "AstraNote does not store or recover this case-sensitive PIN. Use 16–24 random letters, numbers, and symbols when possible, save it securely, and enter it only on a device you trust.",
+    "AstraNote does not store or recover this case-sensitive PIN. Use 12–16 random ASCII letters, numbers, and symbols when possible, save it securely, and enter it only on a device you trust.",
   vaultNoSharing:
     "Sharing is unavailable because this encryption is bound to the owner's account, PIN, and AstraNote's server-side protection.",
   vaultPinInvalid:
@@ -439,9 +440,9 @@ Object.assign(I18N.en, {
 });
 
 Object.assign(I18N["zh-Hant"], {
-  vaultPinWarning: "AstraNote 不會儲存或協助找回這組區分大小寫的 PIN。建議使用隨機的16～24字元並妥善保存。",
+  vaultPinWarning: "AstraNote 不會儲存或協助找回這組區分大小寫的 PIN。建議使用隨機的12～16字元並妥善保存。",
   encryptionTitle: "五種保護層級，一眼看懂差異。",
-  encryptionSecretExposure: "帳號存取、伺服器保護及數字 PIN",
+  encryptionSecretExposure: "帳號、伺服器端保護，以及使用者保存的4～6位數字 PIN",
   encryptionSecretSecurity: "日常防護",
   secureBody: "可選擇伺服器管理的 AES、容易使用的 AstraSecret，或 Plus 與 Pro 提供的進階 AstraConfidential。",
   limitBody: "Free 提供128 KB與20篇筆記；需要更多空間時，可選擇 Plus 或 Pro。",
@@ -493,7 +494,8 @@ Object.assign(I18N["zh-Hant"], {
   encryptionYes: "是",
   encryptionNo: "否",
   encryptionNoPin: "沒有 PIN",
-  encryptionUserHeldPin: "使用者掌握",
+  encryptionSecretPin: "4～6位數字 · 使用者保存",
+  encryptionUserHeldPin: "4～16位 ASCII · 使用者保存",
   encryptionNoneName: "不加密",
   encryptionNoneExposure: "只需筆記檔案",
   encryptionNoneSecurity: "無",
@@ -504,18 +506,18 @@ Object.assign(I18N["zh-Hant"], {
   encryptionSchybridExposure:
     "即使取得所有伺服器資料，也不能直接看到明文；仍須猜中或取得 PIN，或控制正在輸入 PIN／已解鎖筆記的裝置。",
   encryptionSchybridSecurity: "最高層級",
-  encryptionSchybridTitle: "AstraConfidential 的特點",
-  encryptionSchybridStepOneTitle: "PIN 由你掌握",
+  encryptionSchybridTitle: "AstraSecret 與 AstraConfidential 的特點",
+  encryptionSchybridStepOneTitle: "兩種 PIN 都由你保存",
   encryptionSchybridStepOneBody:
-    "PIN 只在瀏覽器中用來解鎖筆記；AstraNote 不會保存 PIN 本身，也無法協助找回。",
-  encryptionSchybridStepTwoTitle: "多道保護共同作用",
+    "AstraSecret 使用4～6位數字；AstraConfidential 使用4～16位、區分大小寫的 ASCII 字元。AstraNote 不會儲存或協助找回 PIN。",
+  encryptionSchybridStepTwoTitle: "依內容選擇保護強度",
   encryptionSchybridStepTwoBody:
-    "帳號、筆記、PIN 與 AstraNote 的伺服器端保護共同產生每篇筆記的專屬密鑰；只竊取其中一部分並不足夠。",
+    "AstraSecret 適合日常隱私；AstraConfidential 使用更強的金鑰推導保護高度敏感內容，並開放給 Plus 與 Pro。",
   encryptionSchybridStepThreeTitle: "上傳前由瀏覽器加密",
   encryptionSchybridStepThreeBody:
-    "筆記內容會先在你的裝置完成加密，伺服器只接收並保存加密後的內容。",
+    "兩種模式都會先在你的裝置加密筆記內容，伺服器只接收並保存加密後的內容。",
   encryptionSchybridCaution:
-    "伺服器資料遭竊時，攻擊者仍無法在沒有 PIN 或未控制解鎖中裝置的情況下直接看到明文。請使用不重複、隨機產生的 16～24 字元 PIN，並只在信任的裝置輸入。",
+    "兩種模式都無法讓弱 PIN 自動變強。AstraSecret 的短數字 PIN 較容易被猜中；敏感資料請選 AstraConfidential，使用不重複、隨機的12～16字元 PIN，並只在信任的裝置輸入。",
   welcomeBody: "清楚查看筆記和帳號用量。",
   accountAge: "帳號已建立",
   days: "天",
@@ -563,7 +565,7 @@ Object.assign(I18N["zh-Hant"], {
   vaultExplanation:
     "你的裝置會將帳號資料與 PIN，結合由 AstraNote 獨立伺服器祕密保護的臨時因子。筆記內容會先在此裝置完成加密，再上傳至 AstraNote；標題保持可見，方便你在清單中辨認筆記。",
   vaultPinWarning:
-    "AstraNote 不會儲存或協助找回這組區分大小寫的 PIN。建議使用隨機產生的 16～24 個英文字母、數字與符號，妥善保存，並只在信任的裝置輸入。",
+    "AstraNote 不會儲存或協助找回這組區分大小寫的 PIN。建議使用隨機產生的12～16個 ASCII 英文字母、數字與符號，妥善保存，並只在信任的裝置輸入。",
   vaultNoSharing:
     "此加密方式與擁有者帳號、PIN 及 AstraNote 的伺服器端保護綁定，因此不提供分享功能。",
   vaultPinInvalid:
@@ -637,7 +639,8 @@ I18N.ja = {
   encryptionYes: "はい",
   encryptionNo: "いいえ",
   encryptionNoPin: "PIN なし",
-  encryptionUserHeldPin: "利用者が保持",
+  encryptionSecretPin: "4～6桁 · 利用者が保管",
+  encryptionUserHeldPin: "4～16文字 ASCII · 利用者が保管",
   encryptionNoneName: "暗号化なし",
   encryptionNoneExposure: "ノートファイルのみ",
   encryptionNoneSecurity: "なし",
@@ -648,18 +651,18 @@ I18N.ja = {
   encryptionSchybridExposure:
     "すべてのサーバーデータを取得しても平文は直接読めません。PIN を推測・入手するか、PIN 入力中または解錠済みの端末を制御する必要があります。",
   encryptionSchybridSecurity: "最高レベル",
-  encryptionSchybridTitle: "AstraConfidential の特長",
-  encryptionSchybridStepOneTitle: "PIN は利用者が保持",
+  encryptionSchybridTitle: "AstraSecret と AstraConfidential の特長",
+  encryptionSchybridStepOneTitle: "2種類の PIN は利用者が保管",
   encryptionSchybridStepOneBody:
-    "PIN はブラウザでノートを解錠するためだけに使われます。AstraNote は PIN 自体を保存せず、復元もできません。",
-  encryptionSchybridStepTwoTitle: "複数の保護を組み合わせる",
+    "AstraSecret は4～6桁の数字、AstraConfidential は大文字と小文字を区別する4～16文字の ASCII を使います。AstraNote は PIN を保存・復元しません。",
+  encryptionSchybridStepTwoTitle: "ノートに合う保護強度",
   encryptionSchybridStepTwoBody:
-    "アカウント、ノート、PIN、AstraNote のサーバー側保護からノート専用鍵を作ります。一部分だけ盗んでも十分ではありません。",
+    "AstraSecret は日常のプライバシー向けです。AstraConfidential は機密性の高い内容向けにより強い鍵導出を行い、Plus／Pro で利用できます。",
   encryptionSchybridStepThreeTitle: "アップロード前に暗号化",
   encryptionSchybridStepThreeBody:
-    "ノート内容は端末上で先に暗号化され、サーバーは暗号化済みの内容だけを受信・保存します。",
+    "どちらもアップロード前に端末でノート内容を暗号化し、サーバーは暗号化済みの内容だけを受信・保存します。",
   encryptionSchybridCaution:
-    "サーバーデータが盗まれても、PIN または解錠中の端末を制御しない限り、平文は直接表示されません。短く予測しやすい PIN は推測されやすいため、固有でランダムな 12～16 文字の PIN を信頼できる端末でのみ使用してください。",
+    "どちらも弱い PIN 自体を強くするものではありません。AstraSecret の短い数字 PIN は推測されやすいため、機密データには固有でランダムな12～16文字の AstraConfidential PIN を使い、信頼できる端末でのみ入力してください。",
   vaultPin: "PIN（4～16 文字の ASCII）",
   legacyVaultPin: "PIN（従来の4～6桁）",
   confirmVaultPin: "PIN を再入力",
@@ -715,7 +718,7 @@ Object.assign(I18N.en, {
   satoraExplanation: "You will continue to Satora, NeuralNexusLab's Bitcoin payment service. Returning to AstraNote does not prove payment; your plan activates only after server verification.",
   numberOfMonths: "Number of months (1–36)",
   total: "Total",
-  continueToSatora: "Continue to Satora",
+  continueToSatora: "Continue to payment on Satora",
   paymentHistory: "Payment history",
   noPayments: "No payments yet.",
   billingSupport: "Payment problem? Do not pay again. Contact us within 7 days:",
@@ -726,7 +729,7 @@ Object.assign(I18N.en, {
   subscription: "Plan and remaining time",
   daysRemaining: "{days} days remaining",
   permanent: "Permanent",
-  unlimited: "Unlimited",
+  unlimited: "Infinity",
   noteLocked: "Locked",
   noteLockedTitle: "This note is locked",
   noteLockedBody: "This note exceeds your current plan allowance. Upgrade to Plus or Pro to unlock it. Only its title, size, and deletion date remain available.",
@@ -739,14 +742,14 @@ Object.assign(I18N.en, {
   renewNow: "Renew now",
   later: "Later",
   astraSecretPin: "AstraSecret PIN (4–6 digits)",
-  astraSecretExplanation: "AstraSecret offers simple browser-side protection for everyday private notes. Use AstraConfidential for highly sensitive content.",
-  confidentialPin: "AstraConfidential PIN (12–64 ASCII characters)",
+  astraSecretExplanation: "AstraSecret offers simple browser-side protection for everyday private notes. You choose and keep its 4–6 digit PIN; AstraNote does not store or recover it.",
+  confidentialPin: "AstraConfidential PIN (4–16 ASCII characters)",
   confidentialPlanRequired: "Plus or Pro is required to create a new AstraConfidential note.",
   confidentialOption: "AstraConfidential · Plus / Pro",
-  confidentialPinInvalid: "Enter 12–64 ASCII letters, numbers, or symbols with no spaces.",
+  confidentialPinInvalid: "Enter 4–16 ASCII letters, numbers, or symbols with no spaces.",
   astraSecretPinInvalid: "Enter a 4–6 digit PIN.",
-  astraSecretPinWarning: "A short numeric PIN is convenient but has fewer possible combinations. Do not use AstraSecret for recovery phrases or backup codes.",
-  unlockConfidentialBody: "Enter this note's case-sensitive 12–64 character PIN. AstraNote does not store or recover it.",
+  astraSecretPinWarning: "You must save this 4–6 digit PIN yourself. AstraNote cannot store or recover it. Its smaller key space makes AstraSecret unsuitable for recovery phrases or backup codes.",
+  unlockConfidentialBody: "Enter this note's case-sensitive 4–16 character ASCII PIN. AstraNote does not store or recover it.",
   orderConfirming: "Waiting to start payment",
   orderPending: "Waiting for Bitcoin payment",
   orderPaid: "Paid and activated",
@@ -781,7 +784,7 @@ Object.assign(I18N["zh-Hant"], {
   satoraExplanation: "接下來會前往 NeuralNexusLab 的 Bitcoin 付款服務 Satora。返回 AstraNote 不代表付款成功，方案只會在後端驗證後啟用。",
   numberOfMonths: "購買月數（1～36）",
   total: "本次合計",
-  continueToSatora: "前往 Satora",
+  continueToSatora: "前往 Satora 付款",
   paymentHistory: "付款紀錄",
   noPayments: "目前沒有付款紀錄。",
   billingSupport: "付款有問題時請勿再次付款，並在7天內聯絡：",
@@ -792,7 +795,7 @@ Object.assign(I18N["zh-Hant"], {
   subscription: "方案與剩餘時間",
   daysRemaining: "剩餘 {days} 天",
   permanent: "永久有效",
-  unlimited: "無上限",
+  unlimited: "Infinity",
   noteLocked: "已鎖定",
   noteLockedTitle: "這篇筆記已被鎖定",
   noteLockedBody: "此筆記超出目前方案額度。請升級至 Plus 或 Pro 以解鎖；目前只能查看標題、大小與預定刪除時間。",
@@ -805,14 +808,14 @@ Object.assign(I18N["zh-Hant"], {
   renewNow: "立即續訂",
   later: "稍後處理",
   astraSecretPin: "AstraSecret PIN（4～6位數字）",
-  astraSecretExplanation: "AstraSecret 為一般私人筆記提供容易使用的瀏覽器端保護；高度敏感內容請使用 AstraConfidential。",
-  confidentialPin: "AstraConfidential PIN（12～64個 ASCII 字元）",
+  astraSecretExplanation: "AstraSecret 為一般私人筆記提供容易使用的瀏覽器端保護。4～6位數字 PIN 由你設定及保存；AstraNote 不會儲存或協助找回。",
+  confidentialPin: "AstraConfidential PIN（4～16個 ASCII 字元）",
   confidentialPlanRequired: "建立新的 AstraConfidential 筆記需要 Plus 或 Pro。",
   confidentialOption: "AstraConfidential · Plus / Pro",
-  confidentialPinInvalid: "請輸入12～64個不含空白的 ASCII 大小寫英文、數字或符號。",
+  confidentialPinInvalid: "請輸入4～16個不含空白的 ASCII 大小寫英文、數字或符號。",
   astraSecretPinInvalid: "請輸入4～6位數字 PIN。",
-  astraSecretPinWarning: "短數字 PIN 較方便，但可能組合較少。請勿用 AstraSecret 保存助記詞或備援代碼。",
-  unlockConfidentialBody: "請輸入這篇筆記區分大小寫的12～64字元 PIN。AstraNote 不會儲存或協助找回。",
+  astraSecretPinWarning: "這組4～6位數字 PIN 必須由你自行保存；AstraNote 不會儲存或協助找回。因組合較少，請勿用 AstraSecret 保存助記詞或備援代碼。",
+  unlockConfidentialBody: "請輸入這篇筆記區分大小寫的4～16字元 ASCII PIN。AstraNote 不會儲存或協助找回。",
   orderConfirming: "等待開始付款",
   orderPending: "等待 Bitcoin 付款",
   orderPaid: "已付款並啟用",
@@ -830,10 +833,10 @@ Object.assign(I18N.ja, {
   maxNotesDynamic: "上限 {count}件",
   today: "本日のアクティブアカウント",
   utc: "アクセスしたログイン済みアカウント（重複なし）· UTC基準",
-  vaultPinWarning: "AstraNote はこの大文字と小文字を区別する PIN を保存・復元しません。可能であればランダムな16～24文字を安全に保管してください。",
+  vaultPinWarning: "AstraNote はこの大文字と小文字を区別する PIN を保存・復元しません。可能であればランダムな12～16文字を安全に保管してください。",
   encryptionTitle: "5つの保護レベルを明確に比較。",
   encryptionIntro: "読み取り可能な保存、サーバー管理の AES、手軽な AstraSecret のブラウザ暗号化、Plus／Pro 向けのより強い AstraConfidential から選択できます。",
-  encryptionSecretExposure: "アカウント、サーバー保護、数字 PIN",
+  encryptionSecretExposure: "アカウント、サーバー側の保護、利用者が保管する4～6桁の数字 PIN",
   encryptionSecretSecurity: "日常保護",
   secureBody: "サーバー管理の AES、手軽な AstraSecret、Plus／Pro 向けの高度な AstraConfidential から選べます。",
   limitBody: "Free は128 KBと20件のノートを含み、Plus と Pro で容量を増やせます。",
@@ -858,7 +861,7 @@ Object.assign(I18N.ja, {
   satoraExplanation: "NeuralNexusLab の Bitcoin 決済サービス Satora に移動します。AstraNote に戻っただけでは支払い済みとはみなされず、サーバー検証後に有効化されます。",
   numberOfMonths: "購入月数（1～36）",
   total: "合計",
-  continueToSatora: "Satora に進む",
+  continueToSatora: "Satora で支払う",
   paymentHistory: "支払い履歴",
   noPayments: "支払い履歴はまだありません。",
   billingSupport: "問題がある場合は再度支払わず、7日以内にご連絡ください：",
@@ -869,7 +872,7 @@ Object.assign(I18N.ja, {
   subscription: "プランと残り期間",
   daysRemaining: "残り {days}日",
   permanent: "無期限",
-  unlimited: "無制限",
+  unlimited: "Infinity",
   noteLocked: "ロック中",
   noteLockedTitle: "このノートはロックされています",
   noteLockedBody: "現在のプラン上限を超えています。Plus または Pro にアップグレードすると解除できます。表示できるのはタイトル、サイズ、削除予定日のみです。",
@@ -882,14 +885,14 @@ Object.assign(I18N.ja, {
   renewNow: "今すぐ更新",
   later: "後で",
   astraSecretPin: "AstraSecret PIN（4～6桁）",
-  astraSecretExplanation: "AstraSecret は日常の個人ノート向けです。機密性の高い内容には AstraConfidential を使用してください。",
-  confidentialPin: "AstraConfidential PIN（12～64文字の ASCII）",
+  astraSecretExplanation: "AstraSecret は日常の個人ノート向けです。4～6桁の数字 PIN は利用者自身が保管し、AstraNote は保存・復元しません。",
+  confidentialPin: "AstraConfidential PIN（4～16文字の ASCII）",
   confidentialPlanRequired: "新しい AstraConfidential ノートの作成には Plus または Pro が必要です。",
   confidentialOption: "AstraConfidential · Plus / Pro",
-  confidentialPinInvalid: "空白を含まない12～64文字の ASCII 英字、数字、記号を入力してください。",
+  confidentialPinInvalid: "空白を含まない4～16文字の ASCII 英字、数字、記号を入力してください。",
   astraSecretPinInvalid: "4～6桁の PIN を入力してください。",
-  astraSecretPinWarning: "短い数字 PIN は便利ですが組み合わせが少ないため、シードフレーズやバックアップコードには使用しないでください。",
-  unlockConfidentialBody: "このノートの大文字と小文字を区別する12～64文字の PIN を入力してください。AstraNote は保存・復元しません。",
+  astraSecretPinWarning: "この4～6桁の数字 PIN は利用者自身で保管してください。AstraNote は保存・復元できません。組み合わせが少ないため、シードフレーズやバックアップコードには使用しないでください。",
+  unlockConfidentialBody: "このノートの大文字と小文字を区別する4～16文字の ASCII PIN を入力してください。AstraNote は保存・復元しません。",
   orderConfirming: "支払い開始待ち",
   orderPending: "Bitcoin 支払い待ち",
   orderPaid: "支払い・有効化済み",
@@ -1023,8 +1026,7 @@ function isClientEncryptedMode(mode) {
 function validVaultPin(pin, mode) {
   if ([LEGACY_SCHYBRID_MODE, ASTRA_SECRET_MODE].includes(mode))
     return /^\d{4,6}$/u.test(pin);
-  if (mode === LEGACY_CONFIDENTIAL_MODE) return /^[\x21-\x7e]{4,16}$/u.test(pin);
-  return /^[\x21-\x7e]{12,64}$/u.test(pin);
+  return /^[\x21-\x7e]{4,16}$/u.test(pin);
 }
 function vaultPinError(mode) {
   if (mode === ASTRA_SECRET_MODE) return t("astraSecretPinInvalid");
@@ -1235,6 +1237,18 @@ window.onActionCaptchaComplete = (result) => {
       }
     : null;
 };
+
+function resetCaptcha(scope = "page") {
+  if (scope === "action") state.actionCaptcha = null;
+  else state.captcha = null;
+  const mount = scope === "action" ? $("#global-captcha") : $(".nexa-captcha:not(#global-captcha)");
+  if (!mount || !window.NexaCAPTCHA?.render) return;
+  try {
+    window.NexaCAPTCHA.render(mount).reset();
+  } catch {
+    // The user can still request a new verification from the CAPTCHA itself.
+  }
+}
 
 async function api(url, options = {}) {
   const headers = {
@@ -1485,13 +1499,11 @@ function unlockConfidential(note) {
     const numericPin = [LEGACY_SCHYBRID_MODE, ASTRA_SECRET_MODE].includes(note.encryption);
     input.inputMode = numericPin ? "numeric" : "text";
     input.autocomplete = "off";
-    input.minLength = note.encryption === CONFIDENTIAL_MODE ? 12 : 4;
-    input.maxLength = numericPin ? 6 : note.encryption === CONFIDENTIAL_MODE ? 64 : 16;
+    input.minLength = 4;
+    input.maxLength = numericPin ? 6 : 16;
     input.pattern = numericPin
       ? "[0-9]{4,6}"
-      : note.encryption === CONFIDENTIAL_MODE
-        ? "[!-~]{12,64}"
-        : "[!-~]{4,16}";
+      : "[!-~]{4,16}";
     requireManualPinEntry(input);
     const warning = document.createElement("p");
     warning.className = "field-help";
@@ -1554,7 +1566,7 @@ function unlockConfidential(note) {
 }
 
 function actionModal({ title, body, confirm, danger = true, extra, run }) {
-  state.actionCaptcha = null;
+  resetCaptcha("action");
   const content = document.createElement("div");
   if (extra) content.append(extra);
   const captcha = $("#global-captcha");
@@ -1570,10 +1582,15 @@ function actionModal({ title, body, confirm, danger = true, extra, run }) {
     danger,
     onConfirm: async (close) => {
       if (!state.actionCaptcha) throw new Error(t("captchaNeeded"));
-      const result = await run();
-      close();
-      if (result.redirect) location.href = result.redirect;
-      else location.reload();
+      try {
+        const result = await run();
+        close();
+        if (result.redirect) location.href = result.redirect;
+        else location.reload();
+      } catch (error) {
+        resetCaptcha("action");
+        throw error;
+      }
     },
   });
   const focusTarget = extra?.querySelector("input, select, textarea");
@@ -1791,6 +1808,7 @@ async function initAuthForm(kind) {
       location.href =
         !cancellation && next && /^\/(?!\/)/u.test(next) ? next : result.redirect;
     } catch (error) {
+      resetCaptcha();
       if (error.code === "deletion_pending") {
         location.href = `/login?cancel=1&username=${encodeURIComponent(form.username.value)}`;
         return;
@@ -1887,11 +1905,11 @@ async function initNewNote() {
     if (enabled) {
       form.vaultPin.inputMode = astraSecret ? "numeric" : "text";
       form.vaultPinConfirmation.inputMode = astraSecret ? "numeric" : "text";
-      form.vaultPin.minLength = astraSecret ? 4 : 12;
-      form.vaultPinConfirmation.minLength = astraSecret ? 4 : 12;
-      form.vaultPin.maxLength = astraSecret ? 6 : 64;
-      form.vaultPinConfirmation.maxLength = astraSecret ? 6 : 64;
-      form.vaultPin.pattern = astraSecret ? "[0-9]{4,6}" : "[!-~]{12,64}";
+      form.vaultPin.minLength = 4;
+      form.vaultPinConfirmation.minLength = 4;
+      form.vaultPin.maxLength = astraSecret ? 6 : 16;
+      form.vaultPinConfirmation.maxLength = astraSecret ? 6 : 16;
+      form.vaultPin.pattern = astraSecret ? "[0-9]{4,6}" : "[!-~]{4,16}";
       form.vaultPinConfirmation.pattern = form.vaultPin.pattern;
       const pinLabel = $("label[for='vault-pin']");
       pinLabel.dataset.i18n = astraSecret ? "astraSecretPin" : "confidentialPin";
@@ -1951,6 +1969,7 @@ async function initNewNote() {
       form.vaultPinConfirmation.value = "";
       location.href = result.redirect;
     } catch (error) {
+      resetCaptcha();
       message.textContent = error.message;
       button.disabled = false;
     }
@@ -2413,6 +2432,7 @@ async function initPlans() {
       });
       location.href = result.redirect;
     } catch (error) {
+      resetCaptcha();
       message.textContent = error.message;
       button.disabled = false;
     }

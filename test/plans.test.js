@@ -19,6 +19,16 @@ test("plans page publishes the exact monthly products and 30-day rule", () => {
   assert.match(app, /一個月固定指30天/u);
   assert.match(app, /1か月は常に30日/u);
   assert.match(app, /prices = \{ plus: 2500, pro: 6000 \}/u);
+  assert.match(app, /前往 Satora 付款/u);
+  assert.match(app, /unlimited: "Infinity"/u);
+});
+
+test("used CAPTCHA tokens are reset after protected requests fail", () => {
+  const app = fs.readFileSync(path.join(ROOT, "public", "app.js"), "utf8");
+  assert.match(app, /window\.NexaCAPTCHA\?\.render/u);
+  assert.match(app, /window\.NexaCAPTCHA\.render\(mount\)\.reset\(\)/u);
+  assert.ok((app.match(/resetCaptcha\(\);/gu) || []).length >= 3);
+  assert.match(app, /resetCaptcha\("action"\)/u);
 });
 
 test("billing and encryption secrets remain server-only placeholders", () => {

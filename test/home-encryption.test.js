@@ -23,14 +23,15 @@ test("home page compares every supported encryption mode and discloses visible t
   assert.match(app, /Note titles are never encrypted/u);
   assert.match(app, /所有模式的筆記標題都不會加密/u);
   assert.match(app, /どの方式でもノートのタイトルは暗号化されません/u);
-  assert.match(app, /AstraNote does not store the PIN itself and cannot recover it/u);
+  assert.match(app, /AstraNote never stores or recovers it/u);
   assert.equal((html.match(/class="matrix-value yes"/gu) || []).length, 11);
   assert.equal((html.match(/class="matrix-value no"/gu) || []).length, 9);
   assert.equal((html.match(/class="schybrid-flow"/gu) || []).length, 1);
   assert.match(app, /Browser-side encryption/u);
   assert.match(app, /瀏覽器端加密/u);
-  assert.match(app, /AstraConfidential 的特點/u);
-  assert.match(app, /Short or predictable PINs are easier to guess/u);
+  assert.match(app, /AstraSecret 與 AstraConfidential 的特點/u);
+  assert.match(app, /4～6位數字 · 使用者保存/u);
+  assert.match(app, /4～16位 ASCII · 使用者保存/u);
   assert.doesNotMatch(app, /Note file \+ ASTRANOTE_SECRET/u);
   assert.doesNotMatch(app, /筆記檔案 \+ ASTRANOTE_SECRET/u);
   assert.doesNotMatch(app, /Client Hash is mixed/u);
@@ -41,7 +42,7 @@ test("home page compares every supported encryption mode and discloses visible t
   assert.match(newNote, /value="astra-secret-v1"/u);
   assert.match(newNote, /value="astra-confidential-v3"/u);
   assert.doesNotMatch(newNote, /value="astra-confidential-schybrid-v1"/u);
-  assert.match(newNote, /pattern="\[!-~\]\{4,64\}"/u);
+  assert.match(newNote, /pattern="\[!-~\]\{4,16\}"/u);
 });
 
 test("authenticated navigation places Plans immediately before Settings", () => {

@@ -115,7 +115,7 @@ after no matching account directory remains.
   AES-256-GCM. Titles remain plaintext, and these modes are not end-to-end or
   zero-knowledge.
 - AstraConfidential encrypts note content in the browser with AES-256-GCM. Its
-  current version uses a case-sensitive 12–64 character PIN of printable ASCII
+  current version uses a case-sensitive 4–16 character PIN of printable ASCII
   letters, numbers, and symbols and is available for new notes on Plus and Pro.
   A memory-hard browser derivation combines the PIN with
   account-bound server protection. The server stores neither the PIN nor the

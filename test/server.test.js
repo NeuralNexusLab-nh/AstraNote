@@ -49,6 +49,15 @@ test("health, statistics, and 404 routes respond correctly", async () => {
   const stats = await fetch(`${baseUrl}/api/stats`);
   assert.deepEqual(await stats.json(), { onlineToday: 0, totalUsers: 0 });
 
+  const liveAccount = path.join(temporaryData, "live_counter_user");
+  await fs.mkdir(liveAccount);
+  await fs.writeFile(path.join(liveAccount, "metadata.json"), "{}\n");
+  await fs.writeFile(path.join(temporaryData, "users.txt"), "999\n");
+  const liveStats = await fetch(`${baseUrl}/api/stats`);
+  assert.equal((await liveStats.json()).totalUsers, 1);
+  await fs.rm(liveAccount, { recursive: true, force: true });
+  await fs.writeFile(path.join(temporaryData, "users.txt"), "0\n");
+
   const missing = await fetch(`${baseUrl}/unknown-coordinate`);
   assert.equal(missing.status, 404);
   assert.match(await missing.text(), /404 — AstraNote/);

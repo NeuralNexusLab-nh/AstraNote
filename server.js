@@ -979,14 +979,7 @@ async function ensureOnlineDay() {
   });
 }
 async function activeUserCount() {
-  const raw = Number.parseInt(await fsp.readFile(USERS_FILE, "utf8"), 10) || 0;
-  const deletions = await readJson(DELETES_FILE, []);
-  const locked = deletions.filter(
-    (item) =>
-      item.status === "pending_erasure" ||
-      Date.now() >= Date.parse(item.reversibleUntil),
-  ).length;
-  return Math.max(0, raw - locked);
+  return physicalAccountCount();
 }
 async function physicalAccountCount() {
   const entries = await fsp.readdir(DATA_DIR, { withFileTypes: true });
@@ -2470,7 +2463,8 @@ app.use((req, res) =>
 );
 
 app.use((error, req, res, next) => {
-  console.error(`[${utcNow()}]`, error.stack || error.message);
+  const errorCode = String(error.code || "server_error").slice(0, 120);
+  console.error(`[${utcNow()}] [${errorCode}]`, error.stack || error.message);
   if (res.headersSent) return next(error);
   const status = Number(error.status) || 500;
   jsonError(
