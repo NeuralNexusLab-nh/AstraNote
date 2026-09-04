@@ -430,3 +430,73 @@ test("plan time uses Pro before Plus and Admin is unlimited", () => {
   assert.equal(testables.planForMetadata(admin), "admin");
   assert.equal(testables.planPayload(admin).maxBytes, null);
 });
+
+test("Satora coupon pricing is verified without weakening order totals", () => {
+  const order = {
+    expectedSats: 6000,
+    satoraPaymentId: "4VbVVauk7nBlYPab8KpyMw",
+  };
+  const paidWithCoupon = {
+    id: order.satoraPaymentId,
+    status: "paid",
+    original_price: 6000,
+    discount_sats: 6000,
+    price: 0,
+    received_sats: 0,
+    coupon: { applied: true },
+    acceptance_policy: "coupon",
+  };
+
+  assert.equal(testables.satoraStatusMatchesOrder(paidWithCoupon, order), true);
+  assert.equal(testables.satoraPaidAmountMatchesOrder(paidWithCoupon, order), true);
+  assert.equal(
+    testables.satoraPaidAmountMatchesOrder(
+      { ...paidWithCoupon, id: "other-payment-id-00000" },
+      order,
+    ),
+    false,
+  );
+  assert.equal(
+    testables.satoraPaidAmountMatchesOrder(
+      { ...paidWithCoupon, original_price: 2500 },
+      order,
+    ),
+    false,
+  );
+  assert.equal(
+    testables.satoraPaidAmountMatchesOrder(
+      { ...paidWithCoupon, discount_sats: 5999 },
+      order,
+    ),
+    false,
+  );
+  assert.equal(
+    testables.satoraPaidAmountMatchesOrder(
+      { ...paidWithCoupon, coupon: null },
+      order,
+    ),
+    false,
+  );
+  assert.equal(
+    testables.satoraPaidAmountMatchesOrder(
+      { ...paidWithCoupon, acceptance_policy: "zero_conf" },
+      order,
+    ),
+    false,
+  );
+  assert.equal(
+    testables.satoraPaidAmountMatchesOrder(
+      { ...paidWithCoupon, received_sats: 1 },
+      order,
+    ),
+    false,
+  );
+
+  const regularPayment = {
+    id: order.satoraPaymentId,
+    status: "paid",
+    price: 6000,
+    received_sats: 6000,
+  };
+  assert.equal(testables.satoraPaidAmountMatchesOrder(regularPayment, order), true);
+});

@@ -680,6 +680,40 @@ function publicOrder(order) {
     fulfilledAt: order.fulfilledAt || null,
   };
 }
+function satoraPricingMatchesOrder(status, order) {
+  if (!Number.isSafeInteger(status?.price) || status.price < 0) return false;
+  if (status.price === order.expectedSats) return true;
+
+  const validCouponDiscount =
+    status.coupon &&
+    typeof status.coupon === "object" &&
+    Number.isSafeInteger(status.original_price) &&
+    status.original_price === order.expectedSats &&
+    Number.isSafeInteger(status.discount_sats) &&
+    status.discount_sats > 0 &&
+    status.discount_sats <= status.original_price &&
+    status.price === status.original_price - status.discount_sats;
+  if (!validCouponDiscount) return false;
+
+  // A fully discounted invoice has no on-chain payment. Require Satora to
+  // identify that result as a coupon acceptance instead of zero-conf payment.
+  return status.price > 0 || status.acceptance_policy === "coupon";
+}
+function satoraStatusMatchesOrder(status, order) {
+  return (
+    status?.id === order.satoraPaymentId &&
+    satoraPricingMatchesOrder(status, order)
+  );
+}
+function satoraPaidAmountMatchesOrder(status, order) {
+  return (
+    status?.status === "paid" &&
+    satoraStatusMatchesOrder(status, order) &&
+    Number.isSafeInteger(status.received_sats) &&
+    status.received_sats >= 0 &&
+    status.received_sats === status.price
+  );
+}
 async function satoraRequest(endpoint, options = {}) {
   const apiKey = process.env.SATORA_API_KEY;
   if (typeof apiKey !== "string" || apiKey.length < 24)
@@ -1786,10 +1820,7 @@ app.get(
           (item) => item.orderId === orderId && item.username === username,
         );
         if (!order) throw Object.assign(new Error("Order not found."), { status: 404 });
-        const validIdentity =
-          status.id === order.satoraPaymentId &&
-          Number.isSafeInteger(status.price) &&
-          status.price === order.expectedSats;
+        const validIdentity = satoraStatusMatchesOrder(status, order);
         if (!validIdentity) {
           order.localStatus = "verification_error";
           order.updatedAt = utcNow();
@@ -1803,11 +1834,7 @@ app.get(
           await writeOrders(orders);
           return order;
         }
-        if (
-          status.status === "paid" &&
-          Number.isSafeInteger(status.received_sats) &&
-          status.received_sats === order.expectedSats
-        ) {
+        if (satoraPaidAmountMatchesOrder(status, order)) {
           if (!order.fulfilledAt) {
             await withLock(`user:${username}`, async () => {
               const metadata = await loadMetadata(username);
@@ -2527,5 +2554,8 @@ module.exports = {
     normalizeEntitlements,
     planForMetadata,
     planPayload,
+    satoraPricingMatchesOrder,
+    satoraStatusMatchesOrder,
+    satoraPaidAmountMatchesOrder,
   },
 };

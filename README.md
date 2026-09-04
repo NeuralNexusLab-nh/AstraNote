@@ -16,7 +16,8 @@ security-sensitive actions.
 - Plain-text lined note reader and editor
 - Free (128 KB/20 notes), Plus (256 KB/50 notes), and Pro (512 KB/no separate note-count limit)
 - Independent Plus and Pro day balances; Pro is consumed first and one month is always 30 days
-- Satora Bitcoin checkout with server-side status verification and idempotent fulfilment
+- Satora Bitcoin checkout with server-side status verification, validated coupon
+  totals, and idempotent fulfilment
 - No encryption, AES-128-GCM, AES-256-GCM, AstraSecret, or AstraConfidential at note creation
 - Every encrypted mode protects note content; titles remain plaintext for identification
 - Server-enforced overage locks and permanent deletion after 30 continuously locked days
