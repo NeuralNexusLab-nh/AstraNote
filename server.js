@@ -40,6 +40,7 @@ const ADMIN_EMAIL = "neuralnexuslab@hotmail.com";
 const SUPPORT_EMAIL = "astranote@nxlabtw.com";
 const PLAN_MONTH_MS = 30 * 864e5;
 const PLAN_LOCK_DELETE_MS = 30 * 864e5;
+const BILLING_MONTH_OPTIONS = Object.freeze([1, 3, 6, 9, 12, 24, 36]);
 const SATORA_BASE_URL = "https://satora.nxlabtw.com";
 const SATORA_RETURN_URL =
   "https://astranote.nxlabtw.com/plans/return";
@@ -1680,11 +1681,15 @@ app.post(
     if (
       !["plus", "pro"].includes(plan) ||
       !Number.isInteger(months) ||
-      months < 1 ||
-      months > 36 ||
+      !BILLING_MONTH_OPTIONS.includes(months) ||
       !/^[a-f0-9]{32}$/.test(checkoutToken)
     )
-      return jsonError(res, 400, "invalid_purchase", "Choose a valid plan and 1–36 months.");
+      return jsonError(
+        res,
+        400,
+        "invalid_purchase",
+        "Choose a valid plan and an offered subscription duration.",
+      );
     try {
       const username = userKey(req.auth.session.username);
       const result = await withLock("orders", async () => {
@@ -2540,6 +2545,7 @@ module.exports = {
     CURRENT_AES_MODES,
     PLAN_DEFINITIONS,
     PLAN_MONTH_MS,
+    BILLING_MONTH_OPTIONS,
   },
   testables: {
     encryptContent,

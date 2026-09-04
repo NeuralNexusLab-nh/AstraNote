@@ -703,7 +703,7 @@ Object.assign(I18N.en, {
   plansEyebrow: "MORE ROOM, SAME QUIET FOCUS",
   plansTitle: "Choose the space that fits your notes.",
   plansBody: "Free stays useful. Plus adds comfortable room, while Pro is built for people who keep many notes.",
-  monthRule: "One subscription month always means 30 days. Choose 1–36 months with no long-term discount.",
+  monthRule: "One subscription month always means 30 days. Choose 1, 3, 6, 9, 12, 24, or 36 months with no long-term discount.",
   freePrice: "Free forever",
   perMonth: "/ 30 days",
   freeNotes: "20 notes",
@@ -716,7 +716,8 @@ Object.assign(I18N.en, {
   choosePro: "Choose Pro",
   completePurchase: "Complete your purchase",
   satoraExplanation: "You will continue to Satora, NeuralNexusLab's Bitcoin payment service. Returning to AstraNote does not prove payment; your plan activates only after server verification.",
-  numberOfMonths: "Number of months (1–36)",
+  numberOfMonths: "Subscription duration (months)",
+  couponAbuseWarning: "Coupon abuse—including repeatedly using coupons to push an account's resources beyond reasonable use—will result in permanent deletion of the account and its data. AstraNote provides no internal appeal or recovery process.",
   total: "Total",
   continueToSatora: "Continue to payment on Satora",
   paymentHistory: "Payment history",
@@ -769,7 +770,7 @@ Object.assign(I18N["zh-Hant"], {
   plansEyebrow: "為筆記留出更多空間",
   plansTitle: "選擇適合你的筆記空間。",
   plansBody: "Free 保留完整的基本體驗；Plus 提供舒適容量，Pro 則為需要保存大量筆記的人而設計。",
-  monthRule: "訂閱一個月固定指30天，可自由選擇1～36個月，不提供長期折扣。",
+  monthRule: "訂閱一個月固定指30天，可選擇1、3、6、9、12、24或36個月，不提供長期折扣。",
   freePrice: "永久免費",
   perMonth: "／30天",
   freeNotes: "20篇筆記",
@@ -782,7 +783,8 @@ Object.assign(I18N["zh-Hant"], {
   choosePro: "選擇 Pro",
   completePurchase: "完成購買",
   satoraExplanation: "接下來會前往 NeuralNexusLab 的 Bitcoin 付款服務 Satora。返回 AstraNote 不代表付款成功，方案只會在後端驗證後啟用。",
-  numberOfMonths: "購買月數（1～36）",
+  numberOfMonths: "訂閱月數",
+  couponAbuseWarning: "濫用優惠碼，包括大量或重複使用優惠碼使帳號資源超出合理使用範圍，將導致帳號及其資料被永久刪除；AstraNote 不提供內部申訴或復原程序。",
   total: "本次合計",
   continueToSatora: "前往 Satora 付款",
   paymentHistory: "付款紀錄",
@@ -846,7 +848,7 @@ Object.assign(I18N.ja, {
   plansEyebrow: "ノートにもっと余裕を",
   plansTitle: "ノートに合う容量を選択。",
   plansBody: "Free は基本機能を維持し、Plus は余裕ある容量、Pro は多くのノートを保存する方向けです。",
-  monthRule: "1か月は常に30日です。割引なしで1～36か月を選択できます。",
+  monthRule: "1か月は常に30日です。長期割引なしで1、3、6、9、12、24、36か月から選択できます。",
   freePrice: "永久無料",
   perMonth: "／30日",
   freeNotes: "20件のノート",
@@ -859,7 +861,8 @@ Object.assign(I18N.ja, {
   choosePro: "Pro を選択",
   completePurchase: "購入を完了",
   satoraExplanation: "NeuralNexusLab の Bitcoin 決済サービス Satora に移動します。AstraNote に戻っただけでは支払い済みとはみなされず、サーバー検証後に有効化されます。",
-  numberOfMonths: "購入月数（1～36）",
+  numberOfMonths: "契約月数",
+  couponAbuseWarning: "クーポンを大量または繰り返し使用してアカウントのリソースを合理的な利用範囲以上に増やすなど、クーポンを不正利用した場合、アカウントとそのデータは完全に削除されます。AstraNote による異議申立てまたは復元手続きはありません。",
   total: "合計",
   continueToSatora: "Satora で支払う",
   paymentHistory: "支払い履歴",
@@ -1330,9 +1333,12 @@ function buildNav() {
   const nav = document.createElement("nav");
   nav.className = `site-nav ${page === "home" ? "" : "solid"}`;
   nav.dataset.i18nAriaLabel = "primaryNavigation";
-  const planName = state.account?.plan?.type;
+  const reportedPlanName = String(state.account?.plan?.type || "").toLowerCase();
+  const planName = ["free", "plus", "pro", "admin"].includes(reportedPlanName)
+    ? reportedPlanName
+    : null;
   const planSuffix = authenticated && planName
-    ? `<small class="brand-plan">${planName[0].toUpperCase()}${planName.slice(1)}</small>`
+    ? `<small class="brand-plan brand-plan--${planName}">${planName}</small>`
     : "";
   nav.innerHTML = `<a class="brand" href="/"><img src="/asset/logo.svg" alt=""><span>AstraNote</span>${planSuffix}</a>
     <button class="mobile-toggle" type="button" data-i18n-aria-label="menu" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>
@@ -2413,7 +2419,7 @@ async function initPlans() {
       panel.scrollIntoView({ behavior: "smooth", block: "center" });
     });
   });
-  monthsInput.addEventListener("input", updateTotal);
+  monthsInput.addEventListener("change", updateTotal);
   $("#checkout-button").addEventListener("click", async () => {
     const message = $("#checkout-message");
     message.textContent = "";

@@ -70,13 +70,25 @@
           <div class="checkout-controls">
             <div class="form-group">
               <label for="purchase-months" data-i18n="numberOfMonths"></label>
-              <input id="purchase-months" type="number" min="1" max="36" step="1" value="1" inputmode="numeric" />
+              <select id="purchase-months">
+                <option value="1">1</option>
+                <option value="3">3</option>
+                <option value="6">6</option>
+                <option value="9">9</option>
+                <option value="12">12</option>
+                <option value="24">24</option>
+                <option value="36">36</option>
+              </select>
             </div>
             <div class="checkout-total" aria-live="polite">
               <span data-i18n="total"></span>
               <strong id="checkout-total-btc">—</strong>
             </div>
           </div>
+          <aside class="checkout-warning" role="note">
+            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+            <p data-i18n="couponAbuseWarning"></p>
+          </aside>
           <p class="captcha-heading"><i class="fa-solid fa-user-check" aria-hidden="true"></i><span data-i18n="humanVerification"></span></p>
           <div class="captcha-box"><div class="nexa-captcha" data-captcha-type="gravity" data-callback="onCaptchaComplete"></div></div>
           <p class="form-message" id="checkout-message" role="alert"></p>

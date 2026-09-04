@@ -14,13 +14,19 @@ test("plans page publishes the exact monthly products and 30-day rule", () => {
   assert.match(html, /0\.000060 BTC/u);
   assert.doesNotMatch(html, /\bsats\b|US\$|NT\$/iu);
   assert.doesNotMatch(app, /US\$|NT\$/u);
-  assert.match(html, /min="1" max="36"/u);
+  assert.match(html, /<select id="purchase-months">/u);
+  assert.deepEqual(
+    [...html.matchAll(/<option value="(\d+)">/gu)].map((match) => Number(match[1])),
+    [1, 3, 6, 9, 12, 24, 36],
+  );
   assert.match(app, /One subscription month always means 30 days/u);
   assert.match(app, /一個月固定指30天/u);
   assert.match(app, /1か月は常に30日/u);
   assert.match(app, /prices = \{ plus: 2500, pro: 6000 \}/u);
   assert.match(app, /前往 Satora 付款/u);
   assert.match(app, /unlimited: "Infinity"/u);
+  assert.match(app, /濫用優惠碼/u);
+  assert.match(html, /data-i18n="couponAbuseWarning"/u);
 });
 
 test("used CAPTCHA tokens are reset after protected requests fail", () => {
@@ -53,6 +59,8 @@ test("plan UI includes backend-lock and deletion disclosures", () => {
   assert.match(app, /持續鎖定滿30天後會永久刪除/u);
   assert.match(terms, /locked by the\s+server from largest to smallest/u);
   assert.match(terms, /astranote@nxlabtw\.com/u);
+  assert.match(terms, /禁止濫用優惠碼/u);
+  assert.match(style, /\.brand-plan--admin/u);
   assert.match(dashboard, /id="note-limit-caption"/u);
   assert.match(style, /\.locked-warning\[hidden\]\s*\{\s*display:\s*none/u);
 });

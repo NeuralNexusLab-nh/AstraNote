@@ -204,6 +204,7 @@ test("published account limits match the 20-note, 128 KB, and 75,000-account pol
   assert.equal(constants.PLAN_DEFINITIONS.pro.maxNotes, Infinity);
   assert.equal(constants.PLAN_DEFINITIONS.pro.monthlySats, 6000);
   assert.equal(constants.PLAN_MONTH_MS, 30 * 864e5);
+  assert.deepEqual(constants.BILLING_MONTH_OPTIONS, [1, 3, 6, 9, 12, 24, 36]);
 });
 
 test("invalid sharing and traversal-shaped identifiers reveal no data", async () => {
