@@ -43,6 +43,8 @@ test("home page compares every supported encryption mode and discloses visible t
   assert.match(newNote, /value="astra-confidential-v3"/u);
   assert.doesNotMatch(newNote, /value="astra-confidential-schybrid-v1"/u);
   assert.match(newNote, /pattern="\[!-~\]\{4,16\}"/u);
+  assert.match(app, /allowEarlierConfidentialLength/u);
+  assert.match(app, /\[!-~\]\{4,64\}/u);
 });
 
 test("authenticated navigation places Plans immediately before Settings", () => {

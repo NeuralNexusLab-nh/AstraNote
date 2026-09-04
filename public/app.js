@@ -749,7 +749,7 @@ Object.assign(I18N.en, {
   confidentialPinInvalid: "Enter 4–16 ASCII letters, numbers, or symbols with no spaces.",
   astraSecretPinInvalid: "Enter a 4–6 digit PIN.",
   astraSecretPinWarning: "You must save this 4–6 digit PIN yourself. AstraNote cannot store or recover it. Its smaller key space makes AstraSecret unsuitable for recovery phrases or backup codes.",
-  unlockConfidentialBody: "Enter this note's case-sensitive 4–16 character ASCII PIN. AstraNote does not store or recover it.",
+  unlockConfidentialBody: "Enter this note's case-sensitive ASCII PIN. New AstraConfidential PINs use 4–16 characters; notes created earlier still accept their original PIN. AstraNote does not store or recover it.",
   orderConfirming: "Waiting to start payment",
   orderPending: "Waiting for Bitcoin payment",
   orderPaid: "Paid and activated",
@@ -815,7 +815,7 @@ Object.assign(I18N["zh-Hant"], {
   confidentialPinInvalid: "請輸入4～16個不含空白的 ASCII 大小寫英文、數字或符號。",
   astraSecretPinInvalid: "請輸入4～6位數字 PIN。",
   astraSecretPinWarning: "這組4～6位數字 PIN 必須由你自行保存；AstraNote 不會儲存或協助找回。因組合較少，請勿用 AstraSecret 保存助記詞或備援代碼。",
-  unlockConfidentialBody: "請輸入這篇筆記區分大小寫的4～16字元 ASCII PIN。AstraNote 不會儲存或協助找回。",
+  unlockConfidentialBody: "請輸入這篇筆記區分大小寫的 ASCII PIN。新建立的 AstraConfidential PIN 為4～16字元；較早建立的筆記仍可使用原本的 PIN。AstraNote 不會儲存或協助找回。",
   orderConfirming: "等待開始付款",
   orderPending: "等待 Bitcoin 付款",
   orderPaid: "已付款並啟用",
@@ -892,7 +892,7 @@ Object.assign(I18N.ja, {
   confidentialPinInvalid: "空白を含まない4～16文字の ASCII 英字、数字、記号を入力してください。",
   astraSecretPinInvalid: "4～6桁の PIN を入力してください。",
   astraSecretPinWarning: "この4～6桁の数字 PIN は利用者自身で保管してください。AstraNote は保存・復元できません。組み合わせが少ないため、シードフレーズやバックアップコードには使用しないでください。",
-  unlockConfidentialBody: "このノートの大文字と小文字を区別する4～16文字の ASCII PIN を入力してください。AstraNote は保存・復元しません。",
+  unlockConfidentialBody: "このノートで使用した大文字と小文字を区別する ASCII PIN を入力してください。新しい AstraConfidential PIN は4～16文字です。以前に作成したノートでは元の PIN を引き続き使用できます。AstraNote は保存・復元しません。",
   orderConfirming: "支払い開始待ち",
   orderPending: "Bitcoin 支払い待ち",
   orderPaid: "支払い・有効化済み",
@@ -1023,9 +1023,11 @@ function isClientEncryptedMode(mode) {
     CONFIDENTIAL_MODE,
   ].includes(mode);
 }
-function validVaultPin(pin, mode) {
+function validVaultPin(pin, mode, allowEarlierConfidentialLength = false) {
   if ([LEGACY_SCHYBRID_MODE, ASTRA_SECRET_MODE].includes(mode))
     return /^\d{4,6}$/u.test(pin);
+  if (mode === CONFIDENTIAL_MODE && allowEarlierConfidentialLength)
+    return /^[\x21-\x7e]{4,64}$/u.test(pin);
   return /^[\x21-\x7e]{4,16}$/u.test(pin);
 }
 function vaultPinError(mode) {
@@ -1034,7 +1036,7 @@ function vaultPinError(mode) {
   return mode === LEGACY_SCHYBRID_MODE ? t("legacyVaultPinInvalid") : t("vaultPinInvalid");
 }
 async function deriveConfidentialKey(noteId, clientSalt, pin, mode) {
-  if (!validVaultPin(pin, mode)) throw new Error(vaultPinError(mode));
+  if (!validVaultPin(pin, mode, true)) throw new Error(vaultPinError(mode));
   if (!state.account) throw new Error(t("error"));
   if (!window.hashwasm?.argon2id) throw new Error(t("vaultCryptoUnavailable"));
   const clientParts = [
@@ -1500,10 +1502,12 @@ function unlockConfidential(note) {
     input.inputMode = numericPin ? "numeric" : "text";
     input.autocomplete = "off";
     input.minLength = 4;
-    input.maxLength = numericPin ? 6 : 16;
+    input.maxLength = numericPin ? 6 : note.encryption === CONFIDENTIAL_MODE ? 64 : 16;
     input.pattern = numericPin
       ? "[0-9]{4,6}"
-      : "[!-~]{4,16}";
+      : note.encryption === CONFIDENTIAL_MODE
+        ? "[!-~]{4,64}"
+        : "[!-~]{4,16}";
     requireManualPinEntry(input);
     const warning = document.createElement("p");
     warning.className = "field-help";
@@ -1526,7 +1530,7 @@ function unlockConfidential(note) {
       danger: false,
       onCancel: () => reject(Object.assign(new Error("cancelled"), { cancelled: true })),
       onConfirm: async (close) => {
-        if (!validVaultPin(input.value, note.encryption))
+        if (!validVaultPin(input.value, note.encryption, true))
           throw new Error(vaultPinError(note.encryption));
         const decrypted = await decryptConfidentialPayload(note, input.value);
         if (note.payloadVersion !== 2) {
