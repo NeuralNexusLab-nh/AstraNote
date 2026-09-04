@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="Choose an AstraNote plan and securely pay with Bitcoin through Satora." />
+    <link rel="canonical" href="https://astranote.nxlabtw.com/plans" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://astranote.nxlabtw.com/plans" />
+    <meta property="og:title" content="AstraNote plans" />
+    <meta property="og:description" content="More room for the notes you want to keep close." />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="AstraNote plans" />
+    <meta name="twitter:description" content="More room for the notes you want to keep close." />
+    <title>AstraNote plans</title>
+    <link rel="icon" href="/asset/logo.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+    <script src="https://nexacaptcha.nxlabtw.com/captcha/gravity.js" defer></script>
+  </head>
+  <body data-page="plans">
+    <a class="skip-link" href="#main" data-i18n="skipContent"></a>
+    <main id="main" class="page plans-page">
+      <div class="shell">
+        <header class="plans-head reveal">
+          <p class="eyebrow"><i class="fa-solid fa-layer-group" aria-hidden="true"></i><span data-i18n="plansEyebrow"></span></p>
+          <h1 data-i18n="plansTitle"></h1>
+          <p class="muted plans-lead" data-i18n="plansBody"></p>
+          <p class="plan-month-rule"><i class="fa-regular fa-calendar" aria-hidden="true"></i><span data-i18n="monthRule"></span></p>
+        </header>
+
+        <section class="plan-grid" data-i18n-aria-label="plansAria">
+          <article class="card plan-card reveal" data-plan="free">
+            <div class="plan-card-head"><span class="plan-icon"><i class="fa-solid fa-feather" aria-hidden="true"></i></span><div><p class="plan-name">Free</p><p class="plan-price" data-i18n="freePrice"></p></div></div>
+            <ul class="plan-features">
+              <li><i class="fa-solid fa-hard-drive" aria-hidden="true"></i><span>128 KB</span></li>
+              <li><i class="fa-solid fa-note-sticky" aria-hidden="true"></i><span data-i18n="freeNotes"></span></li>
+              <li><i class="fa-solid fa-lock" aria-hidden="true"></i><span data-i18n="astraSecretIncluded"></span></li>
+            </ul>
+            <span class="btn plan-current-free" data-i18n="included"></span>
+          </article>
+
+          <article class="card plan-card plan-card-featured reveal" data-plan="plus">
+            <div class="plan-card-head"><span class="plan-icon"><i class="fa-solid fa-star" aria-hidden="true"></i></span><div><p class="plan-name">Plus</p><p class="plan-price">0.000025 BTC <small data-i18n="perMonth"></small></p></div></div>
+            <ul class="plan-features">
+              <li><i class="fa-solid fa-hard-drive" aria-hidden="true"></i><span>256 KB</span></li>
+              <li><i class="fa-solid fa-note-sticky" aria-hidden="true"></i><span data-i18n="plusNotes"></span></li>
+              <li><i class="fa-solid fa-user-shield" aria-hidden="true"></i><span data-i18n="confidentialIncluded"></span></li>
+            </ul>
+            <button class="btn btn-primary plan-buy" type="button" data-plan-buy="plus"><i class="fa-solid fa-arrow-up-right-dots" aria-hidden="true"></i><span data-i18n="choosePlus"></span></button>
+          </article>
+
+          <article class="card plan-card reveal" data-plan="pro">
+            <div class="plan-card-head"><span class="plan-icon"><i class="fa-solid fa-gem" aria-hidden="true"></i></span><div><p class="plan-name">Pro</p><p class="plan-price">0.000060 BTC <small data-i18n="perMonth"></small></p></div></div>
+            <ul class="plan-features">
+              <li><i class="fa-solid fa-hard-drive" aria-hidden="true"></i><span>512 KB</span></li>
+              <li><i class="fa-solid fa-infinity" aria-hidden="true"></i><span data-i18n="unlimitedNotes"></span></li>
+              <li><i class="fa-solid fa-user-shield" aria-hidden="true"></i><span data-i18n="confidentialIncluded"></span></li>
+            </ul>
+            <button class="btn btn-primary plan-buy" type="button" data-plan-buy="pro"><i class="fa-solid fa-rocket" aria-hidden="true"></i><span data-i18n="choosePro"></span></button>
+          </article>
+        </section>
+
+        <section class="card checkout-panel reveal" id="checkout-panel" hidden aria-labelledby="checkout-title">
+          <div>
+            <p class="eyebrow"><i class="fa-solid fa-bitcoin-sign" aria-hidden="true"></i><span>Satora</span></p>
+            <h2 id="checkout-title" data-i18n="completePurchase"></h2>
+            <p class="muted" data-i18n="satoraExplanation"></p>
+          </div>
+          <div class="checkout-controls">
+            <div class="form-group">
+              <label for="purchase-months" data-i18n="numberOfMonths"></label>
+              <input id="purchase-months" type="number" min="1" max="36" step="1" value="1" inputmode="numeric" />
+            </div>
+            <div class="checkout-total" aria-live="polite">
+              <span data-i18n="total"></span>
+              <strong id="checkout-total-btc">—</strong>
+            </div>
+          </div>
+          <p class="captcha-heading"><i class="fa-solid fa-user-check" aria-hidden="true"></i><span data-i18n="humanVerification"></span></p>
+          <div class="captcha-box"><div class="nexa-captcha" data-captcha-type="gravity" data-callback="onCaptchaComplete"></div></div>
+          <p class="form-message" id="checkout-message" role="alert"></p>
+          <button class="btn btn-primary btn-lg" id="checkout-button" type="button"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span data-i18n="continueToSatora"></span></button>
+        </section>
+
+        <section class="card billing-return reveal" id="billing-return" hidden aria-live="polite"></section>
+
+        <section class="orders-panel reveal" id="orders-panel" hidden>
+          <header class="panel-head"><h2 data-i18n="paymentHistory"></h2></header>
+          <div class="order-list" id="order-list"></div>
+        </section>
+
+        <p class="plans-support reveal"><i class="fa-regular fa-envelope" aria-hidden="true"></i><span data-i18n="billingSupport"></span> <a href="mailto:astranote@nxlabtw.com">astranote@nxlabtw.com</a></p>
+      </div>
+    </main>
+  </body>
+</html>

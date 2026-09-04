@@ -66,6 +66,11 @@
             </p>
           </div>
         </header>
+        <section class="card locked-note-panel reveal" id="locked-note-panel" hidden>
+          <span class="locked-note-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></span>
+          <div><h2 data-i18n="noteLockedTitle"></h2><p class="muted" data-i18n="noteLockedBody"></p><p id="locked-delete-date"></p><p><a href="mailto:astranote@nxlabtw.com">astranote@nxlabtw.com</a></p></div>
+          <div class="locked-note-actions"><a class="btn btn-primary" href="/plans"><i class="fa-solid fa-arrow-up-right-dots" aria-hidden="true"></i><span data-i18n="viewPlans"></span></a><button class="btn btn-danger" id="locked-delete-note" type="button"><i class="fa-solid fa-trash" aria-hidden="true"></i><span data-i18n="delete"></span></button></div>
+        </section>
         <article class="note-paper reveal" id="note-content"></article>
       </div>
     </main>

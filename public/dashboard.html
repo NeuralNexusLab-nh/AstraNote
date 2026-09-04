@@ -41,6 +41,18 @@
             <small class="muted">UTC</small>
           </article>
         </section>
+        <section class="card account-plan-card reveal">
+          <div class="account-plan-main">
+            <span class="feature-icon"><i class="fa-solid fa-layer-group" aria-hidden="true"></i></span>
+            <div><small class="muted" data-i18n="currentPlan"></small><h2 id="dashboard-plan">—</h2></div>
+          </div>
+          <div class="plan-days-grid">
+            <div><span>Pro</span><strong id="dashboard-pro-days">—</strong></div>
+            <div><span>Plus</span><strong id="dashboard-plus-days">—</strong></div>
+          </div>
+          <a class="btn btn-primary" href="/plans"><i class="fa-solid fa-rotate" aria-hidden="true"></i><span data-i18n="renewPlan"></span></a>
+        </section>
+        <section class="locked-warning reveal" id="dashboard-locked-warning" hidden></section>
         <section class="notes-panel reveal">
           <header class="panel-head">
             <h3 data-i18n="recent"></h3>

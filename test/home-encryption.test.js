@@ -24,8 +24,8 @@ test("home page compares every supported encryption mode and discloses visible t
   assert.match(app, /所有模式的筆記標題都不會加密/u);
   assert.match(app, /どの方式でもノートのタイトルは暗号化されません/u);
   assert.match(app, /AstraNote does not store the PIN itself and cannot recover it/u);
-  assert.equal((html.match(/class="matrix-value yes"/gu) || []).length, 8);
-  assert.equal((html.match(/class="matrix-value no"/gu) || []).length, 8);
+  assert.equal((html.match(/class="matrix-value yes"/gu) || []).length, 11);
+  assert.equal((html.match(/class="matrix-value no"/gu) || []).length, 9);
   assert.equal((html.match(/class="schybrid-flow"/gu) || []).length, 1);
   assert.match(app, /Browser-side encryption/u);
   assert.match(app, /瀏覽器端加密/u);
@@ -38,18 +38,19 @@ test("home page compares every supported encryption mode and discloses visible t
   assert.doesNotMatch(app, /Vault 祕密/u);
   assert.match(newNote, /value="aes-128-gcm-new"/u);
   assert.match(newNote, /value="aes-256-gcm-new"/u);
-  assert.match(newNote, /value="astra-confidential-v2"/u);
+  assert.match(newNote, /value="astra-secret-v1"/u);
+  assert.match(newNote, /value="astra-confidential-v3"/u);
   assert.doesNotMatch(newNote, /value="astra-confidential-schybrid-v1"/u);
-  assert.match(newNote, /pattern="\[!-~\]\{4,16\}"/u);
+  assert.match(newNote, /pattern="\[!-~\]\{4,64\}"/u);
 });
 
-test("authenticated navigation places Donate immediately before Settings", () => {
+test("authenticated navigation places Plans immediately before Settings", () => {
   const app = fs.readFileSync(path.join(ROOT, "public", "app.js"), "utf8");
   const notesLink = app.indexOf('href="/notes"');
-  const donateLink = app.indexOf('href="/donate"', notesLink);
-  const settingsLink = app.indexOf('href="/settings"', donateLink);
+  const plansLink = app.indexOf('href="/plans"', notesLink);
+  const settingsLink = app.indexOf('href="/settings"', plansLink);
 
   assert.ok(notesLink >= 0);
-  assert.ok(donateLink > notesLink);
-  assert.ok(settingsLink > donateLink);
+  assert.ok(plansLink > notesLink);
+  assert.ok(settingsLink > plansLink);
 });

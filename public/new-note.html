@@ -31,9 +31,8 @@
                 <option value="none" data-i18n="noEncryptionOption"></option>
                 <option value="aes-256-gcm-new">AES-256-GCM</option>
                 <option value="aes-128-gcm-new">AES-128-GCM</option>
-                <option value="astra-confidential-v2">
-                  AstraConfidential
-                </option>
+                <option value="astra-secret-v1">AstraSecret</option>
+                <option value="astra-confidential-v3" data-i18n="confidentialOption"></option>
               </select>
               <p class="field-help" data-i18n="encryptionHelp"></p>
             </div>
@@ -46,9 +45,9 @@
                   type="text"
                   class="vault-pin-input"
                   inputmode="text"
-                  pattern="[!-~]{4,16}"
+                  pattern="[!-~]{4,64}"
                   minlength="4"
-                  maxlength="16"
+                  maxlength="64"
                   autocomplete="off"
                   readonly
                   data-1p-ignore="true"
@@ -65,9 +64,9 @@
                   type="text"
                   class="vault-pin-input"
                   inputmode="text"
-                  pattern="[!-~]{4,16}"
+                  pattern="[!-~]{4,64}"
                   minlength="4"
-                  maxlength="16"
+                  maxlength="64"
                   autocomplete="off"
                   readonly
                   data-1p-ignore="true"

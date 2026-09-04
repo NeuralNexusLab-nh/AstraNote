@@ -21,11 +21,13 @@ const ONLINE_USERS_FILE = path.join(DATA_DIR, "onlineTodayUsers.json");
 const SESSIONS_FILE = path.join(DATA_DIR, "sessions.json");
 const DELETES_FILE = path.join(DATA_DIR, "deletes.json");
 const SHARES_FILE = path.join(DATA_DIR, "shares.json");
+const ORDERS_FILE = path.join(DATA_DIR, "orders.json");
 const SECRET_FILE = path.join(DATA_DIR, ".server-secret");
 
 const MAX_ACCOUNTS = 75_000;
 const MAX_NOTES = 20;
 const MAX_ACCOUNT_BYTES = 128 * 1000;
+const MAX_NOTE_BYTES = 1024 * 1000;
 const MAX_NOTE_NAME = 80;
 const MAX_DISPLAY_NAME = 40;
 const SESSION_INITIAL_MS = 14 * 864e5;
@@ -33,10 +35,25 @@ const SESSION_EXTENSION_MS = 2 * 864e5;
 const SESSION_MAX_MS = 28 * 864e5;
 const DELETE_REVERSAL_MS = 7 * 864e5;
 const DELETE_ERASE_MS = 62 * 864e5;
-const TERMS_VERSION = "2026-09-02";
+const TERMS_VERSION = "2026-09-04";
+const ADMIN_EMAIL = "neuralnexuslab@hotmail.com";
+const SUPPORT_EMAIL = "astranote@nxlabtw.com";
+const PLAN_MONTH_MS = 30 * 864e5;
+const PLAN_LOCK_DELETE_MS = 30 * 864e5;
+const SATORA_BASE_URL = "https://satora.nxlabtw.com";
+const SATORA_RETURN_URL =
+  "https://astranote.nxlabtw.com/plans/return";
+const PLAN_DEFINITIONS = Object.freeze({
+  free: { maxBytes: 128 * 1000, maxNotes: 20, monthlySats: 0 },
+  plus: { maxBytes: 256 * 1000, maxNotes: 50, monthlySats: 2500 },
+  pro: { maxBytes: 512 * 1000, maxNotes: Infinity, monthlySats: 6000 },
+  admin: { maxBytes: Infinity, maxNotes: Infinity, monthlySats: 0 },
+});
 const CAPTCHA_VERIFY_URL = "https://nexacaptcha.nxlabtw.com/api/siteverify";
 const LEGACY_SCHYBRID_MODE = "astra-confidential-schybrid-v1";
-const CONFIDENTIAL_MODE = "astra-confidential-v2";
+const LEGACY_CONFIDENTIAL_MODE = "astra-confidential-v2";
+const ASTRA_SECRET_MODE = "astra-secret-v1";
+const CONFIDENTIAL_MODE = "astra-confidential-v3";
 const LEGACY_AES_MODES = new Set(["aes-128-gcm", "aes-256-gcm"]);
 const CURRENT_AES_MODES = new Set([
   "aes-128-gcm-new",
@@ -44,6 +61,8 @@ const CURRENT_AES_MODES = new Set([
 ]);
 const CLIENT_ENCRYPTED_MODES = new Set([
   LEGACY_SCHYBRID_MODE,
+  LEGACY_CONFIDENTIAL_MODE,
+  ASTRA_SECRET_MODE,
   CONFIDENTIAL_MODE,
 ]);
 const ALLOWED_ORIGINS = new Set([
@@ -54,6 +73,7 @@ const USERNAME_RE = /^[A-Za-z0-9_]{3,24}$/;
 const CREATABLE_ENCRYPTION_TYPES = new Set([
   "none",
   ...CURRENT_AES_MODES,
+  ASTRA_SECRET_MODE,
   CONFIDENTIAL_MODE,
 ]);
 const COMMON_PASSWORDS = new Set([
@@ -217,6 +237,169 @@ function maskEmail(email) {
   return `${visible}${"*".repeat(Math.max(3, local.length - visible.length))}@${domain}`;
 }
 
+function isAdmin(metadata) {
+  return metadata?.email?.toLowerCase() === ADMIN_EMAIL;
+}
+
+function normalizeEntitlements(metadata, now = Date.now()) {
+  metadata.entitlements ||= {};
+  const entitlements = metadata.entitlements;
+  entitlements.plusMs = Math.max(0, Number(entitlements.plusMs) || 0);
+  entitlements.proMs = Math.max(0, Number(entitlements.proMs) || 0);
+  const previous = Number.isFinite(Date.parse(entitlements.updatedAt))
+    ? Date.parse(entitlements.updatedAt)
+    : now;
+  let elapsed = Math.max(0, now - previous);
+  if (!isAdmin(metadata) && elapsed > 0) {
+    const proUsed = Math.min(entitlements.proMs, elapsed);
+    entitlements.proMs -= proUsed;
+    elapsed -= proUsed;
+    const plusUsed = Math.min(entitlements.plusMs, elapsed);
+    entitlements.plusMs -= plusUsed;
+  }
+  entitlements.updatedAt = new Date(now).toISOString();
+  return entitlements;
+}
+
+function planForMetadata(metadata) {
+  if (isAdmin(metadata)) return "admin";
+  if ((metadata.entitlements?.proMs || 0) > 0) return "pro";
+  if ((metadata.entitlements?.plusMs || 0) > 0) return "plus";
+  return "free";
+}
+
+function planPayload(metadata, now = Date.now()) {
+  const plan = planForMetadata(metadata);
+  const definition = PLAN_DEFINITIONS[plan];
+  const plusMs = Math.max(0, metadata.entitlements?.plusMs || 0);
+  const proMs = Math.max(0, metadata.entitlements?.proMs || 0);
+  const activeMs = plan === "pro" ? proMs : plan === "plus" ? plusMs : null;
+  return {
+    type: plan,
+    maxBytes: Number.isFinite(definition.maxBytes) ? definition.maxBytes : null,
+    maxNotes: Number.isFinite(definition.maxNotes) ? definition.maxNotes : null,
+    plusDays: Math.ceil(plusMs / 864e5),
+    proDays: Math.ceil(proMs / 864e5),
+    activeEndsAt:
+      activeMs === null ? null : new Date(now + activeMs).toISOString(),
+    canCreateConfidential: plan === "plus" || plan === "pro" || plan === "admin",
+  };
+}
+
+async function noteFileDetails(username, reference) {
+  const file = noteFile(username, reference.id);
+  const [note, stat] = await Promise.all([
+    readJson(file, null),
+    fsp.stat(file).catch(() => null),
+  ]);
+  return note && stat ? { reference, note, bytes: stat.size } : null;
+}
+
+async function requiredLockedNoteIds(username, metadata, plan) {
+  const definition = PLAN_DEFINITIONS[plan];
+  if (!Number.isFinite(definition.maxBytes) && !Number.isFinite(definition.maxNotes))
+    return new Set();
+  const details = (
+    await Promise.all(metadata.notes.map((reference) => noteFileDetails(username, reference)))
+  ).filter(Boolean);
+  let remainingBytes = await directorySize(userDir(username));
+  let remainingCount = details.length;
+  const locked = new Set();
+  details.sort(
+    (left, right) =>
+      right.bytes - left.bytes ||
+      Date.parse(left.note.updatedAt || 0) - Date.parse(right.note.updatedAt || 0) ||
+      left.note.id.localeCompare(right.note.id),
+  );
+  for (const detail of details) {
+    if (
+      remainingBytes <= definition.maxBytes &&
+      remainingCount <= definition.maxNotes
+    )
+      break;
+    locked.add(detail.note.id);
+    remainingBytes -= detail.bytes;
+    remainingCount -= 1;
+  }
+  return locked;
+}
+
+async function removeNoteFiles(username, metadata, ids) {
+  if (!ids.size) return false;
+  const removedNotes = [];
+  for (const reference of metadata.notes) {
+    if (!ids.has(reference.id)) continue;
+    const note = await readJson(noteFile(username, reference.id), null);
+    if (note) removedNotes.push(note);
+    await fsp.unlink(noteFile(username, reference.id)).catch(() => {});
+  }
+  metadata.notes = metadata.notes.filter((reference) => !ids.has(reference.id));
+  if (removedNotes.some((note) => note.shareToken)) {
+    await updateShares((shares) => {
+      for (const [key, target] of Object.entries(shares))
+        if (target.username === userKey(username) && ids.has(target.id)) delete shares[key];
+    });
+  }
+  return true;
+}
+
+async function refreshPlanState(username, metadata, now = Date.now()) {
+  normalizeEntitlements(metadata, now);
+  const plan = planForMetadata(metadata);
+  let required = await requiredLockedNoteIds(username, metadata, plan);
+  const stamp = new Date(now).toISOString();
+  for (const reference of metadata.notes) {
+    if (required.has(reference.id)) {
+      reference.planLockedAt ||= stamp;
+      reference.scheduledDeletionAt ||= new Date(
+        Date.parse(reference.planLockedAt) + PLAN_LOCK_DELETE_MS,
+      ).toISOString();
+    } else {
+      delete reference.planLockedAt;
+      delete reference.scheduledDeletionAt;
+    }
+  }
+  const expired = new Set(
+    metadata.notes
+      .filter(
+        (reference) =>
+          required.has(reference.id) &&
+          now >= Date.parse(reference.scheduledDeletionAt),
+      )
+      .map((reference) => reference.id),
+  );
+  if (await removeNoteFiles(username, metadata, expired)) {
+    required = await requiredLockedNoteIds(username, metadata, plan);
+    for (const reference of metadata.notes) {
+      if (!required.has(reference.id)) {
+        delete reference.planLockedAt;
+        delete reference.scheduledDeletionAt;
+      }
+    }
+  }
+  return { plan, lockedIds: required, payload: planPayload(metadata, now) };
+}
+
+function lockedReference(metadata, noteId) {
+  const reference = metadata.notes.find((item) => item.id === noteId);
+  return reference?.planLockedAt ? reference : null;
+}
+
+async function lockedNotePayload(username, reference) {
+  const detail = await noteFileDetails(username, reference);
+  if (!detail) return null;
+  return {
+    id: detail.note.id,
+    name: normalizeText(detail.note.name, MAX_NOTE_NAME) || "Encrypted note",
+    encryption: detail.note.encryption,
+    updatedAt: detail.note.updatedAt,
+    bytes: detail.bytes,
+    locked: true,
+    lockedAt: reference.planLockedAt,
+    scheduledDeletionAt: reference.scheduledDeletionAt,
+  };
+}
+
 async function ensureData() {
   await fsp.mkdir(DATA_DIR, { recursive: true });
   for (const [file, initial] of [
@@ -229,6 +412,7 @@ async function ensureData() {
     [SESSIONS_FILE, "{}\n"],
     [DELETES_FILE, "[]\n"],
     [SHARES_FILE, "{}\n"],
+    [ORDERS_FILE, "[]\n"],
   ])
     if (!(await exists(file))) await atomicWrite(file, initial);
 
@@ -421,7 +605,7 @@ function validSchybridEnvelope(value) {
       typeof value === "object" &&
       validBase64(value.iv, 12, 12) &&
       validBase64(value.tag, 16, 16) &&
-      validBase64(value.ciphertext, 1, MAX_ACCOUNT_BYTES),
+      validBase64(value.ciphertext, 1, MAX_NOTE_BYTES),
   );
 }
 
@@ -432,17 +616,16 @@ function deriveVaultFactor(
   clientHash,
   mode = LEGACY_SCHYBRID_MODE,
 ) {
-  const secret =
-    mode === CONFIDENTIAL_MODE
-      ? confidentialSecret
-      : mode === LEGACY_SCHYBRID_MODE
-        ? vaultSecret
-        : null;
+  const secret = mode === LEGACY_SCHYBRID_MODE ? vaultSecret : confidentialSecret;
   if (!secret) return null;
-  const context =
-    mode === CONFIDENTIAL_MODE
-      ? "AstraConfidential v2\0"
-      : "AstraConfidential SCHybrid v1\0";
+  const contexts = {
+    [LEGACY_SCHYBRID_MODE]: "AstraConfidential SCHybrid v1\0",
+    [LEGACY_CONFIDENTIAL_MODE]: "AstraConfidential v2\0",
+    [ASTRA_SECRET_MODE]: "AstraSecret v1\0",
+    [CONFIDENTIAL_MODE]: "AstraConfidential v3\0",
+  };
+  const context = contexts[mode];
+  if (!context) return null;
   return crypto
     .createHmac("sha256", secret)
     .update(context)
@@ -473,6 +656,81 @@ async function updateShares(mutator) {
     await writeJson(SHARES_FILE, shares);
     return result;
   });
+}
+async function readOrders() {
+  return readJson(ORDERS_FILE, []);
+}
+async function writeOrders(orders) {
+  await writeJson(ORDERS_FILE, orders);
+}
+function publicOrder(order) {
+  return {
+    orderId: order.orderId,
+    plan: order.plan,
+    months: order.months,
+    days: order.months * 30,
+    expectedSats: order.expectedSats,
+    localStatus: order.localStatus,
+    paymentUrl: order.paymentUrl || null,
+    satoraPaymentId: order.satoraPaymentId || null,
+    txid: order.txid || null,
+    createdAt: order.createdAt,
+    paidAt: order.paidAt || null,
+    fulfilledAt: order.fulfilledAt || null,
+  };
+}
+async function satoraRequest(endpoint, options = {}) {
+  const apiKey = process.env.SATORA_API_KEY;
+  if (typeof apiKey !== "string" || apiKey.length < 24)
+    throw Object.assign(new Error("Payment service is not configured."), {
+      status: 503,
+      code: "billing_unavailable",
+    });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 10_000);
+  try {
+    const response = await fetch(`${SATORA_BASE_URL}${endpoint}`, {
+      ...options,
+      redirect: "error",
+      signal: controller.signal,
+      headers: {
+        authorization: `Bearer ${apiKey}`,
+        accept: "application/json",
+        ...(options.body ? { "content-type": "application/json" } : {}),
+        ...(options.headers || {}),
+      },
+    });
+    const length = Number(response.headers.get("content-length") || 0);
+    if (length > 16_384) throw new Error("Payment response is too large.");
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || data.success !== true)
+      throw Object.assign(new Error("Payment service could not complete the request."), {
+        status: [429, 503].includes(response.status) ? response.status : 502,
+        code: `satora_${String(data.error || response.status)}`,
+      });
+    return data;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+async function cleanupPlanLocks() {
+  const entries = await fsp.readdir(DATA_DIR, { withFileTypes: true });
+  for (const entry of entries) {
+    if (!entry.isDirectory() || !USERNAME_RE.test(entry.name)) continue;
+    await withLock(`user:${entry.name}`, async () => {
+      const metadata = await loadMetadata(entry.name);
+      if (!metadata) return;
+      const hasPaidTime =
+        (metadata.entitlements?.plusMs || 0) > 0 ||
+        (metadata.entitlements?.proMs || 0) > 0;
+      const hasPlanLocks = metadata.notes.some((reference) => reference.planLockedAt);
+      if (!hasPaidTime && !hasPlanLocks) return;
+      await refreshPlanState(entry.name, metadata);
+      await saveMetadata(entry.name, metadata);
+    }).catch((error) =>
+      console.error(`[${utcNow()}] Plan cleanup failed for ${entry.name}:`, error.message),
+    );
+  }
 }
 function parseCookies(header = "") {
   return Object.fromEntries(
@@ -573,6 +831,7 @@ async function requireAuth(req, res, next) {
     }
     setSessionCookie(res, token, session.expiresAt);
     req.auth = { token, session };
+    await updateOnlineUser(session.username);
     next();
   } catch (error) {
     next(error);
@@ -688,13 +947,22 @@ async function markDeletion(username) {
 }
 async function updateOnlineUser(username) {
   await withLock("online", async () => {
+    const today = utcDay();
     let record = await readJson(ONLINE_USERS_FILE, {
-      date: utcDay(),
+      date: today,
       users: [],
     });
-    if (record.date !== utcDay()) record = { date: utcDay(), users: [] };
+    let changed = false;
+    if (record.date !== today) {
+      record = { date: today, users: [] };
+      changed = true;
+    }
     const key = userKey(username);
-    if (!record.users.includes(key)) record.users.push(key);
+    if (!record.users.includes(key)) {
+      record.users.push(key);
+      changed = true;
+    }
+    if (!changed) return;
     await writeJson(ONLINE_USERS_FILE, record);
     await atomicWrite(ONLINE_FILE, `${record.users.length}\n`);
   });
@@ -744,13 +1012,26 @@ async function accountEmailExists(email) {
 async function noteSummary(username, reference) {
   const note = await readJson(noteFile(username, reference.id), null);
   if (!note) return null;
+  const bytes = (await fsp.stat(noteFile(username, note.id))).size;
+  if (reference.planLockedAt)
+    return {
+      id: note.id,
+      name: normalizeText(note.name, MAX_NOTE_NAME) || "Encrypted note",
+      encryption: note.encryption,
+      updatedAt: note.updatedAt,
+      characters: null,
+      bytes,
+      shared: false,
+      locked: true,
+      lockedAt: reference.planLockedAt,
+      scheduledDeletionAt: reference.scheduledDeletionAt,
+    };
   let payload = null;
   try {
     payload = readServerNotePayload(note, username);
   } catch {
     payload = null;
   }
-  const bytes = (await fsp.stat(noteFile(username, note.id))).size;
   return {
     id: note.id,
     name:
@@ -764,35 +1045,44 @@ async function noteSummary(username, reference) {
     shared: isClientEncryptedMode(note.encryption)
       ? false
       : Boolean(note.shareToken),
+    locked: false,
   };
 }
 async function accountPayload(username) {
-  const metadata = await loadMetadata(username);
-  if (!metadata) return null;
-  const summaries = (
-    await Promise.all(metadata.notes.map((ref) => noteSummary(username, ref)))
-  ).filter(Boolean);
-  const usedBytes = await directorySize(userDir(username));
-  return {
-    username: metadata.username,
-    email: metadata.email,
-    displayName: metadata.displayName || metadata.username,
-    createdAt: metadata.createdAt,
-    settings: {
-      language: ["en", "zh-Hant", "ja"].includes(metadata.settings?.language)
-        ? metadata.settings.language
-        : null,
-      theme: ["dark", "light"].includes(metadata.settings?.theme)
-        ? metadata.settings.theme
-        : "dark",
-    },
-    noteCount: summaries.length,
-    usedBytes,
-    maxBytes: MAX_ACCOUNT_BYTES,
-    maxNotes: MAX_NOTES,
-    vaultAvailable: Boolean(confidentialSecret),
-    notes: summaries,
-  };
+  return withLock(`user:${userKey(username)}`, async () => {
+    const metadata = await loadMetadata(username);
+    if (!metadata) return null;
+    const access = await refreshPlanState(username, metadata);
+    await saveMetadata(username, metadata);
+    const summaries = (
+      await Promise.all(metadata.notes.map((ref) => noteSummary(username, ref)))
+    ).filter(Boolean);
+    const usedBytes = await directorySize(userDir(username));
+    return {
+      username: metadata.username,
+      email: metadata.email,
+      displayName: metadata.displayName || metadata.username,
+      createdAt: metadata.createdAt,
+      settings: {
+        language: ["en", "zh-Hant", "ja"].includes(metadata.settings?.language)
+          ? metadata.settings.language
+          : null,
+        theme: ["dark", "light"].includes(metadata.settings?.theme)
+          ? metadata.settings.theme
+          : "dark",
+      },
+      plan: access.payload,
+      noteCount: summaries.length,
+      unlockedNoteCount: summaries.filter((note) => !note.locked).length,
+      lockedNoteCount: summaries.filter((note) => note.locked).length,
+      usedBytes,
+      maxBytes: access.payload.maxBytes,
+      maxNotes: access.payload.maxNotes,
+      vaultAvailable: Boolean(confidentialSecret),
+      supportEmail: SUPPORT_EMAIL,
+      notes: summaries,
+    };
+  });
 }
 
 app.set("trust proxy", 1);
@@ -884,7 +1174,7 @@ app.use(
     handler: rateLimitHandler,
   }),
 );
-app.use(express.json({ limit: "300kb", strict: true }));
+app.use(express.json({ limit: "1400kb", strict: true }));
 app.use(express.urlencoded({ extended: false, limit: "20kb" }));
 app.use((req, res, next) => {
   const origin = req.get("origin");
@@ -967,6 +1257,8 @@ const accountMutationLimiter = accountLimiter(120);
 const noteSaveLimiter = accountLimiter(40);
 const noteLifecycleLimiter = accountLimiter(20);
 const shareMutationLimiter = accountLimiter(30);
+const billingMutationLimiter = accountLimiter(10);
+const billingStatusLimiter = accountLimiter(30);
 const vaultKeyIpLimiter = rateLimit({
   windowMs: 15 * 60_000,
   limit: 30,
@@ -1031,10 +1323,12 @@ app.get("/api/session", async (req, res) => {
   if (!session || Date.now() >= Date.parse(session.expiresAt))
     return res.json({ authenticated: false, preferredLanguage });
   const deletion = await findDeletion(session.username);
+  await updateOnlineUser(session.username);
   res.json({
     authenticated: true,
     username: session.username,
     csrf: session.csrf,
+    loginAt: session.createdAt,
     deletion,
     preferredLanguage,
   });
@@ -1133,6 +1427,11 @@ app.post(
             language:
               normalizeLanguage(req.body.language) || requestLanguage(req),
             theme: "dark",
+          },
+          entitlements: {
+            plusMs: 0,
+            proMs: 0,
+            updatedAt: createdAt,
           },
           notes: [],
         };
@@ -1321,6 +1620,236 @@ app.patch(
   },
 );
 
+app.get(
+  "/api/billing/orders",
+  requireAuth,
+  billingStatusLimiter,
+  async (req, res, next) => {
+    try {
+      const username = userKey(req.auth.session.username);
+      const orders = (await readOrders())
+        .filter((order) => order.username === username)
+        .sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt))
+        .slice(0, 50)
+        .map(publicOrder);
+      res.json({ orders, supportEmail: SUPPORT_EMAIL });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.post(
+  "/api/billing/create",
+  requireAuth,
+  billingMutationLimiter,
+  requireCsrf,
+  verifyCaptcha,
+  async (req, res, next) => {
+    const plan = String(req.body.plan || "").toLowerCase();
+    const months = Number(req.body.months);
+    const checkoutToken = String(req.body.checkoutToken || "").toLowerCase();
+    if (
+      !["plus", "pro"].includes(plan) ||
+      !Number.isInteger(months) ||
+      months < 1 ||
+      months > 36 ||
+      !/^[a-f0-9]{32}$/.test(checkoutToken)
+    )
+      return jsonError(res, 400, "invalid_purchase", "Choose a valid plan and 1–36 months.");
+    try {
+      const username = userKey(req.auth.session.username);
+      const result = await withLock("orders", async () => {
+        const orders = await readOrders();
+        let order = orders.find(
+          (item) => item.username === username && item.checkoutToken === checkoutToken,
+        );
+        if (order) {
+          if (order.plan !== plan || order.months !== months)
+            throw Object.assign(new Error("This checkout attempt cannot be changed."), {
+              status: 409,
+            });
+          if (order.paymentUrl) return publicOrder(order);
+        } else {
+          const createdAt = utcNow();
+          const orderId = newId(16);
+          order = {
+            orderId,
+            username,
+            plan,
+            months,
+            productSnapshot: `AstraNote ${plan === "plus" ? "Plus" : "Pro"} — ${months * 30} days`,
+            expectedSats: PLAN_DEFINITIONS[plan].monthlySats * months,
+            localStatus: "created",
+            checkoutToken,
+            idempotencyKey: `astranote:${orderId}`,
+            satoraPaymentId: null,
+            paymentUrl: null,
+            fulfilledAt: null,
+            createdAt,
+            updatedAt: createdAt,
+          };
+          orders.push(order);
+          await writeOrders(orders);
+        }
+        const returnUrl = new URL(SATORA_RETURN_URL);
+        returnUrl.searchParams.set("order_id", order.orderId);
+        try {
+          const created = await satoraRequest("/api/create", {
+            method: "POST",
+            headers: { "idempotency-key": order.idempotencyKey },
+            body: JSON.stringify({
+              product: {
+                en: order.productSnapshot,
+                "zh-TW": `AstraNote ${plan === "plus" ? "Plus" : "Pro"} — ${months * 30} 天`,
+                ja: `AstraNote ${plan === "plus" ? "Plus" : "Pro"} — ${months * 30}日`,
+              },
+              price: order.expectedSats,
+              return_url: returnUrl.href,
+            }),
+          });
+          const paymentUrl = new URL(String(created.url || ""));
+          if (
+            !/^[A-Za-z0-9_-]{22}$/.test(String(created.id || "")) ||
+            paymentUrl.origin !== new URL(SATORA_BASE_URL).origin ||
+            !paymentUrl.pathname.startsWith("/payment/")
+          )
+            throw Object.assign(new Error("Payment service returned an invalid bill."), {
+              status: 502,
+            });
+          order.satoraPaymentId = created.id;
+          order.paymentUrl = paymentUrl.href;
+          order.localStatus = ["confirming", "pending"].includes(created.status)
+            ? created.status
+            : "confirming";
+          order.updatedAt = utcNow();
+          await writeOrders(orders);
+          return publicOrder(order);
+        } catch (error) {
+          order.lastError = String(error.code || "billing_unavailable").slice(0, 120);
+          order.updatedAt = utcNow();
+          await writeOrders(orders);
+          throw error;
+        }
+      });
+      res.status(201).json({ ok: true, order: result, redirect: result.paymentUrl });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.get(
+  "/api/billing/status",
+  requireAuth,
+  billingStatusLimiter,
+  async (req, res, next) => {
+    const orderId = String(req.query.order_id || "").toLowerCase();
+    const returnedPaymentId = String(req.query.satora_payment_id || "");
+    if (!/^[a-f0-9]{32}$/.test(orderId))
+      return jsonError(res, 404, "order_not_found", "Order not found.");
+    try {
+      const username = userKey(req.auth.session.username);
+      const initial = (await readOrders()).find(
+        (order) => order.orderId === orderId && order.username === username,
+      );
+      if (!initial)
+        return jsonError(res, 404, "order_not_found", "Order not found.");
+      if (
+        returnedPaymentId &&
+        (!/^[A-Za-z0-9_-]{22}$/.test(returnedPaymentId) ||
+          !safeEqual(returnedPaymentId, initial.satoraPaymentId || ""))
+      )
+        return jsonError(
+          res,
+          409,
+          "payment_id_mismatch",
+          "The returned payment does not match this order.",
+        );
+      if (initial.fulfilledAt)
+        return res.json({ order: publicOrder(initial), supportEmail: SUPPORT_EMAIL });
+      if (!initial.satoraPaymentId)
+        return res.json({ order: publicOrder(initial), supportEmail: SUPPORT_EMAIL });
+      let status;
+      try {
+        status = await satoraRequest(
+          `/api/status?id=${encodeURIComponent(initial.satoraPaymentId)}`,
+        );
+      } catch (error) {
+        if ([429, 503].includes(error.status))
+          return res.status(error.status).json({
+            error: "verification_unavailable",
+            message: "Payment status is temporarily unavailable. Please try again later.",
+            order: publicOrder(initial),
+            supportEmail: SUPPORT_EMAIL,
+          });
+        throw error;
+      }
+      const result = await withLock("orders", async () => {
+        const orders = await readOrders();
+        const order = orders.find(
+          (item) => item.orderId === orderId && item.username === username,
+        );
+        if (!order) throw Object.assign(new Error("Order not found."), { status: 404 });
+        const validIdentity =
+          status.id === order.satoraPaymentId &&
+          Number.isSafeInteger(status.price) &&
+          status.price === order.expectedSats;
+        if (!validIdentity) {
+          order.localStatus = "verification_error";
+          order.updatedAt = utcNow();
+          await writeOrders(orders);
+          return order;
+        }
+        if (["confirming", "pending", "failed", "expired"].includes(status.status)) {
+          order.localStatus = status.status;
+          order.txid = typeof status.txid === "string" ? status.txid : null;
+          order.updatedAt = utcNow();
+          await writeOrders(orders);
+          return order;
+        }
+        if (
+          status.status === "paid" &&
+          Number.isSafeInteger(status.received_sats) &&
+          status.received_sats === order.expectedSats
+        ) {
+          if (!order.fulfilledAt) {
+            await withLock(`user:${username}`, async () => {
+              const metadata = await loadMetadata(username);
+              if (!metadata) throw Object.assign(new Error("Account not found."), { status: 404 });
+              const now = Date.now();
+              normalizeEntitlements(metadata, now);
+              metadata.fulfilledOrders ||= [];
+              if (!metadata.fulfilledOrders.includes(order.orderId)) {
+                const key = order.plan === "pro" ? "proMs" : "plusMs";
+                metadata.entitlements[key] += order.months * PLAN_MONTH_MS;
+                metadata.fulfilledOrders.push(order.orderId);
+              }
+              metadata.entitlements.updatedAt = new Date(now).toISOString();
+              await refreshPlanState(username, metadata, now);
+              await saveMetadata(username, metadata);
+            });
+            order.fulfilledAt = utcNow();
+          }
+          order.localStatus = "paid";
+          order.paidAt = status.paid_at || utcNow();
+          order.txid = typeof status.txid === "string" ? status.txid : null;
+          order.updatedAt = utcNow();
+          await writeOrders(orders);
+          return order;
+        }
+        order.localStatus = "verification_error";
+        order.updatedAt = utcNow();
+        await writeOrders(orders);
+        return order;
+      });
+      res.json({ order: publicOrder(result), supportEmail: SUPPORT_EMAIL });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
 app.post(
   "/api/vault/key-factor",
   requireAuth,
@@ -1345,50 +1874,73 @@ app.post(
       );
     try {
       const username = req.auth.session.username;
-      const metadata = await loadMetadata(username);
-      const reference = metadata.notes.find((item) => item.id === noteId);
-      if (reference) {
-        const note = await readJson(noteFile(username, noteId), null);
-        if (
-          !note ||
-          !isClientEncryptedMode(note.encryption) ||
-          !safeEqual(note.clientSalt, clientSalt)
-        )
-          return jsonError(res, 404, "not_found", "Note not found.");
-        mode = note.encryption;
-      } else if (await exists(noteFile(username, noteId))) {
-        return jsonError(res, 409, "note_id_unavailable", "Note ID is unavailable.");
-      } else if (mode !== CONFIDENTIAL_MODE) {
-        return jsonError(
-          res,
-          400,
-          "invalid_vault_request",
-          "Encryption key request is invalid.",
-        );
-      }
-      const available =
-        mode === CONFIDENTIAL_MODE
-          ? Boolean(confidentialSecret)
-          : mode === LEGACY_SCHYBRID_MODE
+      await withLock(`user:${username}`, async () => {
+        const metadata = await loadMetadata(username);
+        if (!metadata)
+          return jsonError(res, 404, "not_found", "Account not found.");
+        const access = await refreshPlanState(username, metadata);
+        await saveMetadata(username, metadata);
+        const reference = metadata.notes.find((item) => item.id === noteId);
+        if (reference) {
+          if (access.lockedIds.has(noteId))
+            return jsonError(
+              res,
+              423,
+              "note_locked",
+              "This note is locked by the current plan limit.",
+            );
+          const note = await readJson(noteFile(username, noteId), null);
+          if (
+            !note ||
+            !isClientEncryptedMode(note.encryption) ||
+            !safeEqual(note.clientSalt, clientSalt)
+          )
+            return jsonError(res, 404, "not_found", "Note not found.");
+          mode = note.encryption;
+        } else if (await exists(noteFile(username, noteId))) {
+          return jsonError(res, 409, "note_id_unavailable", "Note ID is unavailable.");
+        } else if (![ASTRA_SECRET_MODE, CONFIDENTIAL_MODE].includes(mode)) {
+          return jsonError(
+            res,
+            400,
+            "invalid_vault_request",
+            "Encryption key request is invalid.",
+          );
+        }
+        if (!reference && mode === CONFIDENTIAL_MODE && !access.payload.canCreateConfidential)
+          return jsonError(
+            res,
+            403,
+            "plan_required",
+            "Plus or Pro is required to create an AstraConfidential note.",
+          );
+        const available =
+          mode === LEGACY_SCHYBRID_MODE
             ? Boolean(vaultSecret)
-            : false;
-      if (!available)
-        return jsonError(
-          res,
-          503,
-          "vault_unavailable",
-          "This AstraConfidential encryption version is not configured.",
+            : CLIENT_ENCRYPTED_MODES.has(mode) && Boolean(confidentialSecret);
+        if (!available)
+          return jsonError(
+            res,
+            503,
+            "vault_unavailable",
+            "This AstraConfidential encryption version is not configured.",
+          );
+        const serverFactor = deriveVaultFactor(
+          metadata,
+          noteId,
+          clientSalt,
+          clientHash,
+          mode,
         );
-      const serverFactor = deriveVaultFactor(
-        metadata,
-        noteId,
-        clientSalt,
-        clientHash,
-        mode,
-      );
-      res.json({
-        serverFactor,
-        version: mode === CONFIDENTIAL_MODE ? 2 : 1,
+        res.json({
+          serverFactor,
+          version:
+            mode === CONFIDENTIAL_MODE
+              ? 3
+              : mode === LEGACY_CONFIDENTIAL_MODE
+                ? 2
+                : 1,
+        });
       });
     } catch (error) {
       next(error);
@@ -1401,39 +1953,55 @@ app.get("/api/notes/:id", requireAuth, async (req, res, next) => {
     return jsonError(res, 404, "not_found", "Note not found.");
   try {
     const username = req.auth.session.username;
-    const metadata = await loadMetadata(username);
-    if (!metadata.notes.some((ref) => ref.id === req.params.id))
-      return jsonError(res, 404, "not_found", "Note not found.");
-    const note = await readJson(noteFile(username, req.params.id), null);
-    if (!note) return jsonError(res, 404, "not_found", "Note not found.");
-    if (isClientEncryptedMode(note.encryption)) {
-      return res.json({
+    await withLock(`user:${username}`, async () => {
+      const metadata = await loadMetadata(username);
+      if (!metadata)
+        return jsonError(res, 404, "not_found", "Account not found.");
+      const access = await refreshPlanState(username, metadata);
+      await saveMetadata(username, metadata);
+      if (!metadata.notes.some((ref) => ref.id === req.params.id))
+        return jsonError(res, 404, "not_found", "Note not found.");
+      if (access.lockedIds.has(req.params.id)) {
+        const reference = lockedReference(metadata, req.params.id);
+        const locked = await lockedNotePayload(username, reference);
+        return res.status(423).json({
+          error: "note_locked",
+          message: "Upgrade to Plus or Pro to unlock this note.",
+          note: locked,
+          supportEmail: SUPPORT_EMAIL,
+        });
+      }
+      const note = await readJson(noteFile(username, req.params.id), null);
+      if (!note) return jsonError(res, 404, "not_found", "Note not found.");
+      if (isClientEncryptedMode(note.encryption)) {
+        return res.json({
+          id: note.id,
+          name: normalizeText(note.name, MAX_NOTE_NAME) || null,
+          encryption: note.encryption,
+          payloadVersion: note.payloadVersion || 1,
+          createdAt: note.createdAt,
+          updatedAt: note.updatedAt,
+          clientSalt: note.clientSalt,
+          encrypted: note.content,
+          shared: false,
+          shareUrl: null,
+          characters: null,
+          bytes: (await fsp.stat(noteFile(username, note.id))).size,
+        });
+      }
+      const payload = readServerNotePayload(note, username);
+      res.json({
         id: note.id,
-        name: normalizeText(note.name, MAX_NOTE_NAME) || null,
+        name: payload.name,
+        content: payload.content,
         encryption: note.encryption,
-        payloadVersion: note.payloadVersion || 1,
         createdAt: note.createdAt,
         updatedAt: note.updatedAt,
-        clientSalt: note.clientSalt,
-        encrypted: note.content,
-        shared: false,
-        shareUrl: null,
-        characters: null,
+        shared: Boolean(note.shareToken),
+        shareUrl: note.shareToken ? `/shared/${note.shareToken}` : null,
+        characters: characterCount(payload.content),
         bytes: (await fsp.stat(noteFile(username, note.id))).size,
       });
-    }
-    const payload = readServerNotePayload(note, username);
-    res.json({
-      id: note.id,
-      name: payload.name,
-      content: payload.content,
-      encryption: note.encryption,
-      createdAt: note.createdAt,
-      updatedAt: note.updatedAt,
-      shared: Boolean(note.shareToken),
-      shareUrl: note.shareToken ? `/shared/${note.shareToken}` : null,
-      characters: characterCount(payload.content),
-      bytes: (await fsp.stat(noteFile(username, note.id))).size,
     });
   } catch (error) {
     next(error);
@@ -1455,7 +2023,7 @@ app.post(
         "invalid_encryption",
         "Encryption option is invalid.",
       );
-    const confidential = encryption === CONFIDENTIAL_MODE;
+    const clientEncrypted = [ASTRA_SECRET_MODE, CONFIDENTIAL_MODE].includes(encryption);
     const currentAes = CURRENT_AES_MODES.has(encryption);
     const name = normalizeText(req.body.name, MAX_NOTE_NAME);
     if (!name)
@@ -1463,7 +2031,7 @@ app.post(
     const requestedId = String(req.body.id || "");
     const clientSalt = String(req.body.clientSalt || "");
     if (
-      confidential &&
+      clientEncrypted &&
       (!confidentialSecret ||
         !/^[a-f0-9]{24}$/.test(requestedId) ||
         !/^[A-Za-z0-9_-]{43}$/.test(clientSalt) ||
@@ -1488,12 +2056,25 @@ app.post(
       const username = req.auth.session.username;
       const result = await withLock(`user:${username}`, async () => {
         const metadata = await loadMetadata(username);
-        if (metadata.notes.length >= MAX_NOTES)
+        const access = await refreshPlanState(username, metadata);
+        await saveMetadata(username, metadata);
+        if (access.lockedIds.size)
           throw Object.assign(
-            new Error("You have reached the 20-note limit."),
+            new Error("Upgrade your plan or remove locked notes before creating a new note."),
+            { status: 423 },
+          );
+        if (encryption === CONFIDENTIAL_MODE && !access.payload.canCreateConfidential)
+          throw Object.assign(
+            new Error("Plus or Pro is required to create an AstraConfidential note."),
+            { status: 403 },
+          );
+        const maxNotes = access.payload.maxNotes ?? Infinity;
+        if (metadata.notes.length >= maxNotes)
+          throw Object.assign(
+            new Error(`You have reached the ${maxNotes}-note limit.`),
             { status: 409 },
           );
-        const id = confidential
+        const id = clientEncrypted
           ? requestedId
           : crypto.randomBytes(12).toString("hex");
         if (
@@ -1510,7 +2091,7 @@ app.post(
           updatedAt: utcNow(),
           shareToken: null,
         };
-        if (confidential) {
+        if (clientEncrypted) {
           note.name = name;
           note.clientSalt = clientSalt;
           note.content = req.body.encrypted;
@@ -1521,12 +2102,13 @@ app.post(
         await writeJson(noteFile(username, id), note);
         metadata.notes.unshift({ id, path: `notes/${id}.json` });
         await saveMetadata(username, metadata);
-        if ((await directorySize(userDir(username))) > MAX_ACCOUNT_BYTES) {
+        const maxBytes = access.payload.maxBytes ?? Infinity;
+        if ((await directorySize(userDir(username))) > maxBytes) {
           metadata.notes = metadata.notes.filter((ref) => ref.id !== id);
           await saveMetadata(username, metadata);
           await fsp.unlink(noteFile(username, id));
           throw Object.assign(
-            new Error("This note would exceed your 128 KB account limit."),
+            new Error("This note would exceed your current plan's storage limit."),
             { status: 413 },
           );
         }
@@ -1553,13 +2135,21 @@ app.put(
       const username = req.auth.session.username;
       await withLock(`user:${username}`, async () => {
         const metadata = await loadMetadata(username);
+        const access = await refreshPlanState(username, metadata);
+        await saveMetadata(username, metadata);
         if (!metadata.notes.some((ref) => ref.id === req.params.id))
           throw Object.assign(new Error("Note not found."), { status: 404 });
+        if (access.lockedIds.has(req.params.id))
+          throw Object.assign(
+            new Error("Upgrade to Plus or Pro to unlock this note."),
+            { status: 423, code: "note_locked" },
+          );
         const file = noteFile(username, req.params.id);
         const note = await readJson(file, null);
         if (!note)
           throw Object.assign(new Error("Note not found."), { status: 404 });
         const original = await fsp.readFile(file, "utf8");
+        const originalBytes = Buffer.byteLength(original, "utf8");
         if (isClientEncryptedMode(note.encryption)) {
           const name = normalizeText(req.body.name, MAX_NOTE_NAME);
           if (!name)
@@ -1587,7 +2177,7 @@ app.put(
             throw Object.assign(new Error("Note name is required."), {
               status: 400,
             });
-          if (Buffer.byteLength(content, "utf8") > MAX_ACCOUNT_BYTES)
+          if (Buffer.byteLength(content, "utf8") > MAX_NOTE_BYTES)
             throw Object.assign(new Error("Note is too large."), {
               status: 413,
             });
@@ -1595,10 +2185,15 @@ app.put(
           note.updatedAt = utcNow();
         }
         await writeJson(file, note);
-        if ((await directorySize(userDir(username))) > MAX_ACCOUNT_BYTES) {
+        const maxBytes = access.payload.maxBytes ?? Infinity;
+        const savedBytes = (await fsp.stat(file)).size;
+        if (
+          (await directorySize(userDir(username))) > maxBytes &&
+          savedBytes > originalBytes
+        ) {
           await atomicWrite(file, original);
           throw Object.assign(
-            new Error("Saving would exceed your 128 KB account limit."),
+            new Error("Saving would exceed your current plan's storage limit."),
             { status: 413 },
           );
         }
@@ -1633,8 +2228,9 @@ app.delete(
             delete shares[sha256(note.shareToken)];
           });
         }
-        await saveMetadata(username, metadata);
         await fsp.unlink(noteFile(username, req.params.id)).catch(() => {});
+        await refreshPlanState(username, metadata);
+        await saveMetadata(username, metadata);
       });
       res.json({ ok: true, redirect: "/notes" });
     } catch (error) {
@@ -1654,8 +2250,15 @@ app.post(
       let token = null;
       await withLock(`user:${username}`, async () => {
         const metadata = await loadMetadata(username);
+        const access = await refreshPlanState(username, metadata);
+        await saveMetadata(username, metadata);
         if (!metadata.notes.some((ref) => ref.id === req.params.id))
           throw Object.assign(new Error("Note not found."), { status: 404 });
+        if (access.lockedIds.has(req.params.id))
+          throw Object.assign(
+            new Error("Upgrade to Plus or Pro to unlock this note."),
+            { status: 423 },
+          );
         const note = await readJson(noteFile(username, req.params.id), null);
         if (isClientEncryptedMode(note?.encryption))
           throw Object.assign(
@@ -1695,26 +2298,36 @@ app.get("/api/shared/:token", sharedReadLimiter, async (req, res, next) => {
   try {
     const target = (await readJson(SHARES_FILE, {}))[sha256(req.params.token)];
     if (target && !(await findDeletion(target.username))) {
-      const metadata = await loadMetadata(target.username);
-      const note = await readJson(noteFile(target.username, target.id), null);
-      if (
-        metadata &&
-        !isClientEncryptedMode(note?.encryption) &&
-        note?.shareToken &&
-        safeEqual(note.shareToken, req.params.token)
-      ) {
-        const payload = readServerNotePayload(note, target.username);
-        res.setHeader("X-Robots-Tag", "noindex, nofollow, noarchive");
-        return res.json({
-          name: payload.name,
-          content: payload.content,
-          encryption: note.encryption,
-          updatedAt: note.updatedAt,
-          author: metadata.displayName || metadata.username,
-          email: maskEmail(metadata.email),
-          characters: characterCount(payload.content),
-        });
-      }
+      const sent = await withLock(`user:${target.username}`, async () => {
+        const metadata = await loadMetadata(target.username);
+        const access = metadata
+          ? await refreshPlanState(target.username, metadata)
+          : null;
+        if (metadata) await saveMetadata(target.username, metadata);
+        const note = await readJson(noteFile(target.username, target.id), null);
+        if (
+          metadata &&
+          !access.lockedIds.has(target.id) &&
+          !isClientEncryptedMode(note?.encryption) &&
+          note?.shareToken &&
+          safeEqual(note.shareToken, req.params.token)
+        ) {
+          const payload = readServerNotePayload(note, target.username);
+          res.setHeader("X-Robots-Tag", "noindex, nofollow, noarchive");
+          res.json({
+            name: payload.name,
+            content: payload.content,
+            encryption: note.encryption,
+            updatedAt: note.updatedAt,
+            author: metadata.displayName || metadata.username,
+            email: maskEmail(metadata.email),
+            characters: characterCount(payload.content),
+          });
+          return true;
+        }
+        return false;
+      });
+      if (sent) return;
     }
     return jsonError(res, 404, "not_found", "Shared note not found.");
   } catch (error) {
@@ -1824,17 +2437,6 @@ app.use(
     dotfiles: "deny",
   }),
 );
-app.use(
-  "/vendor/qrcode-generator",
-  express.static(
-    path.join(ROOT, "node_modules", "qrcode-generator", "dist"),
-    {
-      immutable: true,
-      maxAge: "30d",
-      dotfiles: "deny",
-    },
-  ),
-);
 app.use(express.static(PUBLIC_DIR, { extensions: false, dotfiles: "deny" }));
 
 const pages = {
@@ -1847,10 +2449,12 @@ const pages = {
   "/settings": "settings.html",
   "/terms": "terms.html",
   "/privacy": "privacy.html",
-  "/donate": "donate.html",
+  "/plans": "plans.html",
+  "/plans/return": "plans.html",
 };
 for (const [route, file] of Object.entries(pages))
   app.get(route, (req, res) => res.sendFile(path.join(PUBLIC_DIR, file)));
+app.get("/donate", (req, res) => res.redirect(308, "/plans"));
 app.get("/notes/:id/edit", (req, res) =>
   res.sendFile(path.join(PUBLIC_DIR, "edit-note.html")),
 );
@@ -1872,14 +2476,21 @@ app.use((error, req, res, next) => {
   jsonError(
     res,
     status,
-    status === 500 ? "server_error" : "request_failed",
+    status === 500 ? "server_error" : error.code || "request_failed",
     status === 500 ? "Something went wrong. Please try again." : error.message,
   );
 });
 
 async function start() {
   await ensureData();
-  app.listen(PORT, () => console.log(`AstraNote listening on port ${PORT}`));
+  const cleanupTimer = setInterval(() => cleanupPlanLocks(), 60 * 60_000);
+  cleanupTimer.unref();
+  app.listen(PORT, () => {
+    console.log(`AstraNote listening on port ${PORT}`);
+    cleanupPlanLocks().catch((error) =>
+      console.error(`[${utcNow()}] Initial plan cleanup failed:`, error.message),
+    );
+  });
 }
 
 if (require.main === module)
@@ -1900,8 +2511,12 @@ module.exports = {
     SCHYBRID_MODE: LEGACY_SCHYBRID_MODE,
     LEGACY_SCHYBRID_MODE,
     CONFIDENTIAL_MODE,
+    LEGACY_CONFIDENTIAL_MODE,
+    ASTRA_SECRET_MODE,
     LEGACY_AES_MODES,
     CURRENT_AES_MODES,
+    PLAN_DEFINITIONS,
+    PLAN_MONTH_MS,
   },
   testables: {
     encryptContent,
@@ -1913,5 +2528,8 @@ module.exports = {
     isClientEncryptedMode,
     maskEmail,
     characterCount,
+    normalizeEntitlements,
+    planForMetadata,
+    planPayload,
   },
 };

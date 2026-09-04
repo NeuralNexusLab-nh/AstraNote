@@ -3,6 +3,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs/promises");
+const crypto = require("node:crypto");
 const os = require("node:os");
 const path = require("node:path");
 
@@ -73,14 +74,39 @@ test("session language follows Accept-Language when no saved preference exists",
   assert.equal((await japanese.json()).preferredLanguage, "ja");
 });
 
-test("donation route and local QR library are served by AstraNote", async () => {
-  const donation = await fetch(`${baseUrl}/donate`);
-  assert.equal(donation.status, 200);
-  assert.match(await donation.text(), /data-page="donate"/u);
+test("today's activity counts each authenticated account once for any request", async () => {
+  const token = crypto.randomBytes(32).toString("base64url");
+  const now = Date.now();
+  const session = {
+    username: "active_user",
+    csrf: "test-csrf",
+    createdAt: new Date(now).toISOString(),
+    expiresAt: new Date(now + 864e5).toISOString(),
+    maxExpiresAt: new Date(now + 2 * 864e5).toISOString(),
+    ipHash: "test",
+  };
+  await fs.writeFile(
+    path.join(temporaryData, "sessions.json"),
+    `${JSON.stringify({ [crypto.createHash("sha256").update(token).digest("hex")]: session })}\n`,
+  );
+  const headers = { cookie: `astranote_session=${token}` };
 
-  const library = await fetch(`${baseUrl}/vendor/qrcode-generator/qrcode.js`);
-  assert.equal(library.status, 200);
-  assert.match(await library.text(), /var qrcode = function/u);
+  assert.equal((await fetch(`${baseUrl}/api/session`, { headers })).status, 200);
+  assert.equal((await fetch(`${baseUrl}/api/account`, { headers })).status, 200);
+  assert.equal((await fetch(`${baseUrl}/api/session`, { headers })).status, 200);
+
+  const stats = await fetch(`${baseUrl}/api/stats`);
+  assert.equal((await stats.json()).onlineToday, 1);
+});
+
+test("plans route is served and the former donation route redirects", async () => {
+  const plans = await fetch(`${baseUrl}/plans`);
+  assert.equal(plans.status, 200);
+  assert.match(await plans.text(), /data-page="plans"/u);
+
+  const donation = await fetch(`${baseUrl}/donate`, { redirect: "manual" });
+  assert.equal(donation.status, 308);
+  assert.equal(donation.headers.get("location"), "/plans");
 });
 
 test("security headers allow only the configured application and CAPTCHA sources", async () => {
@@ -107,6 +133,17 @@ test("security headers allow only the configured application and CAPTCHA sources
 test("authentication, CAPTCHA, and Origin protections fail closed", async () => {
   const account = await fetch(`${baseUrl}/api/account`);
   assert.equal(account.status, 401);
+  assert.equal((await fetch(`${baseUrl}/api/billing/orders`)).status, 401);
+  assert.equal(
+    (
+      await fetch(`${baseUrl}/api/billing/create`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: "{}",
+      })
+    ).status,
+    401,
+  );
 
   const noCaptcha = await fetch(`${baseUrl}/api/register`, {
     method: "POST",
@@ -149,6 +186,15 @@ test("published account limits match the 20-note, 128 KB, and 75,000-account pol
   assert.equal(constants.MAX_NOTES, 20);
   assert.equal(constants.MAX_ACCOUNT_BYTES, 128 * 1000);
   assert.equal(constants.MAX_ACCOUNTS, 75_000);
+  assert.deepEqual(constants.PLAN_DEFINITIONS.plus, {
+    maxBytes: 256_000,
+    maxNotes: 50,
+    monthlySats: 2500,
+  });
+  assert.equal(constants.PLAN_DEFINITIONS.pro.maxBytes, 512_000);
+  assert.equal(constants.PLAN_DEFINITIONS.pro.maxNotes, Infinity);
+  assert.equal(constants.PLAN_DEFINITIONS.pro.monthlySats, 6000);
+  assert.equal(constants.PLAN_MONTH_MS, 30 * 864e5);
 });
 
 test("invalid sharing and traversal-shaped identifiers reveal no data", async () => {
@@ -280,7 +326,7 @@ test("every AES version leaves the title visible and encrypts only content", () 
   }
 });
 
-test("legacy SCHybrid and current AstraConfidential factors stay versioned", () => {
+test("legacy and current client-encrypted factors stay versioned", () => {
   const metadata = {
     username: "Test_User",
     email: "owner@example.com",
@@ -342,7 +388,9 @@ test("legacy SCHybrid and current AstraConfidential factors stay versioned", () 
     false,
   );
   assert.equal(constants.SCHYBRID_MODE, "astra-confidential-schybrid-v1");
-  assert.equal(constants.CONFIDENTIAL_MODE, "astra-confidential-v2");
+  assert.equal(constants.LEGACY_CONFIDENTIAL_MODE, "astra-confidential-v2");
+  assert.equal(constants.ASTRA_SECRET_MODE, "astra-secret-v1");
+  assert.equal(constants.CONFIDENTIAL_MODE, "astra-confidential-v3");
   assert.equal(
     testables.isClientEncryptedMode(constants.LEGACY_SCHYBRID_MODE),
     true,
@@ -351,4 +399,25 @@ test("legacy SCHybrid and current AstraConfidential factors stay versioned", () 
     testables.isClientEncryptedMode(constants.CONFIDENTIAL_MODE),
     true,
   );
+  assert.equal(testables.isClientEncryptedMode(constants.ASTRA_SECRET_MODE), true);
+});
+
+test("plan time uses Pro before Plus and Admin is unlimited", () => {
+  const metadata = {
+    email: "member@example.com",
+    entitlements: {
+      proMs: 2 * 864e5,
+      plusMs: 5 * 864e5,
+      updatedAt: new Date(1_000_000).toISOString(),
+    },
+  };
+  testables.normalizeEntitlements(metadata, 1_000_000 + 3 * 864e5);
+  assert.equal(metadata.entitlements.proMs, 0);
+  assert.equal(metadata.entitlements.plusMs, 4 * 864e5);
+  assert.equal(testables.planForMetadata(metadata), "plus");
+
+  const admin = { email: "NeuralNexusLab@Hotmail.com", entitlements: {} };
+  testables.normalizeEntitlements(admin, Date.now());
+  assert.equal(testables.planForMetadata(admin), "admin");
+  assert.equal(testables.planPayload(admin).maxBytes, null);
 });

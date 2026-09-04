@@ -26,8 +26,8 @@
             agreement between you and the individual operator using the
             unregistered brand NeuralNexusLab (“Operator”) concerning AstraNote.
             Contact:
-            <a href="mailto:neuralnexuslab@hotmail.com"
-              >neuralnexuslab@hotmail.com</a
+            <a href="mailto:astranote@nxlabtw.com"
+              >astranote@nxlabtw.com</a
             >. If mandatory law grants you rights that cannot be waived, those
             rights prevail.
           </p>
@@ -42,12 +42,12 @@
           </p>
           <h2>2. Service</h2>
           <p>
-            AstraNote is presently a free, plain-text online notebook. Each
-            account may hold no more than 20 notes and 128 KB across the
-            complete account directory, including metadata and encryption
-            overhead. The Operator may introduce optional paid functionality
-            only after giving separate, clear notice. No purchase or automatic
-            renewal is created by these Terms.
+            AstraNote provides Free, Plus, and Pro plans. Free includes 20 notes
+            and 128 KB; Plus includes 50 notes and 256 KB; Pro includes 512 KB
+            without a separate note-count limit, subject to storage, rate, and
+            reasonable-use controls. One subscription month always means 30
+            consecutive days. Purchases may cover 1–36 months and do not renew
+            automatically.
           </p>
           <h2>3. Accounts and security</h2>
           <p>
@@ -66,14 +66,15 @@
             only the limited licence necessary to host, process, encrypt,
             decrypt, transmit, display, protect, and delete that content in
             order to provide the service. Available protection is no encryption,
-            AES-128-GCM, AES-256-GCM, or AstraConfidential. Encryption
+            AES-128-GCM, AES-256-GCM, AstraSecret, or AstraConfidential. Encryption
             is selected when a note is created and cannot later be changed. In
             every encrypted mode, the title remains plaintext so the note can
             be identified in lists; only the content is encrypted. The AES
             modes are managed by the server and are not end-to-end or
             zero-knowledge encryption; the Operator may technically decrypt
-            them. AstraConfidential encrypts the content in the browser using a
-            case-sensitive 4–16 character PIN made from printable ASCII
+            them. AstraSecret uses a 4–6 digit PIN for everyday protection.
+            New AstraConfidential notes require an active Plus or Pro plan and
+            use a case-sensitive 12–64 character PIN made from printable ASCII
             letters, numbers, and symbols, together with server-side protection
             bound to the account and note. The PIN and final browser key are not
             stored by AstraNote. AstraConfidential is server-assisted client-side
@@ -85,7 +86,36 @@
             available for reading and editing. Encryption increases storage use;
             short notes may have proportionally larger overhead.
           </p>
-          <h2>5. Sharing</h2>
+          <h2>5. Plans, locking, deletion, and payments</h2>
+          <p>
+            Plus and Pro time is recorded separately in days. Pro time is used
+            first, while Plus time is paused until no Pro time remains. There is
+            no grace period. Notes exceeding the current plan are locked by the
+            server from largest to smallest. A locked note exposes only its
+            title, size, and scheduled deletion date; its content cannot be
+            opened, edited, exported, decrypted, or shared. A note continuously
+            locked for 30 days is permanently deleted without backup. You must
+            renew, reduce usage, or keep an independent copy before that date.
+            To the maximum extent permitted by law, the Operator is not
+            responsible for restoring or compensating notes deleted under this
+            disclosed rule.
+          </p>
+          <p>
+            Bitcoin payments use Satora. Returning in the browser is not proof
+            of payment; access is granted only after server verification. For a
+            faster checkout, Satora may report a Bitcoin payment before its
+            first blockchain confirmation; network conflicts can still require
+            manual review. For a
+            failed, mismatched, unresolved, or unfulfilled payment, do not pay
+            again and contact <a href="mailto:astranote@nxlabtw.com">astranote@nxlabtw.com</a>
+            immediately and no later than seven days after discovering the
+            issue. Provide the username, local order ID, Satora payment ID, and
+            TXID if available, but never a password, PIN, private key, or seed
+            phrase. Except where mandatory law requires otherwise, late notice
+            may end any obligation to preserve, investigate, restore, or
+            compensate the transaction.
+          </p>
+          <h2>6. Sharing</h2>
           <p>
             Sharing is off by default. Enabling it creates an unguessable,
             read-only link and publishes the selected note, your chosen public
@@ -97,7 +127,7 @@
             Sharing is unavailable for AstraConfidential and legacy SCHybrid notes because
             their decryption is bound to the owner's account and PIN.
           </p>
-          <h2>6. Prohibited conduct</h2>
+          <h2>7. Prohibited conduct</h2>
           <p>
             You must not use AstraNote to violate law, infringe rights, threaten
             or harass others, distribute unlawful material, facilitate crime,
@@ -111,7 +141,7 @@
             reasonably believed necessary to protect users, systems, legal
             rights, or service availability.
           </p>
-          <h2>7. Human verification</h2>
+          <h2>8. Human verification</h2>
           <p>
             Registration, login, note creation, note deletion, and permanent
             account deletion require a CAPTCHA.
@@ -120,7 +150,7 @@
             have a request accepted; session, CSRF, ownership, capacity, and
             rate-limit checks also apply.
           </p>
-          <h2>8. Availability, backups, and changes</h2>
+          <h2>9. Availability, backups, and changes</h2>
           <p>
             AstraNote has no user-data backup service. You must keep independent
             copies of important material. The service may be changed, suspended,
@@ -130,7 +160,7 @@
             service is not suitable for emergency, life-safety, medical,
             legal-record, or sole-copy archival use.
           </p>
-          <h2>9. Disclaimer and limitation</h2>
+          <h2>10. Disclaimer and limitation</h2>
           <p>
             To the maximum extent permitted by applicable law, AstraNote is
             provided “as is” and “as available,” without a promise of
@@ -148,7 +178,7 @@
             arising from intentional misconduct or gross negligence where
             applicable.
           </p>
-          <h2>10. Account deletion</h2>
+          <h2>11. Account deletion</h2>
           <p>
             Account deletion requires an authenticated session, the exact
             username, the current password, and a CAPTCHA. Confirmation
@@ -160,7 +190,7 @@
             required by law or necessary for the establishment, exercise, or
             defence of legal claims.
           </p>
-          <h2>11. Intellectual property and open source</h2>
+          <h2>12. Intellectual property and open source</h2>
           <p>
             Repository source code identified as such is licensed under Apache
             License 2.0. That licence does not grant rights in the AstraNote or
@@ -169,7 +199,7 @@
             applicable open-source licence, the Operator reserves all rights in
             the service.
           </p>
-          <h2>12. Governing law and disputes</h2>
+          <h2>13. Governing law and disputes</h2>
           <p>
             These Terms are principally governed by the laws of the Republic of
             China (Taiwan), without excluding mandatory consumer, privacy, or
@@ -178,7 +208,7 @@
             only to the extent legally permitted; this clause does not deprive a
             consumer of a court or small-claim forum provided by mandatory law.
           </p>
-          <h2>13. General</h2>
+          <h2>14. General</h2>
           <p>
             If a provision is invalid, it is adjusted or severed only to the
             minimum extent necessary and the remainder continues. Failure to
@@ -194,8 +224,8 @@
             <strong>請仔細閱讀。</strong>本協議由您與以 NeuralNexusLab
             未登記品牌名義營運 AstraNote
             的個人服務提供者（下稱「營運者」）訂立。聯絡信箱：<a
-              href="mailto:neuralnexuslab@hotmail.com"
-              >neuralnexuslab@hotmail.com</a
+              href="mailto:astranote@nxlabtw.com"
+              >astranote@nxlabtw.com</a
             >。法律賦予且不得預先拋棄的權利，不因本協議而受限制。
           </p>
           <h2>一、同意與行為能力</h2>
@@ -204,10 +234,9 @@
           </p>
           <h2>二、服務內容</h2>
           <p>
-            AstraNote
-            現為免費純文字線上筆記服務。每個帳號最多二十篇筆記，整個帳號資料夾（含中繼資料及加密開銷）上限為
-            128
-            KB。未來如推出選擇性付費功能，營運者將另行清楚告知；本協議本身不成立任何購買或自動續費。
+            AstraNote 提供 Free、Plus 與 Pro 方案。Free 為20篇筆記及128
+            KB；Plus 為50篇筆記及256 KB；Pro 為512
+            KB，且不另設筆記篇數限制，但仍受容量、速率及合理使用規則約束。本服務所稱一個月固定為連續30天，可購買1～36個月，且不會自動續費。
           </p>
           <h2>三、帳號與安全</h2>
           <p>
@@ -218,58 +247,65 @@
           <h2>四、使用者內容與加密</h2>
           <p>
             筆記內容仍歸您所有。您僅授予營運者為提供服務所必要的有限權利，包括託管、處理、加密、解密、傳輸、顯示、保護及刪除內容。可選擇不加密、AES-128-GCM、AES-256-GCM
-            或 AstraConfidential；加密方式於建立時決定且之後不得更換。所有加密方式都會讓筆記名稱保持明文，以便在清單中辨認；只有內容會加密。AES
+            、AstraSecret 或 AstraConfidential；加密方式於建立時決定且之後不得更換。所有加密方式都會讓筆記名稱保持明文，以便在清單中辨認；只有內容會加密。AES
             模式由伺服器管理，並非端對端或零知識加密，營運者在技術上可能解密。AstraConfidential
-            會在瀏覽器中使用區分大小寫、由可列印 ASCII 英文字母、數字及符號組成的 4–16 字元 PIN，並配合綁定帳號與筆記的伺服器端保護來加密內容；AstraNote
+            新建立 AstraConfidential 筆記需要有效的 Plus 或 Pro，並使用區分大小寫、由可列印 ASCII 英文字母、數字及符號組成的12～64字元 PIN。AstraSecret 使用4～6位數字 PIN，定位為日常保護。兩者均配合綁定帳號與筆記的伺服器端保護來加密內容；AstraNote
             不儲存 PIN 或最終瀏覽器金鑰。AstraConfidential
             屬於伺服器協助的用戶端加密，而非零知識保證；解鎖時仍須信任瀏覽器程式與伺服器，且遺失 PIN、帳號存取權或必要的伺服器端保護，均可能使筆記內容永久無法讀取。加密會增加儲存用量，短內容的比例開銷可能更高。
             既有 AstraConfidential SCHybrid 筆記仍沿用原本的 4–6 位數 PIN，並可繼續讀取及編輯。
           </p>
-          <h2>五、分享</h2>
+          <h2>五、方案、鎖定、刪除與付款</h2>
+          <p>
+            Plus 與 Pro 分別以剩餘天數保存；系統優先使用 Pro，Pro 用完後才開始使用 Plus。付費天數結束後沒有寬限期。超出當前方案額度的筆記會由後端依實際容量從大到小鎖定。鎖定後只能看到標題、大小及預定刪除時間，不能開啟、編輯、匯出、解密或分享。筆記若連續鎖定滿30天，將在沒有備份的情況下永久刪除。使用者有責任在期限前續訂、降低用量或自行備份。在法律允許的最大範圍內，對於依本規則刪除的超額筆記，營運者不負恢復或賠償責任。
+          </p>
+          <p>
+            Bitcoin 付款透過 Satora 處理；瀏覽器返回本站不代表付款成功，方案僅於後端驗證後啟用。為加快付款流程，Satora 可能在第一個區塊確認前回報已付款；若網路交易發生衝突，仍可能需要人工審查。若付款失敗、金額不符、長時間未完成或付款後方案未啟用，請勿再次付款，並應在發現問題後立即且最遲於7天內聯絡 <a href="mailto:astranote@nxlabtw.com">astranote@nxlabtw.com</a>。請提供 Username、本地訂單 ID、Satora payment ID 及存在時的 TXID，但不得提供密碼、PIN、私鑰或助記詞。除法律強制規定外，逾期未聯絡可能使營運者不再負保留、人工追查、恢復或補償該交易的義務。
+          </p>
+          <h2>六、分享</h2>
           <p>
             分享預設關閉。開啟後會產生難以猜測的唯讀連結，任何持有者可看到該筆記、您的公開顯示名稱及遮罩
             Email。分享頁會要求搜尋引擎不收錄，但無法保證第三方遵循。您須對分享內容負責。關閉分享、刪除筆記或刪除帳號時，連結立即失效。AstraConfidential
             與舊版 SCHybrid 因解密與擁有者帳號及 PIN 綁定，不提供分享功能。
           </p>
-          <h2>六、禁止行為</h2>
+          <h2>七、禁止行為</h2>
           <p>
             不得利用 AstraNote
             違法、侵害權利、威脅騷擾、散布不法內容、協助犯罪、儲存惡意程式、攻擊人員或系統、規避存取控制或速率限制、濫用自動化請求、未經書面授權探測或利用漏洞、妨害服務、存取他人帳號或筆記，或不合理耗用儲存、運算、頻寬、CAPTCHA
             及管理資源。使用者須自行承擔其行為與內容責任。為保護使用者、系統、合法權利或可用性，營運者得採取合理限制或終止措施。
           </p>
-          <h2>七、人類驗證</h2>
+          <h2>八、人類驗證</h2>
           <p>
             註冊、登入、新增筆記、刪除筆記及永久刪除帳號時須完成 CAPTCHA，驗證資料會交由驗證服務提供者並由
             AstraNote 後端確認。完成 CAPTCHA
             不代表請求必然獲准；系統仍會檢查登入階段、CSRF、所有權、容量及速率限制。
           </p>
-          <h2>八、可用性、備份與變更</h2>
+          <h2>九、可用性、備份與變更</h2>
           <p>
             AstraNote
             不提供使用者資料備份，重要內容須由您自行另存。服務可能因維護、安全、法律、財務、基礎設施或其他正當理由而變更、暫停、遷移、限制或終止；合理可行時將公告重大變更。本服務不適合緊急、生命安全、醫療、法定紀錄或唯一副本保存用途。
           </p>
-          <h2>九、免責及責任限制</h2>
+          <h2>十、免責及責任限制</h2>
           <p>
             在法律允許的最大範圍內，本服務按「現況」及「現有」提供，不保證永久、不間斷、無錯誤或絕對安全。對於非營運者可合理控制之事由、第三方服務、使用者遺失憑證、自行分享、裝置不相容或未自行備份造成的損失，營運者依法得免責或限制責任。若帳號或筆記資料因任何原因遺失、損壞或無法存取，或本網站中斷、無法使用或永久停止營運，在法律允許的最大範圍內，營運者不負恢復資料、繼續提供服務或賠償因此所生損失的責任。本條不排除法律禁止免除之責任，包括依法不得免除的故意或重大過失責任。
           </p>
-          <h2>十、帳號刪除</h2>
+          <h2>十一、帳號刪除</h2>
           <p>
             永久刪除帳號須具有效登入階段、輸入完整 Username、目前密碼並完成
             CAPTCHA。確認後，現行帳號資料夾及全部筆記會立即永久移除，所有登入階段與分享連結同時失效，且不能取消或復原。AstraNote
             不提供服務備份。確認沒有同名帳號資料夾後，Username 與 Email
             得重新註冊；僅於法律要求或為法律請求之主張、行使或防禦所必要時，可能另行保留必要紀錄。
           </p>
-          <h2>十一、智慧財產與開源</h2>
+          <h2>十二、智慧財產與開源</h2>
           <p>
             Repository 中明確發布的原始碼依 Apache License 2.0
             授權。該授權不包含 AstraNote、NeuralNexusLab
             名稱、Logo、服務呈現、使用者資料或第三方素材。除適用開源授權明示授予者外，營運者保留服務的一切權利。
           </p>
-          <h2>十二、準據法與爭議</h2>
+          <h2>十三、準據法與爭議</h2>
           <p>
             本協議原則依中華民國法律解釋，但不排除適用於您的消費者、個資或管轄強制規定。在法律允許範圍內，以營運者所在地有管轄權之臺灣地方法院為第一審法院；本約定不剝奪消費者依法得使用的法院或小額訴訟管轄。
           </p>
-          <h2>十三、一般條款</h2>
+          <h2>十四、一般條款</h2>
           <p>
             個別條款無效時，僅於必要最小範圍調整或分離，其餘仍有效。未行使權利不構成放棄。英文與繁體中文版本力求同義；法律要求時，應依強制規定及對消費者較有利的解釋。相關問題可寄至前述聯絡信箱。
           </p>

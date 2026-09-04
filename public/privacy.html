@@ -25,8 +25,8 @@
             This policy explains how the individual operator using the
             unregistered NeuralNexusLab brand handles personal data through
             AstraNote. Contact:
-            <a href="mailto:neuralnexuslab@hotmail.com"
-              >neuralnexuslab@hotmail.com</a
+            <a href="mailto:astranote@nxlabtw.com"
+              >astranote@nxlabtw.com</a
             >. AstraNote does not sell personal data or use advertising or
             analytics trackers.
           </p>
@@ -62,6 +62,12 @@
               <strong>Security:</strong> rate-limit events, CAPTCHA verification
               identifiers and tokens, error and operational records reasonably
               necessary to prevent abuse.
+            </li>
+            <li>
+              <strong>Plans and payments:</strong> remaining Plus and Pro time,
+              local order ID, selected plan and months, integer satoshi amount,
+              Satora payment ID and URL, status, TXID, and fulfilment time. The
+              Satora API credential is never sent to the browser.
             </li>
           </ul>
           <h2>3. Purposes and legal bases</h2>
@@ -106,6 +112,10 @@
           <h2>7. Retention</h2>
           <p>
             Account and security data is retained while the account exists.
+            Notes exceeding the effective plan are locked by the server; a note
+            continuously locked for 30 days is permanently deleted without a
+            service backup. Unlocking it before that time clears the deletion
+            schedule.
             Confirmed account deletion immediately removes the live account
             directory and notes and revokes its sessions and sharing links; it
             cannot be cancelled or restored, and AstraNote has no service
@@ -168,8 +178,8 @@
           <p class="legal-note">
             本政策說明以 NeuralNexusLab
             未登記品牌名義營運的個人服務提供者，如何透過 AstraNote
-            處理個人資料。聯絡信箱：<a href="mailto:neuralnexuslab@hotmail.com"
-              >neuralnexuslab@hotmail.com</a
+            處理個人資料。聯絡信箱：<a href="mailto:astranote@nxlabtw.com"
+              >astranote@nxlabtw.com</a
             >。AstraNote 不販售個資，亦不使用廣告或分析追蹤器。
           </p>
           <h2>一、資料控制者與範圍</h2>
@@ -198,6 +208,9 @@
             <li>
               <strong>安全：</strong>速率限制事件、CAPTCHA 驗證 ID 與
               Token，以及防止濫用所合理必要的錯誤及運作紀錄。
+            </li>
+            <li>
+              <strong>方案與付款：</strong>Plus 與 Pro 剩餘時間、本地訂單 ID、方案與月數、整數 satoshi 金額、Satora payment ID 與付款網址、狀態、TXID 及交付時間。Satora API 憑證不會傳送至瀏覽器。
             </li>
           </ul>
           <h2>三、目的與依據</h2>
@@ -228,7 +241,7 @@
           </p>
           <h2>七、保存期限</h2>
           <p>
-            帳號存在期間保存帳號與安全資料。確認永久刪除帳號後，現行帳號資料夾及筆記會立即移除，所有登入階段與分享連結同時失效；此操作不能取消或復原，AstraNote
+            帳號存在期間保存帳號與安全資料。超出有效方案額度的筆記會由後端鎖定；連續鎖定滿30天後會在沒有服務備份的情況下永久刪除，期限前解鎖則會清除預定刪除時間。確認永久刪除帳號後，現行帳號資料夾及筆記會立即移除，所有登入階段與分享連結同時失效；此操作不能取消或復原，AstraNote
             亦無服務備份。個別刪除的筆記同樣立即移除。僅於法律要求或法律請求所必要時可能保留必要紀錄。Session
             最遲於該次登入後二十八日失效。每日不同登入帳號紀錄於 UTC 00:00
             重置。

@@ -2,7 +2,7 @@
 
 > Write it down. Find it whenever you need it.
 
-AstraNote is a bilingual, responsive online notebook built with Node.js and
+AstraNote is a multilingual, responsive online notebook built with Node.js and
 Express. It provides optional authenticated encryption, a client-side
 AstraConfidential mode, revocable read-only sharing, strict
 per-account storage limits, and server-verified CAPTCHA protection for
@@ -10,13 +10,16 @@ security-sensitive actions.
 
 ## Highlights
 
-- English and Traditional Chinese across the complete interface
+- English, Traditional Chinese, and Japanese across the application interface
 - Animated, scroll-reactive starfield landing page
 - Dark and light themes synchronized to signed-in accounts
 - Plain-text lined note reader and editor
-- No encryption, AES-128-GCM, AES-256-GCM, or AstraConfidential chosen at note creation
+- Free (128 KB/20 notes), Plus (256 KB/50 notes), and Pro (512 KB/no separate note-count limit)
+- Independent Plus and Pro day balances; Pro is consumed first and one month is always 30 days
+- Satora Bitcoin checkout with server-side status verification and idempotent fulfilment
+- No encryption, AES-128-GCM, AES-256-GCM, AstraSecret, or AstraConfidential at note creation
 - Every encrypted mode protects note content; titles remain plaintext for identification
-- 20-note and 128 KB full-account-directory limits
+- Server-enforced overage locks and permanent deletion after 30 continuously locked days
 - Capacity for up to 75,000 registered accounts
 - Unguessable, revocable, `noindex` read-only sharing links
 - Argon2id password hashing and server-managed authenticated sessions
@@ -66,6 +69,9 @@ Open `http://localhost:3000`.
    `node -e "console.log(require('node:crypto').randomBytes(64).toString('base64url'))"`
 6. Route both `https://astranote.nxlabtw.com` and
    `https://astranote.zeabur.app` to the service.
+7. Set the server-only `SATORA_API_KEY`. AstraNote connects only to
+   `https://satora.nxlabtw.com`. Allow the exact return origin
+   `https://astranote.nxlabtw.com` in Satora.
 
 Do not deploy without persistent storage. Redeploying against an ephemeral
 `data/` directory can lose all accounts and the encryption secret.
@@ -82,6 +88,7 @@ data/
 ├── onlineTodayUsers.json
 ├── sessions.json
 ├── shares.json
+├── orders.json
 ├── deletes.json
 └── {username}/
     ├── metadata.json
@@ -108,8 +115,9 @@ after no matching account directory remains.
   AES-256-GCM. Titles remain plaintext, and these modes are not end-to-end or
   zero-knowledge.
 - AstraConfidential encrypts note content in the browser with AES-256-GCM. Its
-  case-sensitive 4–16 character PIN supports printable ASCII letters,
-  numbers, and symbols. A memory-hard browser derivation combines the PIN with
+  current version uses a case-sensitive 12–64 character PIN of printable ASCII
+  letters, numbers, and symbols and is available for new notes on Plus and Pro.
+  A memory-hard browser derivation combines the PIN with
   account-bound server protection. The server stores neither the PIN nor the
   final browser key, and AstraConfidential notes cannot be shared. This is
   server-assisted browser encryption rather than a zero-knowledge design: the
@@ -118,6 +126,9 @@ after no matching account directory remains.
 - Existing AstraConfidential SCHybrid notes retain their original encryption
   identifier, 4–6 digit PIN rule, and `ASTRANOTE_VAULT_SECRET` derivation. They
   remain readable and editable but are no longer offered for new notes.
+- AstraSecret uses a 4–6 digit PIN and the same browser/server trust boundary,
+  with an independently domain-separated derivation. It is intended for
+  convenient everyday protection, not high-entropy secret storage.
 - Losing a PIN or a required production secret can make encrypted notes
   permanently unreadable. Keep all three environment secrets stable and backed
   up outside the application data volume.

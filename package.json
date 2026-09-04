@@ -1,7 +1,7 @@
 {
   "name": "astranote",
   "version": "1.0.0",
-  "description": "A free bilingual online notebook by NeuralNexusLab.",
+  "description": "A multilingual online notebook with optional advanced encryption by NeuralNexusLab.",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
@@ -19,10 +19,6 @@
     "express": "^5.1.0",
     "express-rate-limit": "^8.0.1",
     "hash-wasm": "^4.12.0",
-    "helmet": "^8.1.0",
-    "qrcode-generator": "^2.0.4"
-  },
-  "devDependencies": {
-    "jsqr": "^1.4.0"
+    "helmet": "^8.1.0"
   }
 }
