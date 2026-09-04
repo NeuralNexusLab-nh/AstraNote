@@ -670,7 +670,8 @@ function publicOrder(order) {
     months: order.months,
     days: order.months * 30,
     expectedSats: order.expectedSats,
-    localStatus: order.localStatus,
+    localStatus:
+      order.lastError && !order.satoraPaymentId ? "failed" : order.localStatus,
     paymentUrl: order.paymentUrl || null,
     satoraPaymentId: order.satoraPaymentId || null,
     txid: order.txid || null,
@@ -1719,6 +1720,7 @@ app.post(
           await writeOrders(orders);
           return publicOrder(order);
         } catch (error) {
+          order.localStatus = "failed";
           order.lastError = String(error.code || "billing_unavailable").slice(0, 120);
           order.updatedAt = utcNow();
           await writeOrders(orders);

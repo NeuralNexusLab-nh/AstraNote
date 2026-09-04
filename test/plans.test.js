@@ -31,6 +31,12 @@ test("used CAPTCHA tokens are reset after protected requests fail", () => {
   assert.match(app, /resetCaptcha\("action"\)/u);
 });
 
+test("failed Satora invoice creation is not left in a creating state", () => {
+  const server = fs.readFileSync(path.join(ROOT, "server.js"), "utf8");
+  assert.match(server, /order\.lastError && !order\.satoraPaymentId \? "failed"/u);
+  assert.match(server, /order\.localStatus = "failed"/u);
+});
+
 test("billing and encryption secrets remain server-only placeholders", () => {
   const envExample = fs.readFileSync(path.join(ROOT, ".env.example"), "utf8");
   const browser = fs.readFileSync(path.join(ROOT, "public", "app.js"), "utf8");
