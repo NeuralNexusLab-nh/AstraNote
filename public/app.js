@@ -1428,20 +1428,44 @@ Object.assign(I18N.ja, {
 Object.assign(I18N.en, {
   noteContent: "Note content",
   filters: "Filters",
+  couponOnceTitle: "Coupon use",
+  couponOncePolicy:
+    "Each coupon can be redeemed once per account, except for codes expressly designated as reusable by AstraNote. Reusing a coupon will not add plan time, even if Satora accepts the payment. Do not pay again; contact support with the order ID if a payment was made.",
+  orderCouponReused: "Coupon already used",
+  couponRejectedBody:
+    "You have already redeemed this coupon on this account. Satora reported this payment as successful, but AstraNote has not added any plan time. Do not pay again. Contact support with the order ID below if you paid Bitcoin; no automatic refund has been issued.",
+  orderIdLabel: "Order ID",
+  viewPaymentDetails: "View details",
   billingData:
-    "Payment records retain the account association, plan, amount, payment identifiers, status and necessary timestamps for reconciliation and preventing duplicate credit. Full payment-service responses are not stored.",
+    "Payment records retain the account association, plan, amount, payment identifiers, status and necessary timestamps for reconciliation and preventing duplicate credit. Coupon-use receipts store a code digest, account association and order ID, not the plaintext coupon. Full payment-service responses are not stored.",
 });
 Object.assign(I18N["zh-Hant"], {
   noteContent: "筆記內容",
   filters: "篩選",
+  couponOnceTitle: "優惠碼使用規則",
+  couponOncePolicy:
+    "除 AstraNote 明確指定可重複使用的優惠碼外，每個帳號的同一優惠碼只能兌換一次。重複使用不會增加方案天數，即使 Satora 接受付款也一樣。請勿再次付款；若已支付款項，請提供訂單編號聯絡支援。",
+  orderCouponReused: "優惠碼已使用過",
+  couponRejectedBody:
+    "這個帳號已兌換過此優惠碼，不能再次使用。Satora 回報這筆付款成功，但 AstraNote 沒有增加任何方案天數。請勿再次付款；若已支付 Bitcoin，請提供下方訂單編號聯絡支援。目前沒有自動退款。",
+  orderIdLabel: "訂單編號",
+  viewPaymentDetails: "查看詳情",
   billingData:
-    "付款紀錄保留帳號關聯、方案、金額、付款識別碼、狀態及必要時間，用於核對款項並防止重複入帳；不儲存付款服務的完整回應。",
+    "付款紀錄保留帳號關聯、方案、金額、付款識別碼、狀態及必要時間，用於核對款項並防止重複入帳。優惠碼使用紀錄僅保留代碼摘要、帳號關聯與訂單編號，不儲存優惠碼明碼，也不儲存付款服務的完整回應。",
 });
 Object.assign(I18N.ja, {
   noteContent: "ノート内容",
   filters: "絞り込み",
+  couponOnceTitle: "クーポンの利用",
+  couponOncePolicy:
+    "AstraNote が繰り返し利用可能と指定したコードを除き、同じクーポンは1アカウントにつき1回のみ利用できます。再利用では Satora が支払いを受け付けてもプラン期間は追加されません。再度支払わず、支払い済みの場合は注文番号を添えてサポートへご連絡ください。",
+  orderCouponReused: "このクーポンは使用済みです",
+  couponRejectedBody:
+    "このアカウントでは既に同じクーポンを利用しています。Satora は支払い成功と報告しましたが、AstraNote のプラン期間は追加されていません。再度支払わないでください。Bitcoin を支払い済みの場合は下の注文番号を添えてサポートへご連絡ください。自動返金は行われていません。",
+  orderIdLabel: "注文番号",
+  viewPaymentDetails: "詳細を見る",
   billingData:
-    "支払い記録には照合と重複付与の防止に必要なアカウント関連、プラン、金額、支払い識別子、状態、日時を保持します。決済サービスの応答全体は保存しません。",
+    "支払い記録には照合と重複付与の防止に必要なアカウント関連、プラン、金額、支払い識別子、状態、日時を保持します。クーポンの利用記録にはコードのダイジェスト、アカウント関連、注文番号のみを保存し、コードの平文や決済サービスの応答全体は保存しません。",
 });
 const state = {
   session: null,
@@ -1951,6 +1975,7 @@ function applyLocale() {
   if (selector) selector.value = state.language;
   applyPageSeo();
   renderPlanComparison();
+  if (state.billingOrders) renderOrders(state.billingOrders);
   $$("[data-retention-days]").forEach((option) => {
     option.textContent = `${option.dataset.retentionDays} ${t("days")}`;
   });
@@ -3386,6 +3411,7 @@ function billingStatusText(status) {
     expired: "orderExpired",
     created: "orderCreated",
     verification_error: "orderVerificationError",
+    coupon_reused: "orderCouponReused",
   }[status];
   return t(key || "orderVerificationError");
 }
@@ -3401,10 +3427,12 @@ function orderRow(order) {
   main.innerHTML = `<strong>AstraNote ${planDisplayName(order.plan)}</strong><small>${order.days} ${t("days")} · ${formatUtc(order.createdAt)}</small>`;
   const amount = document.createElement("span");
   amount.className = "order-amount";
-  amount.textContent = formatBitcoin(order.expectedSats);
+  amount.textContent = formatBitcoin(order.chargedSats ?? order.expectedSats);
   const status = document.createElement("span");
   status.className = `pill order-status order-status-${order.localStatus}`;
   status.textContent = billingStatusText(order.localStatus);
+  if (order.localStatus === "coupon_reused")
+    status.dataset.i18n = "orderCouponReused";
   row.append(main, amount, status);
   if (
     ["confirming", "pending"].includes(order.localStatus) &&
@@ -3416,18 +3444,29 @@ function orderRow(order) {
     link.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span>${t("continuePayment")}</span>`;
     row.append(link);
   }
+  if (order.localStatus === "coupon_reused") {
+    const link = document.createElement("a");
+    link.className = "btn";
+    link.href = `/plans/return?order_id=${encodeURIComponent(order.orderId)}`;
+    link.innerHTML = `<i class="fa-solid fa-circle-info" aria-hidden="true"></i><span data-i18n="viewPaymentDetails">${t("viewPaymentDetails")}</span>`;
+    row.append(link);
+  }
   return row;
 }
 
 async function loadOrders() {
   if (!state.session?.authenticated) return;
   const result = await api("/api/billing/orders");
+  state.billingOrders = result.orders;
+  renderOrders(state.billingOrders);
+}
+function renderOrders(orders) {
   const panel = $("#orders-panel");
   const list = $("#order-list");
   if (!panel || !list) return;
   panel.hidden = false;
-  list.replaceChildren(...result.orders.map(orderRow));
-  if (!result.orders.length)
+  list.replaceChildren(...orders.map(orderRow));
+  if (!orders.length)
     list.innerHTML = `<div class="empty-state"><p>${t("noPayments")}</p></div>`;
 }
 
@@ -3442,22 +3481,41 @@ async function renderBillingReturn(orderId, returnedPaymentId = "") {
       const result = await api(`/api/billing/status?${query}`);
       const order = result.order;
       const paid = order.localStatus === "paid";
-      const needsHelp = ["failed", "verification_error"].includes(
-        order.localStatus,
-      );
+      const couponReused = order.localStatus === "coupon_reused";
+      const needsHelp = [
+        "failed",
+        "verification_error",
+        "coupon_reused",
+      ].includes(order.localStatus);
       panel.innerHTML = "";
       const icon = document.createElement("div");
       icon.className = "billing-return-icon";
       icon.innerHTML = `<i class="fa-solid ${paid ? "fa-circle-check" : needsHelp ? "fa-circle-exclamation" : "fa-clock"}" aria-hidden="true"></i>`;
       const content = document.createElement("div");
+      content.className = "billing-return-content";
       const heading = document.createElement("h2");
       heading.textContent = paid
         ? t("paymentActivated")
         : billingStatusText(order.localStatus);
+      if (couponReused) heading.dataset.i18n = "orderCouponReused";
       const detail = document.createElement("p");
       detail.className = "muted";
       detail.textContent = `${formatBitcoin(order.expectedSats)} · ${order.days} ${t("days")}`;
+      if (couponReused) {
+        detail.dataset.i18n = "couponRejectedBody";
+        detail.textContent = t("couponRejectedBody");
+      }
       content.append(heading, detail);
+      if (couponReused) {
+        const reference = document.createElement("p");
+        const label = document.createElement("span");
+        label.dataset.i18n = "orderIdLabel";
+        label.textContent = t("orderIdLabel");
+        const id = document.createElement("code");
+        id.textContent = order.orderId;
+        reference.append(label, ": ", id);
+        content.append(reference);
+      }
       panel.append(icon, content);
       if (
         ["confirming", "pending"].includes(order.localStatus) &&
@@ -3472,7 +3530,7 @@ async function renderBillingReturn(orderId, returnedPaymentId = "") {
       } else if (needsHelp) {
         const support = document.createElement("a");
         support.className = "btn";
-        support.href = "mailto:astranote@nxlabtw.com";
+        support.href = `mailto:astranote@nxlabtw.com?subject=${encodeURIComponent(`AstraNote order ${order.orderId}`)}`;
         support.innerHTML = `<i class="fa-regular fa-envelope" aria-hidden="true"></i><span>astranote@nxlabtw.com</span>`;
         panel.append(support);
       }

@@ -118,6 +118,36 @@ parse. Keep an operator backup before upgrading or attempting a rollback.
 Downgrading to a JSON-only release will not see newly created SQLite orders.
 Do not delete `orders.sqlite` or change the established encryption secrets.
 
+### Coupon redemption limit
+
+From the coupon-limit release onward, each account may redeem a given coupon
+once, except for the operator-designated reusable code. Identity comes only from
+the authenticated Satora status response's `coupon.code`, trimmed and uppercased;
+browser-supplied coupon fields are never trusted. A missing or invalid identity
+on a discounted payment fails verification without consuming a redemption.
+
+SQLite retains only a 32-byte code digest, account-incarnation ID and first
+order ID in `coupon_redemptions`. A unique account/digest key is reserved after
+payment validation and before crediting. Retrying the same order is idempotent
+across restarts and crash windows; another order is marked `coupon_reused` with
+no plan time added. The charged amount and paid timestamp remain available for
+support. This local rejection does not reverse Satora's successful payment and
+does not issue a refund. Checkout and terms warn about this rule in all locales.
+
+Older compact records lack coupon identities, so historic redemptions cannot be
+reconstructed from those records alone; the limit is not retroactive. The
+operator exemption is matched by digest, not published in plaintext in source
+or the UI. For private exception integration tests, supply the code via
+`ASTRANOTE_TEST_REUSABLE_COUPON` to the test process only; production needs no new
+environment variable.
+
+The Satora response shape was confirmed with one isolated, fully discounted
+test invoice on 2026-09-05: `coupon` contained `code`, `type`, `value`; `status`
+was `paid`, `price` and `received_sats` were 0, and `acceptance_policy` was
+`coupon`. No Bitcoin was transferred and no production account was credited.
+Coupon-release QA passed 47 automated tests (including the privately supplied
+exception code) and checked all three locales at the eight viewport sizes below.
+
 ## Verification
 
 Run `npm ci` and `npm test`. Tests cover plan priority, server-side feature

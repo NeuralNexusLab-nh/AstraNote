@@ -47,6 +47,13 @@
           </p>
         </header>
 
+        <section
+          class="card billing-return reveal"
+          id="billing-return"
+          hidden
+          aria-live="polite"
+        ></section>
+
         <section class="plan-grid" data-i18n-aria-label="plansAria">
           <article class="card plan-card reveal" data-plan="free">
             <div class="plan-card-head">
@@ -253,6 +260,7 @@
             <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
             <p data-i18n="couponAbuseWarning"></p>
           </aside>
+          <p class="field-help" data-i18n="couponOncePolicy"></p>
           <p class="captcha-heading">
             <i class="fa-solid fa-user-check" aria-hidden="true"></i
             ><span data-i18n="humanVerification"></span>
@@ -277,13 +285,6 @@
             ><span data-i18n="continueToSatora"></span>
           </button>
         </section>
-
-        <section
-          class="card billing-return reveal"
-          id="billing-return"
-          hidden
-          aria-live="polite"
-        ></section>
 
         <section class="orders-panel reveal" id="orders-panel" hidden>
           <header class="panel-head">

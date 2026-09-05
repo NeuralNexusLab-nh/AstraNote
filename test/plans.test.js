@@ -29,6 +29,7 @@ test("plans page publishes the exact monthly products and 30-day rule", () => {
   assert.match(app, /unlimited: "Infinity"/u);
   assert.match(app, /濫用優惠碼/u);
   assert.match(html, /data-i18n="couponAbuseWarning"/u);
+  assert.match(html, /data-i18n="couponOncePolicy"/u);
 });
 
 test("used CAPTCHA tokens are reset after protected requests fail", () => {
@@ -71,6 +72,7 @@ test("plan UI includes backend-lock and deletion disclosures", () => {
   assert.match(terms, /locked by the\s+server from largest to smallest/u);
   assert.match(terms, /astranote@nxlabtw\.com/u);
   assert.match(terms, /禁止濫用優惠碼/u);
+  assert.match(terms, /data-i18n="couponOncePolicy"/u);
   assert.match(style, /\.brand-plan--admin/u);
   assert.match(dashboard, /id="note-limit-caption"/u);
   assert.match(style, /\.locked-warning\[hidden\]\s*\{\s*display:\s*none/u);

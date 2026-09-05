@@ -45,6 +45,9 @@ const PLAN_LOCK_DELETE_MS = 30 * 864e5;
 const BILLING_MONTH_OPTIONS = Object.freeze([1, 3, 6, 9, 12, 24, 36]);
 const ORDER_CREATION_WINDOW_MS = 60 * 60_000;
 const MAX_NEW_ORDERS_PER_ACCOUNT_WINDOW = 6;
+// Keep the operator's reusable coupon out of public UI and plaintext source.
+const REUSABLE_COUPON_DIGEST =
+  "cfac7fb4d85dc8c216061ee731a56b9169decda34575fc568f3ff34143d6ade0";
 const SATORA_BASE_URL = "https://satora.nxlabtw.com";
 const SATORA_RETURN_URL = "https://astranote.nxlabtw.com/plans/return";
 const PLAN_DEFINITIONS = Object.freeze({
@@ -865,6 +868,9 @@ function publicOrder(order) {
     paymentUrl: ["confirming", "pending"].includes(localStatus)
       ? order.paymentUrl || null
       : null,
+    chargedSats: Number.isSafeInteger(order.chargedSats)
+      ? order.chargedSats
+      : null,
     satoraPaymentId: order.satoraPaymentId || null,
     txid: order.txid || null,
     createdAt: order.createdAt,
@@ -905,6 +911,25 @@ function satoraPaidAmountMatchesOrder(status, order) {
     status.received_sats >= 0 &&
     status.received_sats === status.price
   );
+}
+function isReusableCouponDigest(digest) {
+  return digest === REUSABLE_COUPON_DIGEST;
+}
+function satoraCouponPolicy(status) {
+  const coupon = status?.coupon;
+  const discounted = Number(status?.discount_sats) > 0;
+  if (coupon == null || coupon === false || coupon?.applied === false)
+    return { valid: !discounted, digest: null, reusable: false };
+  if (
+    typeof coupon !== "object" ||
+    Array.isArray(coupon) ||
+    typeof coupon.code !== "string"
+  )
+    return { valid: false };
+  const code = coupon.code.trim().toUpperCase();
+  if (!/^[\x21-\x7e]{1,128}$/.test(code)) return { valid: false };
+  const digest = sha256(code);
+  return { valid: true, digest, reusable: isReusableCouponDigest(digest) };
 }
 async function satoraRequest(endpoint, options = {}) {
   const apiKey = process.env.SATORA_API_KEY;
@@ -1971,7 +1996,12 @@ app.post(
                 status: 409,
               },
             );
-          if (order.fulfilledAt || order.paymentUrl) return publicOrder(order);
+          if (
+            order.fulfilledAt ||
+            order.localStatus === "coupon_reused" ||
+            order.paymentUrl
+          )
+            return publicOrder(order);
         } else {
           if (
             orderStore.recentCount(
@@ -2084,7 +2114,7 @@ app.get(
           "payment_id_mismatch",
           "The returned payment does not match this order.",
         );
-      if (initial.fulfilledAt)
+      if (initial.fulfilledAt || initial.localStatus === "coupon_reused")
         return res.json({
           order: publicOrder(initial),
           supportEmail: SUPPORT_EMAIL,
@@ -2114,7 +2144,8 @@ app.get(
         const order = orderStore.get(orderId, accountId);
         if (!order)
           throw Object.assign(new Error("Order not found."), { status: 404 });
-        if (order.fulfilledAt) return order;
+        if (order.fulfilledAt || order.localStatus === "coupon_reused")
+          return order;
         const validIdentity = satoraStatusMatchesOrder(status, order);
         if (!validIdentity) {
           order.localStatus = "verification_error";
@@ -2130,6 +2161,14 @@ app.get(
           return order;
         }
         if (satoraPaidAmountMatchesOrder(status, order)) {
+          const coupon = satoraCouponPolicy(status);
+          if (!coupon.valid) {
+            order.localStatus = "verification_error";
+            order.failureCode = "coupon_identity_missing";
+            orderStore.put(order);
+            return order;
+          }
+          let couponAccepted = true;
           if (!order.fulfilledAt) {
             await withLock(`user:${username}`, async () => {
               const metadata = await loadMetadata(username);
@@ -2141,6 +2180,14 @@ app.get(
                 throw Object.assign(new Error("Account changed."), {
                   status: 409,
                 });
+              if (
+                coupon.digest &&
+                !coupon.reusable &&
+                !orderStore.claimCoupon(accountId, coupon.digest, order.orderId)
+              ) {
+                couponAccepted = false;
+                return;
+              }
               const now = Date.now();
               normalizeEntitlements(metadata, now);
               metadata.fulfilledOrders ||= [];
@@ -2153,13 +2200,17 @@ app.get(
               await refreshPlanState(username, metadata, now);
               await saveMetadata(username, metadata);
             });
-            order.fulfilledAt = utcNow();
+            if (couponAccepted) order.fulfilledAt = utcNow();
           }
           order.chargedSats = status.price;
-          order.localStatus = "paid";
+          order.localStatus = couponAccepted ? "paid" : "coupon_reused";
+          if (!couponAccepted) order.failureCode = "coupon_reused";
+          else delete order.failureCode;
           order.paidAt = status.paid_at || utcNow();
           order.txid = typeof status.txid === "string" ? status.txid : null;
+          order.paymentUrl = null;
           orderStore.put(order);
+          if (!couponAccepted) return order;
           await withLock(`user:${username}`, async () => {
             const metadata = await loadMetadata(username);
             if (!metadata || accountOrderId(metadata) !== accountId) return;
@@ -3265,6 +3316,8 @@ module.exports = {
     satoraPricingMatchesOrder,
     satoraStatusMatchesOrder,
     satoraPaidAmountMatchesOrder,
+    satoraCouponPolicy,
+    isReusableCouponDigest,
     closeOrderStore: () => {
       orderStore?.close();
       orderStore = null;

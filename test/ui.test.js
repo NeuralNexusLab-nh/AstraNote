@@ -56,6 +56,12 @@ test("every newly introduced feature has all three translations", () => {
     "batchAction",
     "recoveryTerms",
     "billingData",
+    "couponOnceTitle",
+    "couponOncePolicy",
+    "orderCouponReused",
+    "couponRejectedBody",
+    "orderIdLabel",
+    "viewPaymentDetails",
   ];
   for (const language of ["en", "zh-Hant", "ja"])
     for (const key of required)
