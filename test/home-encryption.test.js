@@ -24,8 +24,8 @@ test("home page compares every supported encryption mode and discloses visible t
   assert.match(app, /所有模式的筆記標題都不會加密/u);
   assert.match(app, /どの方式でもノートのタイトルは暗号化されません/u);
   assert.match(app, /AstraNote never stores or recovers it/u);
-  assert.equal((html.match(/class="matrix-value yes"/gu) || []).length, 11);
-  assert.equal((html.match(/class="matrix-value no"/gu) || []).length, 9);
+  assert.equal((html.match(/class="matrix-value yes"/gu) || []).length, 14);
+  assert.equal((html.match(/class="matrix-value no"/gu) || []).length, 10);
   assert.equal((html.match(/class="schybrid-flow"/gu) || []).length, 1);
   assert.match(app, /Browser-side encryption/u);
   assert.match(app, /瀏覽器端加密/u);

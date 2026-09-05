@@ -14,15 +14,18 @@ security-sensitive actions.
 - Animated, scroll-reactive starfield landing page
 - Dark and light themes synchronized to signed-in accounts
 - Plain-text lined note reader and editor
-- Free (128 KB/20 notes), Plus (256 KB/50 notes), and Pro (512 KB/no separate note-count limit)
-- Independent Plus and Pro day balances; Pro is consumed first and one month is always 30 days
+- Free (128 KB/20 notes), Plus (256 KB/50 notes), Pro (512 KB/Infinity notes), and Ultra (2 MB/Infinity notes)
+- Independent Ultra, Pro and Plus balances, consumed in that order; one month is always 30 days
+- Pro/Ultra note organization: pins, folders, tags, archive and batch actions
+- Ultra: one previous version and configurable trash retention (default 7 days), both included in storage
 - Satora Bitcoin checkout with server-side status verification, validated coupon
   totals, and idempotent fulfilment
-- Compact, minified payment records: completed orders retain only the ownership,
+- Compact, indexed SQLite payment records: completed orders retain only the ownership,
   product, amount, Satora reference, status, timestamps, and optional TXID needed
   for audit and idempotent fulfilment. New-order requests are limited per account
-  and IP, with a persistent six-new-orders-per-hour account check.
-- No encryption, AES-128-GCM, AES-256-GCM, AstraSecret, or AstraConfidential at note creation
+  and IP, with a persistent six-new-orders-per-hour account check and a 2.4 GB
+  database hard limit (new orders stop earlier to reserve update space).
+- No encryption, AES-128-GCM, AES-256-GCM, AstraSecret, AstraConfidential, or browser-only AstraZero at note creation
 - Every encrypted mode protects note content; titles remain plaintext for identification
 - Server-enforced overage locks and permanent deletion after 30 continuously locked days
 - Capacity for up to 75,000 registered accounts
@@ -93,7 +96,8 @@ data/
 ├── onlineTodayUsers.json
 ├── sessions.json
 ├── shares.json
-├── orders.json
+├── orders.sqlite       # indexed, compact payment ledger
+├── orders.json         # legacy migration source; cleared after migration
 ├── deletes.json
 └── {username}/
     ├── metadata.json
@@ -121,7 +125,7 @@ after no matching account directory remains.
   zero-knowledge.
 - AstraConfidential encrypts note content in the browser with AES-256-GCM. Its
   current version uses a case-sensitive 4–16 character PIN of printable ASCII
-  letters, numbers, and symbols and is available for new notes on Plus and Pro.
+  letters, numbers, and symbols and is available for new notes on Plus, Pro and Ultra.
   Notes created while an earlier release allowed a longer PIN remain unlockable
   with their original PIN.
   A memory-hard browser derivation combines the PIN with
@@ -146,6 +150,15 @@ after no matching account directory remains.
 - No application can guarantee the absence of every vulnerability. Keep Node.js
   and dependencies updated, protect the persistent volume, monitor resource
   usage, and review security reports responsibly.
+
+## Ultra upgrade
+
+See [the release and storage notes](docs/ultra-release.md) for exact prices,
+feature eligibility, restore/expiry rules, AstraZero protocol and its limits,
+ledger migration and capacity safeguards. AstraZero needs **no new environment
+variable**. Keep all existing production encryption secrets unchanged. Back up
+the persistent volume before deploying this format migration; a JSON-only
+rollback cannot read orders created in SQLite.
 
 ## Licence
 

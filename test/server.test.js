@@ -33,6 +33,7 @@ test.before(async () => {
 
 test.after(async () => {
   await new Promise((resolve) => server.close(resolve));
+  testables.closeOrderStore();
   const resolved = path.resolve(temporaryData);
   assert.ok(
     resolved.startsWith(path.resolve(os.tmpdir())),
@@ -100,9 +101,18 @@ test("today's activity counts each authenticated account once for any request", 
   );
   const headers = { cookie: `astranote_session=${token}` };
 
-  assert.equal((await fetch(`${baseUrl}/api/session`, { headers })).status, 200);
-  assert.equal((await fetch(`${baseUrl}/api/account`, { headers })).status, 200);
-  assert.equal((await fetch(`${baseUrl}/api/session`, { headers })).status, 200);
+  assert.equal(
+    (await fetch(`${baseUrl}/api/session`, { headers })).status,
+    200,
+  );
+  assert.equal(
+    (await fetch(`${baseUrl}/api/account`, { headers })).status,
+    200,
+  );
+  assert.equal(
+    (await fetch(`${baseUrl}/api/session`, { headers })).status,
+    200,
+  );
 
   const stats = await fetch(`${baseUrl}/api/stats`);
   assert.equal((await stats.json()).onlineToday, 1);
@@ -355,21 +365,11 @@ test("legacy and current client-encrypted factors stay versioned", () => {
   assert.equal(factor, "gJ3emVQ3OpFjVw2xktx7jlHA8N-uguxf4rGqbG1babs");
   assert.equal(
     factor,
-    testables.deriveVaultFactor(
-      metadata,
-      noteId,
-      clientSalt,
-      "b".repeat(64),
-    ),
+    testables.deriveVaultFactor(metadata, noteId, clientSalt, "b".repeat(64)),
   );
   assert.notEqual(
     factor,
-    testables.deriveVaultFactor(
-      metadata,
-      noteId,
-      clientSalt,
-      "c".repeat(64),
-    ),
+    testables.deriveVaultFactor(metadata, noteId, clientSalt, "c".repeat(64)),
   );
   const currentFactor = testables.deriveVaultFactor(
     metadata,
@@ -409,7 +409,10 @@ test("legacy and current client-encrypted factors stay versioned", () => {
     testables.isClientEncryptedMode(constants.CONFIDENTIAL_MODE),
     true,
   );
-  assert.equal(testables.isClientEncryptedMode(constants.ASTRA_SECRET_MODE), true);
+  assert.equal(
+    testables.isClientEncryptedMode(constants.ASTRA_SECRET_MODE),
+    true,
+  );
 });
 
 test("plan time uses Pro before Plus and Admin is unlimited", () => {
@@ -449,7 +452,10 @@ test("Satora coupon pricing is verified without weakening order totals", () => {
   };
 
   assert.equal(testables.satoraStatusMatchesOrder(paidWithCoupon, order), true);
-  assert.equal(testables.satoraPaidAmountMatchesOrder(paidWithCoupon, order), true);
+  assert.equal(
+    testables.satoraPaidAmountMatchesOrder(paidWithCoupon, order),
+    true,
+  );
   assert.equal(
     testables.satoraPaidAmountMatchesOrder(
       { ...paidWithCoupon, id: "other-payment-id-00000" },
@@ -499,7 +505,10 @@ test("Satora coupon pricing is verified without weakening order totals", () => {
     price: 6000,
     received_sats: 6000,
   };
-  assert.equal(testables.satoraPaidAmountMatchesOrder(regularPayment, order), true);
+  assert.equal(
+    testables.satoraPaidAmountMatchesOrder(regularPayment, order),
+    true,
+  );
 });
 
 test("finished orders retain only compact audit and fulfilment fields", () => {
@@ -527,6 +536,7 @@ test("finished orders retain only compact audit and fulfilment fields", () => {
   assert.deepEqual(compact, {
     orderId: fullOrder.orderId,
     username: "compact_user",
+    checkoutToken: fullOrder.checkoutToken,
     plan: "pro",
     months: 12,
     expectedSats: 72_000,
@@ -538,7 +548,7 @@ test("finished orders retain only compact audit and fulfilment fields", () => {
     txid: fullOrder.txid,
   });
   assert.equal("paymentUrl" in compact, false);
-  assert.equal("checkoutToken" in compact, false);
+  assert.equal(compact.checkoutToken, fullOrder.checkoutToken);
   assert.equal("idempotencyKey" in compact, false);
   assert.equal("productSnapshot" in compact, false);
   assert.equal("updatedAt" in compact, false);
@@ -546,6 +556,7 @@ test("finished orders retain only compact audit and fulfilment fields", () => {
   const pending = testables.compactOrder({
     ...fullOrder,
     localStatus: "pending",
+    fulfilledAt: null,
     lastError: null,
   });
   assert.equal(pending.checkoutToken, fullOrder.checkoutToken);

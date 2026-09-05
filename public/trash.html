@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Trash — AstraNote</title>
+    <link rel="icon" href="/asset/logo.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+    <script
+      src="https://nexacaptcha.nxlabtw.com/captcha/gravity.js"
+      defer
+    ></script>
+  </head>
+  <body data-page="trash">
+    <main class="page">
+      <div class="shell">
+        <header class="page-head reveal">
+          <div>
+            <p class="eyebrow">
+              <i class="fa-solid fa-trash-can" aria-hidden="true"></i
+              ><span data-i18n="recoveryFeature"></span>
+            </p>
+            <h1 data-i18n="trash"></h1>
+            <p class="muted" data-i18n="trashBody"></p>
+          </div>
+          <a class="btn" href="/notes"
+            ><i class="fa-solid fa-arrow-left" aria-hidden="true"></i
+            ><span data-i18n="notes"></span
+          ></a>
+        </header>
+        <section class="notes-panel reveal" data-i18n-aria-label="trash">
+          <div class="note-list" id="trash-list"></div>
+        </section>
+        <p class="field-help" data-i18n="previousQuota"></p>
+      </div>
+    </main>
+    <div
+      id="global-captcha"
+      inert
+      aria-hidden="true"
+      class="nexa-captcha captcha-parking"
+      data-captcha-type="gravity"
+      data-callback="onActionCaptchaComplete"
+    ></div>
+  </body>
+</html>

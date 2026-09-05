@@ -8,15 +8,20 @@
     <link rel="icon" href="/asset/logo.svg" />
     <link rel="stylesheet" href="/style.css" />
     <script src="/vendor/hash-wasm/argon2.umd.min.js" defer></script>
+    <script src="/zero.js" defer></script>
     <script src="/app.js" defer></script>
-    <script src="https://nexacaptcha.nxlabtw.com/captcha/gravity.js" defer></script>
+    <script
+      src="https://nexacaptcha.nxlabtw.com/captcha/gravity.js"
+      defer
+    ></script>
   </head>
   <body data-page="new-note">
     <main class="page">
       <div class="shell form-layout form-layout-single">
         <section class="form-card reveal">
           <p class="eyebrow">
-            <i class="fa-solid fa-note-sticky"></i><span data-i18n="newNoteEyebrow"></span>
+            <i class="fa-solid fa-note-sticky"></i
+            ><span data-i18n="newNoteEyebrow"></span>
           </p>
           <h1 data-i18n="newNote"></h1>
           <p class="muted" data-i18n="newNoteBody"></p>
@@ -32,7 +37,11 @@
                 <option value="aes-256-gcm-new">AES-256-GCM</option>
                 <option value="aes-128-gcm-new">AES-128-GCM</option>
                 <option value="astra-secret-v1">AstraSecret</option>
-                <option value="astra-confidential-v3" data-i18n="confidentialOption"></option>
+                <option
+                  value="astra-confidential-v3"
+                  data-i18n="confidentialOption"
+                ></option>
+                <option value="astra-zero-v1" data-i18n="zeroOption"></option>
               </select>
               <p class="field-help" data-i18n="encryptionHelp"></p>
             </div>
@@ -57,7 +66,10 @@
                 />
               </div>
               <div class="form-group">
-                <label for="vault-pin-confirm" data-i18n="confirmVaultPin"></label
+                <label
+                  for="vault-pin-confirm"
+                  data-i18n="confirmVaultPin"
+                ></label
                 ><input
                   id="vault-pin-confirm"
                   name="vaultPinConfirmation"
@@ -76,13 +88,22 @@
                 />
               </div>
               <div class="vault-explanation">
-                <h3><i class="fa-solid fa-user-shield"></i><span data-i18n="vaultTitle"></span></h3>
+                <h3>
+                  <i class="fa-solid fa-user-shield"></i
+                  ><span data-i18n="vaultTitle"></span>
+                </h3>
                 <p data-i18n="vaultExplanation"></p>
                 <p data-i18n="vaultPinWarning"></p>
-                <p><i class="fa-solid fa-share-nodes"></i><span data-i18n="vaultNoSharing"></span></p>
+                <p>
+                  <i class="fa-solid fa-share-nodes"></i
+                  ><span data-i18n="vaultNoSharing"></span>
+                </p>
               </div>
             </div>
-            <p class="captcha-heading"><i class="fa-solid fa-user-check"></i><span data-i18n="humanVerification"></span></p>
+            <p class="captcha-heading">
+              <i class="fa-solid fa-user-check"></i
+              ><span data-i18n="humanVerification"></span>
+            </p>
             <div class="captcha-box">
               <div
                 class="nexa-captcha"

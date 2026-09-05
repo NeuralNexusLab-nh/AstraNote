@@ -8,6 +8,7 @@
     <link rel="icon" href="/asset/logo.svg" />
     <link rel="stylesheet" href="/style.css" />
     <script src="/vendor/hash-wasm/argon2.umd.min.js" defer></script>
+    <script src="/zero.js" defer></script>
     <script src="/app.js" defer></script>
   </head>
   <body data-page="editor">
@@ -16,13 +17,14 @@
         <header class="page-head">
           <div class="editor-heading">
             <p class="eyebrow">
-              <i class="fa-solid fa-pen-to-square"></i><span data-i18n="editorEyebrow"></span>
+              <i class="fa-solid fa-pen-to-square"></i
+              ><span data-i18n="editorEyebrow"></span>
             </p>
             <input
               class="note-title-input"
               id="editor-name"
               maxlength="80"
-              aria-label="Note name"
+              data-i18n-aria-label="noteName"
             />
             <div class="note-stats">
               <span class="pill" id="editor-encryption"></span
@@ -45,7 +47,7 @@
           class="note-editor"
           id="editor-content"
           spellcheck="true"
-          aria-label="Note content"
+          data-i18n-aria-label="noteContent"
         ></textarea>
       </div>
     </main>

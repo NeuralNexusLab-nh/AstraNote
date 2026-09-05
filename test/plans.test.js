@@ -16,13 +16,15 @@ test("plans page publishes the exact monthly products and 30-day rule", () => {
   assert.doesNotMatch(app, /US\$|NT\$/u);
   assert.match(html, /<select id="purchase-months">/u);
   assert.deepEqual(
-    [...html.matchAll(/<option value="(\d+)">/gu)].map((match) => Number(match[1])),
+    [...html.matchAll(/<option value="(\d+)">/gu)].map((match) =>
+      Number(match[1]),
+    ),
     [1, 3, 6, 9, 12, 24, 36],
   );
   assert.match(app, /One subscription month always means 30 days/u);
   assert.match(app, /一個月固定指30天/u);
   assert.match(app, /1か月は常に30日/u);
-  assert.match(app, /prices = \{ plus: 2500, pro: 6000 \}/u);
+  assert.match(app, /prices = \{ plus: 2500, pro: 6000, ultra: 12500 \}/u);
   assert.match(app, /前往 Satora 付款/u);
   assert.match(app, /unlimited: "Infinity"/u);
   assert.match(app, /濫用優惠碼/u);
@@ -43,7 +45,7 @@ test("failed Satora invoice creation is not left in a creating state", () => {
   assert.match(server, /order\.localStatus = "failed"/u);
   assert.match(server, /billingCreateIpLimiter/u);
   assert.match(server, /billingCreateAccountLimiter/u);
-  assert.match(server, /JSON\.stringify\(compacted\)/u);
+  assert.match(server, /orderStore\.put\(order\)/u);
 });
 
 test("billing and encryption secrets remain server-only placeholders", () => {
@@ -56,9 +58,15 @@ test("billing and encryption secrets remain server-only placeholders", () => {
 
 test("plan UI includes backend-lock and deletion disclosures", () => {
   const app = fs.readFileSync(path.join(ROOT, "public", "app.js"), "utf8");
-  const dashboard = fs.readFileSync(path.join(ROOT, "public", "dashboard.html"), "utf8");
+  const dashboard = fs.readFileSync(
+    path.join(ROOT, "public", "dashboard.html"),
+    "utf8",
+  );
   const style = fs.readFileSync(path.join(ROOT, "public", "style.css"), "utf8");
-  const terms = fs.readFileSync(path.join(ROOT, "public", "terms.html"), "utf8");
+  const terms = fs.readFileSync(
+    path.join(ROOT, "public", "terms.html"),
+    "utf8",
+  );
   assert.match(app, /持續鎖定滿30天後會永久刪除/u);
   assert.match(terms, /locked by the\s+server from largest to smallest/u);
   assert.match(terms, /astranote@nxlabtw\.com/u);

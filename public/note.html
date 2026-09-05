@@ -8,8 +8,12 @@
     <link rel="icon" href="/asset/logo.svg" />
     <link rel="stylesheet" href="/style.css" />
     <script src="/vendor/hash-wasm/argon2.umd.min.js" defer></script>
+    <script src="/zero.js" defer></script>
     <script src="/app.js" defer></script>
-    <script src="https://nexacaptcha.nxlabtw.com/captcha/gravity.js" defer></script>
+    <script
+      src="https://nexacaptcha.nxlabtw.com/captcha/gravity.js"
+      defer
+    ></script>
   </head>
   <body data-page="note">
     <main class="page">
@@ -39,8 +43,7 @@
             <div class="share-url" id="share-url-row" hidden>
               <input id="share-url" readonly aria-label="Share URL" />
               <button class="btn" type="button" id="copy-share-url">
-                <i class="fa-solid fa-copy"></i
-                ><span data-i18n="copy"></span>
+                <i class="fa-solid fa-copy"></i><span data-i18n="copy"></span>
               </button>
             </div>
             <div class="note-actions">
@@ -66,16 +69,75 @@
             </p>
           </div>
         </header>
-        <section class="card locked-note-panel reveal" id="locked-note-panel" hidden>
-          <span class="locked-note-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></span>
-          <div><h2 data-i18n="noteLockedTitle"></h2><p class="muted" data-i18n="noteLockedBody"></p><p id="locked-delete-date"></p><p><a href="mailto:astranote@nxlabtw.com">astranote@nxlabtw.com</a></p></div>
-          <div class="locked-note-actions"><a class="btn btn-primary" href="/plans"><i class="fa-solid fa-arrow-up-right-dots" aria-hidden="true"></i><span data-i18n="viewPlans"></span></a><button class="btn btn-danger" id="locked-delete-note" type="button"><i class="fa-solid fa-trash" aria-hidden="true"></i><span data-i18n="delete"></span></button></div>
+        <section
+          class="card locked-note-panel reveal"
+          id="locked-note-panel"
+          hidden
+        >
+          <span class="locked-note-icon"
+            ><i class="fa-solid fa-lock" aria-hidden="true"></i
+          ></span>
+          <div>
+            <h2 data-i18n="noteLockedTitle"></h2>
+            <p class="muted" data-i18n="noteLockedBody"></p>
+            <p id="locked-delete-date"></p>
+            <p>
+              <a href="mailto:astranote@nxlabtw.com">astranote@nxlabtw.com</a>
+            </p>
+          </div>
+          <div class="locked-note-actions">
+            <a class="btn btn-primary" href="/plans"
+              ><i class="fa-solid fa-arrow-up-right-dots" aria-hidden="true"></i
+              ><span data-i18n="viewPlans"></span></a
+            ><button
+              class="btn btn-danger"
+              id="locked-delete-note"
+              type="button"
+            >
+              <i class="fa-solid fa-trash" aria-hidden="true"></i
+              ><span data-i18n="delete"></span>
+            </button>
+          </div>
+        </section>
+        <div class="note-secondary-actions">
+          <button type="button" class="btn" id="organize-note" hidden>
+            <i class="fa-solid fa-folder-tree" aria-hidden="true"></i
+            ><span data-i18n="organize"></span>
+          </button>
+          <button type="button" class="btn" id="previous-note" hidden>
+            <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i
+            ><span data-i18n="previousVersion"></span>
+          </button>
+        </div>
+        <section
+          class="card previous-panel"
+          id="previous-panel"
+          hidden
+          aria-labelledby="previous-heading"
+        >
+          <header class="panel-head">
+            <h2 id="previous-heading" data-i18n="previousVersion"></h2>
+            <button class="btn" type="button" id="close-previous">
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i
+              ><span data-i18n="close"></span>
+            </button>
+          </header>
+          <h3 id="previous-title"></h3>
+          <p class="muted" id="previous-time"></p>
+          <p class="field-help" data-i18n="previousHelp"></p>
+          <div class="note-paper previous-content" id="previous-content"></div>
+          <button class="btn btn-primary" type="button" id="restore-previous">
+            <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i
+            ><span data-i18n="restoreVersion"></span>
+          </button>
         </section>
         <article class="note-paper reveal" id="note-content"></article>
       </div>
     </main>
     <div
       id="global-captcha"
+      inert
+      aria-hidden="true"
       class="nexa-captcha captcha-parking"
       data-captcha-type="gravity"
       data-callback="onActionCaptchaComplete"

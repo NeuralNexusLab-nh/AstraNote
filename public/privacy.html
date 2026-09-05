@@ -14,20 +14,27 @@
         <header class="page-head reveal">
           <div>
             <p class="eyebrow">
-              <i class="fa-solid fa-shield-halved"></i><span data-i18n="privacyEyebrow"></span>
+              <i class="fa-solid fa-shield-halved"></i
+              ><span data-i18n="privacyEyebrow"></span>
             </p>
             <h1 data-i18n="privacy"></h1>
             <p class="muted" data-i18n="legalUpdated"></p>
           </div>
         </header>
+        <section class="legal-feature-note">
+          <h2 data-i18n="recoveryTermsTitle"></h2>
+          <p data-i18n="recoveryDetail"></p>
+          <p data-i18n="billingData"></p>
+          <p data-i18n="zeroExplanation"></p>
+          <p data-i18n="zeroWarning"></p>
+        </section>
         <div data-lang="en">
           <p class="legal-note">
             This policy explains how the individual operator using the
             unregistered NeuralNexusLab brand handles personal data through
             AstraNote. Contact:
-            <a href="mailto:astranote@nxlabtw.com"
-              >astranote@nxlabtw.com</a
-            >. AstraNote does not sell personal data or use advertising or
+            <a href="mailto:astranote@nxlabtw.com">astranote@nxlabtw.com</a>.
+            AstraNote does not sell personal data or use advertising or
             analytics trackers.
           </p>
           <h2>1. Data controller and scope</h2>
@@ -53,10 +60,10 @@
             <li>
               <strong>Content:</strong> note names and content, encryption
               selection, update time, and optional share token. Titles remain
-              plaintext in every mode. Encrypted content is stored as
-              ciphertext with nonce and authentication tag. AstraConfidential
-              and legacy SCHybrid notes also store a random client salt; the
-              PIN and final browser key are not stored.
+              plaintext in every mode. Encrypted content is stored as ciphertext
+              with nonce and authentication tag. AstraConfidential and legacy
+              SCHybrid notes also store a random client salt; the PIN and final
+              browser key are not stored.
             </li>
             <li>
               <strong>Security:</strong> rate-limit events, CAPTCHA verification
@@ -92,12 +99,12 @@
           <h2>5. Human verification</h2>
           <p>
             For registration, login, note creation, note deletion, and permanent
-            account deletion,
-            the browser loads a CAPTCHA from <code>nexacaptcha.nxlabtw.com</code>. AstraNote
-            sends the resulting verification ID and one-time response token to
-            NexaCAPTCHA’s fixed server verification endpoint. The token is
-            intended to work once and expire after five minutes. Do not place
-            personal information in the CAPTCHA response field.
+            account deletion, the browser loads a CAPTCHA from
+            <code>nexacaptcha.nxlabtw.com</code>. AstraNote sends the resulting
+            verification ID and one-time response token to NexaCAPTCHA’s fixed
+            server verification endpoint. The token is intended to work once and
+            expire after five minutes. Do not place personal information in the
+            CAPTCHA response field.
           </p>
           <h2>6. Disclosure</h2>
           <p>
@@ -115,14 +122,14 @@
             Notes exceeding the effective plan are locked by the server; a note
             continuously locked for 30 days is permanently deleted without a
             service backup. Unlocking it before that time clears the deletion
-            schedule.
-            Confirmed account deletion immediately removes the live account
-            directory and notes and revokes its sessions and sharing links; it
-            cannot be cancelled or restored, and AstraNote has no service
-            backup. Individual deleted notes are likewise removed immediately.
-            Records may be retained only where required by law or necessary for
-            legal claims. Session records expire no later than twenty-eight days
-            after login. Daily-login uniqueness records reset at UTC 00:00.
+            schedule. Confirmed account deletion immediately removes the live
+            account directory and notes and revokes its sessions and sharing
+            links; it cannot be cancelled or restored, and AstraNote has no
+            service backup. Individual deleted notes are likewise removed
+            immediately. Records may be retained only where required by law or
+            necessary for legal claims. Session records expire no later than
+            twenty-eight days after login. Daily-login uniqueness records reset
+            at UTC 00:00.
           </p>
           <h2>8. Security</h2>
           <p>
@@ -133,11 +140,10 @@
             can technically be decrypted by the Operator. AstraConfidential and
             legacy SCHybrid encrypt content in the browser using the user's PIN
             and server-assisted protection, but they are not a zero-knowledge
-            guarantee and still require trust in the application and server while
-            unlocking.
-            No system is completely secure. Users should use a unique password,
-            avoid keeping the only copy of irreplaceable material in the
-            service, and retain independent copies.
+            guarantee and still require trust in the application and server
+            while unlocking. No system is completely secure. Users should use a
+            unique password, avoid keeping the only copy of irreplaceable
+            material in the service, and retain independent copies.
           </p>
           <h2>9. Children and guardians</h2>
           <p>
@@ -154,10 +160,10 @@
             Subject to applicable law, you may request access, a copy,
             correction, cessation of processing, restriction, objection, or
             deletion. Settings provide correction of display name, language, and
-            theme, and an immediate permanent account-deletion control. Requests may be sent to the
-            contact email. Identity may be verified using account credentials or
-            other proportionate information. You may also complain to a
-            competent data-protection or consumer authority.
+            theme, and an immediate permanent account-deletion control. Requests
+            may be sent to the contact email. Identity may be verified using
+            account credentials or other proportionate information. You may also
+            complain to a competent data-protection or consumer authority.
           </p>
           <h2>11. International access</h2>
           <p>
@@ -202,15 +208,18 @@
             <li>
               <strong>內容：</strong
               >筆記名稱、內容、加密選項、更新時間及選擇性分享代碼。所有模式的筆記名稱都會保持明文；加密內容會以密文、Nonce
-              及驗證標籤保存。AstraConfidential 與舊版 SCHybrid 另保存隨機用戶端 Salt，但不保存 PIN
-              或最終瀏覽器金鑰。
+              及驗證標籤保存。AstraConfidential 與舊版 SCHybrid 另保存隨機用戶端
+              Salt，但不保存 PIN 或最終瀏覽器金鑰。
             </li>
             <li>
               <strong>安全：</strong>速率限制事件、CAPTCHA 驗證 ID 與
               Token，以及防止濫用所合理必要的錯誤及運作紀錄。
             </li>
             <li>
-              <strong>方案與付款：</strong>Plus 與 Pro 剩餘時間、本地訂單 ID、方案與月數、整數 satoshi 金額、Satora payment ID 與付款網址、狀態、TXID 及交付時間。Satora API 憑證不會傳送至瀏覽器。
+              <strong>方案與付款：</strong>Plus 與 Pro 剩餘時間、本地訂單
+              ID、方案與月數、整數 satoshi 金額、Satora payment ID
+              與付款網址、狀態、TXID 及交付時間。Satora API
+              憑證不會傳送至瀏覽器。
             </li>
           </ul>
           <h2>三、目的與依據</h2>
@@ -227,10 +236,10 @@
           <h2>五、人類驗證</h2>
           <p>
             註冊、登入、新增筆記、刪除筆記及永久刪除帳號時，瀏覽器會從
-            <code>nexacaptcha.nxlabtw.com</code> 載入 CAPTCHA。AstraNote 會將驗證 ID
-            及一次性 Token 傳至 NexaCAPTCHA 固定的後端驗證端點。Token
-            原則上僅可使用一次並於五分鐘後失效。請勿在 CAPTCHA
-            欄位輸入個人資料。
+            <code>nexacaptcha.nxlabtw.com</code> 載入 CAPTCHA。AstraNote
+            會將驗證 ID 及一次性 Token 傳至 NexaCAPTCHA
+            固定的後端驗證端點。Token 原則上僅可使用一次並於五分鐘後失效。請勿在
+            CAPTCHA 欄位輸入個人資料。
           </p>
           <h2>六、揭露</h2>
           <p>
@@ -250,8 +259,9 @@
           <p>
             AstraNote 採用密碼雜湊、具認證加密、不透明 Session、CSRF 與 Origin
             檢查、後端 CAPTCHA
-            驗證、速率限制、權限確認、嚴格安全標頭、原子寫入及請求大小限制。伺服器管理的 AES
-            模式在技術上可由營運者解密；AstraConfidential 與舊版 SCHybrid 會用 PIN
+            驗證、速率限制、權限確認、嚴格安全標頭、原子寫入及請求大小限制。伺服器管理的
+            AES 模式在技術上可由營運者解密；AstraConfidential 與舊版 SCHybrid
+            會用 PIN
             與伺服器端保護在瀏覽器加密內容，但並非零知識保證，解鎖時仍須信任應用程式與伺服器。筆記名稱維持明文。任何系統均無法保證絕對安全；請使用獨立密碼、勿將不可取代資料只存於本服務，並自行保存副本。
           </p>
           <h2>九、兒童與法定代理人</h2>

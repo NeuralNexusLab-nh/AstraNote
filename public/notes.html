@@ -8,7 +8,10 @@
     <link rel="icon" href="/asset/logo.svg" />
     <link rel="stylesheet" href="/style.css" />
     <script src="/app.js" defer></script>
-    <script src="https://nexacaptcha.nxlabtw.com/captcha/gravity.js" defer></script>
+    <script
+      src="https://nexacaptcha.nxlabtw.com/captcha/gravity.js"
+      defer
+    ></script>
   </head>
   <body data-page="notes">
     <main class="page">
@@ -16,7 +19,8 @@
         <header class="page-head reveal">
           <div>
             <p class="eyebrow">
-              <i class="fa-solid fa-box-archive"></i><span data-i18n="notesEyebrow"></span>
+              <i class="fa-solid fa-box-archive"></i
+              ><span data-i18n="notesEyebrow"></span>
             </p>
             <h1 data-i18n="allNotes"></h1>
             <p class="muted" data-i18n="allNotesBody"></p>
@@ -25,6 +29,59 @@
             ><i class="fa-solid fa-plus"></i><span data-i18n="createNote"></span
           ></a>
         </header>
+        <div class="notes-toolbar card reveal" id="notes-toolbar" hidden>
+          <details class="note-filter-details">
+            <summary>
+              <i class="fa-solid fa-filter" aria-hidden="true"></i
+              ><span data-i18n="filters"></span>
+            </summary>
+            <div class="note-filters">
+              <label
+                ><span data-i18n="notes"></span
+                ><select id="archive-filter">
+                  <option value="active" data-i18n="activeNotes"></option>
+                  <option
+                    value="archived"
+                    data-i18n="archivedNotes"
+                  ></option></select
+              ></label>
+              <label
+                ><span data-i18n="folder"></span
+                ><select id="folder-filter">
+                  <option value="" data-i18n="allFolders"></option></select
+              ></label>
+              <label
+                ><span data-i18n="tags"></span
+                ><select id="tag-filter">
+                  <option value="" data-i18n="allTags"></option></select
+              ></label>
+            </div>
+          </details>
+          <div class="batch-controls" id="batch-controls">
+            <label class="selection-label"
+              ><input type="checkbox" id="select-all" /><span
+                data-i18n="selectAll"
+              ></span
+            ></label>
+            <span class="muted" id="selected-count" aria-live="polite"></span>
+            <button class="btn" id="batch-organize" type="button" disabled>
+              <i class="fa-solid fa-folder-tree" aria-hidden="true"></i
+              ><span data-i18n="organize"></span>
+            </button>
+          </div>
+        </div>
+        <p
+          class="field-help"
+          id="organization-upgrade"
+          data-i18n="organizeUpgrade"
+          hidden
+        ></p>
+        <div class="note-secondary-actions">
+          <a class="btn" id="trash-link" href="/trash" hidden
+            ><i class="fa-solid fa-trash-can" aria-hidden="true"></i
+            ><span data-i18n="trash"></span
+          ></a>
+        </div>
         <section class="notes-panel reveal">
           <div class="note-list" id="note-list">
             <div class="empty-state" data-i18n="loading"></div>
@@ -34,6 +91,8 @@
     </main>
     <div
       id="global-captcha"
+      inert
+      aria-hidden="true"
       class="nexa-captcha captcha-parking"
       data-captcha-type="gravity"
       data-callback="onActionCaptchaComplete"
