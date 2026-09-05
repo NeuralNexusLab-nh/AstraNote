@@ -222,7 +222,7 @@ test("one coupon per account, replay-safe; different codes and different account
     assert.equal(stored.length, 2);
     assert.ok(
       stored.every(
-        (row) => Buffer.isBuffer(row.coupon) && row.coupon.length === 32,
+        (row) => row.coupon instanceof Uint8Array && row.coupon.length === 32,
       ),
     );
   } finally {

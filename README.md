@@ -52,7 +52,9 @@ AstraNote/
 
 ## Run locally
 
-Requires Node.js 20 or newer.
+Requires Node.js 24.x, including its built-in SQLite module. The package engine
+setting selects this runtime on Zeabur; no additional environment variable or
+SQLite native-addon build is needed.
 
 ```sh
 npm install

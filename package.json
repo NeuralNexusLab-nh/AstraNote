@@ -10,13 +10,12 @@
     "test": "node --test"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": "24.x"
   },
   "license": "Apache-2.0",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.0.0",
     "argon2": "^0.44.0",
-    "better-sqlite3": "^12.11.1",
     "express": "^5.1.0",
     "express-rate-limit": "^8.0.1",
     "hash-wasm": "^4.12.0",

@@ -86,6 +86,10 @@ References: [Web Crypto](https://www.w3.org/TR/WebCryptoAPI/),
 
 Payment records now use `data/orders.sqlite`, not a rewritten global JSON
 array. There is no external database service or extra environment setting.
+The ledger uses Node.js 24's built-in SQLite, with `engines.node` pinned to
+`24.x` for Zeabur. It no longer depends on a separately installed SQLite
+native addon. Existing SQLite files, account bindings, fulfilment receipts and
+coupon reservations retain the same schema and need no conversion or reset.
 Indexes serve a scoped order ID, checkout attempt, recent history (50 items)
 and the durable six-new-orders-per-hour account limit.
 
@@ -149,6 +153,14 @@ Coupon-release QA passed 47 automated tests (including the privately supplied
 exception code) and checked all three locales at the eight viewport sizes below.
 
 ## Verification
+
+SQLite startup fix (2026-09-05): a clean `npm ci --ignore-scripts` installation
+passed all 49 tests with the private reusable-coupon test enabled. Production-mode
+startup returned HTTP 200 for `/api/health`, `/` and `/plans` using isolated data.
+A database created with the previous driver was opened, updated and integrity
+checked with built-in SQLite, then reopened by the previous driver; paid records,
+checkout identities and coupon claims were preserved. A regression test also
+starts the standalone ledger with all non-builtin dependency imports rejected.
 
 Run `npm ci` and `npm test`. Tests cover plan priority, server-side feature
 gating and ownership, ciphertext validation, actual AstraZero round trips,
