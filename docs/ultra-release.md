@@ -7,7 +7,7 @@
 | Free  |          128 KB |           20 |          Free |
 | Plus  |          256 KB |           50 |      0.000025 |
 | Pro   |          512 KB |     Infinity |      0.000060 |
-| Ultra |            2 MB |     Infinity |      0.000125 |
+| Ultra |         1024 KB |     Infinity |      0.000125 |
 | Admin |        Infinity |     Infinity |  Not for sale |
 
 KB and MB are decimal (1,000 / 1,000,000 bytes). Every file in the account
@@ -24,15 +24,18 @@ new AstraZero requires Pro or above.
 
 ## Organization and recovery
 
-Pro, Ultra and Admin can pin notes, assign a flat folder label and up to eight
-tags, archive notes, and apply operations to at most 100 selected notes per
-request. Folder and tag names are unencrypted metadata, never filesystem paths.
-Archived notes count toward note count and storage and remain accessible via
-the archive filter after downgrade; changing organization requires Pro or above.
+Plus, Pro, Ultra and Admin can pin/unpin, archive/unarchive, and apply operations to
+at most 100 selected notes per request. Folders and tags are retired: legacy
+classification fields are removed when account metadata is next saved, without
+deleting note content. Every plan can search titles locally on the loaded list.
+Normal view includes all unarchived notes and pinned notes, even when archived;
+pins sort first. Explicit pinned/archive filters narrow that view. Archived
+notes still count toward note count and storage. Changing organization requires
+Plus or above, but existing classifications remain visible after downgrade.
 
 Ultra and Admin save exactly one previous version inside the current note JSON.
 A save replaces this snapshot; it never nests snapshots. Saving preflights the
-combined size before replacing the file atomically. Browser saves carry a
+combined size before replacing the file atomically. Client saves carry a
 revision to detect conflicting edits. Restoring replaces the current title and
 content and clears the snapshot (no unlimited undo/redo chain). Encrypted
 snapshots retain ciphertext and their original format.
@@ -56,7 +59,7 @@ These facilities do not replace independent backups.
 Identifier: `astra-zero-v1`. No additional environment variable.
 Existing AES/AstraSecret/AstraConfidential/legacy SCHybrid secrets are unchanged.
 
-The browser generates a fresh 256-bit content key for every new note using Web
+The client generates a fresh 256-bit content key for every new note using Web
 Crypto. It encrypts UTF-8 JSON content with AES-256-GCM (random 96-bit IV,
 128-bit tag). The content key is wrapped with AES-256-GCM under a key derived
 from the user PIN and a fresh 32-byte random salt using Argon2id
@@ -74,10 +77,10 @@ recommended. No recovery or sharing is provided for AstraZero.
 
 Security limits: encrypted files permit offline PIN guesses, so a 4-character
 PIN is not high-entropy protection. Public identifiers add context, not secret
-entropy. A compromised browser, extension, device, or delivered page script can
+entropy. A compromised client, extension, device, or delivered page script can
 steal plaintext/PIN during use. The protocol is tested, not independently
 audited; do not promise invulnerability or absolute superiority over other
-trust models. Titles, folders and tags remain plaintext.
+trust models. Titles remain plaintext.
 
 References: [Web Crypto](https://www.w3.org/TR/WebCryptoAPI/),
 [hash-wasm](https://github.com/Daninet/hash-wasm).
@@ -127,7 +130,7 @@ Do not delete `orders.sqlite` or change the established encryption secrets.
 From the coupon-limit release onward, each account may redeem a given coupon
 once, except for the operator-designated reusable code. Identity comes only from
 the authenticated Satora status response's `coupon.code`, trimmed and uppercased;
-browser-supplied coupon fields are never trusted. A missing or invalid identity
+client-supplied coupon fields are never trusted. A missing or invalid identity
 on a discounted payment fails verification without consuming a redemption.
 
 SQLite retains only a 32-byte code digest, account-incarnation ID and first
@@ -176,7 +179,68 @@ no known vulnerabilities. Edge preview QA covered EN, Traditional Chinese and
 Japanese plan comparisons at 1440×900, 1024×768, 768×1024, 430×932, 390×844,
 360×740, 320×568 and 844×390 without page-level horizontal overflow. Notes,
 dashboard, settings, trash, and the home page were also checked at these sizes.
-Dark/light layouts, mobile-menu close, folder filtering, batch organization,
+Dark/light layouts, mobile-menu close, legacy organization, batch organization,
 and AstraZero unlock/edit/save/reopen/encrypted-previous-version flows were
 checked with isolated preview data. This is functional QA, not an independent
 cryptographic audit or a real Satora payment settlement test.
+
+## Notes redesign and expiry locks (2026-09-05)
+
+Paid plan cards are Plus, Pro, Ultra in one desktop row, with Pro emphasized;
+Free is an included panel below. Settings use a full-width plan panel followed
+by paired preferences, one Save button outside the preference panels at the
+bottom right, and priority assistance last inside the plan panel. Selection
+uses direct pin/archive/delete buttons beside Select all, not an action picker.
+Plans, checkout, settings and the three-language terms disclose expiry locking.
+AstraZero is described as client-generated, PIN-protected per-note keys with no
+reliance on server encryption environment variables—not as a key that never
+exists or an invulnerability guarantee. Plan eligibility is unchanged.
+
+Follow-up choices: organization is now included in Plus as well as Pro, Ultra
+and Admin; AstraZero remains Pro and above, and recovery remains Ultra/Admin.
+Ultra storage is 1024 KB (1,024,000 bytes), with its existing BTC price unchanged.
+The plan comparison lists organization before AstraZero. Monthly price cards
+also show approximate US$2 / US$5 / US$10, using a disclosed, fixed illustrative
+US$80,000/BTC rate, not a live feed or a dollar-denominated checkout. No external
+exchange-rate service is called. Review these estimates when prices change.
+The compact AstraZero note links to the home encryption section, not privacy.
+
+Storage locks include trash, largest first; count-only overage never locks
+trash merely to reduce active count. Locked rows provide title, size, status
+and deadlines, deletion and upgrade. Backend routes deny content/ciphertext,
+decryption factors, edits, sharing (including old links), pin/archive changes,
+trash movement/restoration, and previous-version access/restoration. An upgrade
+only unlocks what fits its new allowance; trash retains its original expiry.
+Client copies already downloaded/decrypted cannot be recalled.
+
+New integration coverage expires real entitlements, verifies denied routes
+leave files intact, fulfills an isolated mocked payment through the billing
+routes, and checks unlock plus original AES plaintext/previous-version
+recovery. Every legacy/current client format retains its ciphertext and
+derivation parameters through lock/unlock. Locked trash and CAPTCHA-protected
+permanent deletion are exercised. Pure UI tests cover search, sorting,
+filters, plan order, support placement, legal locales and translated warnings.
+
+The unified settings endpoint persists theme, language, public display name and
+eligible trash retention together. Retention validation was moved from the
+legacy deletion-cancellation route to settings; changing it leaves existing
+trash deadlines unchanged. Expired plans cannot update the retention policy.
+
+After the status endpoint confirms both `paid` and `fulfilledAt`, the return
+page reloads once to refresh account entitlements and navigation. A per-order
+history-state marker prevents reload loops; blocked history falls back to the
+clean plans URL. Pending, unverified and coupon-rejected payments never trigger
+this refresh or any client-side crediting.
+
+Final redesign QA: 63 automated tests pass with no skips (including the private
+coupon exception). Plan cards in EN, Traditional Chinese and Japanese were
+rechecked at all eight viewport sizes above with no horizontal overflow and
+46px-high purchase buttons. Settings were saved and reloaded with all four
+preferences retained; the sole Save button stays outside the panels and at
+least 48px high at every tested width. Home encryption wording, comparison-row
+alignment, direct batch actions, dark/light layouts and the home-section link
+were inspected in isolated browser previews, without changing production data.
+Existing Ultra accounts receive the 1024 KB allowance from the backend too;
+an integration fixture above that reduced allowance is locked without changing
+its note file. Restarting the original local preview also confirmed 1024 KB
+on both open dashboard tabs, rather than only changing the plan-card wording.

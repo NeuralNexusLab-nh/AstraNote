@@ -12,8 +12,16 @@ test("plans page publishes the exact monthly products and 30-day rule", () => {
   const app = fs.readFileSync(path.join(ROOT, "public", "app.js"), "utf8");
   assert.match(html, /0\.000025 BTC/u);
   assert.match(html, /0\.000060 BTC/u);
-  assert.doesNotMatch(html, /\bsats\b|US\$|NT\$/iu);
-  assert.doesNotMatch(app, /US\$|NT\$/u);
+  assert.doesNotMatch(html, /\bsats\b|NT\$/iu);
+  assert.doesNotMatch(app, /NT\$/u);
+  for (const plan of ["plus", "pro", "ultra"])
+    assert.ok(html.includes(`data-i18n="${plan}UsdEstimate"`));
+  assert.ok(html.includes('data-i18n="usdEstimateNote"'));
+  assert.equal((html.match(/class="plan-price-estimate"/g) || []).length, 3);
+  assert.match(app, /About US\$2 \/ month/u);
+  assert.match(app, /About US\$5 \/ month/u);
+  assert.match(app, /About US\$10 \/ month/u);
+  assert.match(app, /not a live exchange rate/u);
   assert.match(html, /<select id="purchase-months">/u);
   assert.deepEqual(
     [...html.matchAll(/<option value="(\d+)">/gu)].map((match) =>

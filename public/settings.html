@@ -28,46 +28,50 @@
         </header>
         <form id="settings-form" class="settings-grid">
           <section class="card plan-settings-card reveal">
-            <h3 class="feature-heading">
+            <h2 class="feature-heading">
               <span class="feature-icon"
                 ><i
                   class="fa-solid fa-layer-group"
                   aria-hidden="true"
                 ></i></span
               ><span data-i18n="subscription"></span>
-            </h3>
-            <div class="settings-plan-row">
-              <span data-i18n="currentPlan"></span
-              ><strong id="settings-plan">—</strong>
+            </h2>
+            <div class="settings-plan-balances">
+              <div class="settings-plan-row">
+                <span data-i18n="currentPlan"></span
+                ><strong id="settings-plan">—</strong>
+              </div>
+              <div class="settings-plan-row">
+                <span>Ultra</span><strong id="settings-ultra-days">—</strong>
+              </div>
+              <div class="settings-plan-row">
+                <span>Pro</span><strong id="settings-pro-days">—</strong>
+              </div>
+              <div class="settings-plan-row">
+                <span>Plus</span><strong id="settings-plus-days">—</strong>
+              </div>
             </div>
-            <div class="settings-plan-row">
-              <span>Ultra</span><strong id="settings-ultra-days">—</strong>
-            </div>
+            <p class="field-help" data-i18n="expiryLockNotice"></p>
+            <a class="btn btn-primary" href="/plans"
+              ><i class="fa-solid fa-rotate" aria-hidden="true"></i
+              ><span data-i18n="managePlan"></span
+            ></a>
             <a
               class="btn"
               id="priority-support"
               href="mailto:astranote@nxlabtw.com?subject=AstraNote%20Ultra%20support"
               hidden
-              ><i class="fa-solid fa-headset" aria-hidden="true"></i
-              ><span data-i18n="prioritySupport"></span
-            ></a>
-            <div class="settings-plan-row">
-              <span>Pro</span><strong id="settings-pro-days">—</strong>
-            </div>
-            <div class="settings-plan-row">
-              <span>Plus</span><strong id="settings-plus-days">—</strong>
-            </div>
-            <a class="btn btn-primary" href="/plans"
-              ><i class="fa-solid fa-rotate" aria-hidden="true"></i
-              ><span data-i18n="managePlan"></span
-            ></a>
+            >
+              <i class="fa-solid fa-headset" aria-hidden="true"></i
+              ><span data-i18n="prioritySupport"></span>
+            </a>
           </section>
-          <section class="card reveal">
-            <h3 class="feature-heading">
+          <section class="card reveal settings-appearance">
+            <h2 class="feature-heading">
               <span class="feature-icon"
                 ><i class="fa-solid fa-palette"></i></span
               ><span data-i18n="appearance"></span>
-            </h3>
+            </h2>
             <div class="form-group">
               <label for="theme" data-i18n="appearance"></label
               ><select id="theme" name="theme">
@@ -76,12 +80,12 @@
               </select>
             </div>
           </section>
-          <section class="card reveal">
-            <h3 class="feature-heading">
+          <section class="card reveal settings-language">
+            <h2 class="feature-heading">
               <span class="feature-icon"
                 ><i class="fa-solid fa-language"></i></span
               ><span data-i18n="language"></span>
-            </h3>
+            </h2>
             <div class="form-group">
               <label for="settings-language" data-i18n="language"></label
               ><select id="settings-language" name="language">
@@ -91,12 +95,12 @@
               </select>
             </div>
           </section>
-          <section class="card reveal">
-            <h3 class="feature-heading">
+          <section class="card reveal settings-identity">
+            <h2 class="feature-heading">
               <span class="feature-icon"
                 ><i class="fa-solid fa-id-card"></i></span
               ><span data-i18n="publicIdentity"></span>
-            </h3>
+            </h2>
             <div class="form-group">
               <label for="displayName" data-i18n="displayName"></label
               ><input
@@ -106,20 +110,16 @@
                 required
               />
             </div>
-            <button class="btn btn-primary" type="submit">
-              <i class="fa-solid fa-floppy-disk"></i
-              ><span data-i18n="saveSettings"></span>
-            </button>
           </section>
           <section class="card reveal" id="trash-settings" hidden>
-            <h3 class="feature-heading">
+            <h2 class="feature-heading">
               <span class="feature-icon"
                 ><i
                   class="fa-solid fa-trash-arrow-up"
                   aria-hidden="true"
                 ></i></span
               ><span data-i18n="recoveryFeature"></span>
-            </h3>
+            </h2>
             <div class="form-group">
               <label for="trash-days" data-i18n="trashDays"></label
               ><select id="trash-days" name="trashDays">
@@ -132,19 +132,21 @@
             </div>
             <p class="field-help" data-i18n="trashSettingsHelp"></p>
             <p class="field-help" data-i18n="previousHelp"></p>
-            <button class="btn btn-primary" type="submit">
+          </section>
+          <div class="settings-save-bar">
+            <button class="btn btn-primary" type="submit" id="save-settings">
               <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i
               ><span data-i18n="saveSettings"></span>
             </button>
-          </section>
+          </div>
           <section class="card danger-zone reveal">
             <div class="danger-content">
               <div>
-                <h3 class="feature-heading danger-text">
+                <h2 class="feature-heading danger-text">
                   <span class="feature-icon"
                     ><i class="fa-solid fa-user-slash"></i></span
                   ><span data-i18n="dangerZone"></span>
-                </h3>
+                </h2>
                 <p class="muted" data-i18n="dangerBody"></p>
               </div>
               <button class="btn btn-danger" type="button" id="delete-account">

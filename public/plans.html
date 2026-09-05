@@ -55,37 +55,7 @@
         ></section>
 
         <section class="plan-grid" data-i18n-aria-label="plansAria">
-          <article class="card plan-card reveal" data-plan="free">
-            <div class="plan-card-head">
-              <span class="plan-icon"
-                ><i class="fa-solid fa-feather" aria-hidden="true"></i
-              ></span>
-              <div>
-                <p class="plan-name">Free</p>
-                <p class="plan-price" data-i18n="freePrice"></p>
-              </div>
-            </div>
-            <ul class="plan-features">
-              <li>
-                <i class="fa-solid fa-hard-drive" aria-hidden="true"></i
-                ><span>128 KB</span>
-              </li>
-              <li>
-                <i class="fa-solid fa-note-sticky" aria-hidden="true"></i
-                ><span data-i18n="freeNotes"></span>
-              </li>
-              <li>
-                <i class="fa-solid fa-lock" aria-hidden="true"></i
-                ><span data-i18n="astraSecretIncluded"></span>
-              </li>
-            </ul>
-            <span class="btn plan-current-free" data-i18n="included"></span>
-          </article>
-
-          <article
-            class="card plan-card plan-card-featured reveal"
-            data-plan="plus"
-          >
+          <article class="card plan-card reveal" data-plan="plus">
             <div class="plan-card-head">
               <span class="plan-icon"
                 ><i class="fa-solid fa-star" aria-hidden="true"></i
@@ -95,6 +65,7 @@
                 <p class="plan-price">
                   0.000025 BTC <small data-i18n="perMonth"></small>
                 </p>
+                <p class="plan-price-estimate" data-i18n="plusUsdEstimate"></p>
               </div>
             </div>
             <ul class="plan-features">
@@ -110,6 +81,10 @@
                 <i class="fa-solid fa-user-shield" aria-hidden="true"></i
                 ><span data-i18n="confidentialIncluded"></span>
               </li>
+              <li>
+                <i class="fa-solid fa-thumbtack" aria-hidden="true"></i
+                ><span data-i18n="organizeFeature"></span>
+              </li>
             </ul>
             <button
               class="btn btn-primary plan-buy"
@@ -121,7 +96,10 @@
             </button>
           </article>
 
-          <article class="card plan-card reveal" data-plan="pro">
+          <article
+            class="card plan-card plan-card-featured reveal"
+            data-plan="pro"
+          >
             <div class="plan-card-head">
               <span class="plan-icon"
                 ><i class="fa-solid fa-gem" aria-hidden="true"></i
@@ -131,6 +109,7 @@
                 <p class="plan-price">
                   0.000060 BTC <small data-i18n="perMonth"></small>
                 </p>
+                <p class="plan-price-estimate" data-i18n="proUsdEstimate"></p>
               </div>
             </div>
             <ul class="plan-features">
@@ -141,6 +120,10 @@
               <li>
                 <i class="fa-solid fa-infinity" aria-hidden="true"></i
                 ><span data-i18n="unlimitedNotes"></span>
+              </li>
+              <li>
+                <i class="fa-solid fa-thumbtack" aria-hidden="true"></i
+                ><span data-i18n="organizeFeature"></span>
               </li>
               <li>
                 <i class="fa-solid fa-user-shield" aria-hidden="true"></i
@@ -169,12 +152,13 @@
                 <p class="plan-price">
                   0.000125 BTC <small data-i18n="perMonth"></small>
                 </p>
+                <p class="plan-price-estimate" data-i18n="ultraUsdEstimate"></p>
               </div>
             </div>
             <ul class="plan-features">
               <li>
                 <i class="fa-solid fa-hard-drive" aria-hidden="true"></i
-                ><span>2 MB</span>
+                ><span>1024 KB</span>
               </li>
               <li>
                 <i class="fa-solid fa-infinity" aria-hidden="true"></i
@@ -183,6 +167,10 @@
               <li>
                 <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i
                 ><span data-i18n="recoveryFeature"></span>
+              </li>
+              <li>
+                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i
+                ><span data-i18n="zeroIncluded"></span>
               </li>
             </ul>
             <button
@@ -195,6 +183,50 @@
             </button>
           </article>
         </section>
+
+        <p
+          class="plan-estimate-note field-help reveal"
+          data-i18n="usdEstimateNote"
+        ></p>
+
+        <section
+          class="card plan-free-included reveal"
+          data-plan="free"
+          aria-labelledby="free-plan-title"
+        >
+          <div class="plan-card-head">
+            <span class="plan-icon"
+              ><i class="fa-solid fa-feather" aria-hidden="true"></i
+            ></span>
+            <div>
+              <h2 class="plan-name" id="free-plan-title">Free</h2>
+              <p class="muted" data-i18n="freeIncludedBody"></p>
+            </div>
+          </div>
+          <ul class="plan-features">
+            <li>
+              <i class="fa-solid fa-hard-drive" aria-hidden="true"></i
+              ><span>128 KB</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-note-sticky" aria-hidden="true"></i
+              ><span data-i18n="freeNotes"></span>
+            </li>
+            <li>
+              <i class="fa-solid fa-lock" aria-hidden="true"></i
+              ><span data-i18n="astraSecretIncluded"></span>
+            </li>
+          </ul>
+          <p class="plan-included-label">
+            <i class="fa-solid fa-circle-check" aria-hidden="true"></i
+            ><span data-i18n="freeIncluded"></span>
+          </p>
+        </section>
+
+        <aside class="plan-expiry-notice reveal" role="note">
+          <i class="fa-solid fa-lock" aria-hidden="true"></i>
+          <p data-i18n="expiryLockNotice"></p>
+        </aside>
 
         <section
           class="plan-comparison reveal"
@@ -222,6 +254,20 @@
             </table>
           </div>
           <p class="field-help" data-i18n="previousQuota"></p>
+          <aside
+            class="plan-encryption-note"
+            aria-labelledby="plan-encryption-heading"
+          >
+            <h3 id="plan-encryption-heading">
+              <i class="fa-solid fa-shield-halved" aria-hidden="true"></i
+              ><span>AstraZero</span>
+            </h3>
+            <p class="muted" data-i18n="zeroPlanSummary"></p>
+            <a href="/#encryption"
+              ><i class="fa-solid fa-arrow-right" aria-hidden="true"></i
+              ><span data-i18n="encryptionDetails"></span
+            ></a>
+          </aside>
         </section>
 
         <section
@@ -261,6 +307,7 @@
             <p data-i18n="couponAbuseWarning"></p>
           </aside>
           <p class="field-help" data-i18n="couponOncePolicy"></p>
+          <p class="field-help" data-i18n="expiryLockNotice"></p>
           <p class="captcha-heading">
             <i class="fa-solid fa-user-check" aria-hidden="true"></i
             ><span data-i18n="humanVerification"></span>

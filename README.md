@@ -14,9 +14,9 @@ security-sensitive actions.
 - Animated, scroll-reactive starfield landing page
 - Dark and light themes synchronized to signed-in accounts
 - Plain-text lined note reader and editor
-- Free (128 KB/20 notes), Plus (256 KB/50 notes), Pro (512 KB/Infinity notes), and Ultra (2 MB/Infinity notes)
+- Free (128 KB/20 notes), Plus (256 KB/50 notes), Pro (512 KB/Infinity notes), and Ultra (1024 KB/Infinity notes)
 - Independent Ultra, Pro and Plus balances, consumed in that order; one month is always 30 days
-- Pro/Ultra note organization: pins, folders, tags, archive and batch actions
+- Plus/Pro/Ultra note organization: pins, archive and batch actions; title search for every plan
 - Ultra: one previous version and configurable trash retention (default 7 days), both included in storage
 - Satora Bitcoin checkout with server-side status verification, validated coupon
   totals, and idempotent fulfilment
@@ -25,7 +25,7 @@ security-sensitive actions.
   for audit and idempotent fulfilment. New-order requests are limited per account
   and IP, with a persistent six-new-orders-per-hour account check and a 2.4 GB
   database hard limit (new orders stop earlier to reserve update space).
-- No encryption, AES-128-GCM, AES-256-GCM, AstraSecret, AstraConfidential, or browser-only AstraZero at note creation
+- No encryption, AES-128-GCM, AES-256-GCM, AstraSecret, AstraConfidential, or client-only AstraZero at note creation
 - Every encrypted mode protects note content; titles remain plaintext for identification
 - Server-enforced overage locks and permanent deletion after 30 continuously locked days
 - Capacity for up to 75,000 registered accounts
@@ -43,7 +43,7 @@ security-sensitive actions.
 AstraNote/
 ├── asset/              # logo and local asset declarations
 ├── data/               # runtime data; mounted persistently and ignored by Git
-├── public/             # HTML, CSS, and browser JavaScript
+├── public/             # HTML, CSS, and client JavaScript
 ├── server.js           # Express server and all backend routes
 ├── package.json
 ├── LICENSE
@@ -116,7 +116,7 @@ after no matching account directory remains.
 
 ## Security notes
 
-- CAPTCHA success in the browser is never trusted. The backend submits the
+- CAPTCHA success in the client is never trusted. The backend submits the
   16-character verification ID and 64-character one-time token to
   `https://nexacaptcha.nxlabtw.com/api/siteverify` and proceeds only when the
   response is exactly `success: true`.
@@ -125,27 +125,27 @@ after no matching account directory remains.
   continue using `ASTRANOTE_SECRET`. The visible labels remain AES-128-GCM and
   AES-256-GCM. Titles remain plaintext, and these modes are not end-to-end or
   zero-knowledge.
-- AstraConfidential encrypts note content in the browser with AES-256-GCM. Its
+- AstraConfidential encrypts note content in the client with AES-256-GCM. Its
   current version uses a case-sensitive 4–16 character PIN of printable ASCII
   letters, numbers, and symbols and is available for new notes on Plus, Pro and Ultra.
   Notes created while an earlier release allowed a longer PIN remain unlockable
   with their original PIN.
-  A memory-hard browser derivation combines the PIN with
+  A memory-hard client derivation combines the PIN with
   account-bound server protection. The server stores neither the PIN nor the
-  final browser key, and AstraConfidential notes cannot be shared. This is
-  server-assisted browser encryption rather than a zero-knowledge design: the
+  final client key, and AstraConfidential notes cannot be shared. This is
+  server-assisted client encryption rather than a zero-knowledge design: the
   web application and factor endpoint must still be trusted while a note is
   unlocked.
 - Existing AstraConfidential SCHybrid notes retain their original encryption
   identifier, 4–6 digit PIN rule, and `ASTRANOTE_VAULT_SECRET` derivation. They
   remain readable and editable but are no longer offered for new notes.
-- AstraSecret uses a 4–6 digit PIN and the same browser/server trust boundary,
+- AstraSecret uses a 4–6 digit PIN and the same client/server trust boundary,
   with an independently domain-separated derivation. It is intended for
   convenient everyday protection, not high-entropy secret storage.
 - Losing a PIN or a required production secret can make encrypted notes
   permanently unreadable. Keep all three environment secrets stable and backed
   up outside the application data volume.
-- Main and backup domains use separate browser cookies. A user may sign into
+- Main and backup domains use separate client cookies. A user may sign into
   both with the same account.
 - The repository intentionally contains no credential, user database, or
   production `.env` file.

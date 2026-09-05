@@ -20,6 +20,9 @@ test("home page compares every supported encryption mode and discloses visible t
   assert.match(html, />AES-256-GCM</u);
   assert.match(html, />AstraConfidential</u);
   assert.match(html, /data-i18n="encryptionNoneName"/u);
+  assert.match(html, /data-i18n="zeroSummary"/u);
+  assert.match(html, /class="zero-feature-list"/u);
+  assert.doesNotMatch(html, /data-i18n="zeroExplanation"/u);
   assert.match(app, /Note titles are never encrypted/u);
   assert.match(app, /所有模式的筆記標題都不會加密/u);
   assert.match(app, /どの方式でもノートのタイトルは暗号化されません/u);
@@ -27,8 +30,8 @@ test("home page compares every supported encryption mode and discloses visible t
   assert.equal((html.match(/class="matrix-value yes"/gu) || []).length, 14);
   assert.equal((html.match(/class="matrix-value no"/gu) || []).length, 10);
   assert.equal((html.match(/class="schybrid-flow"/gu) || []).length, 1);
-  assert.match(app, /Browser-side encryption/u);
-  assert.match(app, /瀏覽器端加密/u);
+  assert.match(app, /Client-side encryption/u);
+  assert.match(app, /客戶端加密/u);
   assert.match(app, /AstraSecret 與 AstraConfidential 的特點/u);
   assert.match(app, /4～6位數字 · 使用者保存/u);
   assert.match(app, /4～16位 ASCII · 使用者保存/u);

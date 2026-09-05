@@ -54,7 +54,7 @@ const PLAN_DEFINITIONS = Object.freeze({
   free: { maxBytes: 128 * 1000, maxNotes: 20, monthlySats: 0 },
   plus: { maxBytes: 256 * 1000, maxNotes: 50, monthlySats: 2500 },
   pro: { maxBytes: 512 * 1000, maxNotes: Infinity, monthlySats: 6000 },
-  ultra: { maxBytes: 2_000_000, maxNotes: Infinity, monthlySats: 12500 },
+  ultra: { maxBytes: 1_024_000, maxNotes: Infinity, monthlySats: 12500 },
   admin: { maxBytes: Infinity, maxNotes: Infinity, monthlySats: 0 },
 });
 const CAPTCHA_VERIFY_URL = "https://nexacaptcha.nxlabtw.com/api/siteverify";
@@ -233,7 +233,13 @@ async function directorySize(directory) {
   return total;
 }
 async function loadMetadata(username) {
-  return readJson(metadataFile(username), null);
+  const metadata = await readJson(metadataFile(username), null);
+  // Retire classification metadata without touching note files or encryption.
+  for (const reference of metadata?.notes || []) {
+    delete reference.folder;
+    delete reference.tags;
+  }
+  return metadata;
 }
 async function saveMetadata(username, metadata) {
   await writeJson(metadataFile(username), metadata);
@@ -307,7 +313,7 @@ function planPayload(metadata, now = Date.now()) {
     maxBytes: Number.isFinite(definition.maxBytes) ? definition.maxBytes : null,
     maxNotes: Number.isFinite(definition.maxNotes) ? definition.maxNotes : null,
     ultraDays: Math.ceil(ultraMs / 864e5),
-    canOrganize: ["pro", "ultra", "admin"].includes(plan),
+    canOrganize: ["plus", "pro", "ultra", "admin"].includes(plan),
     canRecover: ["ultra", "admin"].includes(plan),
     canCreateZero: ["pro", "ultra", "admin"].includes(plan),
     plusDays: Math.ceil(plusMs / 864e5),
@@ -336,13 +342,13 @@ async function requiredLockedNoteIds(username, metadata, plan) {
     return new Set();
   const details = (
     await Promise.all(
-      metadata.notes
-        .filter((ref) => !ref.trashedAt)
-        .map((reference) => noteFileDetails(username, reference)),
+      metadata.notes.map((reference) => noteFileDetails(username, reference)),
     )
   ).filter(Boolean);
   let remainingBytes = await directorySize(userDir(username));
-  let remainingCount = details.length;
+  let remainingCount = details.filter(
+    (detail) => !detail.reference.trashedAt,
+  ).length;
   const locked = new Set();
   details.sort(
     (left, right) =>
@@ -357,9 +363,13 @@ async function requiredLockedNoteIds(username, metadata, plan) {
       remainingCount <= definition.maxNotes
     )
       break;
+    // Trash uses storage but not the active-note allowance. Never lock it solely
+    // to resolve an active-note count overage.
+    if (detail.reference.trashedAt && remainingBytes <= definition.maxBytes)
+      continue;
     locked.add(detail.note.id);
     remainingBytes -= detail.bytes;
-    remainingCount -= 1;
+    if (!detail.reference.trashedAt) remainingCount -= 1;
   }
   return locked;
 }
@@ -440,8 +450,6 @@ async function lockedNotePayload(username, reference) {
   return {
     id: detail.note.id,
     name: normalizeText(detail.note.name, MAX_NOTE_NAME) || "Encrypted note",
-    encryption: detail.note.encryption,
-    updatedAt: detail.note.updatedAt,
     bytes: detail.bytes,
     locked: true,
     lockedAt: reference.planLockedAt,
@@ -1293,7 +1301,6 @@ async function noteSummary(username, reference) {
     return {
       id: note.id,
       name: normalizeText(note.name, MAX_NOTE_NAME) || "Encrypted note",
-      encryption: note.encryption,
       updatedAt: note.updatedAt,
       characters: null,
       bytes,
@@ -1301,6 +1308,10 @@ async function noteSummary(username, reference) {
       locked: true,
       lockedAt: reference.planLockedAt,
       scheduledDeletionAt: reference.scheduledDeletionAt,
+      pinned: Boolean(reference.pinned),
+      archived: Boolean(reference.archived),
+      trashedAt: reference.trashedAt || null,
+      trashExpiresAt: reference.trashExpiresAt || null,
     };
   let payload = null;
   try {
@@ -1324,8 +1335,6 @@ async function noteSummary(username, reference) {
     locked: false,
     pinned: Boolean(reference.pinned),
     archived: Boolean(reference.archived),
-    folder: reference.folder || "",
-    tags: reference.tags || [],
     trashedAt: reference.trashedAt || null,
     trashExpiresAt: reference.trashExpiresAt || null,
     hasPrevious: Boolean(note.previous),
@@ -1862,17 +1871,6 @@ app.post(
       if (normalizeLanguage(req.body.language)) {
         normalizeEntitlements(metadata);
         metadata.settings ||= { theme: "dark" };
-        if (req.body.trashDays !== undefined) {
-          if (
-            !planPayload(metadata).canRecover ||
-            !TRASH_DAYS.includes(req.body.trashDays)
-          )
-            throw Object.assign(
-              new Error("Choose an available trash retention period."),
-              { status: 403 },
-            );
-          metadata.settings.trashDays = req.body.trashDays;
-        }
         metadata.settings.language = normalizeLanguage(req.body.language);
         await saveMetadata(username, metadata);
       }
@@ -1919,6 +1917,24 @@ app.patch(
       await withLock(`user:${username}`, async () => {
         const metadata = await loadMetadata(username);
         metadata.settings ||= { theme: "dark" };
+        normalizeEntitlements(metadata);
+        if (req.body.trashDays !== undefined) {
+          if (!planPayload(metadata).canRecover)
+            throw Object.assign(
+              new Error("Ultra is required to change trash retention."),
+              {
+                status: 403,
+              },
+            );
+          if (!TRASH_DAYS.includes(req.body.trashDays))
+            throw Object.assign(
+              new Error("Choose an available trash retention period."),
+              {
+                status: 400,
+              },
+            );
+          metadata.settings.trashDays = req.body.trashDays;
+        }
         if (["en", "zh-Hant", "ja"].includes(req.body.language))
           metadata.settings.language = req.body.language;
         if (["dark", "light"].includes(req.body.theme))
@@ -2357,8 +2373,9 @@ app.post(
         const metadata = await loadMetadata(username);
         const access = await refreshPlanState(username, metadata);
         if (!access.payload.canOrganize)
-          throw Object.assign(new Error("Pro or Ultra is required."), {
+          throw Object.assign(new Error("Plus, Pro or Ultra is required."), {
             status: 403,
+            code: "organization_required",
           });
         const ids = req.body.ids;
         if (
@@ -2411,9 +2428,10 @@ app.patch(
       await withLock(`user:${username}`, async () => {
         const metadata = await loadMetadata(username);
         const access = await refreshPlanState(username, metadata);
+        await saveMetadata(username, metadata);
         if (!access.payload.canOrganize)
           throw Object.assign(
-            new Error("Pro or Ultra is required to organize notes."),
+            new Error("Plus, Pro or Ultra is required to organize notes."),
             { status: 403, code: "organization_required" },
           );
         const ids = req.body.ids;
@@ -2435,7 +2453,7 @@ app.patch(
         if (refs.some((ref) => access.lockedIds.has(ref.id)))
           throw Object.assign(
             new Error("Unlock these notes before organizing them."),
-            { status: 423 },
+            { status: 423, code: "note_locked" },
           );
         const action = req.body.action;
         if (action === "trash") {
@@ -2445,7 +2463,7 @@ app.patch(
             });
           await trashNotes(username, metadata, refs);
         } else {
-          if (!["pin", "archive", "folder", "tags"].includes(action))
+          if (!["pin", "archive"].includes(action))
             throw Object.assign(new Error("Invalid organization action."), {
               status: 400,
             });
@@ -2454,36 +2472,9 @@ app.patch(
             typeof req.body.value !== "boolean"
           )
             throw Object.assign(new Error("Invalid value."), { status: 400 });
-          if (
-            action === "folder" &&
-            (typeof req.body.value !== "string" || req.body.value.length > 40)
-          )
-            throw Object.assign(
-              new Error("Folder names must be at most 40 characters."),
-              { status: 400 },
-            );
-          if (
-            action === "tags" &&
-            (!Array.isArray(req.body.value) ||
-              req.body.value.length > 8 ||
-              req.body.value.some(
-                (tag) =>
-                  typeof tag !== "string" || !tag.trim() || tag.length > 24,
-              ))
-          )
-            throw Object.assign(
-              new Error("Use at most 8 tags of 24 characters."),
-              { status: 400 },
-            );
           for (const ref of refs) {
             if (action === "pin") ref.pinned = req.body.value;
             if (action === "archive") ref.archived = req.body.value;
-            if (action === "folder")
-              ref.folder = normalizeText(req.body.value, 40);
-            if (action === "tags")
-              ref.tags = [
-                ...new Set(req.body.value.map((tag) => normalizeText(tag, 24))),
-              ];
           }
           await saveMetadataWithinQuota(username, metadata);
         }
@@ -2506,6 +2497,7 @@ app.post(
       await withLock(`user:${username}`, async () => {
         const metadata = await loadMetadata(username);
         const access = await refreshPlanState(username, metadata);
+        await saveMetadata(username, metadata);
         const ref = metadata.notes.find(
           (item) => item.id === req.params.id && item.trashedAt,
         );
@@ -2513,6 +2505,14 @@ app.post(
           throw Object.assign(new Error("Trash item not found or expired."), {
             status: 404,
           });
+        if (access.lockedIds.has(ref.id))
+          throw Object.assign(
+            new Error("Upgrade to unlock this note before restoring it."),
+            {
+              status: 423,
+              code: "note_locked",
+            },
+          );
         const activeCount = metadata.notes.filter(
           (item) => !item.trashedAt,
         ).length;
@@ -2585,7 +2585,10 @@ app.get("/api/notes/:id/previous", requireAuth, async (req, res, next) => {
       if (!ref)
         throw Object.assign(new Error("Note not found."), { status: 404 });
       if (access.lockedIds.has(ref.id))
-        throw Object.assign(new Error("This note is locked."), { status: 423 });
+        throw Object.assign(new Error("This note is locked."), {
+          status: 423,
+          code: "note_locked",
+        });
       const note = await readJson(noteFile(username, ref.id), null);
       if (!note?.previous)
         throw Object.assign(new Error("No previous version."), { status: 404 });
@@ -2628,6 +2631,7 @@ app.post(
         if (access.lockedIds.has(ref.id))
           throw Object.assign(new Error("This note is locked."), {
             status: 423,
+            code: "note_locked",
           });
         const file = noteFile(username, ref.id);
         const note = await readJson(file, null);
@@ -3028,7 +3032,7 @@ app.post(
         if (access.lockedIds.has(req.params.id))
           throw Object.assign(
             new Error("Upgrade your plan to unlock this note."),
-            { status: 423 },
+            { status: 423, code: "note_locked" },
           );
         const note = await readJson(noteFile(username, req.params.id), null);
         if (isClientEncryptedMode(note?.encryption))

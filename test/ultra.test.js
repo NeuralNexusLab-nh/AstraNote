@@ -235,6 +235,54 @@ test("old and new server AES formats preserve an encrypted previous version", as
   }
 });
 
+test("one settings request persists all preferences, validates retention and rejects expired access", async () => {
+  const user = await fixture("settings_all", "ultra");
+  const preferences = {
+    theme: "light",
+    language: "ja",
+    displayName: "Saved together",
+    trashDays: 14,
+  };
+  assert.equal(
+    (await request(user, "/api/settings", "PATCH", preferences)).status,
+    200,
+  );
+  const account = (await request(user, "/api/account")).data;
+  assert.equal(account.displayName, preferences.displayName);
+  for (const key of ["theme", "language", "trashDays"])
+    assert.equal(account.settings[key], preferences[key]);
+  for (const trashDays of [0, 2, 31, "14", null])
+    assert.equal(
+      (
+        await request(user, "/api/settings", "PATCH", {
+          trashDays,
+          theme: "dark",
+        })
+      ).status,
+      400,
+    );
+  let meta = await read(metaPath(user.name));
+  assert.equal(meta.settings.trashDays, 14);
+  assert.equal(meta.settings.theme, "light");
+  meta.entitlements.ultraMs = 1;
+  meta.entitlements.updatedAt = new Date(Date.now() - 864e5).toISOString();
+  await write(metaPath(user.name), meta);
+  assert.equal(
+    (
+      await request(user, "/api/settings", "PATCH", {
+        trashDays: 30,
+        theme: "dark",
+      })
+    ).status,
+    403,
+  );
+  assert.equal((await read(metaPath(user.name))).settings.trashDays, 14);
+  assert.equal(
+    (await request(user, "/api/settings", "PATCH", { theme: "dark" })).status,
+    200,
+  );
+});
+
 test("metadata overhead is rejected without partial organization changes", async () => {
   const user = await fixture("metadata_limit", "pro", 1);
   const file = metaPath(user.name),
@@ -247,11 +295,11 @@ test("metadata overhead is rejected without partial organization changes", async
   await write(file, meta);
   const result = await request(user, "/api/notes/organize", "PATCH", {
     ids: [id],
-    action: "folder",
-    value: "This metadata exceeds the allowance",
+    action: "pin",
+    value: true,
   });
   assert.equal(result.status, 413);
-  assert.equal((await read(file)).notes[0].folder, undefined);
+  assert.equal((await read(file)).notes[0].pinned, undefined);
 });
 
 test("Ultra consumes time before Pro and Plus, including transitions and Admin", () => {
@@ -277,11 +325,129 @@ test("Ultra consumes time before Pro and Plus, including transitions and Admin",
   );
   assert.equal(testables.planForMetadata(meta), "pro");
   meta.entitlements.ultraMs = day;
-  assert.equal(testables.planPayload(meta).maxBytes, 2_000_000);
+  assert.equal(testables.planPayload(meta).maxBytes, 1_024_000);
   assert.equal(testables.planPayload(meta).canRecover, true);
   meta.email = "neuralnexuslab@hotmail.com";
   assert.equal(testables.planPayload(meta).maxNotes, null);
   assert.equal(testables.planPayload(meta).canCreateZero, true);
+});
+
+test("existing Ultra accounts enforce 1024 KB server-side and lock data above the reduced allowance", async () => {
+  const user = await fixture("existing_ultra", "ultra", 2);
+  const id = user.metadata.notes[0].id;
+  const file = notePath(user.name, id);
+  const note = await read(file);
+  note.content = "x".repeat(1_100_000);
+  await write(file, note);
+  const previousBytes = await fs.readFile(file, "utf8");
+  const account = (await request(user, "/api/account")).data;
+  assert.equal(account.plan.type, "ultra");
+  assert.equal(account.plan.maxBytes, 1_024_000);
+  assert.equal(account.notes.find((item) => item.id === id).locked, true);
+  assert.equal(account.notes.find((item) => item.id !== id).locked, false);
+  assert.equal((await request(user, "/api/notes/" + id)).status, 423);
+  assert.equal(
+    (
+      await request(user, "/api/notes/" + id, "PUT", {
+        name: "Must stay locked",
+        content: "replacement",
+        revision: 1,
+      })
+    ).status,
+    423,
+  );
+  assert.equal(await fs.readFile(file, "utf8"), previousBytes);
+});
+
+test("Plus can organize and batch-delete notes, without gaining Zero or recovery access", async () => {
+  const plus = await fixture("organize_plus", "plus", 3);
+  const free = await fixture("organize_free", "free", 1);
+  const ids = plus.metadata.notes.map((note) => note.id);
+  const plan = testables.planPayload(plus.metadata);
+  assert.equal(plan.canOrganize, true);
+  assert.equal(plan.canCreateZero, false);
+  assert.equal(plan.canRecover, false);
+  for (const [action, field] of [
+    ["pin", "pinned"],
+    ["archive", "archived"],
+  ]) {
+    for (const value of [true, false]) {
+      assert.equal(
+        (
+          await request(plus, "/api/notes/organize", "PATCH", {
+            ids,
+            action,
+            value,
+          })
+        ).status,
+        200,
+      );
+      const saved = await read(metaPath(plus.name));
+      assert.ok(saved.notes.every((note) => note[field] === value));
+    }
+  }
+  assert.equal(
+    (
+      await request(plus, "/api/notes/organize", "PATCH", {
+        ids,
+        action: "trash",
+        captcha,
+      })
+    ).status,
+    403,
+  );
+  assert.equal(
+    (
+      await request(free, "/api/notes/organize", "PATCH", {
+        ids: [free.metadata.notes[0].id],
+        action: "pin",
+        value: true,
+      })
+    ).status,
+    403,
+  );
+  assert.equal(
+    (
+      await request(free, "/api/notes/batch-delete", "POST", {
+        ids: [free.metadata.notes[0].id],
+        captcha,
+      })
+    ).status,
+    403,
+  );
+  const missingCaptcha = await request(
+    plus,
+    "/api/notes/batch-delete",
+    "POST",
+    {
+      ids: ids.slice(0, 2),
+    },
+  );
+  assert.equal(missingCaptcha.status, 403);
+  assert.equal(missingCaptcha.data.error, "captcha_required");
+  assert.equal(
+    (
+      await request(plus, "/api/notes/batch-delete", "POST", {
+        ids: ids.slice(0, 2),
+        captcha,
+      })
+    ).status,
+    200,
+  );
+  for (const id of ids.slice(0, 2))
+    await assert.rejects(fs.stat(notePath(plus.name, id)), { code: "ENOENT" });
+  const meta = await read(metaPath(plus.name));
+  assert.equal(meta.notes.length, 1);
+  meta.entitlements.plusMs = 0;
+  await write(metaPath(plus.name), meta);
+  const expired = await request(plus, "/api/notes/organize", "PATCH", {
+    ids: [ids[2]],
+    action: "pin",
+    value: true,
+  });
+  assert.equal(expired.status, 403);
+  assert.equal(expired.data.error, "organization_required");
+  assert.equal((await read(metaPath(plus.name))).notes[0].pinned, false);
 });
 
 test("Zero creation is gated by the backend; existing encrypted notes survive downgrade", async () => {
@@ -380,7 +546,7 @@ test("one previous version, conflict detection, atomic quota rejection and resto
   assert.equal(current.previous.previous, undefined);
   assert.equal((await put("stale", 1)).status, 409);
   const before = await fs.readFile(notePath(ultra.name, id), "utf8");
-  assert.equal((await put("x".repeat(2_000_000), 3)).status, 413);
+  assert.equal((await put("x".repeat(1_024_000), 3)).status, 413);
   assert.equal(await fs.readFile(notePath(ultra.name, id), "utf8"), before);
   const meta = await read(metaPath(ultra.name));
   meta.entitlements.ultraMs = 0;
@@ -462,6 +628,7 @@ test("trash revokes every content path, preserves expiry, supports quota-safe re
     (await request(ultra, "/api/settings", "PATCH", { trashDays: 30 })).status,
     200,
   );
+  assert.equal((await read(metaPath(ultra.name))).settings.trashDays, 30);
   assert.equal(
     (await request(ultra, "/api/account")).data.trash[0].trashExpiresAt,
     expiry,
@@ -524,7 +691,7 @@ test("organization checks all owners before changing any note and accounts for m
         value: "<img src=x onerror=alert(1)>",
       })
     ).status,
-    200,
+    400,
   );
   assert.equal(
     (
@@ -534,12 +701,10 @@ test("organization checks all owners before changing any note and accounts for m
         value: ["work", "work", "閱讀"],
       })
     ).status,
-    200,
+    400,
   );
-  assert.deepEqual((await read(metaPath(pro.name))).notes[0].tags, [
-    "work",
-    "閱讀",
-  ]);
+  assert.equal((await read(metaPath(pro.name))).notes[0].tags, undefined);
+  assert.equal((await read(metaPath(pro.name))).notes[0].folder, undefined);
   assert.equal(
     (
       await request(pro, "/api/notes/organize", "PATCH", {
@@ -697,6 +862,425 @@ test("a crash after entitlement credit resumes without granting paid time twice"
   } finally {
     ledger.close();
   }
+});
+
+test("expired Ultra locks oversized notes on Pro; only deletion or a verified upgrade can release access", async () => {
+  const user = await fixture("expiry_access", "ultra", 3);
+  const id = user.metadata.notes[0].id;
+  const file = notePath(user.name, id);
+  const note = await read(file);
+  const plaintext = "EXPIRY-PRIVATE-CONTENT-" + "x".repeat(400000);
+  note.encryption = "aes-256-gcm-new";
+  testables.writeServerNotePayload(
+    note,
+    user.name,
+    "Protected title",
+    plaintext,
+  );
+  const previous = { ...note };
+  testables.writeServerNotePayload(
+    previous,
+    user.name,
+    "Previous title",
+    "previous private content",
+  );
+  note.previous = testables.noteSnapshot(previous);
+  note.shareToken = crypto.randomBytes(32).toString("base64url");
+  await write(file, note);
+  const shares = await read(path.join(directory, "shares.json"));
+  shares[crypto.createHash("sha256").update(note.shareToken).digest("hex")] = {
+    username: user.name,
+    id,
+  };
+  await write(path.join(directory, "shares.json"), shares);
+  assert.equal(
+    (await request(user, "/api/notes/" + id)).data.content,
+    plaintext,
+  );
+  assert.equal(
+    (await request(user, "/api/shared/" + note.shareToken)).status,
+    200,
+  );
+  let meta = await read(metaPath(user.name));
+  meta.notes[0].pinned = true;
+  meta.notes[0].archived = true;
+  meta.notes[0].folder = "retired folder";
+  meta.notes[0].tags = ["retired tag"];
+  meta.entitlements = {
+    ultraMs: 1000,
+    proMs: 10 * 864e5,
+    plusMs: 0,
+    updatedAt: new Date(Date.now() - 2000).toISOString(),
+  };
+  await write(metaPath(user.name), meta);
+  const originalFile = await fs.readFile(file, "utf8");
+  const account = (await request(user, "/api/account")).data;
+  assert.equal(account.plan.type, "pro");
+  assert.equal(account.lockedNoteCount, 1);
+  const summary = account.notes.find((item) => item.id === id);
+  assert.equal(summary.locked, true);
+  assert.equal(summary.pinned, true);
+  assert.equal(summary.archived, true);
+  for (const key of [
+    "content",
+    "encrypted",
+    "previous",
+    "clientSalt",
+    "shareToken",
+    "folder",
+    "tags",
+    "encryption",
+  ])
+    assert.equal(summary[key], undefined, key);
+  meta = await read(metaPath(user.name));
+  assert.equal(meta.notes[0].folder, undefined);
+  assert.equal(meta.notes[0].tags, undefined);
+  assert.ok(meta.notes[0].planLockedAt);
+  assert.equal(
+    Date.parse(meta.notes[0].scheduledDeletionAt) -
+      Date.parse(meta.notes[0].planLockedAt),
+    30 * 864e5,
+  );
+
+  const denied = [
+    ["/api/notes/" + id, "GET"],
+    [
+      "/api/notes/" + id,
+      "PUT",
+      { name: "Changed", content: "no", revision: 1 },
+    ],
+    ["/api/notes/" + id + "/share", "POST", { enabled: true }],
+    ["/api/notes/" + id + "/share", "POST", { enabled: false }],
+    ["/api/notes/" + id + "/previous", "GET"],
+    ["/api/notes/" + id + "/previous/restore", "POST", { revision: 1 }],
+    [
+      "/api/vault/key-factor",
+      "POST",
+      {
+        noteId: id,
+        clientSalt: "s".repeat(43),
+        clientHash: "c".repeat(64),
+        encryption: constants.CONFIDENTIAL_MODE,
+      },
+    ],
+    ...[true, false].flatMap((value) =>
+      ["pin", "archive"].map((action) => [
+        "/api/notes/organize",
+        "PATCH",
+        { ids: [id], action, value },
+      ]),
+    ),
+    ["/api/notes/organize", "PATCH", { ids: [id], action: "trash", captcha }],
+  ];
+  for (const [route, method, body] of denied) {
+    const result = await request(user, route, method, body);
+    assert.equal(result.status, 423, method + " " + route);
+    const serialized = JSON.stringify(result.data);
+    assert.ok(!serialized.includes("EXPIRY-PRIVATE-CONTENT"));
+    assert.ok(!serialized.includes(note.content.ciphertext));
+    assert.equal(result.data.serverFactor, undefined);
+    assert.equal(result.data.note?.content, undefined);
+    assert.equal(result.data.note?.previous, undefined);
+  }
+  assert.equal(
+    (await request(user, "/api/shared/" + note.shareToken)).status,
+    404,
+  );
+  assert.equal(await fs.readFile(file, "utf8"), originalFile);
+  assert.equal((await read(metaPath(user.name))).notes[0].pinned, true);
+  assert.equal((await read(metaPath(user.name))).notes[0].archived, true);
+
+  // Exercise the actual fulfilment route, not just editing a local entitlement.
+  const created = await request(user, "/api/billing/create", "POST", {
+    plan: "ultra",
+    months: 1,
+    checkoutToken: crypto.randomBytes(16).toString("hex"),
+    captcha,
+  });
+  assert.equal(created.status, 201);
+  paymentStatus = {
+    success: true,
+    id: "p".repeat(22),
+    status: "paid",
+    price: 12500,
+    received_sats: 12500,
+  };
+  const paid = await request(
+    user,
+    "/api/billing/status?order_id=" + created.data.order.orderId,
+  );
+  assert.equal(paid.data.order.localStatus, "paid");
+  const upgraded = (await request(user, "/api/account")).data;
+  assert.equal(upgraded.plan.type, "ultra");
+  assert.equal(upgraded.lockedNoteCount, 0);
+  assert.equal(
+    (await read(metaPath(user.name))).notes[0].planLockedAt,
+    undefined,
+  );
+  assert.equal(
+    (await read(metaPath(user.name))).notes[0].scheduledDeletionAt,
+    undefined,
+  );
+  assert.equal(
+    (await request(user, "/api/notes/" + id)).data.content,
+    plaintext,
+  );
+  assert.equal(
+    (await request(user, "/api/shared/" + note.shareToken)).data.content,
+    plaintext,
+  );
+  assert.equal(
+    (await request(user, "/api/notes/" + id + "/previous")).data.content,
+    "previous private content",
+  );
+  assert.equal(await fs.readFile(file, "utf8"), originalFile);
+  assert.equal(
+    (
+      await request(user, "/api/notes/organize", "PATCH", {
+        ids: [id],
+        action: "archive",
+        value: false,
+      })
+    ).status,
+    200,
+  );
+  assert.equal(
+    (
+      await request(user, "/api/notes/" + id + "/previous/restore", "POST", {
+        revision: 1,
+      })
+    ).status,
+    200,
+  );
+  assert.equal(
+    (await request(user, "/api/notes/" + id)).data.content,
+    "previous private content",
+  );
+});
+
+test("expired Free accounts cannot obtain client ciphertext or key factors; upgrade preserves every client format", async () => {
+  const modes = [
+    constants.LEGACY_SCHYBRID_MODE,
+    constants.LEGACY_CONFIDENTIAL_MODE,
+    constants.ASTRA_SECRET_MODE,
+    constants.CONFIDENTIAL_MODE,
+    constants.ZERO_MODE,
+  ];
+  for (const [index, mode] of modes.entries()) {
+    const user = await fixture("client_expiry_" + index, "ultra", 1);
+    const id = user.metadata.notes[0].id;
+    const note = await read(notePath(user.name, id));
+    note.encryption = mode;
+    note.clientSalt = crypto.randomBytes(32).toString("base64url");
+    note.content = {
+      ...(mode === constants.ZERO_MODE ? zeroEnvelope : enc),
+      ciphertext: Buffer.alloc(110000, 7).toString("base64"),
+    };
+    note.previous = testables.noteSnapshot(note);
+    await write(notePath(user.name, id), note);
+    const factorBody = {
+      noteId: id,
+      clientSalt: note.clientSalt,
+      clientHash: "f".repeat(64),
+      encryption: mode,
+    };
+    const before = (await request(user, "/api/notes/" + id)).data;
+    const factorBefore =
+      mode === constants.ZERO_MODE
+        ? null
+        : (await request(user, "/api/vault/key-factor", "POST", factorBody))
+            .data.serverFactor;
+    if (mode !== constants.ZERO_MODE)
+      assert.equal(typeof factorBefore, "string");
+    const meta = await read(metaPath(user.name));
+    meta.entitlements = {
+      ultraMs: 1,
+      proMs: 0,
+      plusMs: 0,
+      updatedAt: new Date(Date.now() - 1000).toISOString(),
+    };
+    await write(metaPath(user.name), meta);
+    const locked = await request(user, "/api/notes/" + id);
+    assert.equal(locked.status, 423);
+    assert.equal(locked.data.note.name, note.name);
+    assert.equal(locked.data.note.encrypted, undefined);
+    assert.equal(locked.data.note.clientSalt, undefined);
+    assert.equal(
+      (await request(user, "/api/notes/" + id + "/previous")).status,
+      423,
+    );
+    assert.equal(
+      (await request(user, "/api/vault/key-factor", "POST", factorBody)).status,
+      423,
+    );
+    const fresh = await read(metaPath(user.name));
+    fresh.entitlements.ultraMs = 864e5;
+    fresh.entitlements.updatedAt = stamp();
+    await write(metaPath(user.name), fresh);
+    const after = (await request(user, "/api/notes/" + id)).data;
+    assert.deepEqual(after.encrypted, before.encrypted);
+    assert.equal(after.clientSalt, before.clientSalt);
+    assert.equal(
+      (await request(user, "/api/notes/" + id + "/previous")).status,
+      200,
+    );
+    if (mode !== constants.ZERO_MODE)
+      assert.equal(
+        (await request(user, "/api/vault/key-factor", "POST", factorBody)).data
+          .serverFactor,
+        factorBefore,
+      );
+  }
+});
+
+test("locked trash stays in the trash listing, cannot restore, and unlocks after upgrade without extending its expiry", async () => {
+  const user = await fixture("trash_expiry", "ultra", 2);
+  const id = user.metadata.notes[0].id;
+  const file = notePath(user.name, id);
+  const note = await read(file);
+  note.content = "trash-private-content-" + "x".repeat(140000);
+  await write(file, note);
+  assert.equal(
+    (await request(user, "/api/notes/" + id, "DELETE", { captcha })).status,
+    200,
+  );
+  let meta = await read(metaPath(user.name));
+  const expiry = meta.notes[0].trashExpiresAt;
+  meta.entitlements = {
+    ultraMs: 1,
+    proMs: 0,
+    plusMs: 0,
+    updatedAt: new Date(Date.now() - 1000).toISOString(),
+  };
+  await write(metaPath(user.name), meta);
+  const account = (await request(user, "/api/account")).data;
+  assert.equal(account.plan.type, "free");
+  assert.equal(account.notes.length, 1);
+  assert.equal(account.notes[0].locked, false);
+  assert.equal(account.trash.length, 1);
+  assert.equal(account.trash[0].locked, true);
+  assert.equal(account.trash[0].trashExpiresAt, expiry);
+  assert.equal(account.trash[0].content, undefined);
+  assert.equal(
+    (await request(user, "/api/trash/" + id + "/restore", "POST", {})).status,
+    423,
+  );
+  for (const suffix of ["", "/previous"])
+    assert.equal(
+      (await request(user, "/api/notes/" + id + suffix)).status,
+      404,
+    );
+  meta = await read(metaPath(user.name));
+  meta.entitlements.ultraMs = 864e5;
+  meta.entitlements.updatedAt = stamp();
+  await write(metaPath(user.name), meta);
+  const unlocked = (await request(user, "/api/account")).data;
+  assert.equal(unlocked.trash[0].locked, false);
+  assert.equal(unlocked.trash[0].trashExpiresAt, expiry);
+  assert.equal(
+    (await request(user, "/api/trash/" + id + "/restore", "POST", {})).status,
+    200,
+  );
+  assert.equal(
+    (await request(user, "/api/notes/" + id)).data.content,
+    note.content,
+  );
+});
+
+test("an insufficient upgrade keeps oversized notes locked until sufficient allowance exists", async () => {
+  const user = await fixture("partial_upgrade", "ultra", 2);
+  const [large, small] = user.metadata.notes;
+  const note = await read(notePath(user.name, large.id));
+  note.content = "private".repeat(50000);
+  await write(notePath(user.name, large.id), note);
+  const meta = await read(metaPath(user.name));
+  meta.entitlements = {
+    ultraMs: 1,
+    proMs: 0,
+    plusMs: 0,
+    updatedAt: new Date(Date.now() - 1000).toISOString(),
+  };
+  await write(metaPath(user.name), meta);
+  assert.equal((await request(user, "/api/notes/" + large.id)).status, 423);
+  const lockedAt = (await read(metaPath(user.name))).notes[0].planLockedAt;
+  let changed = await read(metaPath(user.name));
+  changed.entitlements.plusMs = 30 * 864e5;
+  await write(metaPath(user.name), changed);
+  assert.equal((await request(user, "/api/notes/" + large.id)).status, 423);
+  assert.equal((await request(user, "/api/notes/" + small.id)).status, 200);
+  assert.equal(
+    (await read(metaPath(user.name))).notes[0].planLockedAt,
+    lockedAt,
+  );
+  changed = await read(metaPath(user.name));
+  changed.entitlements.proMs = 30 * 864e5;
+  await write(metaPath(user.name), changed);
+  assert.equal(
+    (await request(user, "/api/notes/" + large.id)).data.content,
+    note.content,
+  );
+  assert.equal(
+    (await read(metaPath(user.name))).notes[0].planLockedAt,
+    undefined,
+  );
+});
+
+test("count-only overage locks the largest active note, not trash, and locked trash may be deleted", async () => {
+  const user = await fixture("count_and_trash", "free", 22);
+  const meta = await read(metaPath(user.name));
+  const trash = meta.notes[21],
+    largest = meta.notes[20];
+  trash.trashedAt = stamp();
+  trash.trashExpiresAt = new Date(Date.now() + 864e5).toISOString();
+  await write(metaPath(user.name), meta);
+  for (const [ref, count] of [
+    [trash, 3000],
+    [largest, 2000],
+  ]) {
+    const note = await read(notePath(user.name, ref.id));
+    note.content = "x".repeat(count);
+    await write(notePath(user.name, ref.id), note);
+  }
+  const account = (await request(user, "/api/account")).data;
+  assert.equal(account.trash[0].locked, false);
+  assert.deepEqual(
+    account.notes.filter((n) => n.locked).map((n) => n.id),
+    [largest.id],
+  );
+  const trashedNote = await read(notePath(user.name, trash.id));
+  trashedNote.content = "private".repeat(20000);
+  await write(notePath(user.name, trash.id), trashedNote);
+  assert.equal(
+    (await request(user, "/api/account")).data.trash[0].locked,
+    true,
+  );
+  assert.equal(
+    (await request(user, "/api/trash/" + trash.id, "DELETE", { captcha }))
+      .status,
+    200,
+  );
+  await assert.rejects(fs.access(notePath(user.name, trash.id)));
+});
+
+test("locked notes can be permanently deleted, but cannot be moved into trash", async () => {
+  const user = await fixture("locked_delete", "free", 2);
+  const id = user.metadata.notes[0].id;
+  const note = await read(notePath(user.name, id));
+  note.content = "x".repeat(130000);
+  await write(notePath(user.name, id), note);
+  assert.equal((await request(user, "/api/notes/" + id)).status, 423);
+  assert.equal(
+    (await request(user, "/api/notes/" + id, "DELETE", {})).status,
+    403,
+  );
+  assert.equal(
+    (await request(user, "/api/notes/" + id, "DELETE", { captcha })).status,
+    200,
+  );
+  await assert.rejects(fs.access(notePath(user.name, id)));
+  const account = (await request(user, "/api/account")).data;
+  assert.equal(account.trash.length, 0);
+  assert.equal(account.lockedNoteCount, 0);
 });
 
 test("ledger enforces capacity without preventing existing invoice updates", async () => {

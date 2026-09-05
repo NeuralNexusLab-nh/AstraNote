@@ -25,7 +25,7 @@ const I18N = {
       "A focused, lined writing space for plain text—fast, familiar, and free of visual noise.",
     secureTitle: "Powerful encryption when you need it",
     secureBody:
-      "Choose server-managed AES or browser-side AstraConfidential protection for sensitive notes.",
+      "Choose server-managed AES or client-side AstraConfidential protection for sensitive notes.",
     shareTitle: "Share on your terms",
     shareBody:
       "Create a private-looking, unguessable read-only link, then revoke it whenever you choose.",
@@ -162,7 +162,7 @@ const I18N = {
     quickBody: "專注、帶橫線的純文字書寫空間；快速、熟悉，不受視覺雜訊干擾。",
     secureTitle: "需要時，使用強大加密",
     secureBody:
-      "敏感筆記可選擇伺服器管理的 AES，或由瀏覽器端加密的 AstraConfidential。",
+      "敏感筆記可選擇伺服器管理的 AES，或由客戶端加密的 AstraConfidential。",
     shareTitle: "由你掌控分享",
     shareBody: "建立難以猜測的唯讀連結，並隨時撤銷公開存取。",
     limitEyebrow: "清楚而有節制",
@@ -209,7 +209,7 @@ const I18N = {
     copy: "複製",
     shareTitleModal: "要分享這篇筆記嗎？",
     shareEnableBody:
-      "持有連結者可閱讀筆記，並看到你的公開名稱與遮罩 Email。連結難以猜測且可隨時撤銷。",
+      "持有連結者可閱讀筆記，並看到你的公開名稱與遮罩電子郵件。連結難以猜測且可隨時撤銷。",
     shareDisableBody: "現有連結將立即失效。",
     enableShare: "開啟分享",
     disableShare: "關閉分享",
@@ -232,8 +232,8 @@ const I18N = {
     logoutBody: "這會結束目前的登入階段。",
     deleteAccountTitle: "要永久刪除這個帳號嗎？",
     deleteAccountBody:
-      "輸入完整 Username 與目前密碼，再完成人類驗證。帳號、筆記、登入階段與分享連結將立即移除，且無法復原。",
-    confirmUsername: "確認 Username",
+      "輸入完整使用者名稱與目前密碼，再完成人類驗證。帳號、筆記、登入階段與分享連結將立即移除，且無法復原。",
+    confirmUsername: "確認使用者名稱",
     proceed: "繼續",
     cancel: "取消",
     close: "關閉",
@@ -252,12 +252,12 @@ const I18N = {
     accept: "接受並繼續",
     signInTitle: "回到你的筆記",
     signInBody: "輸入帳號資料並完成人類驗證。",
-    username: "Username",
+    username: "使用者名稱",
     password: "密碼",
     noRecovery: "AstraNote 不提供密碼復原，請妥善保存密碼。",
     registerTitle: "建立 AstraNote",
     registerBody: "宇宙中的一處寧靜角落，等待你的想法。",
-    email: "Email",
+    email: "電子郵件",
     confirmPassword: "確認密碼",
     agreeTerms: "我已閱讀並同意使用者協議與隱私政策。",
     agreeCapacity:
@@ -318,14 +318,14 @@ Object.assign(I18N.en, {
   encryptionEyebrow: "CHOOSE YOUR PROTECTION",
   encryptionTitle: "Five protection levels, explained clearly.",
   encryptionIntro:
-    "Choose readable storage, server-managed AES, convenient AstraSecret browser encryption, or the stronger AstraConfidential protection available with Plus and Pro.",
+    "Choose readable storage, server-managed AES, convenient AstraSecret client encryption, or the stronger AstraConfidential protection available with Plus and Pro.",
   encryptionTitleNoticeTitle: "Note titles are never encrypted",
   encryptionTitleNoticeBody:
     "Titles remain readable so AstraNote can show them in your note list. Never put a secret in a title.",
   encryptionTableLabel: "Comparison of AstraNote encryption modes",
   encryptionModeColumn: "Mode",
   encryptionEncryptedColumn: "Content encrypted",
-  encryptionClientColumn: "Browser-side encryption",
+  encryptionClientColumn: "Client-side encryption",
   encryptionPinColumn: "PIN protection",
   encryptionSharingColumn: "Sharing",
   encryptionExposureColumn:
@@ -353,7 +353,7 @@ Object.assign(I18N.en, {
   encryptionSchybridStepTwoTitle: "Protection matched to the note",
   encryptionSchybridStepTwoBody:
     "AstraSecret is simpler for everyday privacy. AstraConfidential applies stronger key derivation for highly sensitive content and is available with Plus or Pro.",
-  encryptionSchybridStepThreeTitle: "Browser encrypts before upload",
+  encryptionSchybridStepThreeTitle: "Client encrypts before upload",
   encryptionSchybridStepThreeBody:
     "Both modes encrypt the note content on your device before upload. The server receives and stores only encrypted content.",
   encryptionSchybridCaution:
@@ -416,7 +416,7 @@ Object.assign(I18N.en, {
   noteNameRequired: "Note name is required.",
   vaultPinMismatch: "The PIN entries do not match.",
   vaultCryptoUnavailable:
-    "Secure browser encryption is unavailable on this device.",
+    "Secure client encryption is unavailable on this device.",
   vaultUnavailable: "AstraConfidential is not configured on this server.",
   unlockVaultTitle: "Unlock AstraConfidential note",
   unlockNamedNote: "Unlock {name}",
@@ -486,14 +486,14 @@ Object.assign(I18N["zh-Hant"], {
   encryptionEyebrow: "選擇適合的保護方式",
   encryptionTitle: "五種保護層級，一眼看懂差異。",
   encryptionIntro:
-    "可選擇直接儲存、伺服器管理的 AES、方便的 AstraSecret 瀏覽器端加密，或 Plus 與 Pro 提供的更強 AstraConfidential 保護。",
+    "可選擇直接儲存、伺服器管理的 AES、方便的 AstraSecret 客戶端加密，或 Plus 與 Pro 提供的更強 AstraConfidential 保護。",
   encryptionTitleNoticeTitle: "所有模式的筆記標題都不會加密",
   encryptionTitleNoticeBody:
     "標題會保持可讀，才能顯示在筆記清單中。請勿把機密資訊寫進標題。",
   encryptionTableLabel: "AstraNote 加密方式比較",
   encryptionModeColumn: "方式",
   encryptionEncryptedColumn: "內容加密",
-  encryptionClientColumn: "瀏覽器端加密",
+  encryptionClientColumn: "客戶端加密",
   encryptionPinColumn: "PIN 保護",
   encryptionSharingColumn: "分享",
   encryptionExposureColumn: "駭客還需取得什麼才能還原明文？",
@@ -519,7 +519,7 @@ Object.assign(I18N["zh-Hant"], {
   encryptionSchybridStepTwoTitle: "依內容選擇保護強度",
   encryptionSchybridStepTwoBody:
     "AstraSecret 適合日常隱私；AstraConfidential 使用更強的金鑰推導保護高度敏感內容，並開放給 Plus 與 Pro。",
-  encryptionSchybridStepThreeTitle: "上傳前由瀏覽器加密",
+  encryptionSchybridStepThreeTitle: "上傳前由客戶端加密",
   encryptionSchybridStepThreeBody:
     "兩種模式都會先在你的裝置加密筆記內容，伺服器只接收並保存加密後的內容。",
   encryptionSchybridCaution:
@@ -535,7 +535,7 @@ Object.assign(I18N["zh-Hant"], {
     "這篇筆記沒有備份，刪除後無法復原。請完成人類驗證以永久刪除。",
   logoutBody: "這會結束目前的登入階段。",
   deleteAccountBody:
-    "輸入完整 Username 與目前密碼，再完成人類驗證。帳號、筆記、登入階段與分享連結將立即移除，且無法復原。",
+    "輸入完整使用者名稱與目前密碼，再完成人類驗證。帳號、筆記、登入階段與分享連結將立即移除，且無法復原。",
   captchaNeeded: "請先完成人類驗證。",
   signInTitle: "登入並查看筆記",
   signInBody: "輸入帳號資料並完成人類驗證。",
@@ -545,7 +545,8 @@ Object.assign(I18N["zh-Hant"], {
     "在七天反悔期內輸入原密碼並重新完成人類驗證，即可恢復存取。",
   saveBody: "要儲存這篇筆記目前的名稱與內容嗎？",
   shareReadyTitle: "分享連結已建立",
-  shareReadyBody: "持有連結者可閱讀筆記，並看到你的公開顯示名稱與遮罩 Email。",
+  shareReadyBody:
+    "持有連結者可閱讀筆記，並看到你的公開顯示名稱與遮罩電子郵件。",
   shareStoppedTitle: "分享已關閉",
   shareStoppedBody: "先前的分享連結已經失效。",
   humanVerification: "人類驗證",
@@ -581,7 +582,7 @@ Object.assign(I18N["zh-Hant"], {
   legacyVaultPinInvalid: "請輸入這篇舊版筆記原有的 4–6 位數 PIN。",
   noteNameRequired: "請輸入筆記名稱。",
   vaultPinMismatch: "兩次輸入的 PIN 不相同。",
-  vaultCryptoUnavailable: "此裝置無法使用安全的瀏覽器加密功能。",
+  vaultCryptoUnavailable: "此裝置無法使用安全的客戶端加密功能。",
   vaultUnavailable: "伺服器尚未設定 AstraConfidential。",
   unlockVaultTitle: "解鎖 AstraConfidential 筆記",
   unlockNamedNote: "解鎖{name}",
@@ -600,7 +601,7 @@ Object.assign(I18N["zh-Hant"], {
   requestDeletion: "永久刪除帳號",
   deleteAccountTitle: "要永久刪除這個帳號嗎？",
   deleteAccountBody:
-    "輸入完整 Username 與目前密碼，再完成人類驗證。帳號、筆記、登入階段與分享連結將立即移除，且無法復原。",
+    "輸入完整使用者名稱與目前密碼，再完成人類驗證。帳號、筆記、登入階段與分享連結將立即移除，且無法復原。",
   confirmCurrentPassword: "確認目前密碼",
   skipContent: "跳至主要內容",
   primaryNavigation: "主要導覽",
@@ -633,14 +634,14 @@ I18N.ja = {
   encryptionEyebrow: "保護方法を選択",
   encryptionTitle: "4 つの保護レベルを明確に比較。",
   encryptionIntro:
-    "暗号化なしは読める状態で保存されます。AES-128-GCM と AES-256-GCM は AstraNote サーバーが自動暗号化します。AstraConfidential はアップロード前にブラウザで暗号化し、利用者だけが知る PIN を追加します。",
+    "暗号化なしは読める状態で保存されます。AES-128-GCM と AES-256-GCM は AstraNote サーバーが自動暗号化します。AstraConfidential はアップロード前にクライアントで暗号化し、利用者だけが知る PIN を追加します。",
   encryptionTitleNoticeTitle: "どの方式でもノートのタイトルは暗号化されません",
   encryptionTitleNoticeBody:
     "一覧に表示するため、タイトルは読み取り可能な状態です。機密情報をタイトルに書かないでください。",
   encryptionTableLabel: "AstraNote の暗号化方式の比較",
   encryptionModeColumn: "方式",
   encryptionEncryptedColumn: "内容を暗号化",
-  encryptionClientColumn: "ブラウザ側で暗号化",
+  encryptionClientColumn: "クライアント側で暗号化",
   encryptionPinColumn: "PIN 保護",
   encryptionSharingColumn: "共有",
   encryptionExposureColumn: "平文の復元に攻撃者がさらに必要なものは？",
@@ -686,7 +687,8 @@ I18N.ja = {
     "空白を含まない4～16文字の ASCII 英字、数字、記号を入力してください。",
   legacyVaultPinInvalid: "従来の4～6桁の PIN を入力してください。",
   vaultPinMismatch: "PIN が一致しません。",
-  vaultCryptoUnavailable: "この端末では安全なブラウザ暗号化を使用できません。",
+  vaultCryptoUnavailable:
+    "この端末では安全なクライアント暗号化を使用できません。",
   vaultUnavailable: "サーバーに AstraConfidential が設定されていません。",
   unlockNamedNote: "{name} を解錠",
   unlockVaultBody:
@@ -762,7 +764,7 @@ Object.assign(I18N.en, {
   later: "Later",
   astraSecretPin: "AstraSecret PIN (4–6 digits)",
   astraSecretExplanation:
-    "AstraSecret offers simple browser-side protection for everyday private notes. You choose and keep its 4–6 digit PIN; AstraNote does not store or recover it.",
+    "AstraSecret offers simple client-side protection for everyday private notes. You choose and keep its 4–6 digit PIN; AstraNote does not store or recover it.",
   confidentialPin: "AstraConfidential PIN (4–16 ASCII characters)",
   confidentialPlanRequired:
     "Plus or Pro is required to create a new AstraConfidential note.",
@@ -841,7 +843,7 @@ Object.assign(I18N["zh-Hant"], {
   later: "稍後處理",
   astraSecretPin: "AstraSecret PIN（4～6位數字）",
   astraSecretExplanation:
-    "AstraSecret 為一般私人筆記提供容易使用的瀏覽器端保護。4～6位數字 PIN 由你設定及保存；AstraNote 不會儲存或協助找回。",
+    "AstraSecret 為一般私人筆記提供容易使用的客戶端保護。4～6位數字 PIN 由你設定及保存；AstraNote 不會儲存或協助找回。",
   confidentialPin: "AstraConfidential PIN（4～16個 ASCII 字元）",
   confidentialPlanRequired: "建立新的 AstraConfidential 筆記需要 Plus 或 Pro。",
   confidentialOption: "AstraConfidential · Plus / Pro",
@@ -873,7 +875,7 @@ Object.assign(I18N.ja, {
     "AstraNote はこの大文字と小文字を区別する PIN を保存・復元しません。可能であればランダムな12～16文字を安全に保管してください。",
   encryptionTitle: "5つの保護レベルを明確に比較。",
   encryptionIntro:
-    "読み取り可能な保存、サーバー管理の AES、手軽な AstraSecret のブラウザ暗号化、Plus／Pro 向けのより強い AstraConfidential から選択できます。",
+    "読み取り可能な保存、サーバー管理の AES、手軽な AstraSecret のクライアント暗号化、Plus／Pro 向けのより強い AstraConfidential から選択できます。",
   encryptionSecretExposure:
     "アカウント、サーバー側の保護、利用者が保管する4～6桁の数字 PIN",
   encryptionSecretSecurity: "日常保護",
@@ -962,12 +964,18 @@ Object.assign(I18N.ja, {
 });
 
 Object.assign(I18N["en"], {
+  zeroSummary:
+    "Encryption keys are generated 100% independently on your client—not requested from the server.",
+  zeroPinFeature:
+    "Your PIN stays with you; the note key is protected before upload",
+  zeroShortCaution:
+    "Keep a strong PIN and use a trusted device. Weak PINs can still be guessed. Titles are not encrypted.",
   unlimited: "Infinity",
   unlimitedNotes: "Infinity notes",
   purposeIntroThree:
     "AstraNote keeps writing simple and free, with optional encryption for sensitive notes. Free includes 20 notes and 128 KB; paid plans add space and tools. There is no advertising or analytics tracking.",
   secureBody:
-    "Choose server-managed AES, AstraSecret, AstraConfidential, or AstraZero with keys generated in your browser.",
+    "Choose server-managed AES, AstraSecret, AstraConfidential, or AstraZero with keys generated in your client.",
   shareBody:
     "Free includes 20 notes and 128 KB of account storage, with no advertising or analytics tracking.",
   limitBody:
@@ -975,33 +983,33 @@ Object.assign(I18N["en"], {
   encryptionSchybridStepTwoBody:
     "AstraSecret is simpler for everyday privacy. AstraConfidential uses stronger key derivation and is available with Plus, Pro and Ultra.",
   plansBody:
-    "Start free. Choose Plus for more room, Pro for organization and AstraZero, or Ultra for 2 MB and recovery tools.",
+    "Start free. Choose Plus for more room and note organization, Pro for AstraZero, or Ultra for 1024 KB and recovery tools.",
   chooseUltra: "Choose Ultra",
   comparePlans: "Compare plans",
   compareFeature: "Feature",
   comparisonHint:
     "All paid periods use 30-day months. Ultra time is used first, then Pro, then Plus; lower tiers pause.",
   organizeFeature: "Note organization",
-  organizeDetail: "Pins, folders, tags, archive, and batch management.",
+  organizeDetail: "Pins, archive, and batch management.",
   recoveryFeature: "Versions & recovery",
   recoveryDetail:
     "One previous version and a trash bin. Both count toward storage.",
   prioritySupport: "Priority manual support",
   prioritySupportDetail:
     "Contact astranote@nxlabtw.com. No guaranteed response time.",
-  zeroIncluded: "AstraZero · browser-generated keys",
+  zeroIncluded: "AstraZero · client-generated keys",
   zeroOption: "AstraZero · Pro / Ultra",
   zeroPin: "AstraZero PIN (4–16 ASCII characters)",
   zeroExplanation:
-    "Your browser generates a random key for each note, encrypts the content, and protects that key with your PIN. AstraNote stores only encrypted content and the protected key; it does not receive your PIN or the unprotected key.",
+    "Your client generates a random key for each note, encrypts the content, and protects that key with your PIN. AstraNote stores only encrypted content and the protected key; it does not receive your PIN or the unprotected key.",
   zeroWarning:
-    "Keep your PIN yourself; it cannot be recovered. Use a random 12–16 character PIN. Someone with the encrypted files can guess a short PIN offline. Only unlock on a trusted device. Titles, folders and tags are not encrypted.",
+    "Keep your PIN yourself; it cannot be recovered. Use a random 12–16 character PIN. Someone with the encrypted files can guess a short PIN offline. Only unlock on a trusted device. Note titles are not encrypted.",
   encryptionTitle: "Choose how your notes are protected.",
   encryptionIntro:
-    "From simple notes to browser-encrypted content: choose the protection that fits. A strong PIN matters for every PIN-based mode.",
+    "From simple notes to client-encrypted content: choose the protection that fits. A strong PIN matters for every PIN-based mode.",
   zeroExposure:
-    "Encrypted files + a correct or guessed PIN, or control of the browser when you unlock",
-  zeroSecurity: "Browser-held keys",
+    "Encrypted files + a correct or guessed PIN, or control of the client when you unlock",
+  zeroSecurity: "Client-held keys",
   vaultSharingUnavailable:
     "Sharing is unavailable for PIN-protected notes because recipients do not have your decryption credentials.",
   vaultNoSharing: "PIN-protected notes do not support sharing.",
@@ -1014,14 +1022,14 @@ Object.assign(I18N["en"], {
   pin: "Pin",
   unpin: "Unpin",
   organize: "Organize",
-  allFolders: "All folders",
-  noFolder: "No folder",
-  folder: "Folder",
-  tags: "Tags",
-  folderHelp: "Folder name, up to 40 characters. Leave empty to remove.",
-  tagsHelp:
-    "Separate tags with commas: up to 8 tags, 24 characters each. Leave empty to remove.",
-  allTags: "All tags",
+  searchNotes: "Search note titles",
+  searchNotesPlaceholder: "Search note titles…",
+  noMatchingNotes: "No notes match this search or filter.",
+  moveToTrash: "Move to trash",
+  unlockByUpgrade: "Upgrade to unlock",
+  trashLocked: "Locked by your plan limit. Upgrade to restore this note.",
+  freeIncluded: "Included with every account",
+  freeIncludedBody: "Your free starting space. No purchase required.",
   archive: "Archive",
   unarchive: "Unarchive",
   activeNotes: "Active notes",
@@ -1033,7 +1041,7 @@ Object.assign(I18N["en"], {
   apply: "Apply",
   selectionLimit: "Select at most 100 notes at a time.",
   organizeUpgrade:
-    "Pro and Ultra include pins, folders, tags, archive and batch organization.",
+    "Plus, Pro and Ultra include pins, archive and batch organization.",
   trash: "Trash",
   trashBody:
     "Deleted notes stay here until their expiry date. They and their previous versions still use account storage.",
@@ -1067,52 +1075,56 @@ Object.assign(I18N["en"], {
     "AstraZero does not require a server encryption secret. It cannot protect against a compromised device or malicious page code, and short PINs remain guessable.",
   restoreQuota: "Free space or upgrade your plan before restoring.",
   noteConflict: "This note changed in another tab. Reload before saving.",
-  organizationRequired: "Pro or Ultra is required to organize notes.",
+  organizationRequired: "Plus, Pro or Ultra is required to organize notes.",
   storageLimit: "Your account would exceed its storage allowance.",
   versionDiscardNotice:
     "Saving with Ultra keeps one previous version, which also uses storage.",
   recoveryTermsTitle: "Organization, versions and trash",
   recoveryTerms:
-    "Pro and Ultra include note organization and AstraZero. Ultra includes 2 MB, one previous version per note, configurable trash retention (default 7 days), and priority manual support without a response-time guarantee. Previous versions and trash count toward your total storage. Restoring a version replaces the current content and clears that previous-version slot. Trash expires at the time shown when deleted. After Ultra expires, new versions and trash entries are unavailable, but existing versions and unexpired trash may be restored within your current allowance. Over-limit notes deleted by the system after 30 days do not enter trash. These features are not an independent backup; keep your own copies. The existing liability provisions and mandatory consumer rights continue to apply.",
+    "Plus, Pro and Ultra include note organization; Pro and Ultra also include AstraZero. Ultra includes 1024 KB, one previous version per note, configurable trash retention (default 7 days), and priority manual support without a response-time guarantee. Previous versions and trash count toward your total storage. Restoring a version replaces the current content and clears that previous-version slot. Trash expires at the time shown when deleted. After Ultra expires, new versions and trash entries are unavailable, but existing versions and unexpired trash may be restored within your current allowance. Over-limit notes deleted by the system after 30 days do not enter trash. These features are not an independent backup; keep your own copies. The existing liability provisions and mandatory consumer rights continue to apply.",
 });
 
 Object.assign(I18N["zh-Hant"], {
+  zeroSummary: "加密金鑰 100% 由客戶端獨立產生，不向伺服器索取。",
+  zeroPinFeature: "PIN 由你保管，金鑰經保護後才上傳",
+  zeroShortCaution:
+    "請妥善保存高強度 PIN，並使用可信任裝置；弱 PIN 仍可能被猜中。標題不加密。",
   unlimited: "無限",
   unlimitedNotes: "無限篇筆記",
   purposeIntroThree:
     "AstraNote 保持簡單、清楚且免費，也能為敏感筆記選用加密保護。Free 提供20篇筆記與128 KB空間；付費方案則增加空間與工具。沒有廣告，也不使用分析追蹤。",
   secureBody:
-    "可選擇伺服器管理的 AES、AstraSecret、AstraConfidential，或由瀏覽器產生金鑰的 AstraZero。",
+    "可選擇伺服器管理的 AES、AstraSecret、AstraConfidential，或由客戶端產生金鑰的 AstraZero。",
   shareBody: "Free 提供20篇筆記與128 KB空間，沒有廣告與分析追蹤。",
   limitBody:
     "Free 提供128 KB與20篇筆記；Plus、Pro 與 Ultra 則提供更多空間與功能。",
   encryptionSchybridStepTwoBody:
     "AstraSecret 適合日常隱私；AstraConfidential 使用更強的金鑰推導，並開放給 Plus、Pro 與 Ultra。",
   plansBody:
-    "從免費開始。Plus 提供更多空間；Pro 加入筆記整理與 AstraZero；Ultra 則提供 2 MB 與版本復原。",
+    "從免費開始。Plus 提供更多空間與筆記整理；Pro 加入 AstraZero；Ultra 則提供 1024 KB 與版本復原。",
   chooseUltra: "選擇 Ultra",
   comparePlans: "方案比較",
   compareFeature: "功能",
   comparisonHint:
     "一個月為30天。優先使用 Ultra，再使用 Pro、Plus；較低階方案的時間會暫停消耗。",
   organizeFeature: "筆記整理",
-  organizeDetail: "釘選、資料夾、標籤、封存與批次管理。",
+  organizeDetail: "釘選、封存與批次管理。",
   recoveryFeature: "版本與復原",
   recoveryDetail: "保留上一個版本，以及垃圾桶還原；兩者均計入空間。",
   prioritySupport: "優先人工協助",
   prioritySupportDetail: "聯絡 astranote@nxlabtw.com；不保證固定回覆時間。",
-  zeroIncluded: "AstraZero · 瀏覽器產生金鑰",
+  zeroIncluded: "AstraZero · 客戶端產生金鑰",
   zeroOption: "AstraZero · Pro / Ultra",
   zeroPin: "AstraZero PIN（4～16個 ASCII 字元）",
   zeroExplanation:
-    "瀏覽器為每篇筆記產生隨機金鑰、加密內容，再用你的 PIN 保護金鑰。AstraNote 只儲存加密內容與受保護的金鑰，不會收到 PIN 或未加密的金鑰。",
+    "客戶端為每篇筆記產生隨機金鑰、加密內容，再用你的 PIN 保護金鑰。AstraNote 只儲存加密內容與受保護的金鑰，不會收到 PIN 或未加密的金鑰。",
   zeroWarning:
-    "PIN 由你自行保管，遺失無法找回。建議使用隨機12～16個字元；取得加密檔案者仍可離線猜測短 PIN。請只在信任的裝置解鎖。標題、資料夾與標籤不加密。",
+    "PIN 由你自行保管，遺失無法找回。建議使用隨機12～16個字元；取得加密檔案者仍可離線猜測短 PIN。請只在信任的裝置解鎖。筆記標題不加密。",
   encryptionTitle: "選擇適合筆記的保護方式。",
   encryptionIntro:
-    "從一般記錄，到瀏覽器端加密的重要內容，依需求選擇；使用 PIN 的加密方式都需要足夠強的 PIN。",
-  zeroExposure: "加密檔案＋正確或猜中的 PIN，或控制解鎖時的瀏覽器",
-  zeroSecurity: "瀏覽器持有金鑰",
+    "從一般記錄，到客戶端加密的重要內容，依需求選擇；使用 PIN 的加密方式都需要足夠強的 PIN。",
+  zeroExposure: "加密檔案＋正確或猜中的 PIN，或控制解鎖時的客戶端",
+  zeroSecurity: "客戶端持有金鑰",
   vaultSharingUnavailable:
     "使用 PIN 保護的筆記不提供分享，因為收件者沒有你的解密憑證。",
   vaultNoSharing: "使用 PIN 保護的筆記不提供分享。",
@@ -1125,13 +1137,14 @@ Object.assign(I18N["zh-Hant"], {
   pin: "釘選",
   unpin: "取消釘選",
   organize: "整理",
-  allFolders: "全部資料夾",
-  noFolder: "無資料夾",
-  folder: "資料夾",
-  tags: "標籤",
-  folderHelp: "資料夾名稱最多40個字元；留空可移出資料夾。",
-  tagsHelp: "使用逗號分隔，最多8個標籤，每個最多24個字元；留空可移除。",
-  allTags: "全部標籤",
+  searchNotes: "搜尋筆記標題",
+  searchNotesPlaceholder: "搜尋筆記標題…",
+  noMatchingNotes: "沒有符合搜尋或篩選條件的筆記。",
+  moveToTrash: "移至垃圾桶",
+  unlockByUpgrade: "升級解鎖",
+  trashLocked: "此筆記因超額而鎖定，請升級後再還原。",
+  freeIncluded: "每個帳號皆已包含",
+  freeIncludedBody: "免費開始記錄，不必購買。",
   archive: "封存",
   unarchive: "取消封存",
   activeNotes: "一般筆記",
@@ -1142,7 +1155,7 @@ Object.assign(I18N["zh-Hant"], {
   batchAction: "批次操作",
   apply: "套用",
   selectionLimit: "每次最多選取100篇筆記。",
-  organizeUpgrade: "Pro 與 Ultra 提供釘選、資料夾、標籤、封存及批次整理。",
+  organizeUpgrade: "Plus、Pro 與 Ultra 提供釘選、封存及批次整理。",
   trash: "垃圾桶",
   trashBody: "手動刪除的筆記會保留至指定時間；筆記與其上一版本仍計入帳號空間。",
   trashEmpty: "垃圾桶目前是空的。",
@@ -1174,44 +1187,49 @@ Object.assign(I18N["zh-Hant"], {
     "AstraZero 不依賴伺服器的加密密鑰，但無法防止受控制的裝置或惡意網頁程式竊取解鎖內容，短 PIN 也仍可能被猜中。",
   restoreQuota: "請先釋放空間或升級方案，再還原筆記。",
   noteConflict: "這篇筆記已在其他分頁變更，請重新載入後再儲存。",
-  organizationRequired: "筆記整理功能需要 Pro 或 Ultra。",
+  organizationRequired: "筆記整理功能需要 Plus、Pro 或 Ultra。",
   storageLimit: "此操作會超出帳號的空間額度。",
   versionDiscardNotice: "使用 Ultra 儲存時會保留上一個版本，也會占用空間。",
   recoveryTermsTitle: "筆記整理、版本與垃圾桶",
   recoveryTerms:
-    "Pro 與 Ultra 提供筆記整理及 AstraZero。Ultra 包含2 MB空間、每篇筆記的上一個版本、可設定保留期間的垃圾桶（預設7天），以及不保證固定回覆時間的優先人工協助。上一版本與垃圾桶均計入總使用量；還原版本會取代目前內容並清除上一版本。垃圾桶依刪除時顯示的期限清除。Ultra 到期後不再建立新版本或垃圾桶項目，但既有版本及未到期項目仍可在目前額度內還原。超額鎖定滿30天而由系統刪除的筆記不進入垃圾桶。這些功能不等同獨立備份，請自行保存重要資料。原有責任限制及法律強制保障的消費者權利仍適用。",
+    "Plus、Pro 與 Ultra 提供筆記整理；Pro 與 Ultra 另提供 AstraZero。Ultra 包含1024 KB空間、每篇筆記的上一個版本、可設定保留期間的垃圾桶（預設7天），以及不保證固定回覆時間的優先人工協助。上一版本與垃圾桶均計入總使用量；還原版本會取代目前內容並清除上一版本。垃圾桶依刪除時顯示的期限清除。Ultra 到期後不再建立新版本或垃圾桶項目，但既有版本及未到期項目仍可在目前額度內還原。超額鎖定滿30天而由系統刪除的筆記不進入垃圾桶。這些功能不等同獨立備份，請自行保存重要資料。原有責任限制及法律強制保障的消費者權利仍適用。",
 });
 
 Object.assign(I18N["ja"], {
+  zeroSummary:
+    "暗号鍵はクライアントが100%独立して生成。サーバーから受け取りません。",
+  zeroPinFeature: "PIN はご自身で保管し、鍵は保護してから送信",
+  zeroShortCaution:
+    "強い PIN を保管し、信頼できる端末を使ってください。弱い PIN は推測される可能性があります。タイトルは暗号化しません。",
   unlimited: "無限",
   unlimitedNotes: "ノート数は無限",
   plansBody:
-    "無料で開始。Plus は容量を追加、Pro は整理機能と AstraZero、Ultra は2 MBと復元機能を提供します。",
+    "無料で開始。Plus は容量とノート整理、Pro は AstraZero、Ultra は1024 KBと復元機能を提供します。",
   chooseUltra: "Ultra を選ぶ",
   comparePlans: "プラン比較",
   compareFeature: "機能",
   comparisonHint:
     "1か月は30日。Ultra、Pro、Plus の順に利用し、下位プランの残り期間は停止します。",
   organizeFeature: "ノート整理",
-  organizeDetail: "ピン留め、フォルダー、タグ、アーカイブ、一括管理。",
+  organizeDetail: "ピン留め、アーカイブ、一括管理。",
   recoveryFeature: "履歴と復元",
   recoveryDetail: "直前の1バージョンとゴミ箱。両方とも容量に含まれます。",
   prioritySupport: "優先の有人サポート",
   prioritySupportDetail:
     "astranote@nxlabtw.com にご連絡ください。返信時間の保証はありません。",
-  zeroIncluded: "AstraZero · ブラウザーで鍵を生成",
+  zeroIncluded: "AstraZero · クライアントで鍵を生成",
   zeroOption: "AstraZero · Pro / Ultra",
   zeroPin: "AstraZero PIN（4～16文字の ASCII）",
   zeroExplanation:
-    "ブラウザーがノートごとにランダムな鍵を生成して内容を暗号化し、PIN で鍵を保護します。サーバーに保存するのは暗号文と保護された鍵だけで、PIN や平文の鍵は送信しません。",
+    "クライアントがノートごとにランダムな鍵を生成して内容を暗号化し、PIN で鍵を保護します。サーバーに保存するのは暗号文と保護された鍵だけで、PIN や平文の鍵は送信しません。",
   zeroWarning:
-    "PIN は自分で保管してください。復元できません。ランダムな12～16文字を推奨します。暗号化ファイルから短い PIN をオフラインで推測できる場合があります。信頼できる端末のみで解除してください。タイトル、フォルダー、タグは暗号化されません。",
+    "PIN は自分で保管してください。復元できません。ランダムな12～16文字を推奨します。暗号化ファイルから短い PIN をオフラインで推測できる場合があります。信頼できる端末のみで解除してください。ノートのタイトルは暗号化されません。",
   encryptionTitle: "ノートに合った保護を選ぶ。",
   encryptionIntro:
-    "通常の記録からブラウザー暗号化まで。PIN を使う方式では、十分に強い PIN が重要です。",
+    "通常の記録からクライアント暗号化まで。PIN を使う方式では、十分に強い PIN が重要です。",
   zeroExposure:
-    "暗号化ファイル＋正しい（または推測された）PIN、または解除時のブラウザーの制御",
-  zeroSecurity: "ブラウザーで鍵を保持",
+    "暗号化ファイル＋正しい（または推測された）PIN、または解除時のクライアントの制御",
+  zeroSecurity: "クライアントで鍵を保持",
   vaultSharingUnavailable:
     "PIN で保護されたノートは、受信者に復号資格情報がないため共有できません。",
   vaultNoSharing: "PIN で保護されたノートは共有できません。",
@@ -1224,13 +1242,15 @@ Object.assign(I18N["ja"], {
   pin: "ピン留め",
   unpin: "ピンを外す",
   organize: "整理",
-  allFolders: "すべてのフォルダー",
-  noFolder: "フォルダーなし",
-  folder: "フォルダー",
-  tags: "タグ",
-  folderHelp: "フォルダー名は40文字以内。空欄で解除します。",
-  tagsHelp: "カンマ区切りで8個まで、各24文字以内。空欄で解除します。",
-  allTags: "すべてのタグ",
+  searchNotes: "ノートのタイトルを検索",
+  searchNotesPlaceholder: "ノートのタイトルを検索…",
+  noMatchingNotes: "検索や絞り込みに一致するノートはありません。",
+  moveToTrash: "ゴミ箱に移動",
+  unlockByUpgrade: "アップグレードで解除",
+  trashLocked:
+    "プラン上限によりロック中です。復元するにはアップグレードしてください。",
+  freeIncluded: "すべてのアカウントに含まれます",
+  freeIncludedBody: "購入不要で、無料で始められます。",
   archive: "アーカイブ",
   unarchive: "アーカイブ解除",
   activeNotes: "通常のノート",
@@ -1242,7 +1262,7 @@ Object.assign(I18N["ja"], {
   apply: "適用",
   selectionLimit: "一度に選択できるのは100件までです。",
   organizeUpgrade:
-    "Pro と Ultra はピン留め、フォルダー、タグ、アーカイブ、一括整理に対応します。",
+    "Plus、Pro、Ultra はピン留め、アーカイブ、一括整理に対応します。",
   trash: "ゴミ箱",
   trashBody:
     "削除したノートは期限まで保管されます。直前のバージョンを含め、容量を使用します。",
@@ -1276,13 +1296,13 @@ Object.assign(I18N["ja"], {
   restoreQuota: "容量を空けるかアップグレードしてから復元してください。",
   noteConflict:
     "別のタブで変更されました。再読み込みしてから保存してください。",
-  organizationRequired: "整理機能には Pro または Ultra が必要です。",
+  organizationRequired: "整理機能には Plus、Pro または Ultra が必要です。",
   storageLimit: "アカウントの容量制限を超えます。",
   versionDiscardNotice:
     "Ultra で保存すると直前のバージョンを保持し、容量を使用します。",
   recoveryTermsTitle: "整理、履歴、ゴミ箱",
   recoveryTerms:
-    "Pro と Ultra は整理機能と AstraZero に対応します。Ultra は2 MB、各ノートの直前の1バージョン、保存期間を設定できるゴミ箱（既定7日）、返信時間を保証しない優先有人サポートを提供します。履歴とゴミ箱は容量に含まれます。履歴を復元すると現在の内容を置き換え、その履歴を消去します。ゴミ箱の期限は削除時に確定します。Ultra 終了後は新たな履歴やゴミ箱項目を作成できませんが、既存の履歴と期限内の項目は現在の上限内で復元できます。上限超過で30日間ロックされた後にシステムが削除するノートはゴミ箱に入りません。独立したバックアップではないため、重要なデータはご自身で保管してください。既存の責任制限および法令で保障される消費者の権利が適用されます。",
+    "Plus、Pro、Ultra はノート整理に対応し、Pro と Ultra は AstraZero も利用できます。Ultra は1024 KB、各ノートの直前の1バージョン、保存期間を設定できるゴミ箱（既定7日）、返信時間を保証しない優先有人サポートを提供します。履歴とゴミ箱は容量に含まれます。履歴を復元すると現在の内容を置き換え、その履歴を消去します。ゴミ箱の期限は削除時に確定します。Ultra 終了後は新たな履歴やゴミ箱項目を作成できませんが、既存の履歴と期限内の項目は現在の上限内で復元できます。上限超過で30日間ロックされた後にシステムが削除するノートはゴミ箱に入りません。独立したバックアップではないため、重要なデータはご自身で保管してください。既存の責任制限および法令で保障される消費者の権利が適用されます。",
 });
 
 Object.assign(I18N.en, {
@@ -1316,7 +1336,7 @@ Object.assign(I18N.ja, {
     "アイデア、リマインダー、リストや役立つ情報を、忘れないうちに書き留められます。",
   secureTitle: "必要なときに強い暗号化",
   secureBody:
-    "サーバー管理の AES、AstraSecret、AstraConfidential、ブラウザーで鍵を生成する AstraZero から選べます。",
+    "サーバー管理の AES、AstraSecret、AstraConfidential、クライアントで鍵を生成する AstraZero から選べます。",
   shareTitle: "無料で使える",
   shareBody:
     "Free は20件のノートと128 KB。広告やアクセス解析の追跡はありません。",
@@ -1484,6 +1504,115 @@ const CURRENT_AES_MODES = new Map([
   ["aes-128-gcm-new", "AES-128-GCM"],
   ["aes-256-gcm-new", "AES-256-GCM"],
 ]);
+Object.assign(I18N["en"], {
+  plusUsdEstimate: "About US$2 / month",
+  proUsdEstimate: "About US$5 / month",
+  ultraUsdEstimate: "About US$10 / month",
+  usdEstimateNote:
+    "USD estimates use a reference rate of 1 BTC ≈ US$80,000, not a live exchange rate. Actual prices and payments are in BTC.",
+  zeroPlanSummary:
+    "Pro and Ultra include AstraZero: encryption keys are generated entirely on your client; the server stores only protected keys and encrypted content.",
+  encryptionDetails: "Explore encryption options",
+  legalUpdated: "Effective and last updated: 5 September 2026",
+  zeroIncluded: "AstraZero · client-held protection",
+  zeroHeadline: "AstraZero. Even the key stays protected.",
+  zeroExplanation:
+    "Each note gets its own random key, generated on your client. The client encrypts the content with AES-256-GCM and protects that key with your PIN before uploading. AstraNote receives encrypted content and a protected key—not your PIN or a usable plaintext key. Key generation and unlocking do not rely on server encryption environment variables.",
+  zeroWarning:
+    "Keep your PIN safe; we cannot recover it. Use a random 12–16 character PIN and a trusted device. Encrypted files still permit offline guesses of weak PINs. Note titles are not encrypted.",
+  zeroSecurity: "No server-held plaintext key",
+  zeroClientFeature: "Keys generated on your client",
+  zeroNoteFeature: "A separate random key for every note",
+  zeroBenefit:
+    "Leaked server settings alone cannot directly decrypt your AstraZero content. Pair strong client-side protection with a strong PIN.",
+  securityCaution:
+    "Usable keys exist temporarily in client memory while you unlock or edit. A compromised device, malicious application code or a guessed PIN can still expose content. This protection is not a promise of absolute security.",
+  lockedAccessTermsTitle: "What a locked note allows",
+  lockedAccessTerms:
+    "When a plan expires or usage exceeds its allowance, over-limit notes are locked immediately, largest first. Only the title, size, lock status and deletion deadlines remain visible; you may permanently delete the note or upgrade for sufficient allowance. Reading content or ciphertext, decryption-factor requests, editing, sharing, pinning or unpinning, moving, archiving or unarchiving, trash restoration, and viewing or restoring a previous version are refused by the server. Existing pins and archive status do not bypass the lock. An upgrade clears a lock only when the new allowance permits it. Continuous over-limit locks expire after 30 days; trash retains its original expiry and may be deleted sooner. Neither pinning nor upgrading extends a trash deadline. Content previously downloaded or decrypted on your own device cannot be recalled by the service.",
+  privacyNotebookTitle: "Notes, search and client encryption",
+  privacyNotebookData:
+    "AstraNote keeps note titles, pin and archive status, encryption metadata, and—for eligible notes—one previous version and trash timestamps. Titles stay unencrypted. Title search runs on the note list already loaded by your client; search queries are not submitted to a search service, and content is not decrypted or indexed for search. Folders and tags are no longer supported; retired classification fields are removed when account metadata is saved, without deleting note content.",
+  privacyRetention:
+    "Ultra and Admin manual deletion normally moves an unlocked note into trash for the chosen 1, 3, 7, 14 or 30 days (default 7). Trash and the one previous version count toward storage. A permanent deletion, account deletion, or a 30-day over-limit deletion does not create a recoverable copy. Trash keeps its original deadline after downgrade, locking, or upgrade; an expired item cannot be restored even if scheduled file cleanup has not run yet. A remaining trash item keeps the navigation entry available after downgrade, but over-limit locked items cannot be restored until unlocked within an adequate allowance.",
+  termsUpdated: "Effective and last updated: 5 September 2026",
+  expiryLockNotice:
+    "When your subscription expires, notes exceeding your remaining plan allowance are locked, largest first. You can only view their title and size, delete them, or upgrade to unlock. After 30 continuous days locked, they are permanently deleted. Trash keeps its original expiry, which may be sooner.",
+  zeroServerFeature: "No reliance on server encryption environment variables",
+});
+Object.assign(I18N["zh-Hant"], {
+  plusUsdEstimate: "約 US$2／月",
+  proUsdEstimate: "約 US$5／月",
+  ultraUsdEstimate: "約 US$10／月",
+  usdEstimateNote:
+    "美元約數以 1 BTC ≈ US$80,000 估算，非即時匯率；實際價格與付款均以 BTC 為準。",
+  zeroPlanSummary:
+    "Pro 與 Ultra 提供 AstraZero：加密金鑰完全由客戶端自行產生，伺服器只保存受保護的金鑰與密文。",
+  encryptionDetails: "了解加密方式",
+  legalUpdated: "生效及最後更新：2026 年 9 月 5 日",
+  zeroIncluded: "AstraZero · 客戶端金鑰保護",
+  zeroHeadline: "AstraZero，連金鑰也先加密。",
+  zeroExplanation:
+    "每篇筆記都有由客戶端獨立產生的隨機金鑰。客戶端以 AES-256-GCM 加密內容，再用你的 PIN 保護金鑰，才將資料上傳。AstraNote 收到的是密文與受保護的金鑰，不是你的 PIN 或可直接解密的明文金鑰；也不依賴伺服器加密環境變數來產生或解鎖金鑰。",
+  zeroWarning:
+    "PIN 由你自行保管，遺失無法找回。請使用隨機12～16個字元，並只在信任的裝置解鎖。取得加密檔案者仍能離線猜測弱 PIN。筆記標題不加密。",
+  zeroSecurity: "伺服器不持有明文金鑰",
+  zeroClientFeature: "金鑰在客戶端產生",
+  zeroNoteFeature: "每篇筆記使用獨立隨機金鑰",
+  zeroBenefit:
+    "只取得外洩的伺服器設定，無法直接解密 AstraZero 內容。用強 PIN 搭配客戶端加密，為重要筆記多一層保護。",
+  securityCaution:
+    "解鎖或編輯期間，可用金鑰會短暫存在客戶端記憶體。受控制的裝置、惡意程式碼或被猜中的 PIN 仍可能使內容外洩；這不是絕對安全的保證。",
+  lockedAccessTermsTitle: "筆記鎖定後的存取限制",
+  lockedAccessTerms:
+    "方案到期或超出額度時，超額筆記會立即由大到小鎖定。只保留標題、容量、鎖定狀態及刪除期限；你可永久刪除該筆記，或升級至足夠額度。後端拒絕讀取內容或密文、取得解密因子、編輯、分享、釘選或取消釘選、移動、封存或取消封存、垃圾桶還原，以及讀取或還原上一版本。既有釘選或封存狀態不能繞過鎖定。升級後仍須符合新額度才會解鎖。連續超額鎖定滿30天會永久刪除；垃圾桶維持原到期時間，可能更早清除。釘選或升級不會延長垃圾桶期限。使用者曾自行下載或在裝置上解密的內容，無法由本服務追溯收回。",
+  privacyNotebookTitle: "筆記整理、搜尋與客戶端加密",
+  privacyNotebookData:
+    "AstraNote 保存筆記標題、釘選及封存狀態、加密中繼資料，以及符合資格筆記的上一版本與垃圾桶時間紀錄。標題不加密。標題搜尋僅在客戶端已載入的筆記清單中執行，不會將查詢字串傳至搜尋服務，也不會為搜尋解密或建立內容索引。資料夾與標籤功能已取消；舊分類欄位於帳號中繼資料儲存時清理，不刪除筆記內容。",
+  privacyRetention:
+    "Ultra 與 Admin 手動刪除未鎖定筆記時，原則上移至垃圾桶，依選擇保留1、3、7、14或30天，預設7天。垃圾桶與上一版本都計入空間。永久刪除、刪除帳號及超額鎖定滿30天的系統刪除，不會建立可復原副本。降級、鎖定或升級均不延長垃圾桶原到期時間；即使排程尚未實際清理檔案，已到期項目也不能還原。降級後只要仍有垃圾桶項目，就保留導覽入口；超額鎖定的項目須先取得足夠額度並解鎖才能還原。",
+  termsUpdated: "生效及最後更新：2026 年 9 月 5 日",
+  expiryLockNotice:
+    "訂閱到期後，超出剩餘方案額度的筆記會從容量最大者開始鎖定。你只能查看標題與容量、刪除筆記，或升級解鎖；連續鎖定滿30天將永久刪除。垃圾桶維持原期限，可能更早清除。",
+  zeroServerFeature: "不依賴伺服器加密環境變數",
+});
+Object.assign(I18N["ja"], {
+  plusUsdEstimate: "月額 約 US$2",
+  proUsdEstimate: "月額 約 US$5",
+  ultraUsdEstimate: "月額 約 US$10",
+  usdEstimateNote:
+    "米ドルの目安は 1 BTC ≈ US$80,000 で換算しています。リアルタイムの為替レートではなく、実際の価格と支払いは BTC 建てです。",
+  zeroPlanSummary:
+    "Pro と Ultra の AstraZero は、暗号鍵をすべてクライアント側で生成し、サーバーには保護した鍵と暗号文のみ保存します。",
+  encryptionDetails: "暗号化方式について",
+  legalUpdated: "施行・最終更新：2026年9月5日",
+  zeroIncluded: "AstraZero · クライアント側の鍵保護",
+  zeroHeadline: "AstraZero。鍵まで暗号化。",
+  zeroExplanation:
+    "クライアントがノートごとに独立したランダム鍵を生成し、AES-256-GCM で内容を暗号化します。その鍵も PIN で保護してから送信します。AstraNote が受け取るのは暗号文と保護された鍵だけで、PIN や直接復号できる平文の鍵ではありません。鍵の生成や解除はサーバーの暗号化用環境変数に依存しません。",
+  zeroWarning:
+    "PIN はご自身で保管してください。再発行できません。ランダムな12～16文字と信頼できる端末を使ってください。暗号化ファイルから弱い PIN をオフラインで推測できる可能性は残ります。タイトルは暗号化されません。",
+  zeroSecurity: "サーバーに平文の鍵を預けない",
+  zeroClientFeature: "鍵はクライアントで生成",
+  zeroNoteFeature: "ノートごとに独立したランダム鍵",
+  zeroBenefit:
+    "サーバー設定の漏えいだけでは AstraZero の内容を直接復号できません。強い PIN とクライアント側暗号化で大切なノートを守ります。",
+  securityCaution:
+    "解除・編集中は、利用可能な鍵がクライアントのメモリーに一時的に存在します。侵害された端末、悪意あるコード、推測された PIN からは内容が漏れる可能性があり、絶対的な安全の保証ではありません。",
+  lockedAccessTermsTitle: "ロック中のノートの制限",
+  lockedAccessTerms:
+    "期限切れや上限超過では、容量の大きいノートから直ちにロックします。タイトル、サイズ、ロック状態、削除期限のみ表示でき、完全削除または十分な容量へのアップグレードが可能です。内容・暗号文・復号用因子の取得、編集、共有、ピン留めと解除、移動、アーカイブと解除、ゴミ箱からの復元、直前のバージョンの閲覧・復元はサーバー側で拒否します。既存のピンやアーカイブで回避できません。アップグレード後も新しい上限を満たす場合のみ解除します。上限超過のロックが30日続くと完全削除し、ゴミ箱は元の期限でそれより早く削除される場合があります。ピン留めやアップグレードでゴミ箱の期限は延長されません。すでに端末に保存・復号された内容をサービス側で回収することはできません。",
+  privacyNotebookTitle: "ノート整理、検索とクライアント暗号化",
+  privacyNotebookData:
+    "タイトル、ピンとアーカイブの状態、暗号化メタデータ、対象ノートの直前のバージョンとゴミ箱の日時を保存します。タイトルは平文です。タイトル検索はクライアントに読み込み済みの一覧だけで行い、検索語を検索サービスに送信せず、内容の復号や検索用索引の作成もしません。フォルダーとタグは廃止し、アカウント情報の保存時に旧分類を除去します。ノートの内容は削除しません。",
+  privacyRetention:
+    "Ultra と Admin が未ロックのノートを手動削除した場合、通常はゴミ箱に移動し、1・3・7・14・30日から選んだ期間（既定7日）保管します。ゴミ箱と直前のバージョンも容量に含みます。完全削除、アカウント削除、30日間の上限超過によるシステム削除では復元用コピーを作りません。降格・ロック・アップグレードでも元の期限は延長せず、ファイル清掃の実行前でも期限後は復元できません。降格後もゴミ箱に項目があればナビゲーションを残しますが、上限超過でロックされた項目は十分な容量で解除するまで復元できません。",
+  termsUpdated: "施行・最終更新：2026年9月5日",
+  expiryLockNotice:
+    "契約期限後、残りのプラン上限を超えるノートは容量の大きい順にロックされます。タイトルとサイズの確認、完全削除、アップグレードによる解除のみ可能です。ロックが30日続くと完全削除します。ゴミ箱は元の期限で、それより早く削除される場合があります。",
+  zeroServerFeature: "サーバーの暗号化用環境変数に依存しない",
+});
+
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const page = document.body.dataset.page || "";
@@ -1868,6 +1997,7 @@ async function api(url, options = {}) {
           organization_required: t("organizationRequired"),
           storage_limit: t("storageLimit"),
           restore_quota: t("restoreQuota"),
+          note_locked: t("noteLocked"),
         }[data.error] ||
           data.message ||
           t("error"),
@@ -1882,8 +2012,15 @@ async function api(url, options = {}) {
 }
 
 function applyPageSeo() {
-  if (page === "trash") {
-    document.title = `${t("trash")} — AstraNote`;
+  const pageTitleKey = {
+    trash: "trash",
+    notes: "notes",
+    settings: "settings",
+    terms: "terms",
+    privacy: "privacy",
+  }[page];
+  if (pageTitleKey) {
+    document.title = `${t(pageTitleKey)} — AstraNote`;
     return;
   }
   if (page !== "plans") return;
@@ -1910,13 +2047,13 @@ function renderPlanComparison() {
       null,
       [t("freePrice"), "0.000025 BTC", "0.000060 BTC", "0.000125 BTC"],
     ],
-    ["totalStorage", null, ["128 KB", "256 KB", "512 KB", "2 MB"]],
+    ["totalStorage", null, ["128 KB", "256 KB", "512 KB", "1024 KB"]],
     ["noteAllowance", null, ["20", "50", t("unlimited"), t("unlimited")]],
     ["basicEncryption", null, [true, true, true, true]],
     ["AstraSecret", null, [true, true, true, true]],
     ["AstraConfidential", null, [false, true, true, true]],
+    ["organizeFeature", "organizeDetail", [false, true, true, true]],
     ["AstraZero", null, [false, false, true, true]],
-    ["organizeFeature", "organizeDetail", [false, false, true, true]],
     ["recoveryFeature", "recoveryDetail", [false, false, false, true]],
     ["prioritySupport", "prioritySupportDetail", [false, false, false, true]],
   ];
@@ -1983,10 +2120,16 @@ function applyLocale() {
 
 function buildNav() {
   const authenticated = Boolean(state.session?.authenticated);
+  const trashLink =
+    authenticated &&
+    (state.account?.plan.canRecover || state.account?.trash?.length)
+      ? '<a class="nav-link" href="/trash"><i class="fa-solid fa-trash-can" aria-hidden="true"></i> <span data-i18n="trash"></span></a>'
+      : "";
   const protectedLinks = authenticated
     ? `
     <a class="nav-link" href="/dashboard"><i class="fa-solid fa-chart-line"></i> <span data-i18n="dashboard"></span></a>
     <a class="nav-link" href="/notes"><i class="fa-solid fa-book"></i> <span data-i18n="notes"></span></a>
+    ${trashLink}
     <a class="nav-link plans-nav-link" href="/plans"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> <span data-i18n="plans"></span></a>
     <a class="nav-link" href="/settings"><i class="fa-solid fa-gear"></i> <span data-i18n="settings"></span></a>`
     : "";
@@ -2363,24 +2506,51 @@ function cookieBanner() {
   };
 }
 
-function noteRow(note, deletable = false) {
-  const row = document.createElement("article");
-  row.className = `note-row${note.locked ? " note-row-locked" : ""}`;
-  row.tabIndex = 0;
-  row.setAttribute("role", "link");
-  const visibleName = note.name || t("confidentialNote");
-  row.setAttribute("aria-label", `${t("open")}: ${visibleName}`);
-  const destination = `/notes/${note.id}`;
-  const openNote = (event) => {
-    if (event.type === "click" && event.target.closest("button, a")) return;
-    if (event.type === "keydown" && !["Enter", " "].includes(event.key)) return;
-    if (event.type === "keydown") event.preventDefault();
-    location.href = destination;
+function noteAction(icon, label, run, danger = false) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = `btn icon-btn note-action${danger ? " btn-danger" : ""}`;
+  button.setAttribute("aria-label", label);
+  button.title = label;
+  const image = document.createElement("i");
+  image.className = `fa-solid ${icon}`;
+  image.setAttribute("aria-hidden", "true");
+  button.append(image);
+  button.onclick = async (event) => {
+    event.stopPropagation();
+    button.disabled = true;
+    try {
+      await run();
+    } catch (error) {
+      toast(error.message || t("error"));
+    } finally {
+      button.disabled = false;
+    }
   };
-  row.addEventListener("click", openNote);
-  row.addEventListener("keydown", (event) => {
-    if (event.target === row) openNote(event);
-  });
+  return button;
+}
+
+function upgradeNoteLink() {
+  const link = document.createElement("a");
+  link.href = "/plans";
+  link.className = "btn note-upgrade-link";
+  link.innerHTML =
+    '<i class="fa-solid fa-arrow-up-right-dots" aria-hidden="true"></i><span></span>';
+  $("span", link).textContent = t("unlockByUpgrade");
+  return link;
+}
+
+function noteRow(note, deletable = false, onChange = () => location.reload()) {
+  const row = document.createElement("article");
+  row.className = `note-row${note.locked ? " note-row-locked" : ""}${note.pinned ? " note-row-pinned" : ""}`;
+  row.dataset.noteId = note.id;
+  const visibleName = note.name || t("confidentialNote");
+  const link = document.createElement(note.locked ? "div" : "a");
+  link.className = "note-card-link";
+  if (!note.locked) {
+    link.href = `/notes/${note.id}`;
+    link.setAttribute("aria-label", `${t("open")}: ${visibleName}`);
+  }
   const main = document.createElement("div");
   main.className = "note-main";
   const name = document.createElement("strong");
@@ -2389,19 +2559,25 @@ function noteRow(note, deletable = false) {
   tag.textContent = note.locked
     ? t("noteLocked")
     : encryptionLabel(note.encryption);
-  main.append(name, tag);
-  if (!note.locked && (note.pinned || note.folder || note.tags?.length)) {
-    const detail = document.createElement("small");
-    detail.className = "note-organization";
-    detail.textContent = [
-      note.pinned ? t("pinned") : "",
-      note.folder || "",
-      ...(note.tags || []).map((tag) => `#${tag}`),
-    ]
-      .filter(Boolean)
-      .join(" · ");
-    main.append(detail);
+  const badges = document.createElement("div");
+  badges.className = "note-badges";
+  if (note.pinned) {
+    const pin = document.createElement("small");
+    pin.className = "note-pin-badge";
+    pin.innerHTML =
+      '<i class="fa-solid fa-thumbtack" aria-hidden="true"></i><span></span>';
+    $("span", pin).textContent = t("pinned");
+    badges.append(pin);
   }
+  badges.append(tag);
+  if (note.archived) {
+    const archived = document.createElement("small");
+    archived.textContent = t("archivedNotes");
+    badges.append(archived);
+  }
+  main.append(name, badges);
+  const metadata = document.createElement("div");
+  metadata.className = "note-metadata";
   const chars = document.createElement("span");
   chars.className = "note-meta note-characters";
   chars.textContent = note.locked
@@ -2412,25 +2588,7 @@ function noteRow(note, deletable = false) {
   const size = document.createElement("span");
   size.className = "note-meta note-size";
   size.textContent = formatBytes(note.bytes);
-  row.append(main, chars, size);
-  if (deletable) {
-    const del = document.createElement("button");
-    del.className = "btn btn-danger icon-btn";
-    del.type = "button";
-    del.setAttribute("aria-label", t("delete"));
-    del.innerHTML = '<i class="fa-solid fa-trash"></i>';
-    del.onclick = (event) => {
-      event.stopPropagation();
-      deleteNote(note);
-    };
-    row.append(del);
-  } else {
-    const open = document.createElement("span");
-    open.className = "note-open";
-    open.setAttribute("aria-hidden", "true");
-    open.innerHTML = '<i class="fa-solid fa-arrow-right"></i>';
-    row.append(open);
-  }
+  metadata.append(chars, size);
   const updated = document.createElement("small");
   updated.className = "note-meta note-updated";
   updated.textContent = note.locked
@@ -2439,7 +2597,61 @@ function noteRow(note, deletable = false) {
         formatUtc(note.scheduledDeletionAt),
       )
     : `${t("updated")} ${formatUtc(note.updatedAt)}`;
-  row.append(updated);
+  metadata.append(updated);
+  link.append(main, metadata);
+  row.append(link);
+  if (deletable) {
+    const actions = document.createElement("div");
+    actions.className = "note-card-actions";
+    if (note.locked) actions.append(upgradeNoteLink());
+    if (state.account?.plan.canOrganize && !note.locked) {
+      const change = async (action, value) => {
+        await api("/api/notes/organize", {
+          method: "PATCH",
+          body: { ids: [note.id], action, value },
+        });
+        await onChange();
+      };
+      const pin = noteAction(
+        "fa-thumbtack",
+        t(note.pinned ? "unpin" : "pin"),
+        () => change("pin", !note.pinned),
+      );
+      pin.setAttribute("aria-pressed", String(Boolean(note.pinned)));
+      actions.append(
+        pin,
+        noteAction(
+          note.archived ? "fa-box-open" : "fa-box-archive",
+          t(note.archived ? "unarchive" : "archive"),
+          () => change("archive", !note.archived),
+        ),
+      );
+    }
+    actions.append(
+      noteAction(
+        "fa-trash-can",
+        t(
+          state.account?.plan.canRecover && !note.locked
+            ? "moveToTrash"
+            : "delete",
+        ),
+        () => deleteNote(note),
+        true,
+      ),
+    );
+    row.append(actions);
+  } else if (note.locked) {
+    const actions = document.createElement("div");
+    actions.className = "note-card-actions";
+    actions.append(upgradeNoteLink());
+    row.append(actions);
+  } else {
+    const open = document.createElement("span");
+    open.className = "note-open";
+    open.setAttribute("aria-hidden", "true");
+    open.innerHTML = '<i class="fa-solid fa-arrow-right"></i>';
+    row.append(open);
+  }
   return row;
 }
 
@@ -2455,7 +2667,9 @@ function deleteNote(note) {
         ? "trashNoteBody"
         : "deleteNoteBody",
     ),
-    confirm: t("delete"),
+    confirm: t(
+      state.account?.plan.canRecover && !note.locked ? "moveToTrash" : "delete",
+    ),
     run: () =>
       api(`/api/notes/${note.id}`, {
         method: "DELETE",
@@ -2646,81 +2860,105 @@ async function initDashboard() {
   }
   const list = $("#note-list");
   list.replaceChildren(
-    ...account.notes
-      .filter((note) => !note.archived)
-      .sort((a, b) => Number(b.pinned) - Number(a.pinned))
-      .slice(0, 6)
+    ...filterNotes(account.notes)
+      .filter((note, index) => note.pinned || index < 6)
       .map((note) => noteRow(note)),
   );
   if (!account.notes.length)
     list.innerHTML = `<div class="empty-state"><div class="empty-orbit"></div><p>${t("noNotes")}</p></div>`;
 }
 
+function filterNotes(notes, query = "", mode = "active") {
+  const search = query.normalize("NFKC").toLocaleLowerCase().trim();
+  return notes
+    .filter((note) => {
+      if (note.trashedAt) return false;
+      if (
+        mode === "pinned"
+          ? !note.pinned
+          : mode === "archived"
+            ? !note.archived
+            : note.archived && !note.pinned
+      )
+        return false;
+      return String(note.name || "")
+        .normalize("NFKC")
+        .toLocaleLowerCase()
+        .includes(search);
+    })
+    .sort(
+      (a, b) =>
+        Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)) ||
+        Date.parse(b.updatedAt) - Date.parse(a.updatedAt) ||
+        a.id.localeCompare(b.id),
+    );
+}
+
 async function initNotes() {
-  const account = await requireAccount();
+  let account = await requireAccount();
   if (!account) return;
   const list = $("#note-list");
-  $("#trash-link").hidden = !account.plan.canRecover && !account.trash.length;
-  const toolbar = $("#notes-toolbar");
-  toolbar.hidden =
-    !account.plan.canOrganize &&
-    !account.notes.some(
-      (note) => note.archived || note.folder || note.tags?.length,
-    );
   $("#batch-controls").hidden = !account.plan.canOrganize;
   $("#organization-upgrade").hidden = account.plan.canOrganize;
-  for (const [selector, values] of [
-    [
-      "#folder-filter",
-      new Set(account.notes.map((note) => note.folder).filter(Boolean)),
-    ],
-    ["#tag-filter", new Set(account.notes.flatMap((note) => note.tags || []))],
-  ]) {
-    for (const value of [...values].sort()) {
-      const option = document.createElement("option");
-      option.value = value;
-      option.textContent = value;
-      $(selector).append(option);
-    }
-  }
+  const search = $("#note-search");
+  const filterToggle = $("#note-filter-toggle");
+  const filters = $("#note-filters");
+  let mode = "active";
   const selected = new Set();
   let visible = [];
+  let batchBusy = false;
+  const selectedActions = () =>
+    selectionActions(visible.filter((note) => selected.has(note.id)));
   const updateSelection = () => {
     $("#selected-count").textContent = t("selectedNotes").replace(
       "{count}",
       selected.size,
     );
-    $("#batch-organize").disabled = !selected.size;
+    $("#selected-count").hidden = $("#batch-actions").hidden = !selected.size;
+    const actions = selectedActions();
+    $("#batch-pin span").textContent = t(actions.pin ? "pin" : "unpin");
+    $("#batch-archive span").textContent = t(
+      actions.archive ? "archive" : "unarchive",
+    );
+    $("#batch-delete span").textContent = t(
+      account.plan.canRecover ? "moveToTrash" : "delete",
+    );
+    $$("#batch-actions button").forEach((button) => {
+      button.disabled = batchBusy || !selected.size;
+    });
+    $$(".note-select input", list).forEach((input) => {
+      input.disabled = batchBusy;
+    });
+    const selectable = visible.filter((note) => !note.locked);
     $("#select-all").checked =
-      visible.length > 0 && visible.every((note) => selected.has(note.id));
+      selectable.length > 0 &&
+      selectable.every((note) => selected.has(note.id));
+    $("#select-all").disabled = batchBusy || !selectable.length;
     $("#select-all").indeterminate =
       selected.size > 0 && !$("#select-all").checked;
   };
-  const render = () => {
-    selected.clear();
-    visible = account.notes
-      .filter(
-        (note) =>
-          Boolean(note.archived) ===
-            ($("#archive-filter").value === "archived") &&
-          (!$("#folder-filter").value ||
-            note.folder === $("#folder-filter").value) &&
-          (!$("#tag-filter").value ||
-            note.tags?.includes($("#tag-filter").value)),
-      )
-      .sort(
-        (a, b) =>
-          Number(b.pinned) - Number(a.pinned) ||
-          Date.parse(b.updatedAt) - Date.parse(a.updatedAt),
-      );
+  const refresh = async () => {
+    account = state.account = await api("/api/account");
+    render(false);
+  };
+  const render = (resetSelection = true) => {
+    if (resetSelection) selected.clear();
+    visible = filterNotes(account.notes, search.value, mode);
+    const selectableIds = new Set(
+      visible.filter((note) => !note.locked).map((note) => note.id),
+    );
+    for (const id of selected) if (!selectableIds.has(id)) selected.delete(id);
+    $("#notes-result-count").textContent =
+      `${t(mode === "pinned" ? "pinned" : mode === "archived" ? "archivedNotes" : "notes")} · ${visible.length}`;
     list.replaceChildren(
       ...visible.map((note) => {
-        const row = noteRow(note, true);
+        const row = noteRow(note, true, refresh);
         if (account.plan.canOrganize && !note.locked) {
           const label = document.createElement("label");
           label.className = "note-select";
           const checkbox = document.createElement("input");
           checkbox.type = "checkbox";
+          checkbox.checked = selected.has(note.id);
           checkbox.setAttribute(
             "aria-label",
             `${t("selectNote")}: ${note.name}`,
@@ -2744,11 +2982,41 @@ async function initNotes() {
       }),
     );
     if (!visible.length)
-      list.innerHTML = `<div class="empty-state"><p>${t("noNotes")}</p></div>`;
+      list.innerHTML = `<div class="empty-state"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><p>${t(account.notes.length ? "noMatchingNotes" : "noNotes")}</p></div>`;
     updateSelection();
   };
-  for (const selector of ["#archive-filter", "#folder-filter", "#tag-filter"])
-    $(selector).onchange = render;
+  search.addEventListener("input", () => render());
+  const closeFilters = () => {
+    filters.hidden = true;
+    filterToggle.setAttribute("aria-expanded", "false");
+  };
+  filterToggle.onclick = () => {
+    filters.hidden = !filters.hidden;
+    filterToggle.setAttribute("aria-expanded", String(!filters.hidden));
+  };
+  for (const button of $$("[data-note-filter]")) {
+    button.onclick = () => {
+      mode = button.dataset.noteFilter;
+      $$("[data-note-filter]").forEach((item) =>
+        item.setAttribute("aria-pressed", String(item === button)),
+      );
+      $("#filter-dot").hidden = mode === "active";
+      filterToggle.classList.toggle("has-filter", mode !== "active");
+      render();
+      closeFilters();
+      filterToggle.focus();
+    };
+  }
+  $("#notes-toolbar").addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !filters.hidden) {
+      closeFilters();
+      filterToggle.focus();
+      event.preventDefault();
+    }
+  });
+  document.addEventListener("click", (event) => {
+    if (!$("#notes-toolbar").contains(event.target)) closeFilters();
+  });
   $("#select-all").onchange = (event) => {
     selected.clear();
     if (event.target.checked)
@@ -2762,95 +3030,52 @@ async function initNotes() {
     });
     updateSelection();
   };
-  $("#batch-organize").onclick = () => organizeNotes([...selected]);
+  const runBatch = async (action) => {
+    if (batchBusy || !selected.size) return;
+    const ids = [...selected],
+      value = selectedActions()[action];
+    batchBusy = true;
+    updateSelection();
+    try {
+      await api("/api/notes/organize", {
+        method: "PATCH",
+        body: { ids, action, value },
+      });
+      await refresh();
+    } catch (error) {
+      toast(error.message);
+    } finally {
+      batchBusy = false;
+      updateSelection();
+    }
+  };
+  $("#batch-pin").onclick = () => runBatch("pin");
+  $("#batch-archive").onclick = () => runBatch("archive");
+  $("#batch-delete").onclick = () => {
+    if (selected.size && !batchBusy) deleteSelectedNotes([...selected]);
+  };
   render();
 }
 
-function organizeNotes(ids) {
-  const content = document.createElement("div");
-  content.className = "modal-form-stack";
-  const label = document.createElement("label");
-  label.textContent = t("batchAction");
-  const action = document.createElement("select");
-  action.id = "organize-action";
-  label.htmlFor = action.id;
-  const actions = [
-    "pin",
-    "unpin",
-    "archive",
-    "unarchive",
-    "folder",
-    "tags",
-    "delete",
-  ];
-  for (const key of actions) {
-    const option = document.createElement("option");
-    option.value = key;
-    option.textContent = t(key);
-    action.append(option);
-  }
-  const inputLabel = document.createElement("label");
-  const input = document.createElement("input");
-  input.id = "organization-value";
-  inputLabel.htmlFor = input.id;
-  const help = document.createElement("p");
-  help.className = "field-help";
-  const update = () => {
-    const hasValue = ["folder", "tags"].includes(action.value);
-    input.hidden = inputLabel.hidden = help.hidden = !hasValue;
-    inputLabel.textContent = t(action.value);
-    help.textContent = t(action.value === "folder" ? "folderHelp" : "tagsHelp");
-    input.maxLength = action.value === "folder" ? 40 : 199;
-    input.value = "";
+function selectionActions(notes) {
+  return {
+    pin: !notes.length || !notes.every((note) => note.pinned),
+    archive: !notes.length || !notes.every((note) => note.archived),
   };
-  content.append(label, action, inputLabel, input, help);
-  action.onchange = update;
-  update();
-  modal({
-    title: t("organize"),
-    content,
-    confirm: t("apply"),
-    onConfirm: async (close) => {
-      const mode = action.value;
-      if (mode === "delete") {
-        close();
-        actionModal({
-          title: t(
-            state.account.plan.canRecover
-              ? "trashNoteTitle"
-              : "deleteNoteTitle",
-          ),
-          body: t(
-            state.account.plan.canRecover ? "trashNoteBody" : "deleteNoteBody",
-          ),
-          confirm: t("delete"),
-          run: () =>
-            api("/api/notes/batch-delete", {
-              method: "POST",
-              body: { ids, captcha: state.actionCaptcha },
-            }),
-        });
-        return;
-      }
-      const body = { ids, action: mode, value: true };
-      if (mode === "unpin") {
-        body.action = "pin";
-        body.value = false;
-      }
-      if (mode === "unarchive") {
-        body.action = "archive";
-        body.value = false;
-      }
-      if (mode === "folder") body.value = input.value.trim();
-      if (mode === "tags")
-        body.value = input.value
-          .split(/[,，]/u)
-          .map((tag) => tag.trim())
-          .filter(Boolean);
-      await api("/api/notes/organize", { method: "PATCH", body });
-      close();
-      location.reload();
-    },
+}
+
+function deleteSelectedNotes(ids) {
+  actionModal({
+    title: t(
+      state.account.plan.canRecover ? "trashNoteTitle" : "deleteNoteTitle",
+    ),
+    body: t(state.account.plan.canRecover ? "trashNoteBody" : "deleteNoteBody"),
+    confirm: t(state.account.plan.canRecover ? "moveToTrash" : "delete"),
+    run: () =>
+      api("/api/notes/batch-delete", {
+        method: "POST",
+        body: { ids, captcha: state.actionCaptcha },
+      }),
   });
 }
 
@@ -2861,7 +3086,8 @@ async function initTrash() {
   list.replaceChildren(
     ...account.trash.map((note) => {
       const row = document.createElement("article");
-      row.className = "trash-row";
+      row.className = `trash-row${note.locked ? " note-row-locked" : ""}`;
+      row.dataset.noteId = note.id;
       const main = document.createElement("div");
       main.className = "note-main";
       const title = document.createElement("strong");
@@ -2874,6 +3100,12 @@ async function initTrash() {
       const size = document.createElement("small");
       size.textContent = formatBytes(note.bytes);
       main.append(title, size, expiry);
+      if (note.locked) {
+        const warning = document.createElement("small");
+        warning.className = "trash-locked-message";
+        warning.textContent = t("trashLocked");
+        main.append(warning);
+      }
       const controls = document.createElement("div");
       controls.className = "trash-actions";
       const restore = document.createElement("button");
@@ -2909,7 +3141,7 @@ async function initTrash() {
               body: { captcha: state.actionCaptcha },
             }),
         });
-      controls.append(restore, remove);
+      controls.append(note.locked ? upgradeNoteLink() : restore, remove);
       row.append(main, controls);
       return row;
     }),
@@ -3130,8 +3362,31 @@ async function initNote() {
   $("#note-size").textContent = formatBytes(note.bytes);
   $("#note-updated").textContent = formatUtc(note.updatedAt);
   $("#edit-note").href = `/notes/${note.id}/edit`;
-  $("#organize-note").hidden = !state.account.plan.canOrganize;
-  $("#organize-note").onclick = () => organizeNotes([note.id]);
+  const reference =
+    state.account.notes.find((item) => item.id === note.id) || {};
+  for (const [action, key] of [
+    ["pin", "pinned"],
+    ["archive", "archived"],
+  ]) {
+    const button = $(`#${action}-note`);
+    button.hidden = !state.account.plan.canOrganize;
+    $("span", button).textContent = t(
+      reference[key] ? (action === "pin" ? "unpin" : "unarchive") : action,
+    );
+    button.onclick = async () => {
+      button.disabled = true;
+      try {
+        await api("/api/notes/organize", {
+          method: "PATCH",
+          body: { ids: [note.id], action, value: !reference[key] },
+        });
+        location.reload();
+      } catch (error) {
+        toast(error.message);
+        button.disabled = false;
+      }
+    };
+  }
   $("#previous-note").hidden = !note.hasPrevious;
   $("#previous-note").onclick = () =>
     showPrevious(note).catch((error) => {
@@ -3312,23 +3567,32 @@ async function initSettings() {
     $(".plan-settings-card a[href='/plans']").hidden = true;
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    await api("/api/settings", {
-      method: "PATCH",
-      body: {
-        displayName: form.displayName.value,
-        theme: form.theme.value,
-        language: form.language.value,
-        ...(account.plan.canRecover
-          ? { trashDays: Number(form.trashDays.value) }
-          : {}),
-      },
-    });
-    state.theme = form.theme.value;
-    state.language = form.language.value;
-    setStoredPreference("astranote_theme", state.theme);
-    setStoredPreference("astranote_language", state.language);
-    applyLocale();
-    toast(t("saved"));
+    const saveButton = $("#save-settings");
+    if (saveButton.disabled) return;
+    saveButton.disabled = true;
+    try {
+      await api("/api/settings", {
+        method: "PATCH",
+        body: {
+          displayName: form.displayName.value,
+          theme: form.theme.value,
+          language: form.language.value,
+          ...(account.plan.canRecover
+            ? { trashDays: Number(form.trashDays.value) }
+            : {}),
+        },
+      });
+      state.theme = form.theme.value;
+      state.language = form.language.value;
+      setStoredPreference("astranote_theme", state.theme);
+      setStoredPreference("astranote_language", state.language);
+      applyLocale();
+      toast(t("saved"));
+    } catch (error) {
+      toast(error.message);
+    } finally {
+      saveButton.disabled = false;
+    }
   });
   $("#logout-wide").onclick = () =>
     modal({
@@ -3470,6 +3734,24 @@ function renderOrders(orders) {
     list.innerHTML = `<div class="empty-state"><p>${t("noPayments")}</p></div>`;
 }
 
+function refreshAfterPayment(order) {
+  if (order.localStatus !== "paid" || !order.fulfilledAt) return false;
+  if (history.state?.astraBillingRefreshed === order.orderId) return false;
+  try {
+    // History state survives a reload without relying on browser storage.
+    history.replaceState(
+      { ...history.state, astraBillingRefreshed: order.orderId },
+      "",
+      location.href,
+    );
+    location.reload();
+  } catch {
+    // A clean plans URL also prevents a loop when history state is unavailable.
+    location.replace("/plans");
+  }
+  return true;
+}
+
 async function renderBillingReturn(orderId, returnedPaymentId = "") {
   const panel = $("#billing-return");
   panel.hidden = false;
@@ -3534,6 +3816,7 @@ async function renderBillingReturn(orderId, returnedPaymentId = "") {
         support.innerHTML = `<i class="fa-regular fa-envelope" aria-hidden="true"></i><span>astranote@nxlabtw.com</span>`;
         panel.append(support);
       }
+      if (refreshAfterPayment(order)) return;
       await loadOrders();
     } catch (error) {
       panel.innerHTML = `<div class="billing-return-icon"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></div><div><h2>${error.message}</h2><p class="muted">astranote@nxlabtw.com</p></div>`;

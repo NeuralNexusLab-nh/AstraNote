@@ -22,11 +22,13 @@
           </div>
         </header>
         <section class="legal-feature-note">
-          <h2 data-i18n="recoveryTermsTitle"></h2>
-          <p data-i18n="recoveryDetail"></p>
+          <h2 data-i18n="privacyNotebookTitle"></h2>
+          <p data-i18n="privacyNotebookData"></p>
+          <p data-i18n="privacyRetention"></p>
           <p data-i18n="billingData"></p>
           <p data-i18n="zeroExplanation"></p>
           <p data-i18n="zeroWarning"></p>
+          <p data-i18n="securityCaution"></p>
         </section>
         <div data-lang="en">
           <p class="legal-note">
@@ -42,8 +44,8 @@
             The Operator determines why and how AstraNote processes personal
             data and is the data controller for this service. This policy covers
             the primary domain, backup domain, service APIs, and account data.
-            Third-party NexaCAPTCHA processing is also subject to that
-            provider’s own practices.
+            Third-party NexaCAPTCHA and Satora processing is also subject to
+            that provider’s own practices.
           </p>
           <h2>2. Data collected</h2>
           <ul>
@@ -61,9 +63,11 @@
               <strong>Content:</strong> note names and content, encryption
               selection, update time, and optional share token. Titles remain
               plaintext in every mode. Encrypted content is stored as ciphertext
-              with nonce and authentication tag. AstraConfidential and legacy
-              SCHybrid notes also store a random client salt; the PIN and final
-              browser key are not stored.
+              with the information needed for authenticated decryption.
+              AstraSecret, AstraConfidential and legacy SCHybrid also store a
+              random client salt. AstraZero stores a PIN-protected note key and
+              encrypted content, never your PIN or a usable plaintext key. Keys
+              exist temporarily in client memory during use.
             </li>
             <li>
               <strong>Security:</strong> rate-limit events, CAPTCHA verification
@@ -71,10 +75,10 @@
               necessary to prevent abuse.
             </li>
             <li>
-              <strong>Plans and payments:</strong> remaining Plus and Pro time,
-              local order ID, selected plan and months, integer satoshi amount,
-              Satora payment ID and URL, status, TXID, and fulfilment time. The
-              Satora API credential is never sent to the browser.
+              <strong>Plans and payments:</strong> remaining Plus, Pro and Ultra
+              time, local order ID, selected plan and months, BTC amount, Satora
+              payment ID and URL, status, TXID, and fulfilment time. The Satora
+              API credential is never sent to the client.
             </li>
           </ul>
           <h2>3. Purposes and legal bases</h2>
@@ -90,16 +94,17 @@
           <h2>4. Cookies and local storage</h2>
           <p>
             A host-only, HttpOnly session cookie is used for authentication and
-            security. The browser stores language, theme, and acknowledgement of
+            security. The client stores language, theme, and acknowledgement of
             the necessary-cookie notice. These technologies are essential or
             preference-only; no advertising, cross-site tracking, profiling, or
             analytics cookie is used. The primary and backup domains have
-            separate browser sessions.
+            separate client sessions.
           </p>
           <h2>5. Human verification</h2>
           <p>
-            For registration, login, note creation, note deletion, and permanent
-            account deletion, the browser loads a CAPTCHA from
+            For registration, login, note creation, note deletion, payment-order
+            creation, and permanent account deletion, the client loads a CAPTCHA
+            from
             <code>nexacaptcha.nxlabtw.com</code>. AstraNote sends the resulting
             verification ID and one-time response token to NexaCAPTCHA’s fixed
             server verification endpoint. The token is intended to work once and
@@ -110,7 +115,7 @@
           <p>
             The Operator does not proactively sell or share account data with
             advertisers or data brokers. Data may be processed by infrastructure
-            hosting and NexaCAPTCHA as necessary to operate the service;
+            hosting, NexaCAPTCHA and Satora as necessary to operate the service;
             disclosed when legally required; or used to protect users, systems,
             and legal rights. When you enable a sharing link, you instruct
             AstraNote to disclose that note, your public display name, and
@@ -125,11 +130,12 @@
             schedule. Confirmed account deletion immediately removes the live
             account directory and notes and revokes its sessions and sharing
             links; it cannot be cancelled or restored, and AstraNote has no
-            service backup. Individual deleted notes are likewise removed
-            immediately. Records may be retained only where required by law or
-            necessary for legal claims. Session records expire no later than
-            twenty-eight days after login. Daily-login uniqueness records reset
-            at UTC 00:00.
+            service backup. Manual deletion and recoverable trash follow the
+            retention rules above; permanent deletion is immediate. Records may
+            be retained only where required by law or necessary for legal
+            claims. Session records expire no later than twenty-eight days after
+            login. Distinct daily authenticated-activity records reset at UTC
+            00:00.
           </p>
           <h2>8. Security</h2>
           <p>
@@ -137,13 +143,14 @@
             sessions, CSRF and Origin checks, server-side CAPTCHA verification,
             rate limits, access-control checks, restrictive security headers,
             atomic writes, and request-size limits. The server-managed AES modes
-            can technically be decrypted by the Operator. AstraConfidential and
-            legacy SCHybrid encrypt content in the browser using the user's PIN
-            and server-assisted protection, but they are not a zero-knowledge
-            guarantee and still require trust in the application and server
-            while unlocking. No system is completely secure. Users should use a
-            unique password, avoid keeping the only copy of irreplaceable
-            material in the service, and retain independent copies.
+            can technically be decrypted by the Operator. AstraSecret,
+            AstraConfidential and legacy SCHybrid encrypt content in the client
+            using the user's PIN and server-assisted protection, but they are
+            not a zero-knowledge guarantee and still require trust in the
+            application and server while unlocking. No system is completely
+            secure. Users should use a unique password, avoid keeping the only
+            copy of irreplaceable material in the service, and retain
+            independent copies.
           </p>
           <h2>9. Children and guardians</h2>
           <p>
@@ -192,34 +199,38 @@
           <p>
             營運者決定 AstraNote
             處理個人資料的目的及方式，為本服務的資料控制者。本政策適用主要及備用網域、服務
-            API 與帳號資料。NexaCAPTCHA 的第三方處理亦受該提供者自身政策規範。
+            API 與帳號資料。NexaCAPTCHA 與 Satora
+            的第三方處理亦受該提供者自身政策規範。
           </p>
           <h2>二、蒐集資料</h2>
           <ul>
             <li>
-              <strong>註冊：</strong>Username、Email、密碼雜湊、註冊 IP、UTC
-              時間、同意版本與時間。
+              <strong>註冊：</strong>使用者名稱、電子郵件、密碼雜湊、註冊
+              IP、UTC 時間、同意版本與時間。
             </li>
             <li>
-              <strong>使用：</strong>最後登入 IP 與 UTC 時間、Session
+              <strong>使用：</strong>最後登入 IP 與 UTC 時間、登入階段
               識別資料、CSRF
-              Token、語言、主題、公開顯示名稱、儲存用量與筆記中繼資料。
+              驗證權杖、語言、主題、公開顯示名稱、儲存用量與筆記中繼資料。
             </li>
             <li>
               <strong>內容：</strong
-              >筆記名稱、內容、加密選項、更新時間及選擇性分享代碼。所有模式的筆記名稱都會保持明文；加密內容會以密文、Nonce
-              及驗證標籤保存。AstraConfidential 與舊版 SCHybrid 另保存隨機用戶端
-              Salt，但不保存 PIN 或最終瀏覽器金鑰。
+              >筆記名稱、內容、加密選項、更新時間及選擇性分享代碼。
+              標題均保持明文；加密內容連同解密驗證所需資訊保存。
+              AstraSecret、AstraConfidential 與舊版 SCHybrid
+              另保存隨機客戶端加密參數。 AstraZero 保存以 PIN
+              保護的筆記金鑰與密文，不保存 PIN 或可直接解密的明文金鑰。
+              解鎖時，金鑰會短暫存在客戶端記憶體。
             </li>
             <li>
               <strong>安全：</strong>速率限制事件、CAPTCHA 驗證 ID 與
-              Token，以及防止濫用所合理必要的錯誤及運作紀錄。
+              驗證權杖，以及防止濫用所合理必要的錯誤及運作紀錄。
             </li>
             <li>
-              <strong>方案與付款：</strong>Plus 與 Pro 剩餘時間、本地訂單
-              ID、方案與月數、整數 satoshi 金額、Satora payment ID
-              與付款網址、狀態、TXID 及交付時間。Satora API
-              憑證不會傳送至瀏覽器。
+              <strong>方案與付款：</strong>Plus、Pro 與 Ultra
+              剩餘時間、本地訂單編號、方案與月數、 Bitcoin 金額、Satora
+              付款編號及網址、狀態、交易識別碼與交付時間。 Satora
+              服務憑證不會傳送至客戶端。
             </li>
           </ul>
           <h2>三、目的與依據</h2>
@@ -228,41 +239,42 @@
           </p>
           <h2>四、Cookie 與本機儲存</h2>
           <p>
-            驗證及安全使用僅限目前主機、HttpOnly 的 Session
-            Cookie。瀏覽器會保存語言、主題及已閱讀必要 Cookie
+            驗證及安全使用僅限目前主機、HttpOnly 的 登入階段
+            Cookie。客戶端會保存語言、主題及已閱讀必要 Cookie
             通知的狀態。本服務不使用廣告、跨站追蹤、使用者輪廓或分析
             Cookie。主要與備用網域各自擁有獨立登入階段。
           </p>
           <h2>五、人類驗證</h2>
           <p>
-            註冊、登入、新增筆記、刪除筆記及永久刪除帳號時，瀏覽器會從
+            註冊、登入、新增筆記、刪除筆記、建立付款訂單及永久刪除帳號時，客戶端會從
             <code>nexacaptcha.nxlabtw.com</code> 載入 CAPTCHA。AstraNote
-            會將驗證 ID 及一次性 Token 傳至 NexaCAPTCHA
-            固定的後端驗證端點。Token 原則上僅可使用一次並於五分鐘後失效。請勿在
-            CAPTCHA 欄位輸入個人資料。
+            會將驗證 ID 及一次性 驗證權杖 傳至 NexaCAPTCHA
+            固定的後端驗證端點。驗證權杖
+            原則上僅可使用一次並於五分鐘後失效。請勿在 CAPTCHA
+            欄位輸入個人資料。
           </p>
           <h2>六、揭露</h2>
           <p>
-            營運者不主動向廣告商或資料仲介販售或分享帳號資料。為運作服務，託管基礎設施與
-            NexaCAPTCHA
+            營運者不主動向廣告商或資料仲介販售或分享帳號資料。為運作服務，託管基礎設施、NexaCAPTCHA
+            與 Satora
             可能處理必要資料；依法要求或為保護使用者、系統及合法權利時亦可能揭露。開啟分享即代表您指示
-            AstraNote 向連結持有人揭露指定筆記、公開顯示名稱與遮罩 Email。
+            AstraNote 向連結持有人揭露指定筆記、公開顯示名稱與遮罩 電子郵件。
           </p>
           <h2>七、保存期限</h2>
           <p>
             帳號存在期間保存帳號與安全資料。超出有效方案額度的筆記會由後端鎖定；連續鎖定滿30天後會在沒有服務備份的情況下永久刪除，期限前解鎖則會清除預定刪除時間。確認永久刪除帳號後，現行帳號資料夾及筆記會立即移除，所有登入階段與分享連結同時失效；此操作不能取消或復原，AstraNote
-            亦無服務備份。個別刪除的筆記同樣立即移除。僅於法律要求或法律請求所必要時可能保留必要紀錄。Session
-            最遲於該次登入後二十八日失效。每日不同登入帳號紀錄於 UTC 00:00
-            重置。
+            亦無服務備份。手動刪除與垃圾桶依前述保存規則處理；永久刪除則立即移除。僅於法律要求或法律請求所必要時可能保留必要紀錄。登入階段
+            最遲於該次登入後二十八日失效。每日曾發出已登入請求的不同帳號紀錄於
+            UTC 00:00 重置。
           </p>
           <h2>八、安全</h2>
           <p>
-            AstraNote 採用密碼雜湊、具認證加密、不透明 Session、CSRF 與 Origin
+            AstraNote 採用密碼雜湊、具認證加密、不透明 登入階段、CSRF 與 Origin
             檢查、後端 CAPTCHA
             驗證、速率限制、權限確認、嚴格安全標頭、原子寫入及請求大小限制。伺服器管理的
-            AES 模式在技術上可由營運者解密；AstraConfidential 與舊版 SCHybrid
-            會用 PIN
-            與伺服器端保護在瀏覽器加密內容，但並非零知識保證，解鎖時仍須信任應用程式與伺服器。筆記名稱維持明文。任何系統均無法保證絕對安全；請使用獨立密碼、勿將不可取代資料只存於本服務，並自行保存副本。
+            AES 模式在技術上可由營運者解密；AstraSecret、AstraConfidential
+            與舊版 SCHybrid 會用 PIN
+            與伺服器端保護在客戶端加密內容，但並非零知識保證，解鎖時仍須信任應用程式與伺服器。筆記名稱維持明文。任何系統均無法保證絕對安全；請使用獨立密碼、勿將不可取代資料只存於本服務，並自行保存副本。
           </p>
           <h2>九、兒童與法定代理人</h2>
           <p>
@@ -280,6 +292,101 @@
           <h2>十二、政策變更</h2>
           <p>
             重大變更將以合理方式於服務中公告並標示新生效日期。如新的處理依法須另行取得同意，會在開始前提出要求。
+          </p>
+        </div>
+        <div data-lang="ja">
+          <p class="legal-note">
+            本ポリシーは未登録の NeuralNexusLab ブランドで AstraNote
+            を運営する個人による個人情報の取扱いを説明します。連絡先：<a
+              href="mailto:astranote@nxlabtw.com"
+              >astranote@nxlabtw.com</a
+            >。個人情報の販売、広告・分析用の追跡は行いません。
+          </p>
+          <h2>1. 管理者と適用範囲</h2>
+          <p>
+            運営者は処理の目的と方法を決定します。主・予備ドメイン、サービス
+            API、アカウント情報に適用します。NexaCAPTCHA と Satora
+            での第三者処理には各提供者の方針も適用されます。
+          </p>
+          <h2>2. 収集する情報</h2>
+          <ul>
+            <li>
+              登録：ユーザー名、メール、パスワードのハッシュ、登録 IP、UTC
+              日時、同意した版と日時。
+            </li>
+            <li>
+              利用：最終ログイン IP・UTC 日時、セッション識別子、CSRF
+              トークン、言語、外観、公開表示名、容量、ノート情報。
+            </li>
+            <li>
+              内容：タイトル、内容、暗号化方式、更新日時、任意の共有コード。タイトルは平文です。暗号化内容と復号検証用情報を保存します。AstraSecret、AstraConfidential、従来の
+              SCHybrid
+              はランダムなクライアント用パラメーターも保存します。AstraZero は
+              PIN で保護した鍵と暗号文を保存しますが、PIN
+              や直接使える平文の鍵は保存しません。利用時のみ鍵がクライアントのメモリーに一時的に存在します。
+            </li>
+            <li>
+              安全：頻度制限、CAPTCHA
+              識別子・トークン、濫用防止に合理的に必要なエラーと運用記録。
+            </li>
+            <li>
+              プラン・支払い：Plus、Pro、Ultra
+              の残り時間、注文番号、プラン・月数、Bitcoin 金額、Satora
+              支払い番号・URL、状態、取引識別番号、付与日時。圧縮した支払い記録とクーポン記録は前述のとおりです。サービスの認証秘密はクライアントに送信しません。
+            </li>
+          </ul>
+          <h2>3. 目的と根拠</h2>
+          <p>
+            登録・認証、ノート保存・表示、上限の適用、共有、設定保持、不正防止、法律遵守、権利請求対応、法的請求の主張・防御のため処理します。適用法に応じ、契約履行、同意、法的義務、安全で信頼できる運用の正当な利益を根拠とします。
+          </p>
+          <h2>4. Cookie と端末内保存</h2>
+          <p>
+            認証・安全のためホスト限定の HttpOnly セッション Cookie
+            を使用します。クライアントは言語、外観、必要な Cookie
+            通知の確認状態を保持します。広告、サイト横断追跡、プロファイリング、分析
+            Cookie は使用しません。主・予備ドメインのセッションは別々です。
+          </p>
+          <h2>5. 人間による認証</h2>
+          <p>
+            登録、ログイン、ノート作成・削除、注文作成、アカウント完全削除の際、クライアントは
+            nexacaptcha.nxlabtw.com から CAPTCHA
+            を読み込みます。認証識別子と一回限りの応答を固定のサーバー検証先へ送信します。トークンは原則一回のみ、5分で期限切れです。認証欄に個人情報を入力しないでください。
+          </p>
+          <h2>6. 提供先</h2>
+          <p>
+            広告主やデータ仲介業者へ積極的に販売・共有しません。ホスティング、NexaCAPTCHA、Satora
+            は運用・認証・決済に必要な情報を処理する場合があります。法的要求、利用者・システム・権利保護のため開示する場合があります。共有リンクを有効にすると、指定ノート、公開表示名、マスク済みメールを保持者に開示するよう指示したものとします。
+          </p>
+          <h2>7. 保存期間</h2>
+          <p>
+            アカウントの存続中、アカウント・安全情報を保持します。上限超過のロックが30日続くとバックアップなしで完全削除し、期限前に解除すればその予定を取り消します。手動削除とゴミ箱は前述の期限に従います。完全なアカウント削除は稼働中のフォルダーとノートを即時削除し、セッションと共有を失効させ、復元できません。法的義務・請求に必要な別記録を保持する場合があります。セッションは各ログインから最長28日、当日認証済みの要求を送信したアカウントの重複除外記録は
+            UTC 00:00 にリセットします。
+          </p>
+          <h2>8. 安全対策</h2>
+          <p>
+            パスワードのハッシュ、認証付き暗号化、不透明セッション、CSRF・送信元検証、サーバー
+            CAPTCHA、頻度・権限・要求サイズ制限、安全な応答ヘッダー、原子的書込みを使用します。サーバー管理
+            AES
+            は運営者が技術的に復号可能です。AstraSecret、AstraConfidential、従来の
+            SCHybrid は PIN
+            とサーバー支援によるクライアント暗号化で、ゼロ知識の保証ではありません。AstraZero
+            の保護と限界は前述のとおりです。完全な安全は保証できません。固有のパスワードを使い、重要情報の唯一のコピーを本サービスに置かないでください。
+          </p>
+          <h2>9. 子どもと法定代理人</h2>
+          <p>
+            全年齢が法的に必要な代理人の関与のもとで利用できます。7歳未満は代理人が作成・管理し、7～17歳は法律が単独利用を認める場合を除き許可が必要です。生年月日を積極的に要求しません。代理人からのデータ相談では代理権・アカウント管理権の確認を求める場合があります。
+          </p>
+          <h2>10. 利用者の権利</h2>
+          <p>
+            適用法に従い、照会、閲覧、コピー、訂正、処理停止、制限、異議、削除を求められます。設定で表示名・言語・外観を修正し、アカウントを直ちに完全削除できます。その他は連絡先メールへお送りください。適切な認証情報等で本人確認する場合があります。管轄の個人情報保護・消費者機関への申立ても可能です。
+          </p>
+          <h2>11. 国際的アクセス</h2>
+          <p>
+            世界からアクセスでき、ホスティング、CAPTCHA、決済処理が利用者の所在地外で行われる場合があります。移転・プライバシー・消費者に関する強行法規は影響を受けません。運営者は台湾に所在し、原則として中華民国（台湾）の法に従って管理します。
+          </p>
+          <h2>12. 変更</h2>
+          <p>
+            重要な変更はサービス内で合理的に通知し、新しい施行日を表示します。新たな同意が法律上必要な場合、処理開始前に求めます。
           </p>
         </div>
       </article>
