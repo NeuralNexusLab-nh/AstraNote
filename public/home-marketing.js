@@ -133,10 +133,6 @@
     style.id = "home-premium-style";
     style.textContent = `
       .product-intro{display:none!important}
-      #stats{order:4}
-      #purpose{order:1}
-      #plans-preview{order:2}
-      .limit-panel{order:3}
       .home-plan-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:28px}
       .home-plan-card{position:relative;overflow:hidden;padding:26px;border:1px solid rgba(132,153,255,.22);background:linear-gradient(180deg,rgba(20,27,48,.94),rgba(10,14,26,.94));min-height:360px;display:flex;flex-direction:column}
       .home-plan-card::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,currentColor,transparent);opacity:.8}
@@ -209,19 +205,21 @@
   const rearrange = () => {
     const purpose = document.getElementById("purpose");
     const stats = document.getElementById("stats");
-    if (purpose && stats && purpose.parentNode === stats.parentNode) {
-      stats.parentNode.insertBefore(purpose, stats);
-    }
-    const intro = purpose?.querySelector(".product-intro");
-    if (intro) intro.remove();
+    const encryption = document.getElementById("encryption");
+    if (purpose && stats && purpose.parentNode === stats.parentNode) stats.parentNode.insertBefore(purpose, stats);
+    purpose?.querySelector(".product-intro")?.remove();
     const secondHero = document.querySelector('.hero-actions a.btn-outline');
     if (secondHero) secondHero.setAttribute("href", "#plans-preview");
     const scrollCue = document.querySelector(".scroll-cue");
     if (scrollCue) scrollCue.setAttribute("href", "#purpose");
     buildPlanPreview();
-    if (stats && document.getElementById("plans-preview")) {
-      document.getElementById("plans-preview").insertAdjacentElement("afterend", stats);
-    }
+
+    const plans = document.getElementById("plans-preview");
+    const limitSection = document.querySelector(".limit-panel")?.closest("section");
+    if (purpose && plans && purpose.nextElementSibling !== plans) purpose.insertAdjacentElement("afterend", plans);
+    if (plans && stats) plans.insertAdjacentElement("afterend", stats);
+    if (stats && limitSection) stats.insertAdjacentElement("afterend", limitSection);
+    if (limitSection && encryption) limitSection.insertAdjacentElement("afterend", encryption);
   };
 
   const applyMarketingCopy = () => {
