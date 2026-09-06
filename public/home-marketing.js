@@ -4,9 +4,9 @@
   const COPY = {
     en: {
       heroKicker: "FREE · BROWSER-FIRST · ANY DEVICE",
-      tagline: "Open a browser. Your text is there.",
+      tagline: "I wrote it. It's mine.",
       heroLead:
-        "No app to install, no file to move, and no platform to match. Sign in and get the text you need, share it with one read-only link, and use AstraZero when it needs deeper privacy.",
+        "Open a browser and your text is there. Sharing takes just one link; for the most private content, AstraZero guards the final layer.",
       begin: "Start free",
       explore: "See plans",
       purposeEyebrow: "LESS SETUP. MORE DIRECT.",
@@ -38,9 +38,9 @@
     },
     "zh-Hant": {
       heroKicker: "免費 · 瀏覽器即用 · 跨裝置",
-      tagline: "打開瀏覽器，文字就在。",
+      tagline: "寫下了，就是我的。",
       heroLead:
-        "不用安裝 App、不用搬檔案，也不用讓對方先註冊。登入就能拿到需要的文字，一個唯讀連結就能分享；真正重要的內容，再交給 AstraZero。",
+        "打開瀏覽器就能拿到，想分享也只差一個連結；而最私密的內容，有 AstraZero 守在最後一層。",
       begin: "免費開始",
       explore: "了解方案",
       purposeEyebrow: "少一點步驟，多一點直接",
@@ -72,9 +72,9 @@
     },
     ja: {
       heroKicker: "無料 · ブラウザですぐ使える · 端末を選ばない",
-      tagline: "ブラウザを開けば、文字はそこに。",
+      tagline: "書いたものは、私のもの。",
       heroLead:
-        "アプリのインストールも、ファイル移動も、相手の事前登録も不要です。ログインすれば必要な文字にすぐ届き、読み取り専用リンク一つで共有。大切な内容には AstraZero を使えます。",
+        "ブラウザを開けばすぐ取り出せ、共有もリンク一つ。いちばん秘密にしておきたい内容は、最後の一層を AstraZero が守ります。",
       begin: "無料で始める",
       explore: "プランを見る",
       purposeEyebrow: "手順を減らして、もっと直接",
