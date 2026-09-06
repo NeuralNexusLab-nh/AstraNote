@@ -4,9 +4,9 @@
   const COPY = {
     en: {
       heroKicker: "FREE · BROWSER-FIRST · ANY DEVICE",
-      tagline: "I wrote it. It's mine.",
+      tagline: "I wrote it, it’s mine.",
       heroLead:
-        "Open a browser and your text is there. Sharing takes just one link; for the most private content, AstraZero guards the final layer.",
+        "Open a browser and your text is there. Sharing takes just one link;\nfor the most private content, AstraZero guards the final layer.",
       begin: "Start free",
       explore: "See plans",
       purposeEyebrow: "LESS SETUP. MORE DIRECT.",
@@ -40,7 +40,7 @@
       heroKicker: "免費 · 瀏覽器即用 · 跨裝置",
       tagline: "寫下了，就是我的。",
       heroLead:
-        "打開瀏覽器就能拿到，想分享也只差一個連結；而最私密的內容，有 AstraZero 守在最後一層。",
+        "打開瀏覽器就能拿到，想分享也只差一個連結；\n而最私密的內容，有 AstraZero 守在最後一層。",
       begin: "免費開始",
       explore: "了解方案",
       purposeEyebrow: "少一點步驟，多一點直接",
@@ -74,7 +74,7 @@
       heroKicker: "無料 · ブラウザですぐ使える · 端末を選ばない",
       tagline: "書いたものは、私のもの。",
       heroLead:
-        "ブラウザを開けばすぐ取り出せ、共有もリンク一つ。いちばん秘密にしておきたい内容は、最後の一層を AstraZero が守ります。",
+        "ブラウザを開けばすぐ取り出せ、共有もリンク一つ。\nいちばん秘密にしておきたい内容は、最後の一層を AstraZero が守ります。",
       begin: "無料で始める",
       explore: "プランを見る",
       purposeEyebrow: "手順を減らして、もっと直接",
@@ -124,12 +124,27 @@
     return COPY[locale] || COPY.en;
   };
 
+  const setCopy = (node, key, value) => {
+    if (key !== "heroLead" || !String(value).includes("\n")) {
+      node.textContent = value;
+      return;
+    }
+    node.replaceChildren();
+    String(value)
+      .split("\n")
+      .forEach((line, index) => {
+        if (index) node.append(document.createElement("br"));
+        node.append(document.createTextNode(line));
+      });
+  };
+
   const applyMarketingCopy = () => {
     const copy = getCopy();
+    document.querySelector(".hero-kicker")?.remove();
     document.querySelectorAll("[data-i18n]").forEach((node) => {
       const key = node.getAttribute("data-i18n");
       if (key && Object.prototype.hasOwnProperty.call(copy, key)) {
-        node.textContent = copy[key];
+        setCopy(node, key, copy[key]);
       }
     });
   };
