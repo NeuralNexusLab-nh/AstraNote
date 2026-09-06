@@ -116,9 +116,23 @@
     return "en";
   };
 
-  const applySeo = () => {
+  const getCopy = () => {
     const locale = normalizeLocale(document.documentElement.lang || navigator.language);
-    const copy = COPY[locale] || COPY.en;
+    return COPY[locale] || COPY.en;
+  };
+
+  const applyMarketingCopy = () => {
+    const copy = getCopy();
+    document.querySelectorAll("[data-i18n]").forEach((node) => {
+      const key = node.getAttribute("data-i18n");
+      if (key && Object.prototype.hasOwnProperty.call(copy, key)) {
+        node.textContent = copy[key];
+      }
+    });
+  };
+
+  const applySeo = () => {
+    const copy = getCopy();
     document.title = copy.seoTitle;
 
     const setMeta = (selector, value) => {
@@ -133,11 +147,16 @@
     setMeta('meta[name="twitter:description"]', copy.seoDescription);
   };
 
-  applySeo();
-  document.addEventListener("DOMContentLoaded", applySeo, { once: true });
+  const applyAll = () => {
+    applyMarketingCopy();
+    applySeo();
+  };
+
+  applyAll();
+  document.addEventListener("DOMContentLoaded", applyAll, { once: true });
 
   const observer = new MutationObserver((records) => {
-    if (records.some((record) => record.attributeName === "lang")) applySeo();
+    if (records.some((record) => record.attributeName === "lang")) applyAll();
   });
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
 })();
