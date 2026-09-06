@@ -1,0 +1,37 @@
+# AstraNote
+
+AstraNote is a free, lightweight online notebook by NeuralNexusLab. It is designed for fast access to small pieces of text from any modern browser, without requiring an app installation or forcing users to sign in to their primary email or cloud ecosystem account.
+
+## Canonical URL
+https://astranote.nxlabtw.com/
+
+## What AstraNote is for
+- Quickly storing and retrieving plain-text notes across devices.
+- Saving short information such as class codes, URLs, reminders, code snippets, lists, and longer blocks of text.
+- Sharing a note through a revocable read-only link. The reader does not need an AstraNote account.
+- Using stronger protection for notes that need it through AstraSecret, AstraConfidential, and AstraZero.
+
+## Convenience
+AstraNote works directly in a modern web browser. The service is intentionally lightweight so users can open it on phones, tablets, school or library computers, Linux systems, and other devices without installing an application or configuring a workspace.
+
+A separate AstraNote account can also reduce the need to sign in to a user's primary email or cloud account on a new or shared device. Highly sensitive notes should still only be decrypted on trusted devices.
+
+## Free storage
+The free plan includes up to 20 notes and 128 KB total storage. This is intentionally optimized for text rather than images or large files. Plain text is compact: before metadata, 128 KB can hold tens of thousands of CJK characters or well over 100,000 ASCII characters. Encrypted notes require additional storage.
+
+## Encryption
+AstraNote provides multiple encryption modes for different needs. The homepage contains the full comparison, including server exposure, client-side processing, PIN requirements, sharing support, and limitations. AstraZero is the strongest privacy-oriented mode and is designed around client-side protection. AstraNote does not claim that a compromised client device or malicious web client can be made safe by encryption alone.
+
+## Privacy
+AstraNote states that it uses only necessary cookies for sign-in, security, language, and appearance, and does not use advertising or analytics trackers.
+
+## Public pages
+- Homepage: https://astranote.nxlabtw.com/
+- Plans: https://astranote.nxlabtw.com/plans
+- Privacy: https://astranote.nxlabtw.com/privacy
+- Terms: https://astranote.nxlabtw.com/terms
+- Source: https://github.com/NeuralNexusLab-nh/AstraNote
+
+## Operator
+NeuralNexusLab
+https://nxlabtw.com/
