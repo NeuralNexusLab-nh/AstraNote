@@ -3,28 +3,29 @@
 (() => {
   const COPY = {
     en: {
-      heroKicker: "FREE · BROWSER-FIRST · PRIVATE",
-      tagline: "Keep it close. Wherever you are.",
+      heroKicker: "FREE · BROWSER-FIRST · ANY DEVICE",
+      tagline: "Open a browser. Your text is there.",
       heroLead:
-        "AstraNote keeps your text within reach — fast to open, effortless to share, and powerfully encrypted when it matters.",
+        "No app to install, no file to move, and no platform to match. Sign in and get the text you need, share it with one read-only link, and use AstraZero when it needs deeper privacy.",
       begin: "Start free",
-      purposeEyebrow: "LESS FRICTION. MORE FLOW.",
-      purposeTitle: "Your notes should move as easily as you do.",
+      explore: "See plans",
+      purposeEyebrow: "LESS SETUP. MORE DIRECT.",
+      purposeTitle: "Getting one piece of text should take seconds, not a setup process.",
       purposeIntroOne:
-        "Open a browser, sign in, and your text is there. No app to install, no workspace to set up.",
+        "Open a browser, sign in, and the text is there. No app installation, no workspace setup, and no moving files between devices.",
       purposeIntroTwo:
-        "A lightweight AstraNote login keeps quick access separate from the email and cloud accounts that run the rest of your digital life.",
+        "AstraNote uses its own lightweight account, so grabbing one note does not have to begin with opening the main email or cloud account that controls the rest of your digital life.",
       purposeIntroThree:
-        "Need to pass something on? Send a read-only link. No AstraNote account required.",
-      quickTitle: "Made to be within reach",
+        "Sharing is just as direct: send a read-only link. The reader does not need an AstraNote account.",
+      quickTitle: "One browser away",
       quickBody:
-        "From your phone to a school PC, AstraNote stays one browser away.",
-      secureTitle: "Privacy, with depth",
+        "Phone, tablet, school PC, or a temporary device — if it can open a browser, your text is within reach.",
+      secureTitle: "Simple by default. Deeper when needed.",
       secureBody:
-        "AstraSecret, AstraConfidential, and AstraZero give sensitive notes stronger layers of protection.",
-      shareTitle: "One link. That's enough.",
+        "Keep everyday notes light, then use AstraSecret, AstraConfidential, or AstraZero for content that deserves stronger protection.",
+      shareTitle: "Share the text, not the setup",
       shareBody:
-        "Share read-only text without asking anyone to sign up or join the same platform.",
+        "One read-only link is enough. The other person does not need to register or join the same platform first.",
       limitEyebrow: "BUILT FOR TEXT",
       limitTitle: "128 KB. Small number. Plenty of words.",
       limitBody:
@@ -36,28 +37,29 @@
         "AstraNote is a free browser-first notebook for fast cross-device access, account-free read-only sharing, and powerful optional encryption with AstraSecret, AstraConfidential, and AstraZero."
     },
     "zh-Hant": {
-      heroKicker: "免費 · 瀏覽器即用 · 私密",
-      tagline: "讓想法，始終在你身邊。",
+      heroKicker: "免費 · 瀏覽器即用 · 跨裝置",
+      tagline: "打開瀏覽器，文字就在。",
       heroLead:
-        "AstraNote 讓文字隨手可得。開啟很快、分享很簡單；重要的內容，則有強大的加密守著。",
+        "不用安裝 App、不用搬檔案，也不用讓對方先註冊。登入就能拿到需要的文字，一個唯讀連結就能分享；真正重要的內容，再交給 AstraZero。",
       begin: "免費開始",
-      purposeEyebrow: "少一點阻礙，多一點流暢",
-      purposeTitle: "你的筆記，應該跟得上你。",
+      explore: "了解方案",
+      purposeEyebrow: "少一點步驟，多一點直接",
+      purposeTitle: "拿一段文字，不該先處理一堆工具。",
       purposeIntroOne:
-        "打開瀏覽器、登入，文字就在那裡。不用安裝 App，也不用設定工作區。",
+        "打開瀏覽器、登入、拿到文字。不用安裝 App，不用建立工作區，也不用在裝置之間搬檔案。",
       purposeIntroTwo:
-        "AstraNote 的獨立輕量登入，讓你不必為了一段文字，動用掌管郵件、雲端與帳號復原的主要帳號。",
+        "AstraNote 使用獨立的輕量登入。臨時只想拿一段文字時，不必先打開掌管郵件、雲端與帳號復原的主要帳號。",
       purposeIntroThree:
-        "要給別人？一個唯讀連結就夠了。對方不需要 AstraNote 帳號。",
-      quickTitle: "隨時，都在伸手可及的地方",
+        "要給別人？丟一個唯讀連結就好。對方不需要 AstraNote 帳號。",
+      quickTitle: "只差一個瀏覽器",
       quickBody:
-        "從手機到學校電腦，只要有瀏覽器，AstraNote 就在。",
-      secureTitle: "簡單之外，還有深度",
+        "手機、平板、學校電腦或臨時裝置，只要能開瀏覽器，文字就能拿到。",
+      secureTitle: "平常保持簡單，重要時再加深",
       secureBody:
-        "AstraSecret、AstraConfidential 與 AstraZero，為敏感內容提供更深一層的保護。",
-      shareTitle: "一個連結，就夠了",
+        "日常筆記不必變複雜；真正重要的內容，再使用 AstraSecret、AstraConfidential 或 AstraZero。",
+      shareTitle: "分享文字，不用先處理一堆設定",
       shareBody:
-        "唯讀分享，不要求註冊，也不要求對方和你待在同一個平台。",
+        "一個唯讀連結就夠。對方不用註冊，也不用先加入和你相同的平台。",
       limitEyebrow: "為純文字而生",
       limitTitle: "128 KB。數字很小，能寫的很多。",
       limitBody:
@@ -69,28 +71,29 @@
         "AstraNote 是免費、瀏覽器即用的線上筆記服務，提供快速跨裝置存取、無需帳號的唯讀分享，以及 AstraSecret、AstraConfidential 與 AstraZero 強大加密。"
     },
     ja: {
-      heroKicker: "無料 · ブラウザですぐ使える · プライベート",
-      tagline: "思いつきを、いつでもそばに。",
+      heroKicker: "無料 · ブラウザですぐ使える · 端末を選ばない",
+      tagline: "ブラウザを開けば、文字はそこに。",
       heroLead:
-        "AstraNoteなら、必要な文字がいつでも手の届く場所に。すぐ開けて、簡単に共有でき、大切な内容には強力な暗号化を使えます。",
+        "アプリのインストールも、ファイル移動も、相手の事前登録も不要です。ログインすれば必要な文字にすぐ届き、読み取り専用リンク一つで共有。大切な内容には AstraZero を使えます。",
       begin: "無料で始める",
-      purposeEyebrow: "もっと自然に、もっと軽く",
-      purposeTitle: "ノートは、あなたと同じ速さで動くべきです。",
+      explore: "プランを見る",
+      purposeEyebrow: "手順を減らして、もっと直接",
+      purposeTitle: "文字一つを取り出すために、準備作業はいりません。",
       purposeIntroOne:
-        "ブラウザを開いてログインすれば、文字はそこにあります。アプリもワークスペース設定も不要です。",
+        "ブラウザを開いてログインすれば、文字はそこにあります。アプリもワークスペース設定も、端末間のファイル移動も不要です。",
       purposeIntroTwo:
-        "独立した軽量ログインだから、短いメモのためにメールやクラウド、復旧手段まで持つ主要アカウントを使う必要を減らせます。",
+        "AstraNote は独立した軽量アカウントなので、短いメモ一つのためにメールやクラウド、復旧手段を持つ主要アカウントまで開く必要を減らせます。",
       purposeIntroThree:
-        "誰かに渡すなら、読み取り専用リンクを一つ。相手にAstraNoteアカウントは不要です。",
-      quickTitle: "いつでも、手の届く場所に",
+        "共有も直接的です。読み取り専用リンクを一つ送るだけで、相手に AstraNote アカウントは必要ありません。",
+      quickTitle: "ブラウザ一つ先にある",
       quickBody:
-        "スマホから学校のPCまで。ブラウザがあればAstraNoteはすぐそこです。",
-      secureTitle: "シンプルさの奥に、強い保護",
+        "スマホ、タブレット、学校のPC、臨時の端末。ブラウザが開ければ、文字に届きます。",
+      secureTitle: "普段はシンプル。必要なときだけ深く。",
       secureBody:
-        "AstraSecret、AstraConfidential、AstraZeroが、機密性の高いノートをさらに深く守ります。",
-      shareTitle: "リンク一つで、それで十分",
+        "日常のメモは軽く保ち、大切な内容には AstraSecret、AstraConfidential、AstraZero を使えます。",
+      shareTitle: "共有するのは文字だけ",
       shareBody:
-        "読み取り専用で共有。登録も、同じプラットフォームも必要ありません。",
+        "読み取り専用リンク一つで十分。相手の登録も、同じサービスへの参加も不要です。",
       limitEyebrow: "テキストのための設計",
       limitTitle: "128 KB。数字は小さくても、言葉はたくさん入る。",
       limitBody:
@@ -131,6 +134,11 @@
     });
   };
 
+  const applyHomepageLinks = () => {
+    const plansLink = document.querySelector(".hero-actions .btn-outline");
+    if (plansLink) plansLink.setAttribute("href", "/plans");
+  };
+
   const applySeo = () => {
     const copy = getCopy();
     document.title = copy.seoTitle;
@@ -149,6 +157,7 @@
 
   const applyAll = () => {
     applyMarketingCopy();
+    applyHomepageLinks();
     applySeo();
   };
 
