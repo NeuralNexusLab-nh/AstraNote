@@ -3,111 +3,114 @@
 (() => {
   const COPY = {
     en: {
-      heroKicker: "FREE · BROWSER-FIRST · PRIVATE",
-      tagline: "Keep it close. Wherever you are.",
-      heroLead:
-        "AstraNote keeps your text within reach — fast to open, effortless to share, and powerfully encrypted when it matters.",
+      heroKicker: "TEXT, WITHOUT THE FRICTION.",
+      tagline: "Write it. Move on. It's there when you need it.",
+      heroLead: "One browser is enough. Open fast, share with a link, and lock sensitive notes behind AstraNote's strongest privacy modes.",
       begin: "Start free",
-      purposeEyebrow: "LESS FRICTION. MORE FLOW.",
-      purposeTitle: "Your notes should move as easily as you do.",
-      purposeIntroOne:
-        "Open a browser, sign in, and your text is there. No app to install, no workspace to set up.",
-      purposeIntroTwo:
-        "A lightweight AstraNote login keeps quick access separate from the email and cloud accounts that run the rest of your digital life.",
-      purposeIntroThree:
-        "Need to pass something on? Send a read-only link. No AstraNote account required.",
-      quickTitle: "Made to be within reach",
-      quickBody:
-        "From your phone to a school PC, AstraNote stays one browser away.",
-      secureTitle: "Privacy, with depth",
-      secureBody:
-        "AstraSecret, AstraConfidential, and AstraZero give sensitive notes stronger layers of protection.",
-      shareTitle: "One link. That's enough.",
-      shareBody:
-        "Share read-only text without asking anyone to sign up or join the same platform.",
-      limitEyebrow: "BUILT FOR TEXT",
-      limitTitle: "128 KB. Small number. Plenty of words.",
-      limitBody:
-        "Plain text is remarkably compact. The free 128 KB can hold tens of thousands of Chinese characters or over 100,000 ASCII characters before metadata — plenty for notes, links, snippets, and the little things worth keeping.",
-      accountStorageLabel: "FREE TEXT STORAGE",
-      accountLimitCaption: "20 NOTES · 128 KB · NO ADS · NO ANALYTICS",
+      explore: "Compare plans",
+      purposeEyebrow: "BUILT TO DISAPPEAR",
+      purposeTitle: "Less interface. More instant access.",
+      quickTitle: "Open. It's there.",
+      quickBody: "Phone, tablet, school PC, library computer — if it has a browser, your text is within reach.",
+      shareTitle: "One link. Done.",
+      shareBody: "Share read-only text without asking anyone to register or join the same platform.",
+      secureTitle: "Simple outside. Serious underneath.",
+      secureBody: "AstraSecret, AstraConfidential, and AstraZero add stronger protection when the words matter more.",
       seoTitle: "AstraNote — Fast, free browser notes with strong encryption",
-      seoDescription:
-        "AstraNote is a free browser-first notebook for fast cross-device access, account-free read-only sharing, and powerful optional encryption with AstraSecret, AstraConfidential, and AstraZero."
+      seoDescription: "AstraNote is a free browser-first notebook for fast cross-device access, account-free read-only sharing, and powerful optional encryption with AstraSecret, AstraConfidential, and AstraZero."
     },
     "zh-Hant": {
-      heroKicker: "免費 · 瀏覽器即用 · 私密",
-      tagline: "讓想法，始終在你身邊。",
-      heroLead:
-        "AstraNote 讓文字隨手可得。開啟很快、分享很簡單；重要的內容，則有強大的加密守著。",
+      heroKicker: "讓文字，不再被工具拖慢。",
+      tagline: "寫下就走。需要時，它已經在那裡。",
+      heroLead: "一個瀏覽器就夠。快速開啟、一個連結分享；真正重要的文字，再交給 AstraNote 最強的隱私保護。",
       begin: "免費開始",
-      purposeEyebrow: "少一點阻礙，多一點流暢",
-      purposeTitle: "你的筆記，應該跟得上你。",
-      purposeIntroOne:
-        "打開瀏覽器、登入，文字就在那裡。不用安裝 App，也不用設定工作區。",
-      purposeIntroTwo:
-        "AstraNote 的獨立輕量登入，讓你不必為了一段文字，動用掌管郵件、雲端與帳號復原的主要帳號。",
-      purposeIntroThree:
-        "要給別人？一個唯讀連結就夠了。對方不需要 AstraNote 帳號。",
-      quickTitle: "隨時，都在伸手可及的地方",
-      quickBody:
-        "從手機到學校電腦，只要有瀏覽器，AstraNote 就在。",
-      secureTitle: "簡單之外，還有深度",
-      secureBody:
-        "AstraSecret、AstraConfidential 與 AstraZero，為敏感內容提供更深一層的保護。",
-      shareTitle: "一個連結，就夠了",
-      shareBody:
-        "唯讀分享，不要求註冊，也不要求對方和你待在同一個平台。",
-      limitEyebrow: "為純文字而生",
-      limitTitle: "128 KB。數字很小，能寫的很多。",
-      limitBody:
-        "純文字遠比想像中省空間。不計額外資料前，免費的 128 KB 足以容納數萬個中文字，或超過十萬個 ASCII 字元；筆記、網址、程式片段與那些值得留下的小東西，綽綽有餘。",
-      accountStorageLabel: "免費純文字空間",
-      accountLimitCaption: "20 篇筆記 · 128 KB · 無廣告 · 無分析追蹤",
+      explore: "比較方案",
+      purposeEyebrow: "讓工具退到後面",
+      purposeTitle: "少一點介面，多一點立即可用。",
+      quickTitle: "打開，就在那裡",
+      quickBody: "手機、平板、學校電腦、圖書館電腦，只要有瀏覽器，文字就伸手可及。",
+      shareTitle: "一個連結，就結束",
+      shareBody: "唯讀分享，不用註冊、不用同平台，也不用先互加任何東西。",
+      secureTitle: "外表簡單，底下很認真",
+      secureBody: "AstraSecret、AstraConfidential、AstraZero，讓真正重要的文字有更深的保護。",
       seoTitle: "AstraNote — 免費、快速、跨裝置的加密線上筆記",
-      seoDescription:
-        "AstraNote 是免費、瀏覽器即用的線上筆記服務，提供快速跨裝置存取、無需帳號的唯讀分享，以及 AstraSecret、AstraConfidential 與 AstraZero 強大加密。"
+      seoDescription: "AstraNote 是免費、瀏覽器即用的線上筆記服務，提供快速跨裝置存取、無需帳號的唯讀分享，以及 AstraSecret、AstraConfidential 與 AstraZero 強大加密。"
     },
     ja: {
-      heroKicker: "無料 · ブラウザですぐ使える · プライベート",
-      tagline: "思いつきを、いつでもそばに。",
-      heroLead:
-        "AstraNoteなら、必要な文字がいつでも手の届く場所に。すぐ開けて、簡単に共有でき、大切な内容には強力な暗号化を使えます。",
+      heroKicker: "文字を、道具に邪魔させない。",
+      tagline: "書いたら進む。必要なとき、もうそこにある。",
+      heroLead: "ブラウザ一つで十分。すぐ開けて、リンク一つで共有。大切な文字にはAstraNoteの強力なプライバシー保護を。",
       begin: "無料で始める",
-      purposeEyebrow: "もっと自然に、もっと軽く",
-      purposeTitle: "ノートは、あなたと同じ速さで動くべきです。",
-      purposeIntroOne:
-        "ブラウザを開いてログインすれば、文字はそこにあります。アプリもワークスペース設定も不要です。",
-      purposeIntroTwo:
-        "独立した軽量ログインだから、短いメモのためにメールやクラウド、復旧手段まで持つ主要アカウントを使う必要を減らせます。",
-      purposeIntroThree:
-        "誰かに渡すなら、読み取り専用リンクを一つ。相手にAstraNoteアカウントは不要です。",
-      quickTitle: "いつでも、手の届く場所に",
-      quickBody:
-        "スマホから学校のPCまで。ブラウザがあればAstraNoteはすぐそこです。",
-      secureTitle: "シンプルさの奥に、強い保護",
-      secureBody:
-        "AstraSecret、AstraConfidential、AstraZeroが、機密性の高いノートをさらに深く守ります。",
-      shareTitle: "リンク一つで、それで十分",
-      shareBody:
-        "読み取り専用で共有。登録も、同じプラットフォームも必要ありません。",
-      limitEyebrow: "テキストのための設計",
-      limitTitle: "128 KB。数字は小さくても、言葉はたくさん入る。",
-      limitBody:
-        "プレーンテキストは驚くほどコンパクトです。メタデータを除けば、無料の128 KBでも数万文字規模のCJK文字、または10万文字を超えるASCIIを保存できます。ノート、URL、スニペット、残しておきたい小さな情報には十分な余裕があります。",
-      accountStorageLabel: "無料テキスト容量",
-      accountLimitCaption: "20ノート · 128 KB · 広告なし · 解析トラッカーなし",
+      explore: "プランを比較",
+      purposeEyebrow: "道具は、前に出すぎない",
+      purposeTitle: "操作は少なく。アクセスはすぐに。",
+      quickTitle: "開けば、そこにある",
+      quickBody: "スマホ、タブレット、学校や図書館のPC。ブラウザがあれば、文字はすぐ手元に。",
+      shareTitle: "リンク一つで完了",
+      shareBody: "読み取り専用共有。登録も、同じサービスも、事前のつながりも不要です。",
+      secureTitle: "見た目はシンプル。中身は本気。",
+      secureBody: "AstraSecret、AstraConfidential、AstraZeroが、大切な文字をさらに深く守ります。",
       seoTitle: "AstraNote — 無料で高速、ブラウザだけで使える暗号化ノート",
-      seoDescription:
-        "AstraNoteは無料でブラウザからすぐ使えるオンラインノートです。端末をまたいだ高速アクセス、アカウント不要の読み取り専用共有、AstraSecret・AstraConfidential・AstraZeroによる強力な暗号化に対応します。"
+      seoDescription: "AstraNoteは無料でブラウザからすぐ使えるオンラインノートです。端末をまたいだ高速アクセス、アカウント不要の読み取り専用共有、AstraSecret・AstraConfidential・AstraZeroによる強力な暗号化に対応します。"
     }
   };
 
-  for (const [locale, values] of Object.entries(COPY)) {
-    if (typeof I18N !== "undefined" && I18N[locale]) {
-      Object.assign(I18N[locale], values);
+  const PLAN_COPY = {
+    en: {
+      eyebrow: "GO FURTHER",
+      title: "Free is already good. Paid is where AstraNote gets powerful.",
+      lead: "Every plan keeps the same fast, browser-first experience. Upgrade for more control, deeper privacy, and a way back when mistakes happen.",
+      plusTag: "ORGANIZE",
+      plusTitle: "Make it yours.",
+      plusBody: "Pins, archive, batch management, more notes, and AstraConfidential — for when AstraNote becomes part of your day.",
+      proTag: "PROTECT",
+      proTitle: "Keep more. Reveal less.",
+      proBody: "Unlimited notes, more room, and AstraZero — AstraNote's strongest privacy tier for sensitive text.",
+      ultraTag: "RECOVER",
+      ultraTitle: "Undo the irreversible.",
+      ultraBody: "Recovery, Trash, a previous version, AstraZero, and the most room. Because important text deserves a second chance.",
+      seeAll: "See full plan comparison",
+      freeTitle: "Start with more than enough.",
+      freeBody: "Free still includes fast cross-device access, read-only sharing, AstraSecret, 20 notes, 128 KB, no ads, and no analytics.",
+      freeCta: "Start free"
+    },
+    "zh-Hant": {
+      eyebrow: "再往前一步",
+      title: "免費已經很好用。付費，才開始把 AstraNote 的上限拉開。",
+      lead: "每個方案都保留同樣的快速與簡單。升級買到的是整理、隱私，以及出錯之後還能回頭的餘地。",
+      plusTag: "整理",
+      plusTitle: "讓它真正變成你的空間。",
+      plusBody: "Pin、封存、批次管理、更多筆記，加上 AstraConfidential。當 AstraNote 開始融入日常，Plus 讓一切保持有序。",
+      proTag: "保護",
+      proTitle: "留下更多，暴露更少。",
+      proBody: "無限筆記、更高容量，加上 AstraZero。當文字真的敏感，Pro 才是 AstraNote 開始發揮實力的地方。",
+      ultraTag: "復原",
+      ultraTitle: "把『不可逆』變得沒那麼可怕。",
+      ultraBody: "Recovery、Trash、前一版本、AstraZero 與最高容量。重要的文字，值得多一次機會。",
+      seeAll: "查看完整方案比較",
+      freeTitle: "免費，其實已經很夠。",
+      freeBody: "跨裝置快速存取、唯讀分享、AstraSecret、20 篇筆記、128 KB、無廣告、無分析追蹤，全部都在 Free。",
+      freeCta: "免費開始"
+    },
+    ja: {
+      eyebrow: "もう一歩先へ",
+      title: "無料でも十分。アップグレードすると、AstraNoteはもっと強くなる。",
+      lead: "どのプランでも速さとシンプルさは同じ。上位プランでは整理、プライバシー、そして失敗から戻る余裕が増えます。",
+      plusTag: "整理",
+      plusTitle: "自分の空間にする。",
+      plusBody: "ピン、アーカイブ、一括管理、より多くのノート、AstraConfidential。日常で使うほどPlusが効いてきます。",
+      proTag: "保護",
+      proTitle: "もっと残して、もっと隠す。",
+      proBody: "無制限ノート、より多い容量、そしてAstraZero。機密性の高い文字のための強力なプライバシー。",
+      ultraTag: "復元",
+      ultraTitle: "取り返せない、を減らす。",
+      ultraBody: "Recovery、Trash、前バージョン、AstraZero、最大容量。大切な文字にもう一度チャンスを。",
+      seeAll: "完全なプラン比較を見る",
+      freeTitle: "無料でも、かなり使える。",
+      freeBody: "高速な端末間アクセス、読み取り専用共有、AstraSecret、20ノート、128 KB、広告なし、解析なし。Freeに含まれます。",
+      freeCta: "無料で始める"
     }
-  }
+  };
 
   const normalizeLocale = (value) => {
     const lang = String(value || "").toLowerCase();
@@ -116,30 +119,128 @@
     return "en";
   };
 
-  const getCopy = () => {
-    const locale = normalizeLocale(document.documentElement.lang || navigator.language);
-    return COPY[locale] || COPY.en;
+  const locale = () => normalizeLocale(document.documentElement.lang || navigator.language);
+  const getCopy = () => COPY[locale()] || COPY.en;
+  const getPlanCopy = () => PLAN_COPY[locale()] || PLAN_COPY.en;
+
+  for (const [key, values] of Object.entries(COPY)) {
+    if (typeof I18N !== "undefined" && I18N[key]) Object.assign(I18N[key], values);
+  }
+
+  const injectStyles = () => {
+    if (document.getElementById("home-premium-style")) return;
+    const style = document.createElement("style");
+    style.id = "home-premium-style";
+    style.textContent = `
+      .product-intro{display:none!important}
+      #stats{order:4}
+      #purpose{order:1}
+      #plans-preview{order:2}
+      .limit-panel{order:3}
+      .home-plan-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:28px}
+      .home-plan-card{position:relative;overflow:hidden;padding:26px;border:1px solid rgba(132,153,255,.22);background:linear-gradient(180deg,rgba(20,27,48,.94),rgba(10,14,26,.94));min-height:360px;display:flex;flex-direction:column}
+      .home-plan-card::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,currentColor,transparent);opacity:.8}
+      .home-plan-card.pro{transform:translateY(-8px);box-shadow:0 24px 80px rgba(86,111,255,.18);border-color:rgba(120,143,255,.5)}
+      .home-plan-card.ultra{box-shadow:0 24px 80px rgba(180,122,255,.12)}
+      .home-plan-tag{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-weight:800;opacity:.72}
+      .home-plan-name{font-size:1rem;font-weight:800;margin-top:18px;opacity:.75}
+      .home-plan-card h3{font-size:1.45rem;margin:8px 0 12px}
+      .home-plan-card p{line-height:1.65}
+      .home-plan-spec{margin-top:auto;padding-top:22px;font-family:var(--font-mono,monospace);font-size:.83rem;opacity:.72}
+      .home-plan-card .btn{margin-top:16px}
+      .home-free-strip{margin-top:18px;padding:18px 20px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.025);border-radius:16px}
+      .home-free-strip h3{margin:0 0 5px;font-size:1rem}.home-free-strip p{margin:0}
+      .home-plans-head{max-width:760px}
+      .home-plans-head .muted{font-size:1rem;line-height:1.65}
+      .home-plan-actions{display:flex;justify-content:center;margin-top:24px}
+      #purpose .section-head{max-width:680px;margin-bottom:26px}
+      #purpose .feature-grid{margin-top:0}
+      #purpose .feature-card{min-height:210px;padding:28px}
+      #purpose .feature-heading{font-size:1.15rem}
+      .hero-description{max-width:720px}
+      @media(max-width:900px){.home-plan-grid{grid-template-columns:1fr}.home-plan-card.pro{transform:none}.home-free-strip{grid-template-columns:1fr}}
+    `;
+    document.head.appendChild(style);
+  };
+
+  const buildPlanPreview = () => {
+    if (document.getElementById("plans-preview")) return;
+    const encryption = document.getElementById("encryption");
+    if (!encryption) return;
+    const section = document.createElement("section");
+    section.className = "home-section";
+    section.id = "plans-preview";
+    section.innerHTML = `
+      <div class="shell">
+        <header class="section-head home-plans-head reveal">
+          <p class="eyebrow"><i class="fa-solid fa-layer-group"></i><span data-home-plan="eyebrow"></span></p>
+          <h2 data-home-plan="title"></h2>
+          <p class="muted" data-home-plan="lead"></p>
+        </header>
+        <div class="home-plan-grid">
+          <article class="card home-plan-card plus reveal">
+            <span class="home-plan-tag" data-home-plan="plusTag"></span><div class="home-plan-name">PLUS</div>
+            <h3 data-home-plan="plusTitle"></h3><p data-home-plan="plusBody"></p>
+            <div class="home-plan-spec">256 KB · 50 NOTES · CONFIDENTIAL</div>
+            <a class="btn btn-outline" href="/plans"><i class="fa-solid fa-arrow-right"></i><span data-home-plan="seeAll"></span></a>
+          </article>
+          <article class="card home-plan-card pro reveal">
+            <span class="home-plan-tag" data-home-plan="proTag"></span><div class="home-plan-name">PRO</div>
+            <h3 data-home-plan="proTitle"></h3><p data-home-plan="proBody"></p>
+            <div class="home-plan-spec">512 KB · UNLIMITED NOTES · ASTRAZERO</div>
+            <a class="btn btn-primary" href="/plans"><i class="fa-solid fa-gem"></i><span data-home-plan="seeAll"></span></a>
+          </article>
+          <article class="card home-plan-card ultra reveal">
+            <span class="home-plan-tag" data-home-plan="ultraTag"></span><div class="home-plan-name">ULTRA</div>
+            <h3 data-home-plan="ultraTitle"></h3><p data-home-plan="ultraBody"></p>
+            <div class="home-plan-spec">1024 KB · RECOVERY · TRASH · ASTRAZERO</div>
+            <a class="btn btn-outline" href="/plans"><i class="fa-solid fa-crown"></i><span data-home-plan="seeAll"></span></a>
+          </article>
+        </div>
+        <div class="card home-free-strip reveal">
+          <div><h3 data-home-plan="freeTitle"></h3><p class="muted" data-home-plan="freeBody"></p></div>
+          <a class="btn btn-outline" href="/register"><span data-home-plan="freeCta"></span></a>
+        </div>
+        <div class="home-plan-actions reveal"><a class="btn btn-outline btn-lg" href="/plans"><i class="fa-solid fa-table-columns"></i><span data-home-plan="seeAll"></span></a></div>
+      </div>`;
+    encryption.parentNode.insertBefore(section, encryption);
+  };
+
+  const rearrange = () => {
+    const purpose = document.getElementById("purpose");
+    const stats = document.getElementById("stats");
+    if (purpose && stats && purpose.parentNode === stats.parentNode) {
+      stats.parentNode.insertBefore(purpose, stats);
+    }
+    const intro = purpose?.querySelector(".product-intro");
+    if (intro) intro.remove();
+    const secondHero = document.querySelector('.hero-actions a.btn-outline');
+    if (secondHero) secondHero.setAttribute("href", "#plans-preview");
+    const scrollCue = document.querySelector(".scroll-cue");
+    if (scrollCue) scrollCue.setAttribute("href", "#purpose");
+    buildPlanPreview();
+    if (stats && document.getElementById("plans-preview")) {
+      document.getElementById("plans-preview").insertAdjacentElement("afterend", stats);
+    }
   };
 
   const applyMarketingCopy = () => {
     const copy = getCopy();
     document.querySelectorAll("[data-i18n]").forEach((node) => {
       const key = node.getAttribute("data-i18n");
-      if (key && Object.prototype.hasOwnProperty.call(copy, key)) {
-        node.textContent = copy[key];
-      }
+      if (key && Object.prototype.hasOwnProperty.call(copy, key)) node.textContent = copy[key];
+    });
+    const plans = getPlanCopy();
+    document.querySelectorAll("[data-home-plan]").forEach((node) => {
+      const key = node.getAttribute("data-home-plan");
+      if (key && Object.prototype.hasOwnProperty.call(plans, key)) node.textContent = plans[key];
     });
   };
 
   const applySeo = () => {
     const copy = getCopy();
     document.title = copy.seoTitle;
-
-    const setMeta = (selector, value) => {
-      const node = document.querySelector(selector);
-      if (node) node.setAttribute("content", value);
-    };
-
+    const setMeta = (selector, value) => { const node = document.querySelector(selector); if (node) node.setAttribute("content", value); };
     setMeta('meta[name="description"]', copy.seoDescription);
     setMeta('meta[property="og:title"]', copy.seoTitle);
     setMeta('meta[property="og:description"]', copy.seoDescription);
@@ -147,16 +248,9 @@
     setMeta('meta[name="twitter:description"]', copy.seoDescription);
   };
 
-  const applyAll = () => {
-    applyMarketingCopy();
-    applySeo();
-  };
-
+  const applyAll = () => { injectStyles(); rearrange(); applyMarketingCopy(); applySeo(); };
   applyAll();
   document.addEventListener("DOMContentLoaded", applyAll, { once: true });
-
-  const observer = new MutationObserver((records) => {
-    if (records.some((record) => record.attributeName === "lang")) applyAll();
-  });
-  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+  new MutationObserver((records) => { if (records.some((r) => r.attributeName === "lang")) applyAll(); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
 })();
