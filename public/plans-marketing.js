@@ -21,31 +21,31 @@
       eyebrow: "選你真正需要的能力",
       title: "三種升級，三個完全不同的理由。",
       body:
-        "Plus 把日常整理好，Pro 用 AstraZero 保護真正重要的文字，Ultra 再加上 Recovery，讓誤刪或改錯還有回頭路。每個付費方案都保留 AstraNote 原本快速、直接、瀏覽器即用的體驗。",
+        "Plus 把日常整理好，Pro 用 AstraZero 保護真正重要的文字，Ultra 再加上復原功能，讓誤刪或改錯還有回頭路。每個付費方案都保留 AstraNote 原本快速、直接、瀏覽器即用的體驗。",
       plusRole: "整理",
       plusPitch:
-        "Pin、封存、批次管理，加上 AstraConfidential。當 AstraNote 開始融入每天的使用，Plus 讓內容保持有序。",
+        "釘選、封存、批次管理，加上 AstraConfidential。當 AstraNote 開始融入每天的使用，Plus 讓內容保持有序。",
       proRole: "保護",
       proPitch:
         "AstraZero、無限筆記，加上 Plus 的全部能力。當文字真的重要，Pro 把重點放在更深的隱私保護。",
       ultraRole: "復原",
       ultraPitch:
-        "Recovery、Trash、前一版本、AstraZero，以及最高使用限制。重要的文字，不該因為一次誤刪或改錯就真的消失。"
+        "復原、垃圾桶、上一版本、AstraZero，以及最高使用限制。重要的文字，不該因為一次誤刪或改錯就真的消失。"
     },
     ja: {
       eyebrow: "本当に必要な機能を選ぶ",
       title: "3つのアップグレード。選ぶ理由も3つ。",
       body:
-        "Plusは日常の整理、ProはAstraZeroによるより深いプライバシー、Ultraはミスから戻るためのRecoveryが中心です。どの有料プランでも、AstraNoteの速くて直接的なブラウザ体験はそのままです。",
+        "Plusは日常の整理、ProはAstraZeroによるより深いプライバシー、Ultraはミスから戻るための復元機能が中心です。どの有料プランでも、AstraNoteの速くて直接的なブラウザ体験はそのままです。",
       plusRole: "整理",
       plusPitch:
-        "ピン、アーカイブ、一括管理、AstraConfidential。AstraNoteを日常的に使い始めたとき、Plusが整理を支えます。",
+        "ピン留め、アーカイブ、一括管理、AstraConfidential。AstraNoteを日常的に使い始めたとき、Plusが整理を支えます。",
       proRole: "保護",
       proPitch:
         "AstraZero、ノート無制限、Plusの全機能。大切な文字に、より深いプライバシーが必要な人向けです。",
       ultraRole: "復元",
       ultraPitch:
-        "Recovery、Trash、前のバージョン、AstraZero、最大の利用枠。大切な文字に、ミスから戻る余地を残します。"
+        "復元、ごみ箱、前のバージョン、AstraZero、最大の利用枠。大切な文字に、ミスから戻る余地を残します。"
     }
   };
 
