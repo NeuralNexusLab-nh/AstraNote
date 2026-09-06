@@ -204,11 +204,18 @@ function renderHomeHtml(language) {
   );
 
   html = html.replace(
+    /\s*<span class=["']hero-kicker["']>[\s\S]*?<\/span>\s*<\/span>\s*/i,
+    "\n",
+  );
+
+  html = html.replace(
     /(<([a-z][\w:-]*)\b[^>]*\bdata-i18n=["']([^"']+)["'][^>]*>)([\s\S]*?)(<\/\2>)/gi,
-    (match, open, tag, key, inner, close) =>
-      Object.prototype.hasOwnProperty.call(copy, key)
-        ? `${open}${escapeHtml(copy[key])}${close}`
-        : match,
+    (match, open, tag, key, inner, close) => {
+      if (!Object.prototype.hasOwnProperty.call(copy, key)) return match;
+      const escaped = escapeHtml(copy[key]);
+      const rendered = key === "heroLead" ? escaped.replaceAll("\n", "<br>") : escaped;
+      return `${open}${rendered}${close}`;
+    },
   );
 
   html = html.replace(
