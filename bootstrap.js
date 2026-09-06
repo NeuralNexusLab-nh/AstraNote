@@ -178,12 +178,16 @@ function escapeHtml(value) {
     .replaceAll("'", "&#39;");
 }
 
+function escapeRegex(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function replaceMeta(html, selector, value) {
   const escaped = escapeHtml(value);
   const attribute = selector.startsWith("property:") ? "property" : "name";
   const key = selector.slice(selector.indexOf(":") + 1);
   const pattern = new RegExp(
-    `(<meta\\s+[^>]*${attribute}=["']${key.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&")}["'][^>]*content=["'])[^"']*(["'][^>]*>)`,
+    `(<meta\\s+[^>]*${attribute}=["']${escapeRegex(key)}["'][^>]*content=["'])[^"']*(["'][^>]*>)`,
     "i",
   );
   return html.replace(pattern, `$1${escaped}$2`);
