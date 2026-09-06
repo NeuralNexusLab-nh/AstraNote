@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+Disallow: /dashboard
+Disallow: /notes
+Disallow: /note
+Disallow: /new-note
+Disallow: /edit-note
+Disallow: /settings
+Disallow: /trash
+
+Sitemap: https://astranote.nxlabtw.com/sitemap.xml
