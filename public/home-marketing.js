@@ -3,103 +3,103 @@
 (() => {
   const COPY = {
     en: {
-      heroKicker: "FREE · FAST · PRIVATE",
-      tagline: "Fast notes. Anywhere.",
+      heroKicker: "FREE · BROWSER-FIRST · PRIVATE",
+      tagline: "Keep it close. Wherever you are.",
       heroLead:
-        "Browser-first notes with instant access, account-free sharing, and strong encryption when you need it.",
-      begin: "Create a free account",
-      purposeEyebrow: "BUILT FOR SPEED",
-      purposeTitle: "Get the text. Skip the detour.",
+        "AstraNote keeps your text within reach — fast to open, effortless to share, and powerfully encrypted when it matters.",
+      begin: "Start free",
+      purposeEyebrow: "LESS FRICTION. MORE FLOW.",
+      purposeTitle: "Your notes should move as easily as you do.",
       purposeIntroOne:
-        "Open AstraNote in any modern browser—no app, no setup.",
+        "Open a browser, sign in, and your text is there. No app to install, no workspace to set up.",
       purposeIntroTwo:
-        "A lightweight login keeps quick access separate from your main email or cloud account.",
+        "A lightweight AstraNote login keeps quick access separate from the email and cloud accounts that run the rest of your digital life.",
       purposeIntroThree:
-        "Share with a read-only link; the reader needs no AstraNote account.",
-      quickTitle: "Open anywhere",
+        "Need to pass something on? Send a read-only link. No AstraNote account required.",
+      quickTitle: "Made to be within reach",
       quickBody:
-        "Phone, tablet, school PC, library computer, or Linux—just open a browser and sign in.",
-      secureTitle: "Serious encryption",
+        "From your phone to a school PC, AstraNote stays one browser away.",
+      secureTitle: "Privacy, with depth",
       secureBody:
-        "Use AstraSecret, AstraConfidential, or AstraZero when a note needs stronger protection.",
-      shareTitle: "Share without signup",
+        "AstraSecret, AstraConfidential, and AstraZero give sensitive notes stronger layers of protection.",
+      shareTitle: "One link. That's enough.",
       shareBody:
-        "Send a read-only link. No account, no matching platform, and access can be revoked anytime.",
-      limitEyebrow: "TEXT IS TINY",
-      limitTitle: "128 KB is a lot of text.",
+        "Share read-only text without asking anyone to sign up or join the same platform.",
+      limitEyebrow: "BUILT FOR TEXT",
+      limitTitle: "128 KB. Small number. Plenty of words.",
       limitBody:
-        "Free accounts include 20 notes and 128 KB—enough for tens of thousands of Chinese characters or over 100,000 ASCII characters before metadata. Encrypted notes use more space; paid plans add more.",
+        "Plain text is remarkably compact. The free 128 KB can hold tens of thousands of Chinese characters or over 100,000 ASCII characters before metadata — plenty for notes, links, snippets, and the little things worth keeping.",
       accountStorageLabel: "FREE TEXT STORAGE",
       accountLimitCaption: "20 NOTES · 128 KB · NO ADS · NO ANALYTICS",
       seoTitle: "AstraNote — Fast, free browser notes with strong encryption",
       seoDescription:
-        "AstraNote is a free online notebook for fast browser access, cross-device text, account-free read-only sharing, and optional AstraSecret, AstraConfidential, and AstraZero encryption."
+        "AstraNote is a free browser-first notebook for fast cross-device access, account-free read-only sharing, and powerful optional encryption with AstraSecret, AstraConfidential, and AstraZero."
     },
     "zh-Hant": {
-      heroKicker: "免費 · 極速 · 私密",
-      tagline: "快速筆記，隨處可用。",
+      heroKicker: "免費 · 瀏覽器即用 · 私密",
+      tagline: "讓想法，始終在你身邊。",
       heroLead:
-        "瀏覽器即用、快速取回、免帳號分享；需要時，再用更強的加密保護。",
-      begin: "免費建立帳號",
-      purposeEyebrow: "為速度而設計",
-      purposeTitle: "需要文字時，直接取得。",
+        "AstraNote 讓文字隨手可得。開啟很快、分享很簡單；重要的內容，則有強大的加密守著。",
+      begin: "免費開始",
+      purposeEyebrow: "少一點阻礙，多一點流暢",
+      purposeTitle: "你的筆記，應該跟得上你。",
       purposeIntroOne:
-        "任何現代瀏覽器都能開啟，不需安裝 App，也不用先設定工作區。",
+        "打開瀏覽器、登入，文字就在那裡。不用安裝 App，也不用設定工作區。",
       purposeIntroTwo:
-        "獨立的輕量登入，讓你不用為一小段文字登入主要郵件或雲端帳號。",
+        "AstraNote 的獨立輕量登入，讓你不必為了一段文字，動用掌管郵件、雲端與帳號復原的主要帳號。",
       purposeIntroThree:
-        "分享只需唯讀連結；對方不需要 AstraNote 帳號。",
-      quickTitle: "任何裝置都能開",
+        "要給別人？一個唯讀連結就夠了。對方不需要 AstraNote 帳號。",
+      quickTitle: "隨時，都在伸手可及的地方",
       quickBody:
-        "手機、平板、學校電腦、圖書館電腦或 Linux，有瀏覽器就能登入。",
-      secureTitle: "真正需要時，再用強加密",
+        "從手機到學校電腦，只要有瀏覽器，AstraNote 就在。",
+      secureTitle: "簡單之外，還有深度",
       secureBody:
-        "敏感筆記可使用 AstraSecret、AstraConfidential 或 AstraZero 提升保護。",
-      shareTitle: "分享不要求註冊",
+        "AstraSecret、AstraConfidential 與 AstraZero，為敏感內容提供更深一層的保護。",
+      shareTitle: "一個連結，就夠了",
       shareBody:
-        "丟一個唯讀連結即可；不用同平台、不用帳號，之後也能撤銷。",
-      limitEyebrow: "純文字真的很小",
-      limitTitle: "128 KB，其實能放很多文字。",
+        "唯讀分享，不要求註冊，也不要求對方和你待在同一個平台。",
+      limitEyebrow: "為純文字而生",
+      limitTitle: "128 KB。數字很小，能寫的很多。",
       limitBody:
-        "免費帳號有 20 篇筆記與 128 KB；不計額外資料前，可放數萬個中文字或超過十萬個 ASCII 字元。加密會占更多空間，付費方案則提供更高容量。",
+        "純文字遠比想像中省空間。不計額外資料前，免費的 128 KB 足以容納數萬個中文字，或超過十萬個 ASCII 字元；筆記、網址、程式片段與那些值得留下的小東西，綽綽有餘。",
       accountStorageLabel: "免費純文字空間",
       accountLimitCaption: "20 篇筆記 · 128 KB · 無廣告 · 無分析追蹤",
       seoTitle: "AstraNote — 免費、快速、跨裝置的加密線上筆記",
       seoDescription:
-        "AstraNote 是免費線上筆記服務，可在瀏覽器快速取用文字、跨裝置使用、以無需帳號的唯讀連結分享，並提供 AstraSecret、AstraConfidential 與 AstraZero 加密。"
+        "AstraNote 是免費、瀏覽器即用的線上筆記服務，提供快速跨裝置存取、無需帳號的唯讀分享，以及 AstraSecret、AstraConfidential 與 AstraZero 強大加密。"
     },
     ja: {
-      heroKicker: "無料 · 高速 · プライベート",
-      tagline: "すばやいノートを、どこからでも。",
+      heroKicker: "無料 · ブラウザですぐ使える · プライベート",
+      tagline: "思いつきを、いつでもそばに。",
       heroLead:
-        "ブラウザですぐ使えて、すぐ取り出せる。共有はアカウント不要。必要なときは強力な暗号化も使えます。",
-      begin: "無料アカウントを作成",
-      purposeEyebrow: "速さのための設計",
-      purposeTitle: "必要な文字へ、まっすぐ。",
+        "AstraNoteなら、必要な文字がいつでも手の届く場所に。すぐ開けて、簡単に共有でき、大切な内容には強力な暗号化を使えます。",
+      begin: "無料で始める",
+      purposeEyebrow: "もっと自然に、もっと軽く",
+      purposeTitle: "ノートは、あなたと同じ速さで動くべきです。",
       purposeIntroOne:
-        "モダンなブラウザがあれば使えます。アプリもワークスペース設定も不要です。",
+        "ブラウザを開いてログインすれば、文字はそこにあります。アプリもワークスペース設定も不要です。",
       purposeIntroTwo:
-        "軽量な独立ログインで、短いメモのために主要メールやクラウドへ入る必要を減らせます。",
+        "独立した軽量ログインだから、短いメモのためにメールやクラウド、復旧手段まで持つ主要アカウントを使う必要を減らせます。",
       purposeIntroThree:
-        "共有は読み取り専用リンクだけ。相手にAstraNoteアカウントは不要です。",
-      quickTitle: "どの端末でも開ける",
+        "誰かに渡すなら、読み取り専用リンクを一つ。相手にAstraNoteアカウントは不要です。",
+      quickTitle: "いつでも、手の届く場所に",
       quickBody:
-        "スマホ、タブレット、学校や図書館のPC、Linuxでも、ブラウザからすぐ使えます。",
-      secureTitle: "必要なときだけ強力に保護",
+        "スマホから学校のPCまで。ブラウザがあればAstraNoteはすぐそこです。",
+      secureTitle: "シンプルさの奥に、強い保護",
       secureBody:
-        "機密性が必要ならAstraSecret、AstraConfidential、AstraZeroを利用できます。",
-      shareTitle: "登録なしで共有",
+        "AstraSecret、AstraConfidential、AstraZeroが、機密性の高いノートをさらに深く守ります。",
+      shareTitle: "リンク一つで、それで十分",
       shareBody:
-        "読み取り専用リンクを送るだけ。同じサービスもアカウントも不要で、あとから無効化できます。",
-      limitEyebrow: "テキストは小さい",
-      limitTitle: "128 KBでも、文字ならかなり入ります。",
+        "読み取り専用で共有。登録も、同じプラットフォームも必要ありません。",
+      limitEyebrow: "テキストのための設計",
+      limitTitle: "128 KB。数字は小さくても、言葉はたくさん入る。",
       limitBody:
-        "無料は20ノート・128 KB。メタデータを除けば数万文字規模のCJK文字、または10万文字超のASCIIを保存できます。暗号化は追加容量を使い、有料プランではさらに増えます。",
+        "プレーンテキストは驚くほどコンパクトです。メタデータを除けば、無料の128 KBでも数万文字規模のCJK文字、または10万文字を超えるASCIIを保存できます。ノート、URL、スニペット、残しておきたい小さな情報には十分な余裕があります。",
       accountStorageLabel: "無料テキスト容量",
       accountLimitCaption: "20ノート · 128 KB · 広告なし · 解析トラッカーなし",
       seoTitle: "AstraNote — 無料で高速、ブラウザだけで使える暗号化ノート",
       seoDescription:
-        "AstraNoteは、ブラウザですばやく使え、端末をまたいでテキストを取得し、アカウント不要の読み取り専用リンクで共有できる無料オンラインノートです。"
+        "AstraNoteは無料でブラウザからすぐ使えるオンラインノートです。端末をまたいだ高速アクセス、アカウント不要の読み取り専用共有、AstraSecret・AstraConfidential・AstraZeroによる強力な暗号化に対応します。"
     }
   };
 
