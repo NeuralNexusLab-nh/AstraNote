@@ -71,7 +71,7 @@
       heroKicker: "免費 · 瀏覽器即用 · 跨裝置",
       tagline: "寫下了，就是我的。",
       heroLead:
-        "專放常用連結、操作小抄，和臨時要用的幾行字。\n跨裝置找得到、複製就能用；重要內容，也能加密保存。",
+        "專放常用連結、操作說明，和臨時要用的幾行字。\n跨裝置找得到、複製就能用；重要內容，也能加密保存。",
       begin: "免費開始",
       explore: "了解方案",
       purposeEyebrow: "小筆記，派上大用場",
@@ -88,13 +88,13 @@
       secureTitle: "幾行私密，也值得好好保護",
       secureBody:
         "日常私密用 AstraSecret；更敏感的內容可選 AstraConfidential 或 AstraZero，搭配你自行保管的強 PIN。",
-      shareTitle: "一份小抄，少解釋好幾次",
+      shareTitle: "一份說明，少解釋好幾次",
       shareBody:
         "設備設定、操作步驟、行前提醒，寫一次就能反覆看。可分享筆記傳成唯讀連結，對方不用註冊。",
       limitEyebrow: "為純文字而生",
       limitTitle: "128 KB，比你想的更能裝。",
       limitBody:
-        "文字很輕，真正常用的內容往往只有幾行。一個網址、一段指令、一份操作小抄，都不需要大容量。用最多 20 篇小筆記，把常用的那些留好，就很實用。",
+        "文字很輕，真正常用的內容往往只有幾行。一個網址、一段指令、一份操作說明，都不需要大容量。用最多 20 篇小筆記，把常用的那些留好，就很實用。",
       storageExampleLabel: "算給你看",
       storageExampleScenario: "20 篇筆記 × 每篇 500 個一般中文字",
       storageExampleAmount: "純文字約 30 KB",
@@ -130,7 +130,7 @@
       encryptionIntro: "AstraSecret、AstraConfidential 與 AstraZero 都在客戶端加密內容後才上傳。依私密程度選擇保護方式，搭配足夠強的 PIN；筆記標題仍保持可讀。",
       seoTitle: "AstraNote — 隨手記、快速找，也能強力加密的小筆記",
       seoDescription:
-        "常用連結、指令、操作小抄，集中放在 AstraNote。免費 128 KB、20 篇筆記，跨裝置搜尋標題、唯讀連結分享，也能選擇進階加密保護重要文字。"
+        "常用連結、指令、操作說明，集中放在 AstraNote。免費 128 KB、20 篇筆記，跨裝置搜尋標題、唯讀連結分享，也能選擇進階加密保護重要文字。"
     },
     ja: {
       heroKicker: "無料 · ブラウザですぐ使える · 端末を選ばない",

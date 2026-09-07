@@ -19,9 +19,10 @@ test("no-JS homepage renders current marketing copy in all supported languages",
   assert.match(traditionalChinese, /寫下了，就是我的。/u);
   assert.match(
     traditionalChinese,
-    /專放常用連結、操作小抄，和臨時要用的幾行字。<br>跨裝置找得到、複製就能用；重要內容，也能加密保存。/u,
+    /專放常用連結、操作說明，和臨時要用的幾行字。<br>跨裝置找得到、複製就能用；重要內容，也能加密保存。/u,
   );
   assert.match(traditionalChinese, /了解方案/u);
+  assert.doesNotMatch(traditionalChinese, /小抄/u);
   assert.doesNotMatch(traditionalChinese, /hero-kicker/u);
   assert.match(traditionalChinese, /home-language-cookie\.js/u);
   assert.match(traditionalChinese, /\?lang=zh-Hant/u);
