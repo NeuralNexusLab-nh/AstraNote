@@ -89,7 +89,12 @@ function loadTranslationObject(file, constantName) {
 }
 
 function buildTranslations() {
-  const base = loadTranslationObject(APP_JS_FILE, "I18N");
+  // The shared dictionary includes later Object.assign calls and the Japanese
+  // dictionary. Evaluate only the local, declarative prefix, never page startup.
+  const source = fs.readFileSync(APP_JS_FILE, "utf8");
+  const boundary = source.indexOf("const $ =");
+  if (boundary < 0) throw new Error("Missing translation section boundary.");
+  const base = vm.runInNewContext(`${source.slice(0, boundary)}\nI18N;`, Object.create(null), { timeout: 250 });
   const marketing = loadTranslationObject(HOME_MARKETING_FILE, "COPY");
   const translations = {};
   for (const language of ["en", "zh-Hant", "ja"]) {
@@ -204,6 +209,15 @@ function renderHomeHtml(language) {
   );
 
   html = html.replace(
+    /(<[^>]+\bdata-label-key=["']([^"']+)["'][^>]*)(>)/gi,
+    (match, opening, key, end) => {
+      if (!Object.prototype.hasOwnProperty.call(copy, key)) return match;
+      const withoutLabel = opening.replace(/\sdata-label=["'][^"']*["']/i, "");
+      return `${withoutLabel} data-label="${escapeHtml(copy[key])}"${end}`;
+    },
+  );
+
+  html = html.replace(
     /\s*<span class=["']hero-kicker["']>[\s\S]*?<\/span>\s*<\/span>\s*/i,
     "\n",
   );
@@ -251,7 +265,7 @@ function renderHomeHtml(language) {
     );
   }
 
-  const languageLinks = `\n    <noscript>\n      <nav class="muted" aria-label="Language">\n        <a href="/?lang=en" hreflang="en">English</a> ·\n        <a href="/?lang=zh-Hant" hreflang="zh-Hant">繁體中文</a> ·\n        <a href="/?lang=ja" hreflang="ja">日本語</a>\n      </nav>\n    </noscript>\n`;
+  const languageLinks = `\n    <noscript>\n      <nav class="muted home-nojs-languages" aria-label="${escapeHtml(copy.languageSelector)}">\n        <a href="/?lang=en" hreflang="en">English</a>\n        <a href="/?lang=zh-Hant" hreflang="zh-Hant">繁體中文</a>\n        <a href="/?lang=ja" hreflang="ja">日本語</a>\n      </nav>\n    </noscript>\n`;
   html = html.replace(/<\/body>/i, `${languageLinks}  </body>`);
 
   return html;

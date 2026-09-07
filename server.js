@@ -8,7 +8,7 @@ const crypto = require("node:crypto");
 const fs = require("node:fs");
 const fsp = require("node:fs/promises");
 const path = require("node:path");
-const { OrderStore } = require("./lib/order-store");
+const { OrderStore, ORDER_RETENTION_MS } = require("./lib/order-store");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -885,6 +885,24 @@ function publicOrder(order) {
     paidAt: order.paidAt || null,
     fulfilledAt: order.fulfilledAt || null,
   };
+}
+function retainedOrder(order, now = Date.now()) {
+  return Boolean(order && Date.parse(order.createdAt) > now - ORDER_RETENTION_MS);
+}
+let billingCleanupRunning = false;
+async function cleanupBillingRecords(now = Date.now()) {
+  if (billingCleanupRunning || !orderStore) return;
+  billingCleanupRunning = true;
+  try {
+    let deleted;
+    do {
+      deleted = await withLock("orders", () => orderStore.prune(now));
+      // Yield between small batches so a historical backlog cannot monopolize Node.
+      if (deleted === 500) await new Promise(resolve => setImmediate(resolve));
+    } while (deleted === 500);
+  } finally {
+    billingCleanupRunning = false;
+  }
 }
 function satoraPricingMatchesOrder(status, order) {
   if (!Number.isSafeInteger(status?.price) || status.price < 0) return false;
@@ -1967,8 +1985,8 @@ app.get(
     try {
       const username = userKey(req.auth.session.username);
       const metadata = await loadMetadata(username);
-      const orders = orderStore.list(accountOrderId(metadata)).map(publicOrder);
-      res.json({ orders, supportEmail: SUPPORT_EMAIL });
+      const orders = orderStore.list(accountOrderId(metadata), Date.now() - ORDER_RETENTION_MS).map(publicOrder);
+      res.json({ orders, retentionDays: 90, supportEmail: SUPPORT_EMAIL });
     } catch (error) {
       next(error);
     }
@@ -2005,6 +2023,8 @@ app.post(
         const accountId = accountOrderId(metadata);
         let order = orderStore.byCheckout(accountId, checkoutToken);
         if (order) {
+          if (!retainedOrder(order))
+            throw Object.assign(new Error("This payment record is no longer available. Start a new checkout attempt."), { status: 410, code: "order_not_found" });
           if (order.plan !== plan || order.months !== months)
             throw Object.assign(
               new Error("This checkout attempt cannot be changed."),
@@ -2015,6 +2035,8 @@ app.post(
           if (
             order.fulfilledAt ||
             order.localStatus === "coupon_reused" ||
+            order.localStatus === "expired" ||
+            (order.localStatus === "failed" && order.satoraPaymentId) ||
             order.paymentUrl
           )
             return publicOrder(order);
@@ -2117,7 +2139,7 @@ app.get(
       const username = userKey(req.auth.session.username);
       const accountId = accountOrderId(await loadMetadata(username));
       const initial = orderStore.get(orderId, accountId);
-      if (!initial)
+      if (!retainedOrder(initial))
         return jsonError(res, 404, "order_not_found", "Order not found.");
       if (
         returnedPaymentId &&
@@ -2130,7 +2152,7 @@ app.get(
           "payment_id_mismatch",
           "The returned payment does not match this order.",
         );
-      if (initial.fulfilledAt || initial.localStatus === "coupon_reused")
+      if (initial.fulfilledAt || (["coupon_reused", "expired", "failed"].includes(initial.localStatus) && initial.satoraPaymentId))
         return res.json({
           order: publicOrder(initial),
           supportEmail: SUPPORT_EMAIL,
@@ -2158,10 +2180,20 @@ app.get(
       }
       const result = await withLock("orders", async () => {
         const order = orderStore.get(orderId, accountId);
-        if (!order)
-          throw Object.assign(new Error("Order not found."), { status: 404 });
-        if (order.fulfilledAt || order.localStatus === "coupon_reused")
+        if (!retainedOrder(order))
+          throw Object.assign(new Error("Order not found."), { status: 404, code: "order_not_found" });
+        if (order.fulfilledAt || ["coupon_reused", "expired", "failed"].includes(order.localStatus))
           return order;
+        // An expired Satora tombstone can contain only its ID and status, with
+        // price=null. This branch grants nothing; paid still needs full checks.
+        if (status?.id === order.satoraPaymentId && ["failed", "expired"].includes(status.status)) {
+          order.localStatus = status.status;
+          order.paymentUrl = null;
+          order.txid = typeof status.txid === "string" ? status.txid : null;
+          order.failureCode = status.status === "failed" ? "payment_failed" : null;
+          orderStore.put(order);
+          return order;
+        }
         const validIdentity = satoraStatusMatchesOrder(status, order);
         if (!validIdentity) {
           order.localStatus = "verification_error";
@@ -2169,7 +2201,7 @@ app.get(
           return order;
         }
         if (
-          ["confirming", "pending", "failed", "expired"].includes(status.status)
+          ["confirming", "pending"].includes(status.status)
         ) {
           order.localStatus = status.status;
           order.txid = typeof status.txid === "string" ? status.txid : null;
@@ -3261,6 +3293,11 @@ app.use((error, req, res, next) => {
 
 async function start() {
   await ensureData();
+  const cleanBilling = () => cleanupBillingRecords().catch(error =>
+    console.error(`[${utcNow()}] Billing cleanup failed:`, error.message));
+  const billingCleanupTimer = setInterval(cleanBilling, 60 * 60_000);
+  billingCleanupTimer.unref();
+  cleanBilling();
   const cleanupTimer = setInterval(() => cleanupPlanLocks(), 60 * 60_000);
   cleanupTimer.unref();
   app.listen(PORT, () => {
@@ -3303,6 +3340,7 @@ module.exports = {
     BILLING_MONTH_OPTIONS,
     ORDER_CREATION_WINDOW_MS,
     MAX_NEW_ORDERS_PER_ACCOUNT_WINDOW,
+    ORDER_RETENTION_MS,
   },
   testables: {
     encryptContent,
@@ -3333,5 +3371,7 @@ module.exports = {
     compactOrder,
     recentNewOrderCount,
     accountOrderId,
+    cleanupBillingRecords,
+    retainedOrder,
   },
 };

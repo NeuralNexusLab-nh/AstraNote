@@ -2052,6 +2052,20 @@ html[lang="ja"] [data-lang="en"] {
 .order-amount {
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
 }
+.order-status { display: inline-flex; gap: 8px; font-size: .8125rem; font-weight: 500; line-height: 1.5; white-space: normal; }
+.order-status i { flex: none; }
+.order-status-danger { color: var(--danger); background: color-mix(in srgb, var(--danger) 12%, var(--card)); }
+.order-status-success { color: var(--success); background: color-mix(in srgb, var(--success) 12%, var(--card)); }
+.order-status-expired { color: var(--muted); }
+.order-status-waiting { color: var(--text); }
+.order-row[data-tone="danger"], .billing-return[data-tone="danger"] { border-color: color-mix(in srgb, var(--danger) 55%, var(--line)); }
+.billing-return[data-tone="danger"] :is(h2, .billing-return-icon) { color: var(--danger); }
+.billing-return[data-tone="success"] .billing-return-icon { color: var(--success); }
+.billing-return[data-tone="expired"] .billing-return-icon { color: var(--muted); }
+.billing-retention { max-width: 850px; line-height: 1.8; font-size: .875rem; margin-bottom: 20px; }
+html[data-theme="light"] .order-status-danger,
+html[data-theme="light"] .billing-return[data-tone="danger"] :is(h2, .billing-return-icon) { color: #b82d40; }
+html[data-theme="light"] .order-status-success { color: #287653; }
 .account-plan-card {
   display: grid;
   grid-template-columns: minmax(180px, 1fr) minmax(280px, 1.5fr) auto;

@@ -25,6 +25,14 @@ security-sensitive actions.
   for audit and idempotent fulfilment. New-order requests are limited per account
   and IP, with a persistent six-new-orders-per-hour account check and a 2.4 GB
   database hard limit (new orders stop earlier to reserve update space).
+- Payment history is deleted 90 days after order creation. Cleanup runs at startup
+  and hourly in small batches; old records are immediately excluded from history
+  and verification even between cleanup runs. Already credited plan balances are
+  stored separately and remain valid. Minimal coupon-redemption receipts remain
+  to prevent reuse. Save receipts before the retention period ends.
+- Billing history verifies recent unresolved invoices and routes payment actions
+  through a fresh status check. Failed/expired invoices never offer a payment link;
+  failed verification or a provider outage never grants subscription time.
 - No encryption, AES-128-GCM, AES-256-GCM, AstraSecret, AstraConfidential, or client-only AstraZero at note creation
 - Every encrypted mode protects note content; titles remain plaintext for identification
 - Server-enforced overage locks and permanent deletion after 30 continuously locked days

@@ -779,7 +779,7 @@ Object.assign(I18N.en, {
   orderConfirming: "Waiting to start payment",
   orderPending: "Waiting for Bitcoin payment",
   orderPaid: "Paid and activated",
-  orderFailed: "Payment needs assistance",
+  orderFailed: "Payment failed",
   orderExpired: "Payment expired",
   orderCreated: "Creating payment",
   orderVerificationError: "Could not safely verify payment",
@@ -857,7 +857,7 @@ Object.assign(I18N["zh-Hant"], {
   orderConfirming: "等待開始付款",
   orderPending: "等待 Bitcoin 付款",
   orderPaid: "已付款並啟用",
-  orderFailed: "付款需要協助",
+  orderFailed: "付款失敗",
   orderExpired: "付款已過期",
   orderCreated: "正在建立付款",
   orderVerificationError: "無法安全驗證付款",
@@ -953,7 +953,7 @@ Object.assign(I18N.ja, {
   orderConfirming: "支払い開始待ち",
   orderPending: "Bitcoin 支払い待ち",
   orderPaid: "支払い・有効化済み",
-  orderFailed: "支払いにサポートが必要です",
+  orderFailed: "支払い失敗",
   orderExpired: "支払い期限切れ",
   orderCreated: "支払いを作成中",
   orderVerificationError: "支払いを安全に検証できません",
@@ -1457,7 +1457,14 @@ Object.assign(I18N.en, {
   orderIdLabel: "Order ID",
   viewPaymentDetails: "View details",
   billingData:
-    "Payment records retain the account association, plan, amount, payment identifiers, status and necessary timestamps for reconciliation and preventing duplicate credit. Coupon-use receipts store a code digest, account association and order ID, not the plaintext coupon. Full payment-service responses are not stored.",
+    "Invoice details are deleted 90 days after the order was created and are no longer available in payment history. Already credited plan time is stored separately and is not removed with invoices. Minimal coupon-use receipts (code digest, account association and order ID) remain to prevent reuse; plaintext coupons and full payment-service responses are not stored.",
+  billingRetentionTitle: "Payment history retention",
+  billingContactSupport: "Contact support",
+  billingRetention: "Payment history is kept for 3 months (90 days from order creation), then deleted. Already credited plan time is unaffected. Save any receipts you need before then; for payment problems, contact astranote@nxlabtw.com promptly.",
+  checkPaymentStatus: "Check payment status",
+  billingStatusUnavailable: "Status temporarily unavailable",
+  billingExpiredHelp: "This invoice has expired and cannot be paid. If you have not sent Bitcoin, choose a plan to start a new purchase. If you already paid, do not pay again; contact support.",
+  billingFailedHelp: "This payment failed. Do not pay again. Contact support with this order ID to resolve the payment.",
 });
 Object.assign(I18N["zh-Hant"], {
   noteContent: "筆記內容",
@@ -1471,7 +1478,14 @@ Object.assign(I18N["zh-Hant"], {
   orderIdLabel: "訂單編號",
   viewPaymentDetails: "查看詳情",
   billingData:
-    "付款紀錄保留帳號關聯、方案、金額、付款識別碼、狀態及必要時間，用於核對款項並防止重複入帳。優惠碼使用紀錄僅保留代碼摘要、帳號關聯與訂單編號，不儲存優惠碼明碼，也不儲存付款服務的完整回應。",
+    "帳單明細於訂單建立滿 90 天後刪除，屆時無法再從付款紀錄查看。已入帳的方案天數另外保存，不會隨帳單刪除。為避免重複兌換，仍保留最少量的優惠碼使用紀錄（代碼摘要、帳號關聯與訂單編號）；不儲存優惠碼明碼或付款服務的完整回應。",
+  billingRetentionTitle: "付款紀錄保存期限",
+  billingContactSupport: "聯絡支援",
+  billingRetention: "付款紀錄自訂單建立起保留 3 個月（90 天），之後刪除；已入帳的方案天數不受影響。需要的收據請提前自行保存，付款有問題請儘速聯絡 astranote@nxlabtw.com。",
+  checkPaymentStatus: "確認付款狀態",
+  billingStatusUnavailable: "暫時無法確認狀態",
+  billingExpiredHelp: "此帳單已過期，無法再付款。若尚未支付 Bitcoin，可重新選擇方案建立新訂單；若已支付，請勿重複付款，請聯絡支援。",
+  billingFailedHelp: "這筆付款失敗。請勿再次付款，請提供訂單編號聯絡支援處理。",
 });
 Object.assign(I18N.ja, {
   noteContent: "ノート内容",
@@ -1485,7 +1499,14 @@ Object.assign(I18N.ja, {
   orderIdLabel: "注文番号",
   viewPaymentDetails: "詳細を見る",
   billingData:
-    "支払い記録には照合と重複付与の防止に必要なアカウント関連、プラン、金額、支払い識別子、状態、日時を保持します。クーポンの利用記録にはコードのダイジェスト、アカウント関連、注文番号のみを保存し、コードの平文や決済サービスの応答全体は保存しません。",
+    "請求明細は注文作成から90日後に削除され、支払い履歴でも閲覧できなくなります。付与済みのプラン期間は別に保存され、明細の削除では失われません。再利用防止に必要な最小限のクーポン記録（コードのダイジェスト、アカウント関連、注文番号）は保持します。コードの平文や決済サービスの応答全体は保存しません。",
+  billingRetentionTitle: "支払い履歴の保存期間",
+  billingContactSupport: "サポートに連絡",
+  billingRetention: "支払い履歴は注文作成から3か月（90日）保存し、その後削除します。付与済みのプラン期間には影響しません。必要な領収記録は期限前に保存し、支払いの問題は速やかに astranote@nxlabtw.com へご連絡ください。",
+  checkPaymentStatus: "支払い状況を確認",
+  billingStatusUnavailable: "状況を一時的に確認できません",
+  billingExpiredHelp: "この請求は期限切れのため支払えません。まだ Bitcoin を送っていない場合は、プランを選んで新しい注文を作成できます。支払い済みの場合は再度支払わず、サポートへご連絡ください。",
+  billingFailedHelp: "支払いに失敗しました。再度支払わず、注文番号を添えてサポートへご連絡ください。",
 });
 const state = {
   session: null,
@@ -1998,6 +2019,7 @@ async function api(url, options = {}) {
           storage_limit: t("storageLimit"),
           restore_quota: t("restoreQuota"),
           note_locked: t("noteLocked"),
+          order_not_found: t("billingRetention"),
         }[data.error] ||
           data.message ||
           t("error"),
@@ -2685,6 +2707,12 @@ async function initHome() {
       primary.href = "/dashboard";
       $("i", primary).className = "fa-solid fa-chart-line";
       $("span", primary).dataset.i18n = "dashboard";
+    }
+    const freeCta = $("#home-free-cta");
+    if (freeCta) {
+      freeCta.href = "/dashboard";
+      $("i", freeCta).className = "fa-solid fa-chart-line";
+      $("span", freeCta).dataset.i18n = "dashboard";
     }
   }
   const canvas = $("#space-canvas");
@@ -3666,8 +3694,8 @@ async function initShared() {
   }
 }
 
-function billingStatusText(status) {
-  const key = {
+function billingStatusKey(status) {
+  return {
     confirming: "orderConfirming",
     pending: "orderPending",
     paid: "orderPaid",
@@ -3676,12 +3704,23 @@ function billingStatusText(status) {
     created: "orderCreated",
     verification_error: "orderVerificationError",
     coupon_reused: "orderCouponReused",
-  }[status];
-  return t(key || "orderVerificationError");
+  }[status] || "orderVerificationError";
+}
+function billingStatusText(status) {
+  return t(billingStatusKey(status));
 }
 
 function formatBitcoin(sats) {
   return `${(Number(sats) / 1e8).toFixed(8)} BTC`;
+}
+
+function orderPresentation(order) {
+  if (order.statusUnavailable) return { tone: "waiting", icon: "fa-circle-question", label: t("billingStatusUnavailable") };
+  if (order.localStatus === "paid" && order.fulfilledAt) return { tone: "success", icon: "fa-circle-check", label: t("orderPaid") };
+  if (order.localStatus === "expired") return { tone: "expired", icon: "fa-clock", label: t("orderExpired") };
+  if (["created", "confirming", "pending", "paid"].includes(order.localStatus))
+    return { tone: "waiting", icon: "fa-clock", label: order.localStatus === "paid" ? t("paymentChecking") : billingStatusText(order.localStatus) };
+  return { tone: "danger", icon: "fa-circle-exclamation", label: billingStatusText(order.localStatus) };
 }
 
 function orderRow(order) {
@@ -3693,36 +3732,55 @@ function orderRow(order) {
   amount.className = "order-amount";
   amount.textContent = formatBitcoin(order.chargedSats ?? order.expectedSats);
   const status = document.createElement("span");
-  status.className = `pill order-status order-status-${order.localStatus}`;
-  status.textContent = billingStatusText(order.localStatus);
-  if (order.localStatus === "coupon_reused")
-    status.dataset.i18n = "orderCouponReused";
+  const appearance = orderPresentation(order);
+  row.dataset.tone = appearance.tone;
+  status.className = `pill order-status order-status-${appearance.tone}`;
+  const statusIcon = document.createElement("i");
+  statusIcon.className = `fa-solid ${appearance.icon}`;
+  statusIcon.setAttribute("aria-hidden", "true");
+  const label = document.createElement("span");
+  label.textContent = appearance.label;
+  status.append(statusIcon, label);
   row.append(main, amount, status);
-  if (
-    ["confirming", "pending"].includes(order.localStatus) &&
-    order.paymentUrl
-  ) {
-    const link = document.createElement("a");
-    link.className = "btn";
-    link.href = order.paymentUrl;
-    link.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span>${t("continuePayment")}</span>`;
-    row.append(link);
-  }
-  if (order.localStatus === "coupon_reused") {
-    const link = document.createElement("a");
-    link.className = "btn";
-    link.href = `/plans/return?order_id=${encodeURIComponent(order.orderId)}`;
-    link.innerHTML = `<i class="fa-solid fa-circle-info" aria-hidden="true"></i><span data-i18n="viewPaymentDetails">${t("viewPaymentDetails")}</span>`;
-    row.append(link);
-  }
+  // Always verify the saved invoice before exposing an external payment link.
+  const link = document.createElement("a");
+  link.className = "btn";
+  link.href = `/plans/return?order_id=${encodeURIComponent(order.orderId)}`;
+  link.innerHTML = `<i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>${t(appearance.tone === "waiting" ? "checkPaymentStatus" : "viewPaymentDetails")}</span>`;
+  row.append(link);
   return row;
 }
 
-async function loadOrders() {
+async function loadOrders(refreshStatuses = false) {
   if (!state.session?.authenticated) return;
   const result = await api("/api/billing/orders");
   state.billingOrders = result.orders;
   renderOrders(state.billingOrders);
+  if (refreshStatuses) refreshOrderHistory().catch(() => {});
+}
+async function refreshOrderHistory() {
+  // Bounded, one-shot refresh of recent unresolved invoices; no polling loop.
+  // Other invoices are checked on the local details page before any payment.
+  const pending = (state.billingOrders || []).filter(order =>
+    !order.fulfilledAt && order.satoraPaymentId &&
+    ["created", "confirming", "pending", "paid", "verification_error"].includes(order.localStatus)
+  ).slice(0, 6);
+  for (const previous of pending) {
+    try {
+      const { order } = await api(`/api/billing/status?order_id=${encodeURIComponent(previous.orderId)}`);
+      state.billingOrders = state.billingOrders.map(item => item.orderId === order.orderId ? order : item);
+      if (refreshAfterPayment(order)) return;
+    } catch (error) {
+      if (error.status === 404) state.billingOrders = state.billingOrders.filter(item => item.orderId !== previous.orderId);
+      else {
+        previous.statusUnavailable = true;
+        renderOrders(state.billingOrders);
+        // An outage or rate limit must not trigger a burst of retries.
+        break;
+      }
+    }
+    renderOrders(state.billingOrders);
+  }
 }
 function renderOrders(orders) {
   const panel = $("#orders-panel");
@@ -3762,7 +3820,7 @@ async function renderBillingReturn(orderId, returnedPaymentId = "") {
       if (returnedPaymentId) query.set("satora_payment_id", returnedPaymentId);
       const result = await api(`/api/billing/status?${query}`);
       const order = result.order;
-      const paid = order.localStatus === "paid";
+      const paid = order.localStatus === "paid" && Boolean(order.fulfilledAt);
       const couponReused = order.localStatus === "coupon_reused";
       const needsHelp = [
         "failed",
@@ -3770,6 +3828,7 @@ async function renderBillingReturn(orderId, returnedPaymentId = "") {
         "coupon_reused",
       ].includes(order.localStatus);
       panel.innerHTML = "";
+      panel.dataset.tone = orderPresentation(order).tone;
       const icon = document.createElement("div");
       icon.className = "billing-return-icon";
       icon.innerHTML = `<i class="fa-solid ${paid ? "fa-circle-check" : needsHelp ? "fa-circle-exclamation" : "fa-clock"}" aria-hidden="true"></i>`;
@@ -3778,17 +3837,21 @@ async function renderBillingReturn(orderId, returnedPaymentId = "") {
       const heading = document.createElement("h2");
       heading.textContent = paid
         ? t("paymentActivated")
-        : billingStatusText(order.localStatus);
-      if (couponReused) heading.dataset.i18n = "orderCouponReused";
+        : orderPresentation(order).label;
+      heading.dataset.i18n = paid ? "paymentActivated" : order.localStatus === "paid" ? "paymentChecking" : billingStatusKey(order.localStatus);
       const detail = document.createElement("p");
       detail.className = "muted";
       detail.textContent = `${formatBitcoin(order.expectedSats)} · ${order.days} ${t("days")}`;
+      if (["expired", "failed"].includes(order.localStatus)) {
+        detail.dataset.i18n = order.localStatus === "expired" ? "billingExpiredHelp" : "billingFailedHelp";
+        detail.textContent = t(detail.dataset.i18n);
+      }
       if (couponReused) {
         detail.dataset.i18n = "couponRejectedBody";
         detail.textContent = t("couponRejectedBody");
       }
       content.append(heading, detail);
-      if (couponReused) {
+      if (needsHelp || order.localStatus === "expired") {
         const reference = document.createElement("p");
         const label = document.createElement("span");
         label.dataset.i18n = "orderIdLabel";
@@ -3806,20 +3869,28 @@ async function renderBillingReturn(orderId, returnedPaymentId = "") {
         const link = document.createElement("a");
         link.className = "btn btn-primary";
         link.href = order.paymentUrl;
-        link.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span>${t("continuePayment")}</span>`;
+        link.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span data-i18n="continuePayment">${t("continuePayment")}</span>`;
         panel.append(link);
         window.setTimeout(refresh, 20_000);
-      } else if (needsHelp) {
+      } else if (needsHelp || order.localStatus === "expired") {
         const support = document.createElement("a");
         support.className = "btn";
         support.href = `mailto:astranote@nxlabtw.com?subject=${encodeURIComponent(`AstraNote order ${order.orderId}`)}`;
-        support.innerHTML = `<i class="fa-regular fa-envelope" aria-hidden="true"></i><span>astranote@nxlabtw.com</span>`;
+        support.innerHTML = `<i class="fa-regular fa-envelope" aria-hidden="true"></i><span data-i18n="billingContactSupport">${t("billingContactSupport")}</span>`;
         panel.append(support);
       }
       if (refreshAfterPayment(order)) return;
       await loadOrders();
     } catch (error) {
-      panel.innerHTML = `<div class="billing-return-icon"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></div><div><h2>${error.message}</h2><p class="muted">astranote@nxlabtw.com</p></div>`;
+      panel.dataset.tone = "danger";
+      panel.replaceChildren();
+      const heading = document.createElement("h2");
+      heading.textContent = error.message;
+      const help = document.createElement("a");
+      help.className = "btn";
+      help.href = "mailto:astranote@nxlabtw.com";
+      help.innerHTML = `<i class="fa-regular fa-envelope" aria-hidden="true"></i><span data-i18n="billingContactSupport">${t("billingContactSupport")}</span>`;
+      panel.append(heading, help);
     }
   };
   await refresh();
@@ -3894,7 +3965,7 @@ async function initPlans() {
       button.disabled = false;
     }
   });
-  if (state.session?.authenticated) await loadOrders();
+  if (state.session?.authenticated) await loadOrders(!new URLSearchParams(location.search).has("order_id"));
   const orderId = new URLSearchParams(location.search).get("order_id");
   if (orderId) {
     if (!state.session?.authenticated) {
@@ -3919,6 +3990,7 @@ function initReveal() {
     { threshold: 0.12 },
   );
   $$(".reveal").forEach((el) => observer.observe(el));
+  if (page === "home") document.documentElement.classList.add("home-reveal-ready");
 }
 
 async function boot() {

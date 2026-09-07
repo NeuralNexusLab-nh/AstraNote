@@ -86,6 +86,13 @@ test("every newly introduced feature has all three translations", () => {
     "couponRejectedBody",
     "orderIdLabel",
     "viewPaymentDetails",
+    "billingRetentionTitle",
+    "billingContactSupport",
+    "billingRetention",
+    "checkPaymentStatus",
+    "billingStatusUnavailable",
+    "billingExpiredHelp",
+    "billingFailedHelp",
   ];
   for (const language of ["en", "zh-Hant", "ja"])
     for (const key of required)
@@ -341,6 +348,84 @@ test("payment return reloads once after backend fulfilment, never for pending or
   };
   await vm.runInContext('renderBillingReturn("order-c")', context);
   assert.deepEqual(redirects, ["/plans"]);
+});
+
+test("billing history uses explicit status tones and verifies locally before payment", () => {
+  const context = browserContext();
+  context.document.createElement = () => ({
+    dataset: {}, children: [], setAttribute() {},
+    append(...children) { this.children.push(...children); },
+  });
+  const tones = { paid: "success", expired: "expired", failed: "danger", verification_error: "danger", coupon_reused: "danger", confirming: "waiting", pending: "waiting" };
+  for (const language of ["en", "zh-Hant", "ja"]) {
+    vm.runInContext(`state.language = "${language}"`, context);
+    for (const [localStatus, tone] of Object.entries(tones)) {
+      context.order = {
+        orderId: "a".repeat(32), localStatus, plan: "plus", days: 30, expectedSats: 2500,
+        createdAt: new Date().toISOString(),
+        fulfilledAt: localStatus === "paid" ? new Date().toISOString() : null,
+        paymentUrl: "https://satora.nxlabtw.com/payment/stale",
+      };
+      const row = vm.runInContext("orderRow(order)", context);
+      assert.equal(row.dataset.tone, tone);
+      assert.equal(row.children[3].href, "/plans/return?order_id=" + context.order.orderId);
+      assert.equal(row.children[2].className, `pill order-status order-status-${tone}`);
+      assert.ok(row.children[2].children[1].textContent);
+    }
+  }
+  context.order = { localStatus: "paid", fulfilledAt: null };
+  assert.equal(vm.runInContext("orderPresentation(order).tone", context), "waiting");
+  context.order = { localStatus: "pending", statusUnavailable: true };
+  assert.equal(vm.runInContext("orderPresentation(order).label === t('billingStatusUnavailable')", context), true);
+  const css = fs.readFileSync(path.join(__dirname, "../public/style.css"), "utf8");
+  assert.match(css, /\.order-status-danger\s*\{[^}]*color:\s*var\(--danger\)/);
+});
+
+test("payment details expose a wallet checkout only for verified pending states", async () => {
+  const context = browserContext();
+  const element = () => ({ dataset: {}, children: [],
+    append(...children) { this.children.push(...children); },
+    replaceChildren(...children) { this.children = children; },
+  });
+  const panel = element();
+  context.document.querySelector = () => panel;
+  context.document.createElement = element;
+  context.URLSearchParams = URLSearchParams;
+  context.window.setTimeout = () => {};
+  vm.runInContext("api = async () => ({order}); loadOrders = async () => {};", context);
+  for (const localStatus of ["expired", "failed", "verification_error", "coupon_reused", "pending", "confirming"]) {
+    panel.children = [];
+    context.order = { orderId: "test-invoice", localStatus, expectedSats: 2500, days: 30,
+      paymentUrl: "https://satora.nxlabtw.com/payment/fixture" };
+    await vm.runInContext("renderBillingReturn(order.orderId)", context);
+    const links = panel.children.filter(child => child.href?.startsWith("https://satora"));
+    assert.equal(links.length, ["pending", "confirming"].includes(localStatus) ? 1 : 0, localStatus);
+    assert.equal(panel.dataset.tone, localStatus === "expired" ? "expired" : ["pending", "confirming"].includes(localStatus) ? "waiting" : "danger");
+  }
+});
+
+test("billing refresh is bounded, removes missing orders, and stops on provider outages", async () => {
+  const context = browserContext();
+  context.orders = Array.from({ length: 8 }, (_, index) => ({ orderId: String(index), localStatus: "pending", satoraPaymentId: String(index) }));
+  let calls = 0;
+  context.provider = async () => {
+    const order = context.orders[calls++];
+    return { order: { ...order, localStatus: "expired", paymentUrl: null } };
+  };
+  vm.runInContext("api = provider; renderOrders = () => {}; state.billingOrders = orders;", context);
+  await vm.runInContext("refreshOrderHistory()", context);
+  assert.equal(calls, 6);
+  assert.equal(vm.runInContext("state.billingOrders.filter(order => order.localStatus === 'expired').length", context), 6);
+  calls = 0;
+  context.provider = async () => { calls++; throw Object.assign(new Error("Unavailable"), { status: 503 }); };
+  vm.runInContext("api = provider; state.billingOrders = orders;", context);
+  await vm.runInContext("refreshOrderHistory()", context);
+  assert.equal(calls, 1);
+  assert.equal(context.orders[0].statusUnavailable, true);
+  context.provider = async () => { throw Object.assign(new Error("Removed"), { status: 404 }); };
+  vm.runInContext("api = provider; state.billingOrders = [orders[0]];", context);
+  await vm.runInContext("refreshOrderHistory()", context);
+  assert.equal(vm.runInContext("state.billingOrders.length", context), 0);
 });
 
 test("the real selection handlers initialize, submit exact unlocked IDs, and retain selection", async () => {

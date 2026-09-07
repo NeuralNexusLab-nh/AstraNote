@@ -24,6 +24,7 @@
     <title>AstraNote — Fast, free browser notes with strong encryption</title>
     <link rel="icon" href="/asset/logo.svg" />
     <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/home.css" />
 
     <script type="application/ld+json">
       {
@@ -57,91 +58,140 @@
     <script src="/home-marketing.js" defer></script>
   </head>
   <body data-page="home">
-    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="#main" data-i18n="skipContent">Skip to content</a>
     <main id="main">
       <section class="hero">
         <canvas class="space-canvas" id="space-canvas" aria-hidden="true"></canvas>
         <div class="nebula" aria-hidden="true"></div>
         <div class="hero-content">
-          <span class="hero-kicker">
-            <i class="fa-solid fa-note-sticky"></i>
-            <span data-i18n="heroKicker">FREE ONLINE NOTES · NO APP REQUIRED</span>
-          </span>
           <h1>AstraNote</h1>
-          <p class="hero-tagline" data-i18n="tagline">Your text, ready on any device.</p>
-          <p class="hero-description" data-i18n="heroLead">
-            Open AstraNote in any modern browser, sign in, and get the text you need without installing an app or signing in to your main email or cloud account. Share a read-only link with anyone—no AstraNote account required. When a note matters more, protect it with AstraSecret, AstraConfidential, or AstraZero.
-          </p>
+          <p class="hero-tagline" data-i18n="tagline">I wrote it, it’s mine.</p>
+          <p class="hero-description" data-i18n="heroLead">Open a browser, your notes are there. Sharing takes just one link;<br>for your most private content, there’s AstraZero encryption.</p>
           <div class="hero-actions">
             <a class="btn btn-primary btn-lg" id="hero-primary" href="/register">
               <i class="fa-solid fa-pen-nib"></i>
               <span data-i18n="begin">Create a free account</span>
             </a>
-            <a class="btn btn-outline btn-lg" href="#purpose">
+            <a class="btn btn-outline btn-lg" href="/plans">
               <i class="fa-solid fa-compass"></i>
               <span data-i18n="explore">Explore AstraNote</span>
             </a>
           </div>
         </div>
-        <a class="scroll-cue" href="#stats">
+        <a class="scroll-cue" href="#purpose">
           <span data-i18n="scroll">Scroll to explore</span><i class="fa-solid fa-arrow-down"></i>
         </a>
       </section>
 
-      <section class="home-section" id="stats">
-        <div class="shell stats-grid">
-          <article class="stat-card reveal">
-            <p class="eyebrow"><i class="fa-solid fa-signal"></i><span data-i18n="today">Active accounts today</span></p>
-            <strong id="online-stat">—</strong><span class="muted" data-i18n="utc">Unique signed-in accounts that visited · today in UTC</span>
-          </article>
-          <article class="stat-card reveal">
-            <p class="eyebrow"><i class="fa-solid fa-users"></i><span data-i18n="registered">Registered accounts</span></p>
-            <strong id="users-stat">—</strong><span class="muted">AstraNote</span>
-          </article>
-        </div>
-      </section>
-
-      <section class="home-section" id="purpose">
+      <section class="home-section" id="purpose" aria-labelledby="purpose-heading">
         <div class="shell">
           <header class="section-head reveal">
             <p class="eyebrow"><i class="fa-solid fa-bolt"></i><span data-i18n="purposeEyebrow">FAST BY DESIGN</span></p>
-            <h2 data-i18n="purposeTitle">Getting one piece of text should not become a login project.</h2>
+            <h2 id="purpose-heading" data-i18n="purposeTitle">Less setup. More room to think.</h2>
+            <p class="muted home-intro" data-i18n="purposeIntroOne">AstraNote is a free online notebook for ideas, reminders, and the text you reach for every day. No app to install. Just sign in and start writing.</p>
           </header>
-          <div class="product-intro reveal">
-            <p data-i18n="purposeIntroOne">Sometimes you only need a class code, URL, reminder, code snippet, or a block of text on another device. Installing an app, opening a full cloud suite, or completing another account's verification flow is needless friction.</p>
-            <p data-i18n="purposeIntroTwo">AstraNote uses its own lightweight account and works directly in the browser. Sign in, open the note, get the text, and move on. On a new or shared device, this also means you do not have to expose the primary account that holds your email, cloud files, and recovery methods. Keep highly sensitive notes for trusted devices.</p>
-            <p data-i18n="purposeIntroThree">Need to send text to somebody else? Create a read-only link. The reader does not need an AstraNote account or the same social platform, and you can revoke the link later.</p>
-          </div>
           <div class="feature-grid">
             <article class="card feature-card reveal">
               <h3 class="feature-heading"><span class="feature-icon"><i class="fa-solid fa-globe"></i></span><span data-i18n="quickTitle">Open anywhere, without the setup</span></h3>
               <p data-i18n="quickBody">Phone, tablet, school PC, library computer, Linux box—if it has a modern browser, AstraNote is ready. No app installation and no workspace setup.</p>
             </article>
             <article class="card feature-card reveal">
-              <h3 class="feature-heading"><span class="feature-icon"><i class="fa-solid fa-shield-halved"></i></span><span data-i18n="secureTitle">Strong encryption when the note deserves it</span></h3>
-              <p data-i18n="secureBody">Keep everyday notes simple, then step up to AstraSecret, AstraConfidential, or AstraZero for more sensitive content. The full encryption comparison is kept below.</p>
-            </article>
-            <article class="card feature-card reveal">
               <h3 class="feature-heading"><span class="feature-icon"><i class="fa-solid fa-link"></i></span><span data-i18n="shareTitle">Share text, not accounts</span></h3>
               <p data-i18n="shareBody">Send a read-only link. The reader does not need AstraNote, a social account, or the same ecosystem. Revoke access whenever you want.</p>
+            </article>
+            <article class="card feature-card reveal">
+              <h3 class="feature-heading"><span class="feature-icon"><i class="fa-solid fa-shield-halved"></i></span><span data-i18n="secureTitle">Private when it matters</span></h3>
+              <p data-i18n="secureBody">Choose the protection each note needs, from everyday encryption to AstraZero’s client-generated keys.</p>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="home-section">
+      <section class="home-section home-plans" id="plans-preview" aria-labelledby="home-plans-heading">
+        <div class="shell">
+          <header class="section-head reveal">
+            <p class="eyebrow"><i class="fa-solid fa-layer-group" aria-hidden="true"></i><span data-i18n="homePlansLabel">GROW AT YOUR OWN PACE</span></p>
+            <h2 id="home-plans-heading" data-i18n="homePlansTitle">From everyday notes to extra peace of mind.</h2>
+            <p class="muted" data-i18n="homePlansLead">Start free. Add organization, deeper privacy, or a way back when you need it.</p>
+          </header>
+          <div class="home-plan-grid">
+            <article class="card home-plan reveal" data-home-plan="plus">
+              <header class="home-plan-heading"><h3><i class="fa-solid fa-star" aria-hidden="true"></i>Plus</h3><span class="home-plan-role" data-i18n="homePlusRole">Organize</span></header>
+              <p class="home-plan-description" data-i18n="homePlusBody">Keep your everyday notes in order.</p>
+              <ul class="home-plan-features">
+                <li><i class="fa-solid fa-thumbtack" aria-hidden="true"></i><span data-i18n="homeOrganize">Pin, archive &amp; batch manage</span></li>
+                <li><i class="fa-solid fa-user-shield" aria-hidden="true"></i><span data-i18n="homeConfidential">AstraConfidential encryption</span></li>
+              </ul>
+              <p class="home-plan-spec" data-i18n="homePlusSpec">256 KB · 50 notes</p>
+              <div class="home-plan-bottom">
+                <p class="home-plan-price">0.000025 BTC <small data-i18n="perMonth">/ month</small><span data-i18n="plusUsdEstimate">About US$2 / month</span></p>
+                <a class="btn btn-outline" href="/plans"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i><span data-i18n="explore">See plans</span><span class="sr-only">Plus</span></a>
+              </div>
+            </article>
+            <article class="card home-plan home-plan-pro reveal" data-home-plan="pro">
+              <header class="home-plan-heading"><h3><i class="fa-solid fa-gem" aria-hidden="true"></i>Pro</h3><span class="home-plan-role" data-i18n="homeProRole">Protect</span></header>
+              <p class="home-plan-description" data-i18n="homeProBody">Give important words more privacy.</p>
+              <ul class="home-plan-features">
+                <li><i class="fa-solid fa-fingerprint" aria-hidden="true"></i><span data-i18n="homeZero">AstraZero client-side encryption</span></li>
+                <li><i class="fa-solid fa-check" aria-hidden="true"></i><span data-i18n="homePlusIncluded">Everything in Plus</span></li>
+              </ul>
+              <p class="home-plan-spec" data-i18n="homeProSpec">512 KB · Infinity notes</p>
+              <div class="home-plan-bottom">
+                <p class="home-plan-price">0.000060 BTC <small data-i18n="perMonth">/ month</small><span data-i18n="proUsdEstimate">About US$5 / month</span></p>
+                <a class="btn btn-primary" href="/plans"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i><span data-i18n="explore">See plans</span><span class="sr-only">Pro</span></a>
+              </div>
+            </article>
+            <article class="card home-plan reveal" data-home-plan="ultra">
+              <header class="home-plan-heading"><h3><i class="fa-solid fa-crown" aria-hidden="true"></i>Ultra</h3><span class="home-plan-role" data-i18n="homeUltraRole">Recover</span></header>
+              <p class="home-plan-description" data-i18n="homeUltraBody">Leave room to undo a mistake.</p>
+              <ul class="home-plan-features">
+                <li><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i><span data-i18n="homeRecovery">Previous version &amp; trash recovery</span></li>
+                <li><i class="fa-solid fa-check" aria-hidden="true"></i><span data-i18n="homeProIncluded">Everything in Pro</span></li>
+              </ul>
+              <p class="home-plan-spec" data-i18n="homeUltraSpec">1024 KB · Infinity notes</p>
+              <div class="home-plan-bottom">
+                <p class="home-plan-price">0.000125 BTC <small data-i18n="perMonth">/ month</small><span data-i18n="ultraUsdEstimate">About US$10 / month</span></p>
+                <a class="btn btn-outline" href="/plans"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i><span data-i18n="explore">See plans</span><span class="sr-only">Ultra</span></a>
+              </div>
+            </article>
+          </div>
+          <article class="home-free reveal" data-home-plan="free">
+            <h3><i class="fa-regular fa-note-sticky" aria-hidden="true"></i>Free</h3>
+            <div><p data-i18n="homeFreeTitle">A place to start. Free to keep using.</p><p class="muted" data-i18n="homeFreeBody">128 KB · 20 notes · AstraSecret encryption</p></div>
+            <a class="btn btn-outline" id="home-free-cta" href="/register"><i class="fa-solid fa-pen-nib" aria-hidden="true"></i><span data-i18n="homeFreeCta">Start free</span></a>
+          </article>
+          <div class="home-plans-after">
+            <div class="home-plan-footnotes"><p data-i18n="usdEstimateNote"></p><p data-i18n="homePlansFinePrint"></p></div>
+            <a class="btn home-compare-link" href="/plans"><i class="fa-solid fa-table-columns" aria-hidden="true"></i><span data-i18n="homePlansCompare">Compare all plans</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="home-section home-text" aria-labelledby="home-text-heading">
         <div class="shell limit-panel">
           <div class="reveal">
             <p class="eyebrow"><i class="fa-solid fa-gauge-high"></i><span data-i18n="limitEyebrow">TEXT IS SMALL</span></p>
-            <h2 data-i18n="limitTitle">128 KB goes a long way when you store text.</h2>
+            <h2 id="home-text-heading" data-i18n="limitTitle">Just text. Less to get in your way.</h2>
             <p class="muted" data-i18n="limitBody">Free accounts include up to 20 notes and 128 KB total storage. Plain text is tiny: that is enough for tens of thousands of Chinese characters or well over 100,000 ASCII characters before metadata. Short codes, URLs, reminders, snippets, and everyday notes usually use only a fraction of it. Encrypted notes use more space, and paid plans add more room.</p>
           </div>
           <div class="limit-visual reveal">
             <span class="muted"><i class="fa-solid fa-hard-drive"></i><span data-i18n="accountStorageLabel">FREE TEXT STORAGE</span></span>
-            <strong>128 KB</strong>
-            <div class="meter"><span class="demo-progress"></span></div>
+            <strong>128 <span>KB</span></strong>
             <p class="muted limit-caption"><i class="fa-solid fa-note-sticky"></i><span data-i18n="accountLimitCaption">20 NOTES · 128 KB · NO ADS · NO ANALYTICS</span></p>
           </div>
+        </div>
+      </section>
+
+      <section class="home-section home-stats" id="stats" data-i18n-aria-label="homeStatsLabel">
+        <div class="shell stats-grid">
+          <article class="stat-card reveal">
+            <div><p class="eyebrow"><i class="fa-solid fa-signal" aria-hidden="true"></i><span data-i18n="today">Active accounts today</span></p><span class="muted" data-i18n="utc">Unique signed-in accounts that visited · today in UTC</span></div>
+            <strong id="online-stat">—</strong>
+          </article>
+          <article class="stat-card reveal">
+            <div><p class="eyebrow"><i class="fa-solid fa-users" aria-hidden="true"></i><span data-i18n="registered">Registered accounts</span></p><span class="muted">AstraNote</span></div>
+            <strong id="users-stat">—</strong>
+          </article>
         </div>
       </section>
 
