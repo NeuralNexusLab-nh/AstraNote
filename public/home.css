@@ -28,7 +28,7 @@ body[data-page="home"] .feature-card { padding: 24px 0 0; border-radius: 0; bord
 body[data-page="home"] .feature-card:hover { transform: none; border-color: transparent; border-top-color: var(--primary-hover); }
 body[data-page="home"] .feature-heading { font-size: 1.0625rem; line-height: 1.55; gap: 10px; margin-bottom: 12px; text-wrap: balance; }
 body[data-page="home"] .feature-icon { width: 28px; height: 28px; border: 0; font-size: 1.125rem; color: var(--primary-hover); }
-body[data-page="home"] .feature-card p { line-height: 1.85; }
+body[data-page="home"] .feature-card p { line-height: 1.85; text-wrap: pretty; }
 .home-plans { border-block: 1px solid var(--line); background: color-mix(in srgb, var(--card) 28%, var(--canvas)); }
 .home-plan-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: stretch; }
 .home-plan { display: flex; flex-direction: column; gap: 18px; padding: 26px; min-width: 0; border: 1px solid var(--line); }
@@ -63,10 +63,17 @@ body[data-page="home"] .feature-card p { line-height: 1.85; }
 .home-compare-link { background: none; flex-shrink: 0; font-size: .875rem; min-height: 44px; }
 .home-text .limit-panel { grid-template-columns: 1.35fr 1fr; gap: 64px; }
 .home-text .muted { line-height: 1.85; }
-.home-text .limit-visual { background: none; border: 0; border-left: 1px solid var(--line); border-radius: 0; padding: 20px 0 20px 40px; }
-.home-text .limit-visual strong { font-size: 3rem; margin: 12px 0; }
-.home-text .limit-visual strong span { font-size: 1.25rem; color: var(--muted); }
-.home-text .limit-caption { font-size: .8125rem; margin: 12px 0 0; }
+.home-text { border-top: 1px solid var(--line); }
+.storage-example { min-width: 0; margin: 0; padding: 28px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+.storage-example .eyebrow { margin: 0 0 18px; }
+.storage-example-scenario { font-size: .9375rem; line-height: 1.7; margin-bottom: 12px; }
+.storage-example strong { display: block; font: 500 clamp(1.4rem, 2.2vw, 1.75rem)/1.5 var(--display); color: var(--text); text-wrap: balance; }
+.storage-example-meter { height: 8px; margin: 20px 0 14px; border-radius: 99px; overflow: hidden; background: var(--button); }
+/* 20 × 500 × 3 UTF-8 bytes / 128,000 bytes; illustrative content only, not account usage. */
+.storage-example-meter > span { display: block; height: 100%; width: 23.4375%; border-radius: inherit; background: var(--primary-hover); }
+.storage-example-context { font-size: .875rem; line-height: 1.75; margin-bottom: 16px; }
+.home-text .storage-example-caution { font-size: .8125rem; margin-bottom: 0; line-height: 1.8; }
+.home-text .limit-caption { display: flex; align-items: baseline; gap: 8px; font-size: .8125rem; margin: 12px 0 0; }
 body[data-page="home"] .home-stats { padding: 0 0 72px; }
 .home-stats .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; }
 .home-stats .stat-card { display: flex; align-items: center; justify-content: space-between; gap: 24px; background: none; border: 0; border-top: 1px solid var(--line); border-radius: 0; padding: 24px 0 0; }
@@ -93,7 +100,6 @@ body[data-page="home"] .site-nav.open:not(.scrolled) .mobile-toggle { background
   .home-free > a { grid-column: 2; justify-self: start; }
   .home-plans-after { flex-direction: column; gap: 12px; }
   .home-text .limit-panel { grid-template-columns: 1fr; gap: 28px; }
-  .home-text .limit-visual { padding: 24px 0 0; border-left: 0; border-top: 1px solid var(--line); }
 }
 @media (max-width: 620px) {
   .hero { padding-top: 116px; padding-bottom: 22px; gap: 48px; }
@@ -104,6 +110,7 @@ body[data-page="home"] .site-nav.open:not(.scrolled) .mobile-toggle { background
   body[data-page="home"] .home-section { padding: 60px 0; }
   body[data-page="home"] .section-head { margin-bottom: 28px; }
   .home-plan { padding: 24px; }
+  .storage-example { padding: 24px; }
   .home-free { padding: 24px; grid-template-columns: minmax(0, 1fr); }
   .home-free > a { grid-column: auto; justify-self: stretch; }
   .home-stats .stats-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }

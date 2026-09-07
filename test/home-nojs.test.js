@@ -10,7 +10,7 @@ const {
 test("no-JS homepage renders current marketing copy in all supported languages", () => {
   const english = renderHomeHtml("en");
   assert.match(english, /I wrote it, it’s mine\./u);
-  assert.match(english, /Sharing takes just one link;<br>for your most private content/u);
+  assert.match(english, /you’ll need again\.<br>Find them across devices/u);
   assert.match(english, /href="\/plans"/u);
   assert.doesNotMatch(english, /hero-kicker/u);
 
@@ -19,7 +19,7 @@ test("no-JS homepage renders current marketing copy in all supported languages",
   assert.match(traditionalChinese, /寫下了，就是我的。/u);
   assert.match(
     traditionalChinese,
-    /打開瀏覽器，筆記就在，想分享也只差一個連結；<br>而最私密的內容，有 AstraZero 加密守護。/u,
+    /專放常用連結、操作小抄，和臨時要用的幾行字。<br>跨裝置找得到、複製就能用；重要內容，也能加密保存。/u,
   );
   assert.match(traditionalChinese, /了解方案/u);
   assert.doesNotMatch(traditionalChinese, /hero-kicker/u);
@@ -29,7 +29,7 @@ test("no-JS homepage renders current marketing copy in all supported languages",
   const japanese = renderHomeHtml("ja");
   assert.match(japanese, /lang="ja"/u);
   assert.match(japanese, /書いたものは、私のもの。/u);
-  assert.match(japanese, /共有もリンク一つ。<br>大切な秘密/u);
+  assert.match(japanese, /また必要になる数行のために。<br>端末を変えても/u);
 });
 
 test("home renders every translation, responsive matrix label, and plan without JavaScript", () => {
@@ -47,11 +47,34 @@ test("home renders every translation, responsive matrix label, and plan without 
     assert.match(html, /href="\/plans"/u);
     assert.match(html, /1024 KB/u);
     assert.ok(html.indexOf('id="purpose"') < html.indexOf('id="plans-preview"'));
+    assert.ok(html.indexOf('id="purpose"') < html.indexOf('id="small-notes"'));
+    assert.ok(html.indexOf('id="small-notes"') < html.indexOf('id="plans-preview"'));
     assert.ok(html.indexOf('id="plans-preview"') < html.indexOf('id="stats"'));
     assert.match(html, /AstraZero/u);
   }
   assert.match(renderHomeHtml("zh-Hant"), /無限篇筆記/u);
   assert.match(renderHomeHtml("ja"), /ノート数無限/u);
+});
+
+test("the storage illustration states its UTF-8 assumptions and is not a quota guarantee", () => {
+  const fs = require("node:fs"), path = require("node:path");
+  const bytes = Buffer.byteLength("字".repeat(500), "utf8") * 20;
+  assert.equal(bytes, 30000);
+  assert.ok(bytes < 128000 / 4);
+  const css = fs.readFileSync(path.join(__dirname, "../public/home.css"), "utf8");
+  assert.ok(css.includes(`width: ${bytes / 128000 * 100}%`));
+  for (const locale of ["en", "zh-Hant", "ja"]) {
+    const html = renderHomeHtml(locale);
+    assert.match(html, /data-i18n="storageExampleScenario"[^>]*>[^<]*20[^<]*500/u);
+    assert.match(html, /data-i18n="storageExampleAmount"[^>]*>[^<]*30 KB/u);
+    assert.match(html, /data-i18n="storageExampleCaution"[^>]*>[^<]*UTF-8/u);
+    assert.match(html, /class="storage-example-meter" aria-hidden="true"/u);
+    assert.doesNotMatch(html, /password.manager.grade|unbreakable|絕對安全|密碼管理器等級/iu);
+  }
+  const chinese = renderHomeHtml("zh-Hant");
+  assert.match(chinese, /搜尋標題/u);
+  assert.match(chinese, /標題、加密與帳號資料另占空間/u);
+  assert.match(chinese, /AstraSecret 的短數字 PIN 較容易被猜中/u);
 });
 
 test("home price previews match the full plans page and show a single price per tier", () => {
