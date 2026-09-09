@@ -35,8 +35,6 @@ test("plans page publishes the exact monthly products and 30-day rule", () => {
   assert.match(app, /prices = \{ plus: 2500, pro: 6000, ultra: 12500 \}/u);
   assert.match(app, /前往 Satora 付款/u);
   assert.match(app, /unlimited: "Infinity"/u);
-  assert.match(app, /濫用優惠碼/u);
-  assert.match(html, /data-i18n="couponAbuseWarning"/u);
   assert.match(html, /data-i18n="couponOncePolicy"/u);
 });
 
@@ -79,7 +77,7 @@ test("plan UI includes backend-lock and deletion disclosures", () => {
   assert.match(app, /持續鎖定滿30天後會永久刪除/u);
   assert.match(terms, /locked by the\s+server from largest to smallest/u);
   assert.match(terms, /astranote@nxlabtw\.com/u);
-  assert.match(terms, /禁止濫用優惠碼/u);
+  assert.doesNotMatch(terms, /禁止濫用優惠碼/u);
   assert.match(terms, /data-i18n="couponOncePolicy"/u);
   assert.match(style, /\.brand-plan--admin/u);
   assert.match(dashboard, /id="note-limit-caption"/u);

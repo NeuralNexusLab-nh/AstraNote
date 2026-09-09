@@ -731,8 +731,6 @@ Object.assign(I18N.en, {
   satoraExplanation:
     "You will continue to Satora, NeuralNexusLab's Bitcoin payment service. Returning to AstraNote does not prove payment; your plan activates only after server verification.",
   numberOfMonths: "Subscription duration (months)",
-  couponAbuseWarning:
-    "Coupon abuse—including repeatedly using coupons to push an account's resources beyond reasonable use—will result in permanent deletion of the account and its data. AstraNote provides no internal appeal or recovery process.",
   total: "Total",
   continueToSatora: "Continue to payment on Satora",
   paymentHistory: "Payment history",
@@ -812,8 +810,6 @@ Object.assign(I18N["zh-Hant"], {
   satoraExplanation:
     "接下來會前往 NeuralNexusLab 的 Bitcoin 付款服務 Satora。返回 AstraNote 不代表付款成功，方案只會在後端驗證後啟用。",
   numberOfMonths: "訂閱月數",
-  couponAbuseWarning:
-    "濫用優惠碼，包括大量或重複使用優惠碼使帳號資源超出合理使用範圍，將導致帳號及其資料被永久刪除；AstraNote 不提供內部申訴或復原程序。",
   total: "本次合計",
   continueToSatora: "前往 Satora 付款",
   paymentHistory: "付款紀錄",
@@ -906,8 +902,6 @@ Object.assign(I18N.ja, {
   satoraExplanation:
     "NeuralNexusLab の Bitcoin 決済サービス Satora に移動します。AstraNote に戻っただけでは支払い済みとはみなされず、サーバー検証後に有効化されます。",
   numberOfMonths: "契約月数",
-  couponAbuseWarning:
-    "クーポンを大量または繰り返し使用してアカウントのリソースを合理的な利用範囲以上に増やすなど、クーポンを不正利用した場合、アカウントとそのデータは完全に削除されます。AstraNote による異議申立てまたは復元手続きはありません。",
   total: "合計",
   continueToSatora: "Satora で支払う",
   paymentHistory: "支払い履歴",
