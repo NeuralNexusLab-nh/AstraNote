@@ -8,7 +8,6 @@
     <link rel="icon" href="/asset/logo.svg" />
     <link rel="stylesheet" href="/style.css" />
     <script src="/app.js" defer></script>
-    <script src="https://nexacaptcha.nxlabtw.com/captcha/gravity.js" defer></script>
   </head>
   <body data-page="login">
     <main class="page">
@@ -42,14 +41,6 @@
               />
               <p class="field-help" data-i18n="noRecovery"></p>
             </div>
-            <p class="captcha-heading"><i class="fa-solid fa-user-check"></i><span data-i18n="humanVerification"></span></p>
-            <div class="captcha-box">
-              <div
-                class="nexa-captcha"
-                data-captcha-type="gravity"
-                data-callback="onCaptchaComplete"
-              ></div>
-            </div>
             <p class="form-message" role="alert"></p>
             <div class="form-actions">
               <a class="muted" href="/register"
@@ -68,7 +59,7 @@
             <i class="fa-solid fa-lock"></i> PRIVATE BY DEFAULT
           </p>
           <h2 data-i18n="tagline"></h2>
-          <p class="muted" data-i18n="englishOnlyCaptcha"></p>
+          <p class="muted" data-i18n="noRecovery"></p>
         </aside>
       </div>
     </main>

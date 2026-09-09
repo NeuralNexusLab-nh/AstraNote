@@ -56,8 +56,11 @@
             </li>
             <li>
               <strong>Use:</strong> last-login IP and UTC time, session
-              identifiers, CSRF tokens, language, theme, public display name,
-              storage use, and note metadata.
+              identifiers, CSRF tokens, a short browser label, sign-in and
+              last-use times, language, theme, public display name, storage
+              use, and note metadata. Country or region is stored only when a
+              trusted hosting header supplies it; AstraNote does not use an
+              external IP-location service.
             </li>
             <li>
               <strong>Content:</strong> note names and content, encryption
@@ -102,8 +105,7 @@
           </p>
           <h2>5. Human verification</h2>
           <p>
-            For registration, login, note creation, note deletion, payment-order
-            creation, and permanent account deletion, the client loads a CAPTCHA
+            For registration and permanent note or account deletion, the client loads a CAPTCHA
             from
             <code>nexacaptcha.nxlabtw.com</code>. AstraNote sends the resulting
             verification ID and one-time response token to NexaCAPTCHA’s fixed
@@ -211,7 +213,7 @@
             <li>
               <strong>使用：</strong>最後登入 IP 與 UTC 時間、登入階段
               識別資料、CSRF
-              驗證權杖、語言、主題、公開顯示名稱、儲存用量與筆記中繼資料。
+              驗證權杖、簡短應用程式識別、登入及最近使用時間、語言、主題、公開顯示名稱、儲存用量與筆記中繼資料。僅在受信任託管標頭提供時保存國家或地區；不使用外部 IP 定位服務。
             </li>
             <li>
               <strong>內容：</strong
@@ -246,7 +248,7 @@
           </p>
           <h2>五、人類驗證</h2>
           <p>
-            註冊、登入、新增筆記、刪除筆記、建立付款訂單及永久刪除帳號時，客戶端會從
+            註冊、永久刪除筆記及永久刪除帳號時，客戶端會從
             <code>nexacaptcha.nxlabtw.com</code> 載入 CAPTCHA。AstraNote
             會將驗證 ID 及一次性 驗證權杖 傳至 NexaCAPTCHA
             固定的後端驗證端點。驗證權杖
@@ -316,7 +318,7 @@
             </li>
             <li>
               利用：最終ログイン IP・UTC 日時、セッション識別子、CSRF
-              トークン、言語、外観、公開表示名、容量、ノート情報。
+              トークン、短縮したブラウザ名、ログイン・最終利用時刻、言語、外観、公開表示名、容量、ノート情報。信頼できるホスティングのヘッダーがある場合だけ国または地域を保存し、外部 IP 位置情報サービスは利用しません。
             </li>
             <li>
               内容：タイトル、内容、暗号化方式、更新日時、任意の共有コード。タイトルは平文です。暗号化内容と復号検証用情報を保存します。AstraSecret、AstraConfidential、従来の
@@ -348,7 +350,7 @@
           </p>
           <h2>5. 人間による認証</h2>
           <p>
-            登録、ログイン、ノート作成・削除、注文作成、アカウント完全削除の際、クライアントは
+            登録、ノートの完全削除、アカウント完全削除の際、クライアントは
             nexacaptcha.nxlabtw.com から CAPTCHA
             を読み込みます。認証識別子と一回限りの応答を固定のサーバー検証先へ送信します。トークンは原則一回のみ、5分で期限切れです。認証欄に個人情報を入力しないでください。
           </p>

@@ -9,14 +9,14 @@ const {
 
 test("no-JS homepage renders current marketing copy in all supported languages", () => {
   const english = renderHomeHtml("en");
-  assert.match(english, /I wrote it, it’s mine\./u);
+  assert.match(english, /I wrote it, I own it\./u);
   assert.match(english, /you’ll need again\.<br>Find them across devices/u);
   assert.match(english, /href="\/plans"/u);
   assert.doesNotMatch(english, /hero-kicker/u);
 
   const traditionalChinese = renderHomeHtml("zh-Hant");
   assert.match(traditionalChinese, /lang="zh-Hant"/u);
-  assert.match(traditionalChinese, /寫下了，就是我的。/u);
+  assert.match(traditionalChinese, /我寫下，就歸我。/u);
   assert.match(
     traditionalChinese,
     /專放常用連結、操作說明，和臨時要用的幾行字。<br>跨裝置找得到、複製就能用；重要內容，也能加密保存。/u,
@@ -29,7 +29,7 @@ test("no-JS homepage renders current marketing copy in all supported languages",
 
   const japanese = renderHomeHtml("ja");
   assert.match(japanese, /lang="ja"/u);
-  assert.match(japanese, /書いたものは、私のもの。/u);
+  assert.match(japanese, /書いたら、私のもの。/u);
   assert.match(japanese, /また必要になる数行のために。<br>端末を変えても/u);
 });
 

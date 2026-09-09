@@ -40,11 +40,11 @@ test("plans page publishes the exact monthly products and 30-day rule", () => {
   assert.match(html, /data-i18n="couponOncePolicy"/u);
 });
 
-test("used CAPTCHA tokens are reset after protected requests fail", () => {
+test("used CAPTCHA tokens are reset after CAPTCHA-protected requests fail", () => {
   const app = fs.readFileSync(path.join(ROOT, "public", "app.js"), "utf8");
   assert.match(app, /window\.NexaCAPTCHA\?\.render/u);
   assert.match(app, /window\.NexaCAPTCHA\.render\(mount\)\.reset\(\)/u);
-  assert.ok((app.match(/resetCaptcha\(\);/gu) || []).length >= 3);
+  assert.ok((app.match(/resetCaptcha\(\);/gu) || []).length >= 2);
   assert.match(app, /resetCaptcha\("action"\)/u);
 });
 

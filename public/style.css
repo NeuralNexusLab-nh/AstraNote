@@ -1316,6 +1316,27 @@ textarea {
   min-width: 160px;
   min-height: 48px;
 }
+.signed-in-devices {
+  margin-top: 20px;
+}
+.session-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+.session-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--canvas) 35%, var(--card));
+}
+.session-card-main { display: grid; gap: 5px; min-width: 0; }
+.session-card-main strong { display: flex; gap: 8px; align-items: center; }
+.session-card-main span, .session-card-main small { color: var(--muted); overflow-wrap: anywhere; }
 .settings-grid > .plan-settings-card,
 .settings-identity {
   grid-column: 1 / -1;
@@ -1634,6 +1655,11 @@ html[lang="ja"] [data-lang="en"] {
   .note-meta {
     text-align: left;
   }
+  .session-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .session-card .btn { width: 100%; }
   .note-main {
     grid-column: 1;
     grid-row: 1;
@@ -1760,8 +1786,8 @@ html[lang="ja"] [data-lang="en"] {
   margin-left: 1px;
   padding: 0 9px;
   border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--button);
+  border-radius: 7px;
+  background: transparent;
   color: var(--muted);
   font: 650 0.7rem/1 var(--body);
   letter-spacing: 0.075em;
@@ -1774,36 +1800,18 @@ html[lang="ja"] [data-lang="en"] {
   color: var(--muted);
 }
 .brand-plan--plus {
-  border-color: rgba(150, 133, 255, 0.58);
-  background: linear-gradient(135deg, #353162, #4a3f87);
-  color: #ece9ff;
-  box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.12),
-    0 4px 16px rgba(97, 76, 190, 0.2);
+  border-color: #3ba780;
+  color: #38a67d;
 }
 .brand-plan--pro {
-  border-color: rgba(169, 181, 255, 0.78);
-  background: linear-gradient(125deg, #3546b7 0%, #6551d8 58%, #8f64e8 100%);
-  color: #fff;
-  box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.26),
-    0 5px 20px rgba(82, 102, 235, 0.42);
+  border-color: #4d79e8;
+  color: #527ee6;
 }
 .brand-plan--admin {
-  border-color: rgba(194, 228, 255, 0.86);
-  background: linear-gradient(
-    120deg,
-    #4c39a8 0%,
-    #5266eb 38%,
-    #118f9a 72%,
-    #7450c7 100%
-  );
-  color: #fff;
+  border-color: currentColor;
+  color: var(--text);
   letter-spacing: 0.095em;
-  box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.34),
-    0 0 0 1px rgba(112, 217, 224, 0.12),
-    0 6px 22px rgba(67, 98, 220, 0.5);
+  box-shadow: none;
 }
 .plans-nav-link i {
   color: var(--primary);
@@ -2227,11 +2235,11 @@ html[data-theme="light"] .order-status-success { color: #287653; }
 
 /* Ultra, organization and recovery follow the existing surface and spacing tokens. */
 .brand-plan--ultra {
-  color: #eef9ff;
-  border-color: #869bf9;
-  background: linear-gradient(115deg, #294db4, #663ba8 55%, #1a6979);
-  box-shadow: 0 0 16px rgb(118 140 255 / 24%);
+  color: var(--text);
+  border-color: currentColor;
+  box-shadow: none;
 }
+.brand-plan--beta { color: #a66ae5; border-color: currentColor; }
 
 .plan-card-ultra {
   border-color: color-mix(in srgb, #888be9 70%, var(--border));

@@ -55,6 +55,7 @@ const PLAN_DEFINITIONS = Object.freeze({
   plus: { maxBytes: 256 * 1000, maxNotes: 50, monthlySats: 2500 },
   pro: { maxBytes: 512 * 1000, maxNotes: Infinity, monthlySats: 6000 },
   ultra: { maxBytes: 1_024_000, maxNotes: Infinity, monthlySats: 12500 },
+  beta: { maxBytes: 1_000_000_000, maxNotes: Infinity, monthlySats: 0 },
   admin: { maxBytes: Infinity, maxNotes: Infinity, monthlySats: 0 },
 });
 const CAPTCHA_VERIFY_URL = "https://nexacaptcha.nxlabtw.com/api/siteverify";
@@ -234,6 +235,15 @@ async function directorySize(directory) {
 }
 async function loadMetadata(username) {
   const metadata = await readJson(metadataFile(username), null);
+  if (!metadata) return null;
+  metadata.banned = /^\d{4}\/\d{2}\/\d{2}$/.test(metadata.banned || "")
+    ? metadata.banned
+    : "0000/00/00";
+  metadata.bannedMessage =
+    typeof metadata.bannedMessage === "string" ? metadata.bannedMessage.slice(0, 1_000) : null;
+  metadata.message =
+    typeof metadata.message === "string" ? metadata.message.slice(0, 1_000) : null;
+  metadata.beta = metadata.beta === true;
   // Retire classification metadata without touching note files or encryption.
   for (const reference of metadata?.notes || []) {
     delete reference.folder;
@@ -262,6 +272,24 @@ function isAdmin(metadata) {
   return metadata?.email?.toLowerCase() === ADMIN_EMAIL;
 }
 
+function isBeta(metadata) {
+  return !isAdmin(metadata) && metadata?.beta === true;
+}
+
+function bannedUntil(metadata) {
+  const value = String(metadata?.banned || "0000/00/00");
+  const match = /^(\d{4})\/(\d{2})\/(\d{2})$/.exec(value);
+  if (!match || value === "0000/00/00") return null;
+  const [, year, month, day] = match;
+  const until = Date.UTC(Number(year), Number(month) - 1, Number(day));
+  return Number.isFinite(until) ? until : null;
+}
+
+function accountIsBanned(metadata, now = Date.now()) {
+  const until = bannedUntil(metadata);
+  return Boolean(until && now < until);
+}
+
 function normalizeEntitlements(metadata, now = Date.now()) {
   metadata.entitlements ||= {};
   const entitlements = metadata.entitlements;
@@ -272,7 +300,7 @@ function normalizeEntitlements(metadata, now = Date.now()) {
     ? Date.parse(entitlements.updatedAt)
     : now;
   let elapsed = Math.max(0, now - previous);
-  if (!isAdmin(metadata) && elapsed > 0) {
+  if (!isAdmin(metadata) && !isBeta(metadata) && elapsed > 0) {
     const ultraUsed = Math.min(entitlements.ultraMs, elapsed);
     entitlements.ultraMs -= ultraUsed;
     elapsed -= ultraUsed;
@@ -288,6 +316,7 @@ function normalizeEntitlements(metadata, now = Date.now()) {
 
 function planForMetadata(metadata) {
   if (isAdmin(metadata)) return "admin";
+  if (isBeta(metadata)) return "beta";
   if ((metadata.entitlements?.ultraMs || 0) > 0) return "ultra";
   if ((metadata.entitlements?.proMs || 0) > 0) return "pro";
   if ((metadata.entitlements?.plusMs || 0) > 0) return "plus";
@@ -313,14 +342,15 @@ function planPayload(metadata, now = Date.now()) {
     maxBytes: Number.isFinite(definition.maxBytes) ? definition.maxBytes : null,
     maxNotes: Number.isFinite(definition.maxNotes) ? definition.maxNotes : null,
     ultraDays: Math.ceil(ultraMs / 864e5),
-    canOrganize: ["plus", "pro", "ultra", "admin"].includes(plan),
-    canRecover: ["ultra", "admin"].includes(plan),
-    canCreateZero: ["pro", "ultra", "admin"].includes(plan),
+    canOrganize: ["plus", "pro", "ultra", "beta", "admin"].includes(plan),
+    canRecover: ["ultra", "beta", "admin"].includes(plan),
+    canCreateZero: ["pro", "ultra", "beta", "admin"].includes(plan),
+    canUseBetaFeatures: ["beta", "admin"].includes(plan),
     plusDays: Math.ceil(plusMs / 864e5),
     proDays: Math.ceil(proMs / 864e5),
     activeEndsAt:
       activeMs === null ? null : new Date(now + activeMs).toISOString(),
-    canCreateConfidential: ["plus", "pro", "ultra", "admin"].includes(plan),
+    canCreateConfidential: ["plus", "pro", "ultra", "beta", "admin"].includes(plan),
   };
 }
 
@@ -1058,6 +1088,29 @@ function setSessionCookie(res, token, expiresAt) {
     expires: new Date(expiresAt),
   });
 }
+function sessionDevice(req) {
+  const ua = String(req.get("user-agent") || "");
+  if (/DuckDuckGo/i.test(ua)) return "DuckDuckGo";
+  if (/TorBrowser|Tor Browser/i.test(ua)) return "Tor Browser";
+  if (/EdgA?|EdgiOS/i.test(ua)) return "Edge";
+  if (/GSA\//i.test(ua)) return "Google";
+  if (/Firefox/i.test(ua)) return "Firefox";
+  if (/CriOS|Chrome/i.test(ua)) return "Chrome";
+  if (/Safari/i.test(ua)) return "Safari";
+  return "Browser";
+}
+function sessionLocation(req) {
+  const country = String(
+    req.get("cf-ipcountry") || req.get("x-vercel-ip-country") || "",
+  ).toUpperCase();
+  const region = String(
+    req.get("x-vercel-ip-country-region") || req.get("cf-region") || "",
+  ).trim();
+  return {
+    country: /^[A-Z]{2}$/.test(country) ? country : null,
+    region: /^[\p{L}\p{N} .,'()-]{1,60}$/u.test(region) ? region : null,
+  };
+}
 async function createSession(username, req, res) {
   const token = crypto.randomBytes(32).toString("base64url");
   const now = Date.now();
@@ -1068,10 +1121,24 @@ async function createSession(username, req, res) {
     expiresAt: new Date(now + SESSION_INITIAL_MS).toISOString(),
     maxExpiresAt: new Date(now + SESSION_MAX_MS).toISOString(),
     ipHash: sha256(`${appSecret}:${requestIp(req)}`),
+    ip: requestIp(req),
+    device: sessionDevice(req),
+    location: sessionLocation(req),
+    lastSeenAt: new Date(now).toISOString(),
   };
   await withLock("sessions", async () => {
     const sessions = await readSessions();
+    for (const [key, value] of Object.entries(sessions)) {
+      if (Date.now() >= Date.parse(value.expiresAt || 0)) delete sessions[key];
+    }
     sessions[sha256(token)] = record;
+    const own = Object.entries(sessions)
+      .filter(([, value]) => value.username === userKey(username))
+      .sort(([, left], [, right]) =>
+        Date.parse(left.lastSeenAt || left.createdAt || 0) -
+        Date.parse(right.lastSeenAt || right.createdAt || 0),
+      );
+    while (own.length > 5) delete sessions[own.shift()[0]];
     await writeSessions(sessions);
   });
   setSessionCookie(res, token, record.expiresAt);
@@ -1121,6 +1188,7 @@ async function requireAuth(req, res, next) {
           Math.max(Date.parse(current.expiresAt), now) + SESSION_EXTENSION_MS,
         ),
       ).toISOString();
+      current.lastSeenAt = new Date(now).toISOString();
       sessions[key] = current;
       await writeSessions(sessions);
       return current;
@@ -1137,6 +1205,12 @@ async function requireAuth(req, res, next) {
     const deletion = await findDeletion(session.username);
     if (deletion && deletion.status !== "cooling_off") {
       return jsonError(res, 401, "authentication_required", "Please sign in.");
+    }
+    const metadata = await loadMetadata(session.username);
+    if (metadata && accountIsBanned(metadata)) {
+      await destroySessionToken(token);
+      res.clearCookie("astranote_session", { path: "/" });
+      return jsonError(res, 403, "account_banned", "This account is currently unavailable.");
     }
     setSessionCookie(res, token, session.expiresAt);
     req.auth = { token, session };
@@ -1208,6 +1282,16 @@ async function verifyCaptcha(req, res, next) {
       "captcha_unavailable",
       "CAPTCHA verification is temporarily unavailable.",
     );
+  }
+}
+async function verifyCaptchaIfPermanentNoteDelete(req, res, next) {
+  try {
+    const metadata = await loadMetadata(req.auth.session.username);
+    const access = metadata && await refreshPlanState(req.auth.session.username, metadata);
+    if (access?.payload.canRecover) return next();
+    return verifyCaptcha(req, res, next);
+  } catch (error) {
+    next(error);
   }
 }
 
@@ -1401,6 +1485,7 @@ async function accountPayload(username) {
       maxNotes: access.payload.maxNotes,
       vaultAvailable: Boolean(confidentialSecret),
       supportEmail: SUPPORT_EMAIL,
+      message: metadata.message || null,
       notes: summaries.filter((note) => !note.trashedAt),
       trash: summaries.filter((note) => note.trashedAt),
     };
@@ -1659,6 +1744,12 @@ app.get("/api/session", async (req, res) => {
   const session = (await readSessions())[sha256(token)];
   if (!session || Date.now() >= Date.parse(session.expiresAt))
     return res.json({ authenticated: false, preferredLanguage });
+  const metadata = await loadMetadata(session.username);
+  if (metadata && accountIsBanned(metadata)) {
+    await destroySessionToken(token);
+    res.clearCookie("astranote_session", { path: "/" });
+    return res.json({ authenticated: false, preferredLanguage });
+  }
   const deletion = await findDeletion(session.username);
   await updateOnlineUser(session.username);
   res.json({
@@ -1771,6 +1862,10 @@ app.post(
             ultraMs: 0,
             updatedAt: createdAt,
           },
+          banned: "0000/00/00",
+          bannedMessage: null,
+          message: null,
+          beta: false,
           notes: [],
         };
         await saveMetadata(username, metadata);
@@ -1808,7 +1903,6 @@ app.post(
   "/api/login",
   loginIpLimiter,
   loginUsernameLimiter,
-  verifyCaptcha,
   async (req, res, next) => {
     const username = normalizeText(req.body.username, 24);
     const password =
@@ -1829,6 +1923,12 @@ app.post(
           "invalid_credentials",
           "Username or password is incorrect.",
         );
+      if (accountIsBanned(metadata))
+        return res.status(403).json({
+          error: "account_banned",
+          message: metadata.bannedMessage || "This account is currently unavailable.",
+          bannedUntil: metadata.banned,
+        });
       const deletion = await findDeletion(username);
       if (deletion) {
         if (deletion.status === "cooling_off") {
@@ -1924,6 +2024,64 @@ app.get("/api/account", requireAuth, async (req, res, next) => {
     next(error);
   }
 });
+app.get("/api/sessions", requireAuth, async (req, res, next) => {
+  try {
+    const currentId = sha256(req.auth.token);
+    const sessions = await readSessions();
+    const now = Date.now();
+    const items = Object.entries(sessions)
+      .filter(([, session]) =>
+        session.username === userKey(req.auth.session.username) &&
+        now < Date.parse(session.expiresAt || 0),
+      )
+      .map(([id, session]) => ({
+        id,
+        current: id === currentId,
+        device: session.device || "Browser",
+        ip: session.ip || "Unavailable",
+        location: session.location || { country: null, region: null },
+        createdAt: session.createdAt,
+        lastSeenAt: session.lastSeenAt || session.createdAt,
+      }))
+      .sort((left, right) => Date.parse(right.lastSeenAt) - Date.parse(left.lastSeenAt));
+    res.json({ sessions: items });
+  } catch (error) {
+    next(error);
+  }
+});
+app.post("/api/sessions/:id/logout", requireAuth, requireCsrf, async (req, res, next) => {
+  try {
+    if (!/^[a-f0-9]{64}$/.test(req.params.id))
+      return jsonError(res, 404, "session_not_found", "Signed-in device not found.");
+    if (safeEqual(req.params.id, sha256(req.auth.token)))
+      return jsonError(res, 400, "current_session", "Use Log out to end this session.");
+    await withLock("sessions", async () => {
+      const sessions = await readSessions();
+      const target = sessions[req.params.id];
+      if (!target || target.username !== userKey(req.auth.session.username))
+        throw Object.assign(new Error("Signed-in device not found."), { status: 404, code: "session_not_found" });
+      delete sessions[req.params.id];
+      await writeSessions(sessions);
+    });
+    res.json({ ok: true });
+  } catch (error) {
+    next(error);
+  }
+});
+app.post("/api/account/message/ack", requireAuth, requireCsrf, async (req, res, next) => {
+  try {
+    const username = req.auth.session.username;
+    await withLock(`user:${username}`, async () => {
+      const metadata = await loadMetadata(username);
+      if (!metadata) throw Object.assign(new Error("Account not found."), { status: 404 });
+      metadata.message = null;
+      await saveMetadata(username, metadata);
+    });
+    res.json({ ok: true });
+  } catch (error) {
+    next(error);
+  }
+});
 app.patch(
   "/api/settings",
   requireAuth,
@@ -1999,7 +2157,6 @@ app.post(
   billingCreateIpLimiter,
   billingCreateAccountLimiter,
   requireCsrf,
-  verifyCaptcha,
   async (req, res, next) => {
     const plan = String(req.body.plan || "").toLowerCase();
     const months = Number(req.body.months);
@@ -2452,8 +2609,6 @@ app.patch(
   requireAuth,
   noteLifecycleLimiter,
   requireCsrf,
-  (req, res, next) =>
-    req.body.action === "trash" ? verifyCaptcha(req, res, next) : next(),
   async (req, res, next) => {
     try {
       const username = req.auth.session.username;
@@ -2774,7 +2929,6 @@ app.post(
   requireAuth,
   noteLifecycleLimiter,
   requireCsrf,
-  verifyCaptcha,
   async (req, res, next) => {
     const encryption = String(req.body.encryption || "none").toLowerCase();
     if (!CREATABLE_ENCRYPTION_TYPES.has(encryption))
@@ -3015,7 +3169,7 @@ app.delete(
   requireAuth,
   noteLifecycleLimiter,
   requireCsrf,
-  verifyCaptcha,
+  verifyCaptchaIfPermanentNoteDelete,
   async (req, res, next) => {
     try {
       const username = req.auth.session.username;

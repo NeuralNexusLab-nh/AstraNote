@@ -1508,6 +1508,48 @@ Object.assign(I18N.ja, {
   billingExpiredHelp: "この請求は期限切れのため支払えません。まだ Bitcoin を送っていない場合は、プランを選んで新しい注文を作成できます。支払い済みの場合は再度支払わず、サポートへご連絡ください。",
   billingFailedHelp: "支払いに失敗しました。再度支払わず、注文番号を添えてサポートへご連絡ください。",
 });
+Object.assign(I18N.en, {
+  betaPlan: "Beta",
+  signedInDevices: "Signed-in devices",
+  signedInDevicesBody: "Review where your account is signed in. You can end another device's session at any time.",
+  currentSession: "Current session",
+  signedInAt: "Signed in",
+  lastActive: "Last active",
+  locationUnavailable: "Location unavailable",
+  endSession: "Log out device",
+  endSessionTitle: "Log out this device?",
+  endSessionBody: "This device will need to sign in again to use AstraNote.",
+  accountMessageTitle: "A message from AstraNote",
+  understood: "I understand",
+});
+Object.assign(I18N["zh-Hant"], {
+  betaPlan: "Beta",
+  signedInDevices: "已登入的裝置",
+  signedInDevicesBody: "查看帳號目前登入的位置；你可以隨時結束其他裝置的登入階段。",
+  currentSession: "目前登入",
+  signedInAt: "登入時間",
+  lastActive: "最近使用",
+  locationUnavailable: "無法取得地區",
+  endSession: "登出此裝置",
+  endSessionTitle: "要登出這個裝置嗎？",
+  endSessionBody: "這個裝置必須重新登入，才能繼續使用 AstraNote。",
+  accountMessageTitle: "AstraNote 的訊息",
+  understood: "我知道了",
+});
+Object.assign(I18N.ja, {
+  betaPlan: "Beta",
+  signedInDevices: "ログイン中の端末",
+  signedInDevicesBody: "現在ログインしている端末を確認し、ほかの端末のログインはいつでも終了できます。",
+  currentSession: "現在のログイン",
+  signedInAt: "ログイン日時",
+  lastActive: "最終利用",
+  locationUnavailable: "場所を取得できません",
+  endSession: "この端末からログアウト",
+  endSessionTitle: "この端末からログアウトしますか？",
+  endSessionBody: "この端末で AstraNote を使うには、もう一度ログインが必要です。",
+  accountMessageTitle: "AstraNote からのお知らせ",
+  understood: "確認しました",
+});
 const state = {
   session: null,
   account: null,
@@ -1654,7 +1696,9 @@ const formatUtc = (value) =>
     },
   ).format(new Date(value)) + " UTC";
 const planDisplayName = (value) =>
-  value ? `${value[0].toUpperCase()}${value.slice(1)}` : "Free";
+  value === "beta"
+    ? t("betaPlan")
+    : value ? `${value[0].toUpperCase()}${value.slice(1)}` : "Free";
 const planDaysText = (days) =>
   t("daysRemaining").replace("{days}", Number(days || 0).toLocaleString());
 
@@ -2164,7 +2208,7 @@ function buildNav() {
   const reportedPlanName = String(
     state.account?.plan?.type || "",
   ).toLowerCase();
-  const planName = ["free", "plus", "pro", "ultra", "admin"].includes(
+  const planName = ["free", "plus", "pro", "ultra", "beta", "admin"].includes(
     reportedPlanName,
   )
     ? reportedPlanName
@@ -2801,13 +2845,14 @@ async function initAuthForm(kind) {
     const button = form.querySelector("[type=submit]");
     const message = $(".form-message", form);
     message.textContent = "";
-    if (!state.captcha) {
+    const needsCaptcha = kind === "register" || cancellation;
+    if (needsCaptcha && !state.captcha) {
       message.textContent = t("captchaNeeded");
       return;
     }
     button.disabled = true;
     const data = Object.fromEntries(new FormData(form));
-    data.captcha = state.captcha;
+    if (needsCaptcha) data.captcha = state.captcha;
     const storedLanguage = getStoredPreference("astranote_language");
     if (storedLanguage || kind === "register")
       data.language = storedLanguage || state.language;
@@ -2824,10 +2869,19 @@ async function initAuthForm(kind) {
           ? next
           : result.redirect;
     } catch (error) {
-      resetCaptcha();
+      if (needsCaptcha) resetCaptcha();
       if (error.code === "deletion_pending") {
         location.href = `/login?cancel=1&username=${encodeURIComponent(form.username.value)}`;
         return;
+      }
+      if (error.code === "account_banned") {
+        modal({
+          title: t("accountMessageTitle"),
+          body: error.message,
+          confirm: t("understood"),
+          danger: true,
+          onConfirm: async (close) => close(),
+        });
       }
       message.textContent = error.message;
       button.disabled = false;
@@ -2869,18 +2923,18 @@ async function initDashboard() {
   );
   $("#dashboard-plan").textContent = planDisplayName(account.plan.type);
   $("#dashboard-ultra-days").textContent =
-    account.plan.type === "admin"
+    ["admin", "beta"].includes(account.plan.type)
       ? t("unlimited")
       : planDaysText(account.plan.ultraDays);
   $("#dashboard-pro-days").textContent =
-    account.plan.type === "admin"
+    ["admin", "beta"].includes(account.plan.type)
       ? t("unlimited")
       : planDaysText(account.plan.proDays);
   $("#dashboard-plus-days").textContent =
-    account.plan.type === "admin"
+    ["admin", "beta"].includes(account.plan.type)
       ? t("unlimited")
       : planDaysText(account.plan.plusDays);
-  if (account.plan.type === "admin") $(".account-plan-card .btn").hidden = true;
+  if (["admin", "beta"].includes(account.plan.type)) $(".account-plan-card .btn").hidden = true;
   const lockedWarning = $("#dashboard-locked-warning");
   if (account.lockedNoteCount) {
     lockedWarning.hidden = false;
@@ -3286,10 +3340,6 @@ async function initNewNote() {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const message = $(".form-message", form);
-    if (!state.captcha) {
-      message.textContent = t("captchaNeeded");
-      return;
-    }
     const button = form.querySelector("[type=submit]");
     button.disabled = true;
     try {
@@ -3297,7 +3347,6 @@ async function initNewNote() {
       const body = {
         name: form.name.value,
         encryption: mode,
-        captcha: state.captcha,
       };
       if ([ASTRA_SECRET_MODE, CONFIDENTIAL_MODE, ZERO_MODE].includes(mode)) {
         if (mode !== ZERO_MODE && !account.vaultAvailable)
@@ -3578,21 +3627,49 @@ async function initSettings() {
   $("#settings-plan").textContent = planDisplayName(account.plan.type);
   $("#priority-support").hidden = !account.plan.canRecover;
   $("#settings-ultra-days").textContent =
-    account.plan.type === "admin"
+    ["admin", "beta"].includes(account.plan.type)
       ? t("unlimited")
       : planDaysText(account.plan.ultraDays);
   $("#trash-settings").hidden = !account.plan.canRecover;
   form.trashDays.value = account.settings.trashDays;
   $("#settings-pro-days").textContent =
-    account.plan.type === "admin"
+    ["admin", "beta"].includes(account.plan.type)
       ? t("unlimited")
       : planDaysText(account.plan.proDays);
   $("#settings-plus-days").textContent =
-    account.plan.type === "admin"
+    ["admin", "beta"].includes(account.plan.type)
       ? t("unlimited")
       : planDaysText(account.plan.plusDays);
-  if (account.plan.type === "admin")
+  if (["admin", "beta"].includes(account.plan.type))
     $(".plan-settings-card a[href='/plans']").hidden = true;
+  const renderSessions = (sessions) => {
+    const list = $("#session-list");
+    if (!list) return;
+    list.replaceChildren(...sessions.map((session) => {
+      const card = document.createElement("article");
+      card.className = "session-card";
+      const location = [session.location?.region, session.location?.country]
+        .filter(Boolean).join(" · ") || t("locationUnavailable");
+      card.innerHTML = `<div class="session-card-main"><strong><i class="fa-solid fa-display" aria-hidden="true"></i> ${session.device}</strong><span>${session.ip} · ${location}</span><small>${t("signedInAt")}: ${formatUtc(session.createdAt)} · ${t("lastActive")}: ${formatUtc(session.lastSeenAt)}</small></div>`;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "btn btn-outline";
+      button.innerHTML = `<i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i><span>${session.current ? t("currentSession") : t("endSession")}</span>`;
+      button.disabled = session.current;
+      if (!session.current) button.onclick = () => modal({
+        title: t("endSessionTitle"), body: t("endSessionBody"), confirm: t("endSession"), danger: true,
+        onConfirm: async (close) => {
+          await api(`/api/sessions/${session.id}/logout`, { method: "POST", body: {} });
+          close();
+          renderSessions((await api("/api/sessions")).sessions);
+        },
+      });
+      card.append(button);
+      return card;
+    }));
+  };
+  const sessions = await api("/api/sessions");
+  renderSessions(sessions.sessions);
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const saveButton = $("#save-settings");
@@ -3902,8 +3979,8 @@ async function initPlans() {
   let checkoutToken = randomHex(16);
   const panel = $("#checkout-panel");
   const monthsInput = $("#purchase-months");
-  const isAdminAccount = state.account?.plan?.type === "admin";
-  if (isAdminAccount) {
+  const isPrivilegedAccount = ["admin", "beta"].includes(state.account?.plan?.type);
+  if (isPrivilegedAccount) {
     $$("[data-plan-buy]").forEach((button) => {
       button.disabled = true;
       const label = button.querySelector("span");
@@ -3924,7 +4001,7 @@ async function initPlans() {
   };
   $$("[data-plan-buy]").forEach((button) => {
     button.addEventListener("click", () => {
-      if (isAdminAccount) return;
+      if (isPrivilegedAccount) return;
       if (!state.session?.authenticated) {
         location.href = "/login?next=%2Fplans";
         return;
@@ -3941,10 +4018,6 @@ async function initPlans() {
     const message = $("#checkout-message");
     message.textContent = "";
     if (!selectedPlan) return;
-    if (!state.captcha) {
-      message.textContent = t("captchaNeeded");
-      return;
-    }
     const button = $("#checkout-button");
     button.disabled = true;
     try {
@@ -3954,13 +4027,11 @@ async function initPlans() {
           plan: selectedPlan,
           months: Number(monthsInput.value),
           checkoutToken,
-          captcha: state.captcha,
         },
       });
       location.href =
         result.redirect || `/plans/return?order_id=${result.order.orderId}`;
     } catch (error) {
-      resetCaptcha();
       message.textContent = error.message;
       button.disabled = false;
     }
@@ -4043,6 +4114,19 @@ async function boot() {
   };
   await initializers[page]?.();
   applyLocale();
+  if (state.account?.message) {
+    modal({
+      title: t("accountMessageTitle"),
+      body: state.account.message,
+      confirm: t("understood"),
+      danger: false,
+      onConfirm: async (close) => {
+        await api("/api/account/message/ack", { method: "POST", body: {} });
+        state.account.message = null;
+        close();
+      },
+    });
+  }
   if (["login", "register", "new-note"].includes(page)) {
     setTimeout(() => {
       document.documentElement.scrollTop = 0;
