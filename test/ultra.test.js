@@ -283,7 +283,7 @@ test("one settings request persists all preferences, validates retention and rej
   );
 });
 
-test("metadata overhead is rejected without partial organization changes", async () => {
+test("metadata does not consume note storage during organization changes", async () => {
   const user = await fixture("metadata_limit", "pro", 1);
   const file = metaPath(user.name),
     meta = await read(file);
@@ -298,8 +298,8 @@ test("metadata overhead is rejected without partial organization changes", async
     action: "pin",
     value: true,
   });
-  assert.equal(result.status, 413);
-  assert.equal((await read(file)).notes[0].pinned, undefined);
+  assert.equal(result.status, 200);
+  assert.equal((await read(file)).notes[0].pinned, true);
 });
 
 test("Ultra consumes time before Pro and Plus, including transitions and Admin", () => {

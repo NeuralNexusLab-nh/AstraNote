@@ -19,13 +19,14 @@ const DATA_DIR = path.resolve(process.env.DATA_DIR || path.join(ROOT, "data"));
 const USERS_FILE = path.join(DATA_DIR, "users.txt");
 const ONLINE_FILE = path.join(DATA_DIR, "onlineToday.txt");
 const ONLINE_USERS_FILE = path.join(DATA_DIR, "onlineTodayUsers.json");
-const SESSIONS_FILE = path.join(DATA_DIR, "sessions.json");
+// Kept only for a one-time compatibility migration from older deployments.
+const LEGACY_SESSIONS_FILE = path.join(DATA_DIR, "sessions.json");
 const DELETES_FILE = path.join(DATA_DIR, "deletes.json");
 const SHARES_FILE = path.join(DATA_DIR, "shares.json");
 const ORDERS_FILE = path.join(DATA_DIR, "orders.json");
 const SECRET_FILE = path.join(DATA_DIR, ".server-secret");
 
-const MAX_ACCOUNTS = 75_000;
+const MAX_ACCOUNTS = 70_000;
 const MAX_NOTES = 20;
 const MAX_ACCOUNT_BYTES = 128 * 1000;
 const MAX_NOTE_BYTES = 2 * 1024 * 1000;
@@ -167,6 +168,9 @@ function metadataFile(username) {
 function notesDir(username) {
   return path.join(userDir(username), "notes");
 }
+function sessionsFile(username) {
+  return path.join(userDir(username), "sessions.json");
+}
 function noteFile(username, id) {
   return path.join(notesDir(username), `${id}.json`);
 }
@@ -232,6 +236,16 @@ async function directorySize(directory) {
     else if (entry.isFile()) total += (await fsp.stat(target)).size;
   }
   return total;
+}
+// A plan's storage allowance is for note data only. Account configuration and
+// sign-in records must not make a user's notes appear to consume more space.
+async function noteStorageSize(username) {
+  try {
+    return await directorySize(notesDir(username));
+  } catch (error) {
+    if (error.code === "ENOENT") return 0;
+    throw error;
+  }
 }
 async function loadMetadata(username) {
   const metadata = await readJson(metadataFile(username), null);
@@ -375,7 +389,7 @@ async function requiredLockedNoteIds(username, metadata, plan) {
       metadata.notes.map((reference) => noteFileDetails(username, reference)),
     )
   ).filter(Boolean);
-  let remainingBytes = await directorySize(userDir(username));
+  let remainingBytes = await noteStorageSize(username);
   let remainingCount = details.filter(
     (detail) => !detail.reference.trashedAt,
   ).length;
@@ -496,12 +510,13 @@ async function ensureData() {
       ONLINE_USERS_FILE,
       JSON.stringify({ date: utcDay(), users: [] }, null, 2) + "\n",
     ],
-    [SESSIONS_FILE, "{}\n"],
     [DELETES_FILE, "[]\n"],
     [SHARES_FILE, "{}\n"],
     [ORDERS_FILE, "[]\n"],
   ])
     if (!(await exists(file))) await atomicWrite(file, initial);
+
+  await migrateLegacySessions();
 
   if (
     process.env.ASTRANOTE_SECRET &&
@@ -728,22 +743,9 @@ function noteSnapshot(note) {
 }
 
 async function saveMetadataWithinQuota(username, metadata) {
-  const file = metadataFile(username);
-  const previousBytes = (await fsp.stat(file)).size;
-  const serialized = JSON.stringify(metadata, null, 2) + "\n";
-  const maxBytes = PLAN_DEFINITIONS[planForMetadata(metadata)].maxBytes;
-  if (
-    (await directorySize(userDir(username))) -
-      previousBytes +
-      Buffer.byteLength(serialized) >
-      maxBytes &&
-    Buffer.byteLength(serialized) > previousBytes
-  )
-    throw Object.assign(new Error("Account storage limit reached."), {
-      status: 413,
-      code: "storage_limit",
-    });
-  await atomicWrite(file, serialized);
+  // Metadata is account configuration, not a note. It is deliberately outside
+  // the note storage quota (as is the per-account sessions.json file).
+  await saveMetadata(username, metadata);
 }
 
 async function trashNotes(username, metadata, references) {
@@ -809,11 +811,80 @@ function deriveVaultFactor(
     .digest("base64url");
 }
 
-async function readSessions() {
-  return readJson(SESSIONS_FILE, {});
+async function readUserSessions(username) {
+  return readJson(sessionsFile(username), {});
 }
-async function writeSessions(sessions) {
-  await writeJson(SESSIONS_FILE, sessions);
+async function writeUserSessions(username, sessions) {
+  const file = sessionsFile(username);
+  if (Object.keys(sessions).length) return writeJson(file, sessions);
+  await fsp.unlink(file).catch((error) => {
+    if (error.code !== "ENOENT") throw error;
+  });
+}
+function expiredSession(session, now = Date.now()) {
+  return (
+    !session ||
+    now >= Date.parse(session.expiresAt || 0) ||
+    now >= Date.parse(session.maxExpiresAt || 0)
+  );
+}
+async function pruneUserSessions(username, now = Date.now()) {
+  const sessions = await readUserSessions(username);
+  let changed = false;
+  for (const [id, session] of Object.entries(sessions)) {
+    if (expiredSession(session, now)) {
+      delete sessions[id];
+      changed = true;
+    }
+  }
+  if (changed) await writeUserSessions(username, sessions);
+  return sessions;
+}
+async function migrateLegacySessions() {
+  if (!(await exists(LEGACY_SESSIONS_FILE))) return;
+  await withLock("legacy-sessions", async () => {
+    const legacy = await readJson(LEGACY_SESSIONS_FILE, {});
+    const grouped = new Map();
+    for (const [id, session] of Object.entries(legacy)) {
+      const username = userKey(session?.username || "");
+      if (!USERNAME_RE.test(username) || expiredSession(session)) continue;
+      const records = grouped.get(username) || {};
+      records[id] = session;
+      grouped.set(username, records);
+    }
+    for (const [username, records] of grouped) {
+      const current = await readUserSessions(username);
+      Object.assign(current, records);
+      const kept = Object.entries(current)
+        .filter(([, session]) => !expiredSession(session))
+        .sort(([, left], [, right]) =>
+          Date.parse(right.lastSeenAt || right.createdAt || 0) -
+          Date.parse(left.lastSeenAt || left.createdAt || 0),
+        )
+        .slice(0, 5);
+      await writeUserSessions(username, Object.fromEntries(kept));
+    }
+    // Keep only the old lookup records until they expire, so a browser that
+    // already holds a pre-migration cookie is not unexpectedly logged out.
+  });
+}
+async function cleanupExpiredSessions() {
+  const entries = await fsp.readdir(DATA_DIR, { withFileTypes: true });
+  for (const entry of entries) {
+    if (!entry.isDirectory() || !USERNAME_RE.test(entry.name)) continue;
+    await withLock(`sessions:${userKey(entry.name)}`, () =>
+      pruneUserSessions(entry.name),
+    );
+  }
+  if (await exists(LEGACY_SESSIONS_FILE)) {
+    await withLock("legacy-sessions", async () => {
+      const legacy = await readJson(LEGACY_SESSIONS_FILE, {});
+      for (const [id, session] of Object.entries(legacy))
+        if (expiredSession(session)) delete legacy[id];
+      if (Object.keys(legacy).length) await writeJson(LEGACY_SESSIONS_FILE, legacy);
+      else await fsp.unlink(LEGACY_SESSIONS_FILE).catch(() => {});
+    });
+  }
 }
 async function updateShares(mutator) {
   return withLock("shares", async () => {
@@ -1079,14 +1150,25 @@ function parseCookies(header = "") {
       .filter((x) => x.length === 2),
   );
 }
-function setSessionCookie(res, token, expiresAt) {
-  res.cookie("astranote_session", token, {
+function setSessionCookie(res, username, token, expiresAt) {
+  res.cookie("astranote_session", `${userKey(username)}.${token}`, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
     expires: new Date(expiresAt),
   });
+}
+function parseSessionCookie(req) {
+  const value = parseCookies(req.headers.cookie).astranote_session;
+  if (!value) return null;
+  const match = /^([A-Za-z0-9_]{3,24})\.([A-Za-z0-9_-]{43})$/.exec(value);
+  if (match) return { username: userKey(match[1]), token: match[2], legacy: false };
+  // Old cookies are accepted only until their existing session expires, then
+  // are removed. New sessions never use the shared legacy file.
+  if (/^[A-Za-z0-9_-]{43}$/.test(value))
+    return { username: null, token: value, legacy: true };
+  return null;
 }
 function sessionDevice(req) {
   const ua = String(req.get("user-agent") || "");
@@ -1099,17 +1181,38 @@ function sessionDevice(req) {
   if (/Safari/i.test(ua)) return "Safari";
   return "Browser";
 }
-function sessionLocation(req) {
-  const country = String(
-    req.get("cf-ipcountry") || req.get("x-vercel-ip-country") || "",
-  ).toUpperCase();
-  const region = String(
-    req.get("x-vercel-ip-country-region") || req.get("cf-region") || "",
-  ).trim();
-  return {
-    country: /^[A-Z]{2}$/.test(country) ? country : null,
-    region: /^[\p{L}\p{N} .,'()-]{1,60}$/u.test(region) ? region : null,
-  };
+function publicIpForLookup(value) {
+  const ip = String(value || "").replace(/^::ffff:/i, "").trim();
+  // The endpoint accepts a literal address only. This prevents request header
+  // input from changing the host or path being fetched.
+  return /^(?:\d{1,3}\.){3}\d{1,3}$/.test(ip) || /^[0-9a-f:]+$/i.test(ip)
+    ? ip
+    : null;
+}
+async function sessionLocation(req) {
+  const ip = publicIpForLookup(requestIp(req));
+  if (!ip) return { country: null };
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 1800);
+  try {
+    const response = await fetch(
+      `https://nxlabtw.com/ipinfo/${encodeURIComponent(ip)}`,
+      {
+        redirect: "error",
+        signal: controller.signal,
+        headers: { accept: "application/json", "user-agent": "AstraNote/1.0" },
+      },
+    );
+    const length = Number(response.headers.get("content-length") || 0);
+    if (!response.ok || length > 4096) return { country: null };
+    const result = await response.json();
+    const country = String(result?.country || "").trim().slice(0, 80);
+    return { country: country || null };
+  } catch {
+    return { country: null };
+  } finally {
+    clearTimeout(timer);
+  }
 }
 async function createSession(username, req, res) {
   const token = crypto.randomBytes(32).toString("base64url");
@@ -1123,14 +1226,11 @@ async function createSession(username, req, res) {
     ipHash: sha256(`${appSecret}:${requestIp(req)}`),
     ip: requestIp(req),
     device: sessionDevice(req),
-    location: sessionLocation(req),
+    location: await sessionLocation(req),
     lastSeenAt: new Date(now).toISOString(),
   };
-  await withLock("sessions", async () => {
-    const sessions = await readSessions();
-    for (const [key, value] of Object.entries(sessions)) {
-      if (Date.now() >= Date.parse(value.expiresAt || 0)) delete sessions[key];
-    }
+  await withLock(`sessions:${userKey(username)}`, async () => {
+    const sessions = await pruneUserSessions(username, now);
     sessions[sha256(token)] = record;
     const own = Object.entries(sessions)
       .filter(([, value]) => value.username === userKey(username))
@@ -1139,60 +1239,69 @@ async function createSession(username, req, res) {
         Date.parse(right.lastSeenAt || right.createdAt || 0),
       );
     while (own.length > 5) delete sessions[own.shift()[0]];
-    await writeSessions(sessions);
+    await writeUserSessions(username, sessions);
   });
-  setSessionCookie(res, token, record.expiresAt);
+  setSessionCookie(res, username, token, record.expiresAt);
   return record;
 }
-async function destroySessionToken(token) {
-  if (!token) return;
-  await withLock("sessions", async () => {
-    const sessions = await readSessions();
+async function destroySessionToken(username, token) {
+  if (!username || !token) return;
+  await withLock(`sessions:${userKey(username)}`, async () => {
+    const sessions = await readUserSessions(username);
     delete sessions[sha256(token)];
-    await writeSessions(sessions);
+    await writeUserSessions(username, sessions);
   });
 }
 async function destroyUserSessions(username) {
-  await withLock("sessions", async () => {
-    const sessions = await readSessions();
-    for (const [key, session] of Object.entries(sessions)) {
-      if (session.username === userKey(username)) delete sessions[key];
-    }
-    await writeSessions(sessions);
+  await withLock(`sessions:${userKey(username)}`, async () => {
+    await writeUserSessions(username, {});
   });
 }
 async function requireAuth(req, res, next) {
   try {
-    const token = parseCookies(req.headers.cookie).astranote_session;
-    if (!token)
+    const supplied = parseSessionCookie(req);
+    if (!supplied)
       return jsonError(res, 401, "authentication_required", "Please sign in.");
-    const key = sha256(token);
-    const session = await withLock("sessions", async () => {
-      const sessions = await readSessions();
-      const current = sessions[key];
-      const now = Date.now();
-      if (
-        !current ||
-        now >= Date.parse(current.expiresAt) ||
-        now >= Date.parse(current.maxExpiresAt)
-      ) {
-        if (current) {
-          delete sessions[key];
-          await writeSessions(sessions);
+    const { token } = supplied;
+    let username = supplied.username;
+    let session;
+    if (supplied.legacy) {
+      const legacy = await readJson(LEGACY_SESSIONS_FILE, {});
+      session = legacy[sha256(token)] || null;
+      username = session?.username || null;
+    } else {
+      session = await withLock(`sessions:${username}`, async () => {
+        const sessions = await readUserSessions(username);
+        const current = sessions[sha256(token)];
+        const now = Date.now();
+        if (current?.username !== username || expiredSession(current, now)) {
+          if (current) {
+            delete sessions[sha256(token)];
+            await writeUserSessions(username, sessions);
+          }
+          return null;
         }
-        return null;
-      }
-      current.expiresAt = new Date(
-        Math.min(
-          Date.parse(current.maxExpiresAt),
-          Math.max(Date.parse(current.expiresAt), now) + SESSION_EXTENSION_MS,
-        ),
-      ).toISOString();
-      current.lastSeenAt = new Date(now).toISOString();
-      sessions[key] = current;
-      await writeSessions(sessions);
-      return current;
-    });
+        current.expiresAt = new Date(
+          Math.min(
+            Date.parse(current.maxExpiresAt),
+            Math.max(Date.parse(current.expiresAt), now) + SESSION_EXTENSION_MS,
+          ),
+        ).toISOString();
+        current.lastSeenAt = new Date(now).toISOString();
+        sessions[sha256(token)] = current;
+        await writeUserSessions(username, sessions);
+        return current;
+      });
+    }
+    if (supplied.legacy && session && !expiredSession(session)) {
+      await withLock(`sessions:${userKey(username)}`, async () => {
+        const sessions = await pruneUserSessions(username);
+        sessions[sha256(token)] = session;
+        await writeUserSessions(username, sessions);
+      });
+      // Preserve the legacy lookup until its original expiry so existing
+      // browser cookies remain valid during the one-time storage migration.
+    }
     if (!session) {
       res.clearCookie("astranote_session", { path: "/" });
       return jsonError(
@@ -1208,11 +1317,11 @@ async function requireAuth(req, res, next) {
     }
     const metadata = await loadMetadata(session.username);
     if (metadata && accountIsBanned(metadata)) {
-      await destroySessionToken(token);
+      await destroySessionToken(session.username, token);
       res.clearCookie("astranote_session", { path: "/" });
       return jsonError(res, 403, "account_banned", "This account is currently unavailable.");
     }
-    setSessionCookie(res, token, session.expiresAt);
+    setSessionCookie(res, session.username, token, session.expiresAt);
     req.auth = { token, session };
     await updateOnlineUser(session.username);
     next();
@@ -1457,7 +1566,7 @@ async function accountPayload(username) {
     const summaries = (
       await Promise.all(metadata.notes.map((ref) => noteSummary(username, ref)))
     ).filter(Boolean);
-    const usedBytes = await directorySize(userDir(username));
+    const usedBytes = await noteStorageSize(username);
     return {
       username: metadata.username,
       email: metadata.email,
@@ -1739,14 +1848,44 @@ app.get("/api/stats", async (req, res, next) => {
 });
 app.get("/api/session", async (req, res) => {
   const preferredLanguage = requestLanguage(req);
-  const token = parseCookies(req.headers.cookie).astranote_session;
-  if (!token) return res.json({ authenticated: false, preferredLanguage });
-  const session = (await readSessions())[sha256(token)];
-  if (!session || Date.now() >= Date.parse(session.expiresAt))
+  const supplied = parseSessionCookie(req);
+  if (!supplied)
+    return res.json({ authenticated: false, preferredLanguage });
+  const { token } = supplied;
+  let session;
+  if (supplied.legacy) {
+    const legacy = await readJson(LEGACY_SESSIONS_FILE, {});
+    const candidate = legacy[sha256(token)];
+    if (
+      !candidate ||
+      !USERNAME_RE.test(candidate.username || "") ||
+      expiredSession(candidate)
+    )
+      return res.json({ authenticated: false, preferredLanguage });
+    const username = userKey(candidate.username);
+    session = { ...candidate, username };
+    await withLock(`sessions:${username}`, async () => {
+      const sessions = await pruneUserSessions(username);
+      sessions[sha256(token)] = session;
+      await writeUserSessions(username, sessions);
+    });
+    // The old record stays only until its original expiry so a browser that
+    // has not yet received the upgraded cookie keeps working.
+    setSessionCookie(res, username, token, session.expiresAt);
+  } else {
+    const { username } = supplied;
+    const sessions = await withLock(`sessions:${username}`, () =>
+      pruneUserSessions(username),
+    );
+    session = sessions[sha256(token)];
+    if (session?.username !== username || expiredSession(session))
+      return res.json({ authenticated: false, preferredLanguage });
+  }
+  if (!session)
     return res.json({ authenticated: false, preferredLanguage });
   const metadata = await loadMetadata(session.username);
   if (metadata && accountIsBanned(metadata)) {
-    await destroySessionToken(token);
+    await destroySessionToken(session.username, token);
     res.clearCookie("astranote_session", { path: "/" });
     return res.json({ authenticated: false, preferredLanguage });
   }
@@ -2008,7 +2147,7 @@ app.post(
   requireCsrf,
   async (req, res, next) => {
     try {
-      await destroySessionToken(req.auth.token);
+      await destroySessionToken(req.auth.session.username, req.auth.token);
       res.clearCookie("astranote_session", { path: "/" });
       res.json({ ok: true, redirect: "/" });
     } catch (error) {
@@ -2027,7 +2166,9 @@ app.get("/api/account", requireAuth, async (req, res, next) => {
 app.get("/api/sessions", requireAuth, async (req, res, next) => {
   try {
     const currentId = sha256(req.auth.token);
-    const sessions = await readSessions();
+    const sessions = await withLock(`sessions:${req.auth.session.username}`, () =>
+      pruneUserSessions(req.auth.session.username),
+    );
     const now = Date.now();
     const items = Object.entries(sessions)
       .filter(([, session]) =>
@@ -2039,7 +2180,7 @@ app.get("/api/sessions", requireAuth, async (req, res, next) => {
         current: id === currentId,
         device: session.device || "Browser",
         ip: session.ip || "Unavailable",
-        location: session.location || { country: null, region: null },
+        location: session.location || { country: null },
         createdAt: session.createdAt,
         lastSeenAt: session.lastSeenAt || session.createdAt,
       }))
@@ -2055,13 +2196,13 @@ app.post("/api/sessions/:id/logout", requireAuth, requireCsrf, async (req, res, 
       return jsonError(res, 404, "session_not_found", "Signed-in device not found.");
     if (safeEqual(req.params.id, sha256(req.auth.token)))
       return jsonError(res, 400, "current_session", "Use Log out to end this session.");
-    await withLock("sessions", async () => {
-      const sessions = await readSessions();
+    await withLock(`sessions:${req.auth.session.username}`, async () => {
+      const sessions = await readUserSessions(req.auth.session.username);
       const target = sessions[req.params.id];
       if (!target || target.username !== userKey(req.auth.session.username))
         throw Object.assign(new Error("Signed-in device not found."), { status: 404, code: "session_not_found" });
       delete sessions[req.params.id];
-      await writeSessions(sessions);
+      await writeUserSessions(req.auth.session.username, sessions);
     });
     res.json({ ok: true });
   } catch (error) {
@@ -2706,7 +2847,7 @@ app.post(
         if (
           access.lockedIds.size ||
           activeCount >= (access.payload.maxNotes ?? Infinity) ||
-          (await directorySize(userDir(username))) >
+          (await noteStorageSize(username)) >
             (access.payload.maxBytes ?? Infinity)
         )
           throw Object.assign(
@@ -2838,7 +2979,7 @@ app.post(
         note.revision = (note.revision || 0) + 1;
         const serialized = JSON.stringify(note, null, 2) + "\n";
         if (
-          (await directorySize(userDir(username))) -
+          (await noteStorageSize(username)) -
             originalBytes +
             Buffer.byteLength(serialized) >
           (access.payload.maxBytes ?? Infinity)
@@ -3037,7 +3178,7 @@ app.post(
         metadata.notes.unshift({ id, path: `notes/${id}.json` });
         await saveMetadata(username, metadata);
         const maxBytes = access.payload.maxBytes ?? Infinity;
-        if ((await directorySize(userDir(username))) > maxBytes) {
+        if ((await noteStorageSize(username)) > maxBytes) {
           metadata.notes = metadata.notes.filter((ref) => ref.id !== id);
           await saveMetadata(username, metadata);
           await fsp.unlink(noteFile(username, id));
@@ -3146,7 +3287,7 @@ app.put(
         const maxBytes = access.payload.maxBytes ?? Infinity;
         const serialized = JSON.stringify(note, null, 2) + "\n";
         if (
-          (await directorySize(userDir(username))) -
+          (await noteStorageSize(username)) -
             originalBytes +
             Buffer.byteLength(serialized) >
           maxBytes
@@ -3454,6 +3595,13 @@ async function start() {
   cleanBilling();
   const cleanupTimer = setInterval(() => cleanupPlanLocks(), 60 * 60_000);
   cleanupTimer.unref();
+  const sessionCleanupTimer = setInterval(
+    () => cleanupExpiredSessions().catch((error) =>
+      console.error(`[${utcNow()}] Session cleanup failed:`, error.message),
+    ),
+    6 * 60 * 60_000,
+  );
+  sessionCleanupTimer.unref();
   app.listen(PORT, () => {
     console.log(`AstraNote listening on port ${PORT}`);
     cleanupPlanLocks().catch((error) =>
@@ -3461,6 +3609,9 @@ async function start() {
         `[${utcNow()}] Initial plan cleanup failed:`,
         error.message,
       ),
+    );
+    cleanupExpiredSessions().catch((error) =>
+      console.error(`[${utcNow()}] Initial session cleanup failed:`, error.message),
     );
   });
 }

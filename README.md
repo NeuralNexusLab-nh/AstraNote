@@ -36,7 +36,7 @@ security-sensitive actions.
 - No encryption, AES-128-GCM, AES-256-GCM, AstraSecret, AstraConfidential, or client-only AstraZero at note creation
 - Every encrypted mode protects note content; titles remain plaintext for identification
 - Server-enforced overage locks and permanent deletion after 30 continuously locked days
-- Capacity for up to 75,000 registered accounts
+- Capacity for up to 70,000 registered accounts
 - Unguessable, revocable, `noindex` read-only sharing links
 - Argon2id password hashing and server-managed authenticated sessions
 - CSRF, Origin, ownership, request-size, rate-limit, and security-header controls

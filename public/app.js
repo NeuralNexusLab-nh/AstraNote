@@ -3642,9 +3642,8 @@ async function initSettings() {
     list.replaceChildren(...sessions.map((session) => {
       const card = document.createElement("article");
       card.className = "session-card";
-      const location = [session.location?.region, session.location?.country]
-        .filter(Boolean).join(" · ") || t("locationUnavailable");
-      card.innerHTML = `<div class="session-card-main"><strong><i class="fa-solid fa-display" aria-hidden="true"></i> ${session.device}</strong><span>${session.ip} · ${location}</span><small>${t("signedInAt")}: ${formatUtc(session.createdAt)} · ${t("lastActive")}: ${formatUtc(session.lastSeenAt)}</small></div>`;
+      const location = session.location?.country || t("locationUnavailable");
+      card.innerHTML = `<div class="session-card-main"><strong><i class="fa-solid fa-desktop" aria-hidden="true"></i> ${session.device}</strong><span>${session.ip} · ${location}</span><small>${t("signedInAt")}: ${formatUtc(session.createdAt)} · ${t("lastActive")}: ${formatUtc(session.lastSeenAt)}</small></div>`;
       const button = document.createElement("button");
       button.type = "button";
       button.className = "btn btn-outline";
