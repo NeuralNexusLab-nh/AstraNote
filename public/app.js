@@ -984,6 +984,10 @@ Object.assign(I18N["en"], {
   AstraDrop: "AstraDrop",
   dropAllowance: "Active drops · maximum lifetime",
   dropEncryption: "AstraDrop protection",
+  freeDropFeature: "1 Basic Drop · 24 hours",
+  plusDropFeature: "5 Drops · DropSecret · 7 days",
+  proDropFeature: "20 Drops · DropConfidential · 7 days",
+  ultraDropFeature: "50 Drops · DropConfidential · 30 days",
   comparisonHint:
     "All paid periods use 30-day months. Ultra time is used first, then Pro, then Plus; lower tiers pause.",
   organizeFeature: "Note organization",
@@ -1105,6 +1109,10 @@ Object.assign(I18N["zh-Hant"], {
   AstraDrop: "AstraDrop",
   dropAllowance: "同時存在數量 · 最長有效期",
   dropEncryption: "AstraDrop 加密",
+  freeDropFeature: "1 個 Basic Drop · 24 小時",
+  plusDropFeature: "5 個 Drop · DropSecret · 7 天",
+  proDropFeature: "20 個 Drop · DropConfidential · 7 天",
+  ultraDropFeature: "50 個 Drop · DropConfidential · 30 天",
   comparisonHint:
     "一個月為30天。優先使用 Ultra，再使用 Pro、Plus；較低階方案的時間會暫停消耗。",
   organizeFeature: "筆記整理",
@@ -1211,6 +1219,10 @@ Object.assign(I18N["ja"], {
   AstraDrop: "AstraDrop",
   dropAllowance: "同時に作成できる数・最長の有効期限",
   dropEncryption: "AstraDrop の暗号化",
+  freeDropFeature: "Basic Drop 1件・24時間",
+  plusDropFeature: "Drop 5件・DropSecret・7日間",
+  proDropFeature: "Drop 20件・DropConfidential・7日間",
+  ultraDropFeature: "Drop 50件・DropConfidential・30日間",
   comparisonHint:
     "1か月は30日。Ultra、Pro、Plus の順に利用し、下位プランの残り期間は停止します。",
   organizeFeature: "ノート整理",

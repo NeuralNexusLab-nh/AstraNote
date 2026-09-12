@@ -23,9 +23,9 @@
       secureTitle: "A few private lines deserve protection",
       secureBody:
         "AstraSecret for everyday privacy; AstraConfidential or AstraZero for more sensitive text, with a strong PIN you keep yourself.",
-      shareTitle: "Write the instructions once",
+      shareTitle: "Share a note, only for as long as it is needed",
       shareBody:
-        "A setup guide, a checklist, a quick how-to. Keep it handy, or send a shareable note as a read-only link. The reader needs no account.",
+        "AstraDrop makes a separate note snapshot with an expiry and optional view limit. Paid plans can protect it with a PIN; every Drop uses your account storage until it expires.",
       limitEyebrow: "BUILT FOR TEXT",
       limitTitle: "128 KB. More room than it sounds.",
       limitBody:
@@ -88,9 +88,9 @@
       secureTitle: "幾行私密，也值得好好保護",
       secureBody:
         "日常私密用 AstraSecret；更敏感的內容可選 AstraConfidential 或 AstraZero，搭配你自行保管的強 PIN。",
-      shareTitle: "一份說明，少解釋好幾次",
+      shareTitle: "需要多久，就分享多久",
       shareBody:
-        "設備設定、操作步驟、行前提醒，寫一次就能反覆看。可分享筆記傳成唯讀連結，對方不用註冊。",
+        "AstraDrop 會建立一份有期限的獨立筆記快照，可選擇限制瀏覽次數。付費方案可用 PIN 保護；每個 Drop 在到期前都會計入帳號空間。",
       limitEyebrow: "為純文字而生",
       limitTitle: "128 KB，比你想的更能裝。",
       limitBody:
@@ -153,9 +153,9 @@
       secureTitle: "短い秘密にも、確かな配慮を",
       secureBody:
         "日常のプライバシーには AstraSecret。より機密性の高い文章には AstraConfidential や AstraZero を、自分で保管する強い PIN とともに。",
-      shareTitle: "手順は、一度書いて何度でも",
+      shareTitle: "必要な間だけ、ノートを共有",
       shareBody:
-        "機器の設定、操作手順、出発前の確認事項。何度でも読み返せて、共有できるノートならリンク一つで相手に届けられます。相手の登録は不要です。",
+        "AstraDrop は有効期限付きの独立したノートのスナップショットです。閲覧回数も制限できます。有料プランでは PIN で保護でき、期限切れまでアカウント容量を使用します。",
       limitEyebrow: "テキストのための設計",
       limitTitle: "128 KB。思ったより、たくさん書ける。",
       limitBody:
