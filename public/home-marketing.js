@@ -4,7 +4,7 @@
   const COPY = {
     en: {
       heroKicker: "FREE · BROWSER-FIRST · ANY DEVICE",
-      tagline: "I wrote it, I own it.",
+      tagline: "Write it once. Find it fast.",
       heroLead:
         "A small home for useful links, quick instructions, and a few lines you’ll need again.\nFind them across devices, copy and go—or keep private text encrypted.",
       begin: "Start free",
@@ -69,7 +69,7 @@
     },
     "zh-Hant": {
       heroKicker: "免費 · 瀏覽器即用 · 跨裝置",
-      tagline: "我寫下，就歸我。",
+      tagline: "隨手記下，隨時找到。",
       heroLead:
         "專放常用連結、操作說明，和臨時要用的幾行字。\n跨裝置找得到、複製就能用；重要內容，也能加密保存。",
       begin: "免費開始",
@@ -134,7 +134,7 @@
     },
     ja: {
       heroKicker: "無料 · ブラウザですぐ使える · 端末を選ばない",
-      tagline: "書いたら、私のもの。",
+      tagline: "書いておけば、すぐ見つかる。",
       heroLead:
         "よく使うリンク、手順メモ、また必要になる数行のために。\n端末を変えても、見つけてコピー。大切な内容は暗号化して保存。",
       begin: "無料で始める",
