@@ -21,6 +21,7 @@
       noSource: "Return to an unlocked note and choose AstraDrop again.",
       sourceProtectionRequired: "This encrypted note needs a plan that includes an encrypted AstraDrop.",
       created: "AstraDrop is ready", link: "Share link", copy: "Copy", copied: "Copied",
+      saveNotice: "Save this link now. AstraNote cannot show or recover it again after you leave this page.",
       openTitle: "Time-limited share", open: "Open AstraDrop", openBasic: "This AstraDrop can be viewed until it expires.",
       openSecret: "Enter the DropSecret PIN to open this timed, encrypted share.",
       openConfidential: "Enter the DropConfidential PIN to open this timed, encrypted share.",
@@ -43,6 +44,7 @@
       noSource: "請回到已解鎖的筆記，再重新選擇 AstraDrop。",
       sourceProtectionRequired: "這篇加密筆記需要使用包含加密 AstraDrop 的方案。",
       created: "AstraDrop 已建立", link: "分享連結", copy: "複製", copied: "已複製",
+      saveNotice: "請現在保存此連結。離開本頁後，AstraNote 無法再次顯示或找回這個網址。",
       openTitle: "限時分享", open: "開啟 AstraDrop", openBasic: "此 AstraDrop 可在到期前瀏覽。",
       openSecret: "輸入 DropSecret PIN，開啟這份限時加密分享。", openConfidential: "輸入 DropConfidential PIN，開啟這份限時加密分享。",
       expiresAt: "到期時間", viewsLeft: "剩餘瀏覽次數", unlimitedViews: "不限瀏覽次數", pin: "PIN",
@@ -61,6 +63,7 @@
       pinRequired: "条件に合う PIN を入力してから AstraDrop を作成してください。", noSource: "ロック解除したノートに戻り、もう一度 AstraDrop を選んでください。",
       sourceProtectionRequired: "この暗号化ノートには、暗号化 AstraDrop を含むプランが必要です。",
       created: "AstraDrop を作成しました", link: "共有リンク", copy: "コピー", copied: "コピーしました",
+      saveNotice: "このリンクを今すぐ保存してください。このページを離れると、AstraNote は再表示または復元できません。",
       openTitle: "期限付き共有", open: "AstraDrop を開く", openBasic: "この AstraDrop は有効期限まで閲覧できます。",
       openSecret: "DropSecret PIN を入力して、期限付きの暗号化共有を開きます。", openConfidential: "DropConfidential PIN を入力して、期限付きの暗号化共有を開きます。",
       expiresAt: "有効期限", viewsLeft: "残り閲覧回数", unlimitedViews: "閲覧回数は無制限", pin: "PIN",
@@ -194,9 +197,20 @@
         }
         const result = await request("/api/drops", { method: "POST", body }, session.csrf);
         const url = new URL(result.url, location.origin).href;
-        $("#drop-form").replaceWith(Object.assign(document.createElement("section"), { className: "drop-success", innerHTML: `<h2><i class="fa-solid fa-circle-check" aria-hidden="true"></i> ${t.created}</h2><label>${t.link}</label><div><input readonly value="${url}"><button class="btn" type="button"><i class="fa-solid fa-copy" aria-hidden="true"></i><span>${t.copy}</span></button></div>` }));
-        const success = $(".drop-success"), copyButton = $("button", success), input = $("input", success);
-        copyButton.onclick = async () => { try { await navigator.clipboard.writeText(url); copyButton.querySelector("span").textContent = t.copied; setTimeout(() => copyButton.querySelector("span").textContent = t.copy, 1800); } catch { input.select(); document.execCommand("copy"); } };
+        $("#drop-form").replaceWith(Object.assign(document.createElement("section"), { className: "drop-success", innerHTML: `<h2><i class="fa-solid fa-circle-check" aria-hidden="true"></i> ${t.created}</h2><label>${t.link}</label><div><input readonly value="${url}"><button class="btn" type="button"><i class="fa-solid fa-copy" aria-hidden="true"></i><span>${t.copy}</span></button></div><p class="field-help">${t.saveNotice}</p>` }));
+        const success = $(".drop-success"), copyButton = success.querySelector("button"), input = success.querySelector("input");
+        copyButton.onclick = async () => {
+          try {
+            if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+            await navigator.clipboard.writeText(url);
+          } catch {
+            input.focus();
+            input.select();
+            document.execCommand("copy");
+          }
+          copyButton.querySelector("span").textContent = t.copied;
+          setTimeout(() => copyButton.querySelector("span").textContent = t.copy, 1800);
+        };
       } catch (error) { message.textContent = error.message; button.disabled = false; }
     };
   }
