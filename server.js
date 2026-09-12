@@ -21,6 +21,7 @@ const ONLINE_FILE = path.join(DATA_DIR, "onlineToday.txt");
 const ONLINE_USERS_FILE = path.join(DATA_DIR, "onlineTodayUsers.json");
 // Kept only for a one-time compatibility migration from older deployments.
 const LEGACY_SESSIONS_FILE = path.join(DATA_DIR, "sessions.json");
+const DROPS_FILE = path.join(DATA_DIR, "drops.json");
 const DELETES_FILE = path.join(DATA_DIR, "deletes.json");
 const SHARES_FILE = path.join(DATA_DIR, "shares.json");
 const ORDERS_FILE = path.join(DATA_DIR, "orders.json");
@@ -31,6 +32,7 @@ const MAX_NOTES = 20;
 const MAX_ACCOUNT_BYTES = 128 * 1000;
 const MAX_NOTE_BYTES = 2 * 1024 * 1000;
 const MAX_NOTE_NAME = 80;
+const MAX_DROP_BYTES = 256 * 1000;
 const MAX_DISPLAY_NAME = 40;
 const SESSION_INITIAL_MS = 14 * 864e5;
 const SESSION_EXTENSION_MS = 2 * 864e5;
@@ -59,6 +61,16 @@ const PLAN_DEFINITIONS = Object.freeze({
   beta: { maxBytes: 1_000_000_000, maxNotes: Infinity, monthlySats: 0 },
   admin: { maxBytes: Infinity, maxNotes: Infinity, monthlySats: 0 },
 });
+const DROP_PLAN_LIMITS = Object.freeze({
+  free: { count: 1, durationMs: 864e5, modes: new Set(["basic"]) },
+  plus: { count: 5, durationMs: 7 * 864e5, modes: new Set(["basic", "secret"]) },
+  pro: { count: 20, durationMs: 7 * 864e5, modes: new Set(["basic", "secret", "confidential"]) },
+  ultra: { count: 50, durationMs: 30 * 864e5, modes: new Set(["basic", "secret", "confidential"]) },
+  beta: { count: Infinity, durationMs: 30 * 864e5, modes: new Set(["basic", "secret", "confidential"]) },
+  admin: { count: Infinity, durationMs: 30 * 864e5, modes: new Set(["basic", "secret", "confidential"]) },
+});
+const DROP_DURATIONS_MS = new Set([5 * 60_000, 60 * 60_000, 864e5, 7 * 864e5, 30 * 864e5]);
+const DROP_VIEW_LIMITS = new Set([1, 5, 10, 20, 50]);
 const CAPTCHA_VERIFY_URL = "https://nexacaptcha.nxlabtw.com/api/siteverify";
 const LEGACY_SCHYBRID_MODE = "astra-confidential-schybrid-v1";
 const LEGACY_CONFIDENTIAL_MODE = "astra-confidential-v2";
@@ -168,6 +180,12 @@ function metadataFile(username) {
 function notesDir(username) {
   return path.join(userDir(username), "notes");
 }
+function dropsDir(username) {
+  return path.join(userDir(username), "drops");
+}
+function dropFile(username, id) {
+  return path.join(dropsDir(username), `${id}.json`);
+}
 function sessionsFile(username) {
   return path.join(userDir(username), "sessions.json");
 }
@@ -241,7 +259,15 @@ async function directorySize(directory) {
 // sign-in records must not make a user's notes appear to consume more space.
 async function noteStorageSize(username) {
   try {
-    return await directorySize(notesDir(username));
+    const [notes, drops] = await Promise.all(
+      [notesDir(username), dropsDir(username)].map((directory) =>
+        directorySize(directory).catch((error) => {
+          if (error.code === "ENOENT") return 0;
+          throw error;
+        }),
+      ),
+    );
+    return notes + drops;
   } catch (error) {
     if (error.code === "ENOENT") return 0;
     throw error;
@@ -349,8 +375,9 @@ function planPayload(metadata, now = Date.now()) {
       : plan === "pro"
         ? proMs
         : plan === "plus"
-          ? plusMs
+        ? plusMs
           : null;
+  const drop = DROP_PLAN_LIMITS[plan];
   return {
     type: plan,
     maxBytes: Number.isFinite(definition.maxBytes) ? definition.maxBytes : null,
@@ -365,6 +392,9 @@ function planPayload(metadata, now = Date.now()) {
     activeEndsAt:
       activeMs === null ? null : new Date(now + activeMs).toISOString(),
     canCreateConfidential: ["plus", "pro", "ultra", "beta", "admin"].includes(plan),
+    dropCount: drop.count,
+    dropDurationMs: drop.durationMs,
+    dropModes: [...drop.modes],
   };
 }
 
@@ -512,6 +542,7 @@ async function ensureData() {
     ],
     [DELETES_FILE, "[]\n"],
     [SHARES_FILE, "{}\n"],
+    [DROPS_FILE, "{}\n"],
     [ORDERS_FILE, "[]\n"],
   ])
     if (!(await exists(file))) await atomicWrite(file, initial);
@@ -730,6 +761,63 @@ function validClientEnvelope(value, mode) {
     validBase64(wrap.iv, 12, 12) &&
     validBase64(wrap.key, 48, 48)
   );
+}
+
+function validDropEnvelope(value) {
+  return Boolean(
+    value &&
+      typeof value === "object" &&
+      Object.keys(value).every((key) => ["iv", "tag", "ciphertext"].includes(key)) &&
+      validBase64(value.iv, 12, 12) &&
+      validBase64(value.tag, 16, 16) &&
+      validBase64(value.ciphertext, 1, MAX_DROP_BYTES),
+  );
+}
+
+function validDropId(id) {
+  return /^[A-Za-z0-9_-]{43}$/.test(id || "");
+}
+
+function dropIsExpired(drop, now = Date.now()) {
+  return !drop || now >= Date.parse(drop.expiresAt || 0);
+}
+
+function dropAccessFor(metadata) {
+  return DROP_PLAN_LIMITS[planForMetadata(metadata)];
+}
+
+async function updateDrops(mutator) {
+  return withLock("drops", async () => {
+    const drops = await readJson(DROPS_FILE, {});
+    const result = await mutator(drops);
+    await writeJson(DROPS_FILE, drops);
+    return result;
+  });
+}
+
+async function removeDrop(username, id) {
+  await fsp.unlink(dropFile(username, id)).catch((error) => {
+    if (error.code !== "ENOENT") throw error;
+  });
+  await updateDrops((drops) => delete drops[sha256(id)]);
+}
+
+async function cleanupDrops() {
+  await updateDrops(async (drops) => {
+    for (const [digest, target] of Object.entries(drops)) {
+      const id = target?.id;
+      const username = target?.username;
+      if (!validDropId(id) || !USERNAME_RE.test(username || "")) {
+        delete drops[digest];
+        continue;
+      }
+      const drop = await readJson(dropFile(username, id), null);
+      if (!drop || dropIsExpired(drop)) {
+        await fsp.unlink(dropFile(username, id)).catch(() => {});
+        delete drops[digest];
+      }
+    }
+  });
 }
 
 function noteSnapshot(note) {
@@ -1773,6 +1861,7 @@ const accountMutationLimiter = accountLimiter(120);
 const noteSaveLimiter = accountLimiter(40);
 const noteLifecycleLimiter = accountLimiter(20);
 const shareMutationLimiter = accountLimiter(30);
+const dropMutationLimiter = accountLimiter(12);
 const billingCreateAccountLimiter = rateLimit({
   windowMs: ORDER_CREATION_WINDOW_MS,
   limit: MAX_NEW_ORDERS_PER_ACCOUNT_WINDOW,
@@ -1810,6 +1899,15 @@ const vaultKeyNoteLimiter = rateLimit({
 const sharedReadLimiter = rateLimit({
   windowMs: 60_000,
   limit: 240,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
+const dropReadLimiter = rateLimit({
+  windowMs: 15 * 60_000,
+  limit: 30,
+  keyGenerator: (req) =>
+    `drop:${String(req.params.id || "invalid")}:${ipKeyGenerator(req.ip)}`,
   standardHeaders: "draft-8",
   legacyHeaders: false,
   handler: rateLimitHandler,
@@ -3392,6 +3490,237 @@ app.post(
   },
 );
 
+function deriveDropFactor(mode, id, createdAt, clientSalt, clientHash) {
+  if (!confidentialSecret) return null;
+  const context =
+    mode === "secret" ? "AstraDrop Secret v1\0" : "AstraDrop Confidential v1\0";
+  return crypto
+    .createHmac("sha256", confidentialSecret)
+    .update(context)
+    .update(id)
+    .update("\0")
+    .update(createdAt)
+    .update("\0")
+    .update(clientSalt)
+    .update("\0")
+    .update(clientHash)
+    .digest("base64url");
+}
+
+app.post(
+  "/api/drops/key-factor",
+  requireAuth,
+  dropMutationLimiter,
+  requireCsrf,
+  async (req, res) => {
+    const mode = String(req.body.mode || "");
+    const id = String(req.body.id || "");
+    const createdAt = String(req.body.createdAt || "");
+    const clientSalt = String(req.body.clientSalt || "");
+    const clientHash = String(req.body.clientHash || "");
+    const metadata = await loadMetadata(req.auth.session.username);
+    const access = metadata && await refreshPlanState(req.auth.session.username, metadata);
+    if (
+      !metadata ||
+      !["secret", "confidential"].includes(mode) ||
+      !access.payload.dropModes.includes(mode) ||
+      !validDropId(id) ||
+      !Number.isFinite(Date.parse(createdAt)) ||
+      !/^[A-Za-z0-9_-]{43}$/.test(clientSalt) ||
+      !/^[a-f0-9]{64}$/.test(clientHash)
+    )
+      return jsonError(res, 400, "invalid_drop", "AstraDrop details are invalid.");
+    const serverFactor = deriveDropFactor(mode, id, createdAt, clientSalt, clientHash);
+    if (!serverFactor)
+      return jsonError(res, 503, "drop_unavailable", "Encrypted AstraDrop is unavailable.");
+    res.json({ serverFactor });
+  },
+);
+
+app.post(
+  "/api/drops",
+  requireAuth,
+  dropMutationLimiter,
+  requireCsrf,
+  async (req, res, next) => {
+    try {
+      const username = req.auth.session.username;
+      const id = String(req.body.id || "");
+      const mode = String(req.body.mode || "basic");
+      const durationMs = Number(req.body.durationMs);
+      const viewLimit = req.body.viewLimit === null ? null : Number(req.body.viewLimit);
+      const createdAt = String(req.body.createdAt || "");
+      const sourceName = normalizeText(req.body.sourceName, MAX_NOTE_NAME);
+      if (
+        !validDropId(id) ||
+        !["basic", "secret", "confidential"].includes(mode) ||
+        !DROP_DURATIONS_MS.has(durationMs) ||
+        (!Number.isFinite(Date.parse(createdAt)) ||
+          Math.abs(Date.now() - Date.parse(createdAt)) > 5 * 60_000) ||
+        (viewLimit !== null && !DROP_VIEW_LIMITS.has(viewLimit))
+      )
+        return jsonError(res, 400, "invalid_drop", "AstraDrop details are invalid.");
+      await cleanupDrops();
+      await withLock(`user:${username}`, async () => {
+        const metadata = await loadMetadata(username);
+        const access = await refreshPlanState(username, metadata);
+        await saveMetadata(username, metadata);
+        const allowance = dropAccessFor(metadata);
+        if (!allowance.modes.has(mode))
+          throw Object.assign(new Error("Upgrade your plan to use this AstraDrop protection."), {
+            status: 403,
+            code: "drop_plan_required",
+          });
+        if (durationMs > allowance.durationMs)
+          throw Object.assign(new Error("This duration is not available on your plan."), {
+            status: 403,
+            code: "drop_plan_required",
+          });
+        const index = await readJson(DROPS_FILE, {});
+        const active = Object.values(index).filter(
+          (entry) => entry?.username === userKey(username),
+        ).length;
+        if (active >= allowance.count)
+          throw Object.assign(new Error("You have reached your AstraDrop limit."), {
+            status: 409,
+            code: "drop_limit",
+          });
+        if (await exists(dropFile(username, id)))
+          throw Object.assign(new Error("AstraDrop ID is unavailable."), { status: 409 });
+        const drop = {
+          id,
+          owner: userKey(username),
+          sourceName: sourceName || "AstraDrop",
+          mode,
+          createdAt,
+          expiresAt: new Date(Date.parse(createdAt) + durationMs).toISOString(),
+          viewLimit,
+          views: 0,
+        };
+        if (mode === "basic") {
+          const content = typeof req.body.content === "string" ? req.body.content.normalize("NFC") : "";
+          if (!content || Buffer.byteLength(content, "utf8") > MAX_DROP_BYTES)
+            throw Object.assign(new Error("AstraDrop content is invalid or too large."), { status: 413 });
+          drop.content = content;
+        } else {
+          const clientSalt = String(req.body.clientSalt || "");
+          const clientHash = String(req.body.clientHash || "");
+          if (
+            !confidentialSecret ||
+            !/^[A-Za-z0-9_-]{43}$/.test(clientSalt) ||
+            !/^[a-f0-9]{64}$/.test(clientHash) ||
+            !validDropEnvelope(req.body.encrypted)
+          )
+            throw Object.assign(new Error("Encrypted AstraDrop data is invalid."), {
+              status: 400,
+            });
+          drop.clientSalt = clientSalt;
+          drop.clientHashDigest = sha256(clientHash);
+          drop.encrypted = req.body.encrypted;
+        }
+        const serialized = JSON.stringify(drop, null, 2) + "\n";
+        if (
+          (await noteStorageSize(username)) + Buffer.byteLength(serialized) >
+          (access.payload.maxBytes ?? Infinity)
+        )
+          throw Object.assign(new Error("Creating this AstraDrop would exceed your storage limit."), {
+            status: 413,
+            code: "storage_limit",
+          });
+        await atomicWrite(dropFile(username, id), serialized);
+        await updateDrops((drops) => {
+          drops[sha256(id)] = { username: userKey(username), id };
+        });
+      });
+      res.status(201).json({ ok: true, id, url: `/drop/${id}` });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+async function publicDrop(id) {
+  const target = (await readJson(DROPS_FILE, {}))[sha256(id)];
+  if (!target || !validDropId(target.id) || !USERNAME_RE.test(target.username || "")) return null;
+  const drop = await readJson(dropFile(target.username, target.id), null);
+  if (!drop || dropIsExpired(drop)) {
+    await removeDrop(target.username, target.id);
+    return null;
+  }
+  return { target, drop };
+}
+
+app.get("/api/drops/:id", dropReadLimiter, async (req, res, next) => {
+  if (!validDropId(req.params.id)) return jsonError(res, 404, "not_found", "AstraDrop not found.");
+  try {
+    const entry = await publicDrop(req.params.id);
+    if (!entry) return jsonError(res, 404, "not_found", "AstraDrop is unavailable.");
+    const { drop } = entry;
+    res.setHeader("X-Robots-Tag", "noindex, nofollow, noarchive");
+    res.json({
+      id: drop.id,
+      mode: drop.mode,
+      createdAt: drop.createdAt,
+      clientSalt: drop.mode === "basic" ? null : drop.clientSalt,
+      expiresAt: drop.expiresAt,
+      viewLimit: drop.viewLimit,
+      viewsRemaining: drop.viewLimit === null ? null : Math.max(0, drop.viewLimit - drop.views),
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post("/api/drops/:id/open", dropReadLimiter, async (req, res, next) => {
+  if (!validDropId(req.params.id)) return jsonError(res, 404, "not_found", "AstraDrop not found.");
+  try {
+    const result = await withLock(`drop:${req.params.id}`, async () => {
+      const entry = await publicDrop(req.params.id);
+      if (!entry) return null;
+      const { target, drop } = entry;
+      const clientHash = String(req.body?.clientHash || "");
+      if (
+        drop.mode !== "basic" &&
+        (!/^[a-f0-9]{64}$/.test(clientHash) ||
+          !safeEqual(sha256(clientHash), drop.clientHashDigest))
+      )
+        throw Object.assign(new Error("The PIN is incorrect."), { status: 403, code: "drop_pin_invalid" });
+      if (drop.viewLimit !== null && drop.views >= drop.viewLimit) {
+        await removeDrop(target.username, target.id);
+        return null;
+      }
+      drop.views += 1;
+      const finalView = drop.viewLimit !== null && drop.views >= drop.viewLimit;
+      const payload = {
+        mode: drop.mode,
+        expiresAt: drop.expiresAt,
+        viewsRemaining: drop.viewLimit === null ? null : Math.max(0, drop.viewLimit - drop.views),
+        ...(drop.mode === "basic"
+          ? { content: drop.content }
+          : {
+              clientSalt: drop.clientSalt,
+              encrypted: drop.encrypted,
+              serverFactor: deriveDropFactor(
+                drop.mode,
+                drop.id,
+                drop.createdAt,
+                drop.clientSalt,
+                clientHash,
+              ),
+            }),
+      };
+      if (finalView) await removeDrop(target.username, target.id);
+      else await writeJson(dropFile(target.username, target.id), drop);
+      return payload;
+    });
+    if (!result) return jsonError(res, 404, "not_found", "AstraDrop is unavailable.");
+    res.setHeader("X-Robots-Tag", "noindex, nofollow, noarchive");
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.get("/api/shared/:token", sharedReadLimiter, async (req, res, next) => {
   if (!/^[A-Za-z0-9_-]{43}$/.test(req.params.token))
     return jsonError(res, 404, "not_found", "Shared note not found.");
@@ -3483,6 +3812,10 @@ app.post(
           for (const [key, target] of Object.entries(shares))
             if (target.username === userKey(username)) delete shares[key];
         });
+        await updateDrops((drops) => {
+          for (const [key, target] of Object.entries(drops))
+            if (target.username === userKey(username)) delete drops[key];
+        });
         const target = path.resolve(userDir(username));
         if (path.dirname(target) !== DATA_DIR)
           throw new Error("Unsafe account deletion target.");
@@ -3555,6 +3888,7 @@ const pages = {
   "/privacy": "privacy.html",
   "/plans": "plans.html",
   "/plans/return": "plans.html",
+  "/drops/new": "drop-new.html",
 };
 for (const [route, file] of Object.entries(pages))
   app.get(route, (req, res) => res.sendFile(path.join(PUBLIC_DIR, file)));
@@ -3568,6 +3902,10 @@ app.get("/notes/:id", (req, res) =>
 app.get("/shared/:token", (req, res) => {
   res.setHeader("X-Robots-Tag", "noindex, nofollow, noarchive");
   res.sendFile(path.join(PUBLIC_DIR, "shared.html"));
+});
+app.get("/drop/:id", (req, res) => {
+  res.setHeader("X-Robots-Tag", "noindex, nofollow, noarchive");
+  res.sendFile(path.join(PUBLIC_DIR, "drop.html"));
 });
 app.use((req, res) =>
   res.status(404).sendFile(path.join(PUBLIC_DIR, "404.html")),
@@ -3595,6 +3933,13 @@ async function start() {
   cleanBilling();
   const cleanupTimer = setInterval(() => cleanupPlanLocks(), 60 * 60_000);
   cleanupTimer.unref();
+  const dropCleanupTimer = setInterval(
+    () => cleanupDrops().catch((error) =>
+      console.error(`[${utcNow()}] AstraDrop cleanup failed:`, error.message),
+    ),
+    60 * 60_000,
+  );
+  dropCleanupTimer.unref();
   const sessionCleanupTimer = setInterval(
     () => cleanupExpiredSessions().catch((error) =>
       console.error(`[${utcNow()}] Session cleanup failed:`, error.message),
@@ -3609,6 +3954,9 @@ async function start() {
         `[${utcNow()}] Initial plan cleanup failed:`,
         error.message,
       ),
+    );
+    cleanupDrops().catch((error) =>
+      console.error(`[${utcNow()}] Initial AstraDrop cleanup failed:`, error.message),
     );
     cleanupExpiredSessions().catch((error) =>
       console.error(`[${utcNow()}] Initial session cleanup failed:`, error.message),

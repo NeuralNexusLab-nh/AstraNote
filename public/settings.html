@@ -139,6 +139,13 @@
               ><span data-i18n="saveSettings"></span>
             </button>
           </div>
+          <section class="card reveal signed-in-devices" aria-labelledby="signed-in-devices-title">
+            <h2 class="feature-heading" id="signed-in-devices-title">
+              <span class="feature-icon"><i class="fa-solid fa-laptop-shield" aria-hidden="true"></i></span><span data-i18n="signedInDevices"></span>
+            </h2>
+            <p class="muted" data-i18n="signedInDevicesBody"></p>
+            <div id="session-list" class="session-list" aria-live="polite"></div>
+          </section>
           <section class="card danger-zone reveal">
             <div class="danger-content">
               <div>
@@ -156,13 +163,6 @@
             </div>
           </section>
         </form>
-        <section class="card reveal signed-in-devices" aria-labelledby="signed-in-devices-title">
-          <h2 class="feature-heading" id="signed-in-devices-title">
-            <span class="feature-icon"><i class="fa-solid fa-laptop-shield" aria-hidden="true"></i></span><span data-i18n="signedInDevices"></span>
-          </h2>
-          <p class="muted" data-i18n="signedInDevicesBody"></p>
-          <div id="session-list" class="session-list" aria-live="polite"></div>
-        </section>
         <button
           class="btn btn-outline btn-lg logout-wide reveal"
           id="logout-wide"

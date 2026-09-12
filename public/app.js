@@ -981,6 +981,9 @@ Object.assign(I18N["en"], {
   chooseUltra: "Choose Ultra",
   comparePlans: "Compare plans",
   compareFeature: "Feature",
+  AstraDrop: "AstraDrop",
+  dropAllowance: "Active drops · maximum lifetime",
+  dropEncryption: "AstraDrop protection",
   comparisonHint:
     "All paid periods use 30-day months. Ultra time is used first, then Pro, then Plus; lower tiers pause.",
   organizeFeature: "Note organization",
@@ -1099,6 +1102,9 @@ Object.assign(I18N["zh-Hant"], {
   chooseUltra: "選擇 Ultra",
   comparePlans: "方案比較",
   compareFeature: "功能",
+  AstraDrop: "AstraDrop",
+  dropAllowance: "同時存在數量 · 最長有效期",
+  dropEncryption: "AstraDrop 加密",
   comparisonHint:
     "一個月為30天。優先使用 Ultra，再使用 Pro、Plus；較低階方案的時間會暫停消耗。",
   organizeFeature: "筆記整理",
@@ -1202,6 +1208,9 @@ Object.assign(I18N["ja"], {
   chooseUltra: "Ultra を選ぶ",
   comparePlans: "プラン比較",
   compareFeature: "機能",
+  AstraDrop: "AstraDrop",
+  dropAllowance: "同時に作成できる数・最長の有効期限",
+  dropEncryption: "AstraDrop の暗号化",
   comparisonHint:
     "1か月は30日。Ultra、Pro、Plus の順に利用し、下位プランの残り期間は停止します。",
   organizeFeature: "ノート整理",
@@ -2113,6 +2122,8 @@ function renderPlanComparison() {
     ["AstraSecret", null, [true, true, true, true]],
     ["AstraConfidential", null, [false, true, true, true]],
     ["organizeFeature", "organizeDetail", [false, true, true, true]],
+    ["AstraDrop", "dropAllowance", ["1 · 24h", "5 · 7d", "20 · 7d", "50 · 30d"]],
+    ["dropEncryption", null, ["Basic", "Basic · DropSecret", "Basic · DropSecret · DropConfidential", "Basic · DropSecret · DropConfidential"]],
     ["AstraZero", null, [false, false, true, true]],
     ["recoveryFeature", "recoveryDetail", [false, false, false, true]],
     ["prioritySupport", "prioritySupportDetail", [false, false, false, true]],
@@ -3464,6 +3475,18 @@ async function initNote() {
       if (!error.cancelled) toast(error.message);
     });
   $("#delete-note").onclick = () => deleteNote(note);
+  $("#create-drop").onclick = () => {
+    sessionStorage.setItem(
+      "astranote_drop_source",
+      JSON.stringify({
+        id: note.id,
+        name: note.name,
+        content: note.content,
+        encryption: note.encryption,
+      }),
+    );
+    location.href = `/drops/new?note=${encodeURIComponent(note.id)}`;
+  };
   const shareToggle = $("#share-note");
   const shareRow = $("#share-url-row");
   const shareInput = $("#share-url");

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <title>AstraDrop — AstraNote</title>
+    <link rel="icon" href="/asset/logo.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/vendor/hash-wasm/argon2.umd.min.js" defer></script>
+    <script src="/app.js" defer></script>
+    <script src="/drop.js" defer></script>
+  </head>
+  <body data-page="drop">
+    <main class="page">
+      <div class="shell drop-shell">
+        <section class="card reveal drop-open-card" id="drop-open-card">
+          <p class="eyebrow"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>AstraDrop</span></p>
+          <h1 id="drop-open-title">Time-limited share</h1>
+          <p class="muted" id="drop-open-intro"></p>
+          <div class="note-stats" id="drop-stats"></div>
+          <div class="form-group" id="drop-open-pin-group" hidden>
+            <label for="drop-open-pin" id="drop-open-pin-label">PIN</label>
+            <input id="drop-open-pin" type="text" autocomplete="off" readonly data-1p-ignore="true" data-lpignore="true" data-bwignore="true" />
+          </div>
+          <p class="form-message" id="drop-open-message" role="alert"></p>
+          <button class="btn btn-primary" type="button" id="drop-open"><i class="fa-solid fa-lock-open" aria-hidden="true"></i><span>Open AstraDrop</span></button>
+        </section>
+        <article class="note-paper reveal" id="drop-content" hidden></article>
+      </div>
+    </main>
+  </body>
+</html>

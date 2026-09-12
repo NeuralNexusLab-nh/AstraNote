@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Create AstraDrop — AstraNote</title>
+    <link rel="icon" href="/asset/logo.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/vendor/hash-wasm/argon2.umd.min.js" defer></script>
+    <script src="/app.js" defer></script>
+    <script src="/drop.js" defer></script>
+  </head>
+  <body data-page="drop-new">
+    <main class="page">
+      <div class="shell form-layout form-layout-single">
+        <section class="form-card reveal drop-form-card">
+          <p class="eyebrow"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>AstraDrop</span></p>
+          <h1 id="drop-create-title">Create a time-limited share</h1>
+          <p class="muted" id="drop-create-intro">Create an independent snapshot with an expiry. Changes to the original note will not change this AstraDrop.</p>
+          <div class="drop-source" id="drop-source" hidden><i class="fa-solid fa-note-sticky" aria-hidden="true"></i><span id="drop-source-name"></span></div>
+          <form id="drop-form" autocomplete="off">
+            <div class="form-group">
+              <label for="drop-mode" id="drop-mode-label">Protection</label>
+              <select id="drop-mode" name="mode">
+                <option value="basic">Basic Drop</option>
+                <option value="secret">DropSecret</option>
+                <option value="confidential">DropConfidential</option>
+              </select>
+              <p class="field-help" id="drop-mode-help"></p>
+            </div>
+            <div class="form-group" id="drop-pin-group" hidden>
+              <label for="drop-pin" id="drop-pin-label">PIN</label>
+              <input id="drop-pin" type="text" autocomplete="off" readonly data-1p-ignore="true" data-lpignore="true" data-bwignore="true" />
+              <p class="field-help" id="drop-pin-help"></p>
+            </div>
+            <div class="form-group">
+              <label for="drop-duration" id="drop-duration-label">Expires after</label>
+              <select id="drop-duration" name="duration">
+                <option value="300000">5 minutes</option>
+                <option value="3600000">1 hour</option>
+                <option value="86400000">24 hours</option>
+                <option value="604800000">7 days</option>
+                <option value="2592000000">30 days</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="drop-views" id="drop-views-label">View limit</label>
+              <select id="drop-views" name="views">
+                <option value="">Unlimited during its lifetime</option>
+                <option value="1">1 view</option>
+                <option value="5">5 views</option>
+                <option value="10">10 views</option>
+                <option value="20">20 views</option>
+                <option value="50">50 views</option>
+              </select>
+              <p class="field-help" id="drop-storage-help"></p>
+            </div>
+            <p class="form-message" id="drop-message" role="alert"></p>
+            <div class="form-actions">
+              <a class="btn btn-outline" id="drop-cancel" href="/notes"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back</span></a>
+              <button class="btn btn-primary" type="submit" id="drop-create"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>Create AstraDrop</span></button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

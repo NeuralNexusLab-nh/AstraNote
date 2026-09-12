@@ -859,6 +859,42 @@ body[data-page="home"] .site-nav:not(.scrolled) .nav-link.active {
   padding: 40px;
   border-radius: 20px;
 }
+.drop-shell {
+  width: min(calc(100% - 40px), 760px);
+  display: grid;
+  gap: 20px;
+}
+.drop-source,
+.drop-success {
+  margin: 20px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--canvas);
+}
+.drop-source {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+}
+.drop-success h2 {
+  margin: 0 0 16px;
+  font-size: 18px;
+}
+.drop-success h2 i { color: var(--success); }
+.drop-success > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+.drop-success input {
+  min-width: 0;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+.drop-open-card .note-stats { margin: 22px 0; }
+.drop-open-card .btn { min-height: 46px; }
 .form-group {
   margin-bottom: 22px;
 }
@@ -1316,9 +1352,7 @@ textarea {
   min-width: 160px;
   min-height: 48px;
 }
-.signed-in-devices {
-  margin-top: 20px;
-}
+.settings-grid > .signed-in-devices { grid-column: 1 / -1; }
 .session-list {
   display: grid;
   gap: 12px;

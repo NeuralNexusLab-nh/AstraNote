@@ -8,5 +8,7 @@ Disallow: /new-note
 Disallow: /edit-note
 Disallow: /settings
 Disallow: /trash
+Disallow: /drops
+Disallow: /drop/
 
 Sitemap: https://astranote.nxlabtw.com/sitemap.xml

@@ -106,12 +106,14 @@ data/
 ├── onlineTodayUsers.json
 ├── sessions.json
 ├── shares.json
+├── drops.json          # private index for active AstraDrops
 ├── orders.sqlite       # indexed, compact payment ledger
 ├── orders.json         # legacy migration source; cleared after migration
 ├── deletes.json
 └── {username}/
     ├── metadata.json
     └── notes/{id}.json
+    └── drops/{id}.json # active AstraDrop snapshots; included in account quota
 ```
 
 Never publish runtime data. It can contain email and IP addresses, password
