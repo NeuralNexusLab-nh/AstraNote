@@ -1485,7 +1485,26 @@ async function verifyCaptchaIfPermanentNoteDelete(req, res, next) {
   try {
     const metadata = await loadMetadata(req.auth.session.username);
     const access = metadata && await refreshPlanState(req.auth.session.username, metadata);
-    if (access?.payload.canRecover) return next();
+    const ref = metadata?.notes?.find(
+      (item) => item.id === req.params.id && !item.trashedAt,
+    );
+    if (access?.payload.canRecover && ref && !ref.planLockedAt) return next();
+    return verifyCaptcha(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function verifyCaptchaIfPermanentBatchDelete(req, res, next) {
+  try {
+    const metadata = await loadMetadata(req.auth.session.username);
+    const access = metadata && await refreshPlanState(req.auth.session.username, metadata);
+    const ids = Array.isArray(req.body?.ids) ? req.body.ids : [];
+    const refs = ids.map((id) =>
+      metadata?.notes?.find((item) => item.id === id && !item.trashedAt),
+    );
+    if (access?.payload.canRecover && refs.length && refs.every((ref) => ref && !ref.planLockedAt))
+      return next();
     return verifyCaptcha(req, res, next);
   } catch (error) {
     next(error);
@@ -2793,7 +2812,7 @@ app.post(
   requireAuth,
   noteLifecycleLimiter,
   requireCsrf,
-  verifyCaptcha,
+  verifyCaptchaIfPermanentBatchDelete,
   async (req, res, next) => {
     try {
       const username = req.auth.session.username;

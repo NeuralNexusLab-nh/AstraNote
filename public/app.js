@@ -2543,12 +2543,12 @@ function unlockConfidential(note) {
   });
 }
 
-function actionModal({ title, body, confirm, danger = true, extra, run }) {
-  resetCaptcha("action");
+function actionModal({ title, body, confirm, danger = true, extra, run, requiresCaptcha = true }) {
+  if (requiresCaptcha) resetCaptcha("action");
   const content = document.createElement("div");
   if (extra) content.append(extra);
   const captcha = $("#global-captcha");
-  if (captcha) {
+  if (requiresCaptcha && captcha) {
     captcha.classList.remove("captcha-parking");
     captcha.inert = false;
     captcha.removeAttribute("aria-hidden");
@@ -2561,14 +2561,14 @@ function actionModal({ title, body, confirm, danger = true, extra, run }) {
     confirm,
     danger,
     onConfirm: async (close) => {
-      if (!state.actionCaptcha) throw new Error(t("captchaNeeded"));
+      if (requiresCaptcha && !state.actionCaptcha) throw new Error(t("captchaNeeded"));
       try {
         const result = await run();
         close();
         if (result.redirect) location.href = result.redirect;
         else location.reload();
       } catch (error) {
-        resetCaptcha("action");
+        if (requiresCaptcha) resetCaptcha("action");
         throw error;
       }
     },
@@ -2762,10 +2762,11 @@ function deleteNote(note) {
     confirm: t(
       state.account?.plan.canRecover && !note.locked ? "moveToTrash" : "delete",
     ),
+    requiresCaptcha: !(state.account?.plan.canRecover && !note.locked),
     run: () =>
       api(`/api/notes/${note.id}`, {
         method: "DELETE",
-        body: { captcha: state.actionCaptcha },
+        body: state.account?.plan.canRecover && !note.locked ? {} : { captcha: state.actionCaptcha },
       }),
   });
 }
@@ -3193,16 +3194,19 @@ function selectionActions(notes) {
 }
 
 function deleteSelectedNotes(ids) {
+  const selectedNotes = state.account.notes.filter((note) => ids.includes(note.id));
+  const requiresCaptcha = !state.account.plan.canRecover || selectedNotes.some((note) => note.locked);
   actionModal({
     title: t(
       state.account.plan.canRecover ? "trashNoteTitle" : "deleteNoteTitle",
     ),
     body: t(state.account.plan.canRecover ? "trashNoteBody" : "deleteNoteBody"),
     confirm: t(state.account.plan.canRecover ? "moveToTrash" : "delete"),
+    requiresCaptcha,
     run: () =>
       api("/api/notes/batch-delete", {
         method: "POST",
-        body: { ids, captcha: state.actionCaptcha },
+        body: requiresCaptcha ? { ids, captcha: state.actionCaptcha } : { ids },
       }),
   });
 }
