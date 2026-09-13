@@ -12,8 +12,11 @@
       protection: "Protection", expires: "Expires after", views: "View limit",
       unlimited: "Unlimited during its lifetime", back: "Back", create: "Create AstraDrop",
       storage: "AstraDrops are independent snapshots and count toward your account storage until they expire, are used up, or are revoked.",
-      basic: "Basic Drop", secret: "DropSecret", confidential: "DropConfidential",
+      basic: "Basic Drop", aes128: "AES-128-GCM", aes256: "AES-256-GCM", secret: "DropSecret", confidential: "DropConfidential",
       basicHelp: "Quick timed sharing without encryption. Do not use it for private information.",
+      aes128Help: "Server-managed AES-128-GCM encryption. No PIN is needed to view the Drop.",
+      aes256Help: "Server-managed AES-256-GCM encryption. No PIN is needed to view the Drop.",
+      plaintextWarning: "This source note is encrypted, but this Basic Drop will store its snapshot as plaintext on AstraNote's server. Choose an encrypted Drop to keep the snapshot encrypted.",
       secretHelp: "Client-side encryption with a 4–6 digit PIN. Best for everyday private text.",
       confidentialHelp: "Stronger client-side protection with a 4–16 character ASCII PIN. Use a longer, unique PIN for sensitive text.",
       secretPin: "DropSecret PIN (4–6 digits)", confidentialPin: "DropConfidential PIN (4–16 ASCII characters)",
@@ -22,10 +25,11 @@
       sourceProtectionRequired: "This encrypted note needs a plan that includes an encrypted AstraDrop.",
       created: "AstraDrop is ready", link: "Share link", copy: "Copy", copied: "Copied",
       saveNotice: "Save this link now. AstraNote cannot show or recover it again after you leave this page.",
-      openTitle: "Time-limited share", open: "Open AstraDrop", openBasic: "This AstraDrop can be viewed until it expires.",
+      openTitle: "Time-limited share", unlock: "Unlock {title}", openBasic: "This is a read-only AstraDrop. It cannot be edited.",
+      openAes: "This is a read-only encrypted AstraDrop. It cannot be edited.",
       openSecret: "Enter the DropSecret PIN to open this timed, encrypted share.",
       openConfidential: "Enter the DropConfidential PIN to open this timed, encrypted share.",
-      expiresAt: "Expires", viewsLeft: "Views left", unlimitedViews: "Unlimited views", pin: "PIN",
+      expiresAt: "Expires", viewsLeft: "Views left", unlimitedViews: "Unlimited views", readOnly: "Read-only", pin: "PIN",
       unavailable: "This AstraDrop is unavailable, has expired, or has already reached its view limit.",
       pinIncorrect: "The PIN is incorrect.",
     },
@@ -35,8 +39,11 @@
       protection: "保護方式", expires: "有效期限", views: "瀏覽次數限制",
       unlimited: "有效期內可不限次數瀏覽", back: "返回", create: "建立 AstraDrop",
       storage: "AstraDrop 是獨立快照，在到期、用盡次數或被撤銷前，都會計入帳號使用空間。",
-      basic: "Basic Drop", secret: "DropSecret", confidential: "DropConfidential",
+      basic: "Basic Drop", aes128: "AES-128-GCM", aes256: "AES-256-GCM", secret: "DropSecret", confidential: "DropConfidential",
       basicHelp: "快速限時分享，不使用加密。請勿用於私密資訊。",
+      aes128Help: "由伺服器管理的 AES-128-GCM 加密；查看 Drop 不需要 PIN。",
+      aes256Help: "由伺服器管理的 AES-256-GCM 加密；查看 Drop 不需要 PIN。",
+      plaintextWarning: "原筆記已加密，但這個 Basic Drop 快照會以純文字儲存在 AstraNote 伺服器。請選擇加密 Drop，才能讓快照維持加密。",
       secretHelp: "使用 4–6 位數字 PIN 的客戶端加密，適合日常私密文字。",
       confidentialHelp: "使用 4–16 位 ASCII PIN 的更強客戶端保護。敏感內容請使用更長且獨特的 PIN。",
       secretPin: "DropSecret PIN（4–6 位數字）", confidentialPin: "DropConfidential PIN（4–16 位 ASCII 字元）",
@@ -45,9 +52,10 @@
       sourceProtectionRequired: "這篇加密筆記需要使用包含加密 AstraDrop 的方案。",
       created: "AstraDrop 已建立", link: "分享連結", copy: "複製", copied: "已複製",
       saveNotice: "請現在保存此連結。離開本頁後，AstraNote 無法再次顯示或找回這個網址。",
-      openTitle: "限時分享", open: "開啟 AstraDrop", openBasic: "此 AstraDrop 可在到期前瀏覽。",
+      openTitle: "限時分享", unlock: "解鎖 {title}", openBasic: "這是唯讀 AstraDrop，無法編輯。",
+      openAes: "這是唯讀的加密 AstraDrop，無法編輯。",
       openSecret: "輸入 DropSecret PIN，開啟這份限時加密分享。", openConfidential: "輸入 DropConfidential PIN，開啟這份限時加密分享。",
-      expiresAt: "到期時間", viewsLeft: "剩餘瀏覽次數", unlimitedViews: "不限瀏覽次數", pin: "PIN",
+      expiresAt: "到期時間", viewsLeft: "剩餘瀏覽次數", unlimitedViews: "不限瀏覽次數", readOnly: "唯讀", pin: "PIN",
       unavailable: "此 AstraDrop 無法使用、已到期，或已達瀏覽次數上限。",
       pinIncorrect: "PIN 不正確。",
     },
@@ -55,8 +63,11 @@
       createTitle: "期限付き共有を作成", createIntro: "有効期限付きの独立したスナップショットを作成します。元のノートを変更しても、この AstraDrop は変わりません。",
       protection: "保護方法", expires: "有効期限", views: "閲覧回数の上限", unlimited: "有効期間中は無制限に閲覧可能", back: "戻る", create: "AstraDrop を作成",
       storage: "AstraDrop は独立したスナップショットです。期限切れ、閲覧回数の消費、または取り消しまで、アカウント容量を使用します。",
-      basic: "Basic Drop", secret: "DropSecret", confidential: "DropConfidential",
+      basic: "Basic Drop", aes128: "AES-128-GCM", aes256: "AES-256-GCM", secret: "DropSecret", confidential: "DropConfidential",
       basicHelp: "暗号化なしの短期共有です。個人的な情報には使用しないでください。",
+      aes128Help: "サーバー管理の AES-128-GCM 暗号化です。閲覧に PIN は必要ありません。",
+      aes256Help: "サーバー管理の AES-256-GCM 暗号化です。閲覧に PIN は必要ありません。",
+      plaintextWarning: "元のノートは暗号化されていますが、この Basic Drop のスナップショットは AstraNote のサーバーに平文で保存されます。暗号化を維持するには暗号化 Drop を選んでください。",
       secretHelp: "4～6桁の PIN を使うクライアント側暗号化。日常的な個人情報向けです。",
       confidentialHelp: "4～16文字の ASCII PIN を使う、より強いクライアント側保護です。大切な内容には長く固有の PIN を使ってください。",
       secretPin: "DropSecret PIN（4～6桁の数字）", confidentialPin: "DropConfidential PIN（4～16文字の ASCII）",
@@ -64,9 +75,10 @@
       sourceProtectionRequired: "この暗号化ノートには、暗号化 AstraDrop を含むプランが必要です。",
       created: "AstraDrop を作成しました", link: "共有リンク", copy: "コピー", copied: "コピーしました",
       saveNotice: "このリンクを今すぐ保存してください。このページを離れると、AstraNote は再表示または復元できません。",
-      openTitle: "期限付き共有", open: "AstraDrop を開く", openBasic: "この AstraDrop は有効期限まで閲覧できます。",
+      openTitle: "期限付き共有", unlock: "{title} を解除", openBasic: "これは読み取り専用の AstraDrop です。編集できません。",
+      openAes: "これは読み取り専用の暗号化 AstraDrop です。編集できません。",
       openSecret: "DropSecret PIN を入力して、期限付きの暗号化共有を開きます。", openConfidential: "DropConfidential PIN を入力して、期限付きの暗号化共有を開きます。",
-      expiresAt: "有効期限", viewsLeft: "残り閲覧回数", unlimitedViews: "閲覧回数は無制限", pin: "PIN",
+      expiresAt: "有効期限", viewsLeft: "残り閲覧回数", unlimitedViews: "閲覧回数は無制限", readOnly: "読み取り専用", pin: "PIN",
       unavailable: "この AstraDrop は利用できないか、有効期限切れ、または閲覧回数の上限に達しています。", pinIncorrect: "PIN が正しくありません。",
     },
   };
@@ -107,7 +119,9 @@
     if (!response.ok) throw Object.assign(new Error(data.message || t.unavailable), { code: data.error, status: response.status });
     return data;
   }
-  const pinValid = (mode, pin) => mode === "secret" ? /^\d{4,6}$/.test(pin) : /^[\x21-\x7e]{4,16}$/.test(pin);
+  const pinMode = (mode) => ["secret", "confidential"].includes(mode);
+  const modeKey = (mode) => mode === "aes-128-gcm-new" ? "aes128" : mode === "aes-256-gcm-new" ? "aes256" : mode;
+  const pinValid = (mode, pin) => mode === "secret" ? /^\d{4,6}$/.test(pin) : mode === "confidential" && /^[\x21-\x7e]{4,16}$/.test(pin);
   const context = (mode, id, createdAt) => text.encode(`AstraDrop ${mode} v1\0${id}\0${createdAt}`);
   async function derive(mode, id, createdAt, salt, pin, factor) {
     const bytes = await window.hashwasm.argon2id({
@@ -160,9 +174,8 @@
     const mode = $("#drop-mode"), duration = $("#drop-duration"), pinGroup = $("#drop-pin-group"), pin = $("#drop-pin");
     manual(pin);
     for (const option of mode.options) {
-      option.textContent = t[option.value];
-      option.disabled = !account.plan.dropModes.includes(option.value) ||
-        (option.value === "basic" && source.encryption && source.encryption !== "none");
+      option.textContent = t[modeKey(option.value)];
+      option.disabled = !account.plan.dropModes.includes(option.value);
     }
     if (![...mode.options].some((option) => !option.disabled)) {
       $("#drop-message").textContent = t.sourceProtectionRequired;
@@ -173,14 +186,18 @@
       const selected = mode.value;
       if (mode.selectedOptions[0].disabled)
         mode.value = [...mode.options].find((option) => !option.disabled)?.value || "basic";
-      pinGroup.hidden = mode.value === "basic";
-      if (mode.value !== "basic") {
+      const needsPin = pinMode(mode.value);
+      pinGroup.hidden = !needsPin;
+      if (needsPin) {
         pin.value = ""; pin.inputMode = mode.value === "secret" ? "numeric" : "text";
         pin.maxLength = mode.value === "secret" ? 6 : 16; pin.pattern = mode.value === "secret" ? "[0-9]{4,6}" : "[!-~]{4,16}";
         $("#drop-pin-label").textContent = mode.value === "secret" ? t.secretPin : t.confidentialPin;
         $("#drop-pin-help").textContent = mode.value === "secret" ? t.secretHelp : t.confidentialHelp;
       }
-      $("#drop-mode-help").textContent = mode.value === "basic" ? t.basicHelp : mode.value === "secret" ? t.secretHelp : t.confidentialHelp;
+      $("#drop-mode-help").textContent = mode.value === "basic" ? t.basicHelp : mode.value === "aes-128-gcm-new" ? t.aes128Help : mode.value === "aes-256-gcm-new" ? t.aes256Help : mode.value === "secret" ? t.secretHelp : t.confidentialHelp;
+      const plaintextWarning = $("#drop-plaintext-warning");
+      plaintextWarning.hidden = !(mode.value === "basic" && source.encryption && source.encryption !== "none");
+      plaintextWarning.textContent = plaintextWarning.hidden ? "" : t.plaintextWarning;
       for (const option of duration.options) option.disabled = Number(option.value) > account.plan.dropDurationMs;
       if (duration.selectedOptions[0].disabled) duration.value = String(account.plan.dropDurationMs);
     };
@@ -190,7 +207,7 @@
       try {
         const selectedMode = mode.value, id = randomId(), createdAt = new Date().toISOString(), durationMs = Number(duration.value);
         const body = { id, sourceName: source.name, mode: selectedMode, createdAt, durationMs, viewLimit: $("#drop-views").value ? Number($("#drop-views").value) : null };
-        if (selectedMode === "basic") body.content = source.content;
+        if (!pinMode(selectedMode)) body.content = source.content;
         else {
           if (!pinValid(selectedMode, pin.value)) throw new Error(t.pinRequired);
           Object.assign(body, await encrypt(selectedMode, id, createdAt, pin.value, source.content, session.csrf)); pin.value = "";
@@ -220,15 +237,17 @@
     let meta;
     try { meta = await request(`/api/drops/${encodeURIComponent(id)}`); }
     catch { $("#drop-open-title").textContent = t.unavailable; $("#drop-open").hidden = true; return; }
-    $("#drop-open-title").textContent = t.openTitle;
-    const protectedDrop = meta.mode !== "basic";
-    $("#drop-open-intro").textContent = meta.mode === "basic" ? t.openBasic : meta.mode === "secret" ? t.openSecret : t.openConfidential;
+    $("#drop-open-title").textContent = meta.sourceName || t.openTitle;
+    $("#drop-author").textContent = `${locale === "zh-Hant" ? "由" : locale === "ja" ? "作成者：" : "By "}${meta.author}${meta.email ? ` · ${meta.email}` : ""}`;
+    const protectedDrop = pinMode(meta.mode);
+    $("#drop-open-intro").textContent = meta.mode === "basic" ? t.openBasic : meta.mode.startsWith("aes-") ? t.openAes : meta.mode === "secret" ? t.openSecret : t.openConfidential;
     $("#drop-open-pin-group").hidden = !protectedDrop;
     if (protectedDrop) { $("#drop-open-pin-label").textContent = meta.mode === "secret" ? t.secretPin : t.confidentialPin; manual($("#drop-open-pin")); $("#drop-open-pin").inputMode = meta.mode === "secret" ? "numeric" : "text"; }
-    $("#drop-stats").innerHTML = `<span><i class="fa-regular fa-clock" aria-hidden="true"></i> ${t.expiresAt}: ${formatUtc(meta.expiresAt)}</span><span><i class="fa-solid fa-eye" aria-hidden="true"></i> ${meta.viewsRemaining === null ? t.unlimitedViews : `${t.viewsLeft}: ${meta.viewsRemaining}`}</span>`;
-    $("#drop-open span").textContent = t.open;
-    $("#drop-open").onclick = async () => {
-      const button = $("#drop-open"), message = $("#drop-open-message"), pin = $("#drop-open-pin"); button.disabled = true; message.textContent = "";
+    $("#drop-stats").innerHTML = `<span class="pill">${t[modeKey(meta.mode)]}</span><span><i class="fa-solid fa-eye" aria-hidden="true"></i> ${t.readOnly}</span><span><i class="fa-regular fa-clock" aria-hidden="true"></i> ${t.expiresAt}: ${formatUtc(meta.expiresAt)}</span><span><i class="fa-solid fa-eye" aria-hidden="true"></i> ${meta.viewsRemaining === null ? t.unlimitedViews : `${t.viewsLeft}: ${meta.viewsRemaining}`}</span>`;
+    const button = $("#drop-open");
+    button.querySelector("span").textContent = t.unlock.replace("{title}", meta.sourceName || t.openTitle);
+    const openDrop = async () => {
+      const message = $("#drop-open-message"), pin = $("#drop-open-pin"); button.disabled = true; message.textContent = "";
       try {
         let clientHash = "";
         if (protectedDrop) {
@@ -246,6 +265,11 @@
         $("#drop-content").textContent = content || ""; $("#drop-content").hidden = false; button.hidden = true; $("#drop-open-pin-group").hidden = true;
       } catch (error) { message.textContent = error.code === "drop_pin_invalid" ? t.pinIncorrect : error.message; button.disabled = false; }
     };
+    if (protectedDrop) button.onclick = openDrop;
+    else {
+      button.hidden = true;
+      await openDrop();
+    }
   }
   window.addEventListener("load", () => {
     const select = document.querySelector("#language-select");

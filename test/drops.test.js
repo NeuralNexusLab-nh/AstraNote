@@ -157,6 +157,25 @@ test("Free cannot create encrypted AstraDrops and active Drop snapshots consume 
   assert.equal(tooLarge.status, 413);
 });
 
+test("server-managed AES AstraDrops remain readable without a PIN and disclose their source", async () => {
+  const user = await fixture("drop_aes");
+  const id = dropId();
+  const createdAt = stamp();
+  const create = await request(user, "/api/drops", "POST", {
+    id, sourceName: "Encrypted quick guide", mode: "aes-256-gcm-new",
+    content: "Server-encrypted Drop content", createdAt, durationMs: 300000,
+    viewLimit: null,
+  });
+  assert.equal(create.status, 201);
+  const details = await request(null, `/api/drops/${id}`);
+  assert.equal(details.data.sourceName, "Encrypted quick guide");
+  assert.equal(details.data.author, "drop_aes");
+  assert.equal(details.data.mode, "aes-256-gcm-new");
+  const open = await request(null, `/api/drops/${id}/open`, "POST", { clientHash: "" });
+  assert.equal(open.status, 200);
+  assert.equal(open.data.content, "Server-encrypted Drop content");
+});
+
 test("DropSecret verifies its PIN before consuming a view and decrypts the matching snapshot", async () => {
   const user = await fixture("drop_plus", "plus");
   const id = dropId();

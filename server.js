@@ -62,12 +62,12 @@ const PLAN_DEFINITIONS = Object.freeze({
   admin: { maxBytes: Infinity, maxNotes: Infinity, monthlySats: 0 },
 });
 const DROP_PLAN_LIMITS = Object.freeze({
-  free: { count: 1, durationMs: 864e5, modes: new Set(["basic"]) },
-  plus: { count: 5, durationMs: 7 * 864e5, modes: new Set(["basic", "secret"]) },
-  pro: { count: 20, durationMs: 7 * 864e5, modes: new Set(["basic", "secret", "confidential"]) },
-  ultra: { count: 50, durationMs: 30 * 864e5, modes: new Set(["basic", "secret", "confidential"]) },
-  beta: { count: Infinity, durationMs: 30 * 864e5, modes: new Set(["basic", "secret", "confidential"]) },
-  admin: { count: Infinity, durationMs: 30 * 864e5, modes: new Set(["basic", "secret", "confidential"]) },
+  free: { count: 1, durationMs: 864e5, modes: new Set(["basic", "aes-128-gcm-new", "aes-256-gcm-new"]) },
+  plus: { count: 5, durationMs: 7 * 864e5, modes: new Set(["basic", "aes-128-gcm-new", "aes-256-gcm-new", "secret"]) },
+  pro: { count: 20, durationMs: 7 * 864e5, modes: new Set(["basic", "aes-128-gcm-new", "aes-256-gcm-new", "secret", "confidential"]) },
+  ultra: { count: 50, durationMs: 30 * 864e5, modes: new Set(["basic", "aes-128-gcm-new", "aes-256-gcm-new", "secret", "confidential"]) },
+  beta: { count: Infinity, durationMs: 30 * 864e5, modes: new Set(["basic", "aes-128-gcm-new", "aes-256-gcm-new", "secret", "confidential"]) },
+  admin: { count: Infinity, durationMs: 30 * 864e5, modes: new Set(["basic", "aes-128-gcm-new", "aes-256-gcm-new", "secret", "confidential"]) },
 });
 const DROP_DURATIONS_MS = new Set([5 * 60_000, 60 * 60_000, 864e5, 7 * 864e5, 30 * 864e5]);
 const DROP_VIEW_LIMITS = new Set([1, 5, 10, 20, 50]);
@@ -3553,7 +3553,7 @@ app.post(
       const sourceName = normalizeText(req.body.sourceName, MAX_NOTE_NAME);
       if (
         !validDropId(id) ||
-        !["basic", "secret", "confidential"].includes(mode) ||
+        !["basic", "aes-128-gcm-new", "aes-256-gcm-new", "secret", "confidential"].includes(mode) ||
         !DROP_DURATIONS_MS.has(durationMs) ||
         (!Number.isFinite(Date.parse(createdAt)) ||
           Math.abs(Date.now() - Date.parse(createdAt)) > 5 * 60_000) ||
@@ -3597,11 +3597,16 @@ app.post(
           viewLimit,
           views: 0,
         };
-        if (mode === "basic") {
+        if (["basic", "aes-128-gcm-new", "aes-256-gcm-new"].includes(mode)) {
           const content = typeof req.body.content === "string" ? req.body.content.normalize("NFC") : "";
           if (!content || Buffer.byteLength(content, "utf8") > MAX_DROP_BYTES)
             throw Object.assign(new Error("AstraDrop content is invalid or too large."), { status: 413 });
-          drop.content = content;
+          if (mode === "basic") drop.content = content;
+          else {
+            if (!confidentialSecret)
+              throw Object.assign(new Error("Encrypted AstraDrop is unavailable."), { status: 503 });
+            drop.content = encryptContent(content, username, id, mode);
+          }
         } else {
           const clientSalt = String(req.body.clientSalt || "");
           const clientHash = String(req.body.clientHash || "");
@@ -3655,16 +3660,20 @@ app.get("/api/drops/:id", dropReadLimiter, async (req, res, next) => {
   try {
     const entry = await publicDrop(req.params.id);
     if (!entry) return jsonError(res, 404, "not_found", "AstraDrop is unavailable.");
-    const { drop } = entry;
+    const { drop, target } = entry;
+    const owner = await loadMetadata(target.username);
     res.setHeader("X-Robots-Tag", "noindex, nofollow, noarchive");
     res.json({
       id: drop.id,
       mode: drop.mode,
       createdAt: drop.createdAt,
-      clientSalt: drop.mode === "basic" ? null : drop.clientSalt,
+      clientSalt: ["secret", "confidential"].includes(drop.mode) ? drop.clientSalt : null,
       expiresAt: drop.expiresAt,
       viewLimit: drop.viewLimit,
       viewsRemaining: drop.viewLimit === null ? null : Math.max(0, drop.viewLimit - drop.views),
+      sourceName: drop.sourceName,
+      author: owner?.displayName || target.username,
+      email: maskEmail(owner?.email || ""),
     });
   } catch (error) {
     next(error);
@@ -3680,7 +3689,7 @@ app.post("/api/drops/:id/open", dropReadLimiter, async (req, res, next) => {
       const { target, drop } = entry;
       const clientHash = String(req.body?.clientHash || "");
       if (
-        drop.mode !== "basic" &&
+        ["secret", "confidential"].includes(drop.mode) &&
         (!/^[a-f0-9]{64}$/.test(clientHash) ||
           !safeEqual(sha256(clientHash), drop.clientHashDigest))
       )
@@ -3695,8 +3704,8 @@ app.post("/api/drops/:id/open", dropReadLimiter, async (req, res, next) => {
         mode: drop.mode,
         expiresAt: drop.expiresAt,
         viewsRemaining: drop.viewLimit === null ? null : Math.max(0, drop.viewLimit - drop.views),
-        ...(drop.mode === "basic"
-          ? { content: drop.content }
+        ...(["basic", "aes-128-gcm-new", "aes-256-gcm-new"].includes(drop.mode)
+          ? { content: drop.mode === "basic" ? drop.content : decryptContent(drop.content, target.username, drop.id, drop.mode) }
           : {
               clientSalt: drop.clientSalt,
               encrypted: drop.encrypted,

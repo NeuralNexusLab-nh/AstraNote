@@ -984,10 +984,13 @@ Object.assign(I18N["en"], {
   AstraDrop: "AstraDrop",
   dropAllowance: "Active drops · maximum lifetime",
   dropEncryption: "AstraDrop protection",
-  freeDropFeature: "1 Basic Drop · 24 hours",
-  plusDropFeature: "5 Drops · DropSecret · 7 days",
-  proDropFeature: "20 Drops · DropConfidential · 7 days",
-  ultraDropFeature: "50 Drops · DropConfidential · 30 days",
+  freeDropFeature: "1 Drop · Basic / AES · 24 hours",
+  plusDropFeature: "5 Drops · + DropSecret · 7 days",
+  proDropFeature: "20 Drops · + DropConfidential · 7 days",
+  ultraDropFeature: "50 Drops · + DropConfidential · 30 days",
+  usernameRules: "3–24 characters. Use letters, numbers, and underscores only.",
+  passwordRules: "10–256 characters. Do not use a common password or include your username.",
+  passwordConfirmationRules: "The two passwords must match.",
   comparisonHint:
     "All paid periods use 30-day months. Ultra time is used first, then Pro, then Plus; lower tiers pause.",
   organizeFeature: "Note organization",
@@ -1109,10 +1112,13 @@ Object.assign(I18N["zh-Hant"], {
   AstraDrop: "AstraDrop",
   dropAllowance: "同時存在數量 · 最長有效期",
   dropEncryption: "AstraDrop 加密",
-  freeDropFeature: "1 個 Basic Drop · 24 小時",
-  plusDropFeature: "5 個 Drop · DropSecret · 7 天",
-  proDropFeature: "20 個 Drop · DropConfidential · 7 天",
-  ultraDropFeature: "50 個 Drop · DropConfidential · 30 天",
+  freeDropFeature: "1 個 Drop · Basic / AES · 24 小時",
+  plusDropFeature: "5 個 Drop · 加入 DropSecret · 7 天",
+  proDropFeature: "20 個 Drop · 加入 DropConfidential · 7 天",
+  ultraDropFeature: "50 個 Drop · 加入 DropConfidential · 30 天",
+  usernameRules: "3～24 個字元，只能使用英文字母、數字與底線。",
+  passwordRules: "10～256 個字元；不可使用常見密碼，也不可包含使用者名稱。",
+  passwordConfirmationRules: "兩次輸入的密碼必須相同。",
   comparisonHint:
     "一個月為30天。優先使用 Ultra，再使用 Pro、Plus；較低階方案的時間會暫停消耗。",
   organizeFeature: "筆記整理",
@@ -1219,10 +1225,13 @@ Object.assign(I18N["ja"], {
   AstraDrop: "AstraDrop",
   dropAllowance: "同時に作成できる数・最長の有効期限",
   dropEncryption: "AstraDrop の暗号化",
-  freeDropFeature: "Basic Drop 1件・24時間",
-  plusDropFeature: "Drop 5件・DropSecret・7日間",
-  proDropFeature: "Drop 20件・DropConfidential・7日間",
-  ultraDropFeature: "Drop 50件・DropConfidential・30日間",
+  freeDropFeature: "Drop 1件・Basic / AES・24時間",
+  plusDropFeature: "Drop 5件・DropSecret を追加・7日間",
+  proDropFeature: "Drop 20件・DropConfidential を追加・7日間",
+  ultraDropFeature: "Drop 50件・DropConfidential を追加・30日間",
+  usernameRules: "3～24文字。英字、数字、アンダースコアのみ使用できます。",
+  passwordRules: "10～256文字。よくあるパスワードやユーザー名を含むものは使用できません。",
+  passwordConfirmationRules: "2つのパスワードは一致している必要があります。",
   comparisonHint:
     "1か月は30日。Ultra、Pro、Plus の順に利用し、下位プランの残り期間は停止します。",
   organizeFeature: "ノート整理",
@@ -2135,7 +2144,7 @@ function renderPlanComparison() {
     ["AstraConfidential", null, [false, true, true, true]],
     ["organizeFeature", "organizeDetail", [false, true, true, true]],
     ["AstraDrop", "dropAllowance", ["1 · 24h", "5 · 7d", "20 · 7d", "50 · 30d"]],
-    ["dropEncryption", null, ["Basic", "Basic · DropSecret", "Basic · DropSecret · DropConfidential", "Basic · DropSecret · DropConfidential"]],
+    ["dropEncryption", null, ["Basic · AES-128 · AES-256", "Basic · AES-128 · AES-256 · DropSecret", "Basic · AES-128 · AES-256 · DropSecret · DropConfidential", "Basic · AES-128 · AES-256 · DropSecret · DropConfidential"]],
     ["AstraZero", null, [false, false, true, true]],
     ["recoveryFeature", "recoveryDetail", [false, false, false, true]],
     ["prioritySupport", "prioritySupportDetail", [false, false, false, true]],
@@ -2862,6 +2871,26 @@ async function initAuthForm(kind) {
     const button = form.querySelector("[type=submit]");
     const message = $(".form-message", form);
     message.textContent = "";
+    if (kind === "register") {
+      const username = String(form.username.value || "").trim();
+      const password = String(form.password.value || "");
+      if (!/^[A-Za-z0-9_]{3,24}$/.test(username)) {
+        message.textContent = t("usernameRules");
+        return;
+      }
+      if (
+        password.length < 10 ||
+        password.length > 256 ||
+        password.toLowerCase().includes(username.toLowerCase())
+      ) {
+        message.textContent = t("passwordRules");
+        return;
+      }
+      if (form.passwordConfirmation.value !== password) {
+        message.textContent = t("passwordConfirmationRules");
+        return;
+      }
+    }
     const needsCaptcha = kind === "register" || cancellation;
     if (needsCaptcha && !state.captcha) {
       message.textContent = t("captchaNeeded");

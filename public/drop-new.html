@@ -24,10 +24,13 @@
               <label for="drop-mode" id="drop-mode-label">Protection</label>
               <select id="drop-mode" name="mode">
                 <option value="basic">Basic Drop</option>
+                <option value="aes-128-gcm-new">AES-128-GCM</option>
+                <option value="aes-256-gcm-new">AES-256-GCM</option>
                 <option value="secret">DropSecret</option>
                 <option value="confidential">DropConfidential</option>
               </select>
               <p class="field-help" id="drop-mode-help"></p>
+              <p class="field-help drop-plaintext-warning" id="drop-plaintext-warning" hidden></p>
             </div>
             <div class="form-group" id="drop-pin-group" hidden>
               <label for="drop-pin" id="drop-pin-label">PIN</label>
