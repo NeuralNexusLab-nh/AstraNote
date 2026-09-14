@@ -1,5 +1,8 @@
 # AstraNote
 
+Copyright © 2026 NeuralNexusLab. All Rights Reserved. This is proprietary
+software; see [LICENSE](LICENSE).
+
 > Write it down. Find it whenever you need it.
 
 AstraNote is a multilingual, responsive online notebook built with Node.js and
@@ -174,7 +177,7 @@ rollback cannot read orders created in SQLite.
 
 ## Licence
 
-Repository source code is licensed under the [Apache License 2.0](LICENSE).
+Repository source code is proprietary and protected by [All Rights Reserved](LICENSE).
 AstraNote and NeuralNexusLab names, logos, service data, user content, and
 third-party materials are not granted as trademarks or user content by that
 licence. See [NOTICE](NOTICE).
