@@ -28,6 +28,7 @@ AstraNote states that it uses only necessary cookies for sign-in, security, lang
 ## Public pages
 - Homepage: https://astranote.nxlabtw.com/
 - Plans: https://astranote.nxlabtw.com/plans
+- Documentation: https://astranote.nxlabtw.com/docs
 - Privacy: https://astranote.nxlabtw.com/privacy
 - Terms: https://astranote.nxlabtw.com/terms
 - Source: https://github.com/NeuralNexusLab-nh/AstraNote

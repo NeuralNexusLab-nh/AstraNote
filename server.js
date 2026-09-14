@@ -3914,6 +3914,7 @@ const pages = {
   "/settings": "settings.html",
   "/terms": "terms.html",
   "/privacy": "privacy.html",
+  "/docs": "docs.html",
   "/plans": "plans.html",
   "/plans/return": "plans.html",
   "/drops/new": "drop-new.html",

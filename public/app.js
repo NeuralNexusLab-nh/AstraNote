@@ -1336,6 +1336,21 @@ Object.assign(I18N["zh-Hant"], {
   termsUpdated: "生效及最後更新：2026 年 9 月 5 日",
 });
 Object.assign(I18N.ja, { termsUpdated: "施行・最終更新：2026年9月5日" });
+Object.assign(I18N.en, {
+  docs: "Documentation",
+  docsSeoDescription:
+    "Learn how AstraNote notes, encryption, sharing, AstraDrop, plans, storage and account security work.",
+});
+Object.assign(I18N["zh-Hant"], {
+  docs: "文件",
+  docsSeoDescription:
+    "了解 AstraNote 的筆記、加密、分享、AstraDrop、方案、空間與帳號安全機制。",
+});
+Object.assign(I18N.ja, {
+  docs: "ドキュメント",
+  docsSeoDescription:
+    "AstraNote のノート、暗号化、共有、AstraDrop、プラン、容量、アカウント保護について説明します。",
+});
 Object.assign(I18N.ja, {
   tagline: "書き留めて、必要なときに見つける。",
   heroKicker: "オンラインノート · 無料で使える",
@@ -2108,9 +2123,23 @@ function applyPageSeo() {
     settings: "settings",
     terms: "terms",
     privacy: "privacy",
+    docs: "docs",
   }[page];
   if (pageTitleKey) {
-    document.title = `${t(pageTitleKey)} — AstraNote`;
+    const title = `${t(pageTitleKey)} — AstraNote`;
+    document.title = title;
+    if (page === "docs") {
+      const description = t("docsSeoDescription");
+      const setMeta = (selector, value) => {
+        const element = $(selector);
+        if (element) element.setAttribute("content", value);
+      };
+      setMeta('meta[name="description"]', description);
+      setMeta('meta[property="og:title"]', title);
+      setMeta('meta[property="og:description"]', description);
+      setMeta('meta[name="twitter:title"]', title);
+      setMeta('meta[name="twitter:description"]', description);
+    }
     return;
   }
   if (page !== "plans") return;
@@ -2245,7 +2274,7 @@ function buildNav() {
       : "";
   nav.innerHTML = `<a class="brand" href="/"><img src="/asset/logo.svg" alt=""><span>AstraNote</span>${planSuffix}</a>
     <button class="mobile-toggle" type="button" data-i18n-aria-label="menu" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>
-    <div class="nav-links"><a class="nav-link" href="/"><i class="fa-solid fa-house" aria-hidden="true"></i> <span data-i18n="home"></span></a>${protectedLinks}${publicPlansLink}</div>
+    <div class="nav-links"><a class="nav-link" href="/"><i class="fa-solid fa-house" aria-hidden="true"></i> <span data-i18n="home"></span></a><a class="nav-link" href="/docs"><i class="fa-solid fa-book-open" aria-hidden="true"></i> <span data-i18n="docs"></span></a>${protectedLinks}${publicPlansLink}</div>
     <div class="nav-actions"><i class="fa-solid fa-language" aria-hidden="true"></i><select class="lang-select" id="language-select" data-i18n-aria-label="languageSelector"><option value="en">EN</option><option value="zh-Hant">繁中</option><option value="ja">日本語</option></select>
     ${authenticated ? '<button class="btn" id="nav-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i><span data-i18n="logout"></span></button>' : '<a class="nav-link" href="/login"><i class="fa-solid fa-arrow-right-to-bracket"></i> <span data-i18n="login"></span></a><a class="btn btn-primary" href="/register"><i class="fa-solid fa-user-plus"></i><span data-i18n="register"></span></a>'}</div>`;
   document.body.prepend(nav);
@@ -2308,7 +2337,7 @@ function buildNav() {
 function buildFooter() {
   const footer = document.createElement("footer");
   footer.className = "site-footer";
-  footer.innerHTML = `<div class="shell footer-inner"><span data-i18n="copyright"></span><div class="footer-links"><a href="mailto:astranote@nxlabtw.com"><i class="fa-regular fa-envelope"></i> astranote@nxlabtw.com</a><a href="/terms"><i class="fa-solid fa-scale-balanced"></i> <span data-i18n="terms"></span></a><a href="/privacy"><i class="fa-solid fa-shield-halved"></i> <span data-i18n="privacy"></span></a><a href="https://github.com/NeuralNexusLab-nh/AstraNote" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> <span data-i18n="source"></span></a><a href="https://nxlabtw.com" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i> NeuralNexusLab</a></div></div>`;
+  footer.innerHTML = `<div class="shell footer-inner"><span data-i18n="copyright"></span><div class="footer-links"><a href="mailto:astranote@nxlabtw.com"><i class="fa-regular fa-envelope"></i> astranote@nxlabtw.com</a><a href="/docs"><i class="fa-solid fa-book-open"></i> <span data-i18n="docs"></span></a><a href="/terms"><i class="fa-solid fa-scale-balanced"></i> <span data-i18n="terms"></span></a><a href="/privacy"><i class="fa-solid fa-shield-halved"></i> <span data-i18n="privacy"></span></a><a href="https://github.com/NeuralNexusLab-nh/AstraNote" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> <span data-i18n="source"></span></a><a href="https://nxlabtw.com" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i> NeuralNexusLab</a></div></div>`;
   document.body.append(footer);
 }
 
