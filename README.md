@@ -57,8 +57,7 @@ AstraNote/
 ├── public/             # HTML, CSS, and client JavaScript
 ├── server.js           # Express server and all backend routes
 ├── package.json
-├── LICENSE
-└── NOTICE
+└── LICENSE
 ```
 
 ## Run locally
@@ -180,6 +179,6 @@ rollback cannot read orders created in SQLite.
 Repository source code is proprietary and protected by [All Rights Reserved](LICENSE).
 AstraNote and NeuralNexusLab names, logos, service data, user content, and
 third-party materials are not granted as trademarks or user content by that
-licence. See [NOTICE](NOTICE).
+licence.
 
 Copyright 2026 NeuralNexusLab.
