@@ -1969,6 +1969,30 @@ body[data-page="docs"] .docs-home-legacy {
 .docs-faq-list dd { margin-top: 9px; color: var(--muted); }
 .docs-faq-list b { display: inline-grid; width: 22px; height: 22px; place-items: center; margin-right: 7px; border-radius: 6px; background: color-mix(in srgb, var(--primary) 14%, var(--card)); color: var(--primary-hover); font-size: 11px; }
 .docs-faq-list dd b { background: var(--button); color: var(--muted); }
+.docs-plan-overview { margin-top: 30px; }
+.docs-plan-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+.docs-plan-card, .docs-plan-free { padding: 19px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+.docs-plan-card header, .docs-plan-free header { display: flex; gap: 10px; align-items: flex-start; }
+.docs-plan-card header > i, .docs-plan-free header > i { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 9px; background: var(--button); color: var(--primary); }
+.docs-plan-card h2, .docs-plan-free h2 { margin: 0; font-size: 20px; }
+.docs-plan-card header p, .docs-plan-free header p { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
+.docs-plan-card > strong { display: block; margin: 18px 0 14px; font-size: 18px; }
+.docs-plan-card > strong small { color: var(--muted); font-size: 11px; font-weight: 500; }
+.docs-plan-card ul, .docs-plan-free ul { display: grid; gap: 9px; margin: 0; padding: 0; list-style: none; }
+.docs-plan-card li, .docs-plan-free li { color: var(--muted); font-size: 13px; line-height: 1.45; }
+.docs-plan-card li i { width: 17px; color: var(--primary); text-align: center; }
+.docs-plan-card > p { margin: 18px 0 0; padding-top: 15px; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.55; }
+.docs-plan-pro { border-color: color-mix(in srgb, var(--primary) 65%, var(--line)); background: color-mix(in srgb, var(--primary) 7%, var(--card)); }
+.docs-plan-ultra { border-color: color-mix(in srgb, #a66ae5 65%, var(--line)); }
+.docs-plan-ultra header > i { color: #a66ae5; }
+.docs-plan-free { display: flex; justify-content: space-between; align-items: center; gap: 22px; margin-top: 14px; }
+.docs-plan-free ul { grid-template-columns: repeat(4, auto); gap: 16px; }
+.docs-plan-free li::before { content: "✓"; margin-right: 7px; color: var(--success); }
+.docs-plan-details { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; margin: 20px 0; }
+.docs-plan-details > div { padding: 17px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+.docs-plan-details i { color: var(--primary); }
+.docs-plan-details h3 { margin: 10px 0 5px; font-size: 16px; }
+.docs-plan-details p { margin: 0; font-size: 13px; line-height: 1.55; }
 @media (max-width: 780px) {
   .docs-encryption-map ul { grid-template-columns: 1fr; }
   .docs-key-path, .docs-zero-path { display: grid; grid-template-columns: 1fr; }
@@ -1979,6 +2003,9 @@ body[data-page="docs"] .docs-home-legacy {
   .docs-zero-scenario > .fa-arrow-right { justify-self: center; transform: rotate(90deg); }
   .docs-calculator-card { display: grid; }
   .docs-calculator-result { min-width: 0; }
+  .docs-plan-grid, .docs-plan-details { grid-template-columns: 1fr; }
+  .docs-plan-free { display: grid; }
+  .docs-plan-free ul { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
 }
 html[lang="en"] [data-lang="zh-Hant"],
 html[lang="en"] [data-lang="ja"],
