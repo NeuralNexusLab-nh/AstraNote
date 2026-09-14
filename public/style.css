@@ -1501,6 +1501,28 @@ textarea {
 .docs {
   max-width: 1020px;
 }
+body[data-page="docs"] .docs {
+  display: flex;
+  flex-direction: column;
+}
+body[data-page="docs"] .docs > .page-head {
+  order: 1;
+  margin-bottom: 22px;
+}
+body[data-page="docs"] .docs > #start {
+  order: 2;
+  padding: 28px 0 34px;
+  border-top: 0;
+}
+body[data-page="docs"] .docs > .docs-index {
+  order: 3;
+  margin: 0;
+  padding: 30px 0 0;
+  border-top: 1px solid var(--line);
+}
+body[data-page="docs"] .docs-home-legacy {
+  display: none;
+}
 .docs-lead {
   max-width: 650px;
   margin-top: 14px;
@@ -1516,8 +1538,8 @@ textarea {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 48px;
-  padding: 12px 15px;
+  min-height: 72px;
+  padding: 16px;
   border: 1px solid var(--line);
   border-radius: 10px;
   color: var(--muted);
@@ -1529,6 +1551,12 @@ textarea {
   border-color: color-mix(in srgb, var(--primary) 58%, var(--line));
   background: var(--button);
   transform: translateY(-2px);
+}
+.docs-index a::after {
+  content: "→";
+  margin-left: auto;
+  color: var(--primary);
+  opacity: 0.8;
 }
 .docs-index i,
 .docs-facts > div > i {
@@ -1637,14 +1665,14 @@ textarea {
 }
 .docs-layout {
   display: grid;
-  grid-template-columns: 238px minmax(0, 1fr);
-  gap: 52px;
+  grid-template-columns: 218px minmax(0, 1fr);
+  gap: 34px;
   align-items: start;
 }
 .docs-sidebar {
   position: sticky;
   top: 112px;
-  padding: 14px;
+  padding: 10px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--card);
@@ -1683,14 +1711,14 @@ textarea {
   min-width: 0;
 }
 .docs-article-head {
-  padding-bottom: 34px;
+  padding-bottom: 26px;
   border-bottom: 1px solid var(--line);
 }
 .docs-article-body {
   max-width: 780px;
 }
 .docs-article-body h2 {
-  margin: 48px 0 14px;
+  margin: 36px 0 12px;
   font-size: clamp(26px, 3vw, 34px);
   scroll-margin-top: 112px;
 }
@@ -1717,8 +1745,8 @@ textarea {
 .docs-flow > div {
   display: grid;
   gap: 7px;
-  min-height: 135px;
-  padding: 20px;
+  min-height: 118px;
+  padding: 17px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--card);
@@ -1749,8 +1777,8 @@ textarea {
 .docs-diagram > div {
   display: grid;
   gap: 8px;
-  min-height: 122px;
-  padding: 19px;
+  min-height: 112px;
+  padding: 17px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--card);

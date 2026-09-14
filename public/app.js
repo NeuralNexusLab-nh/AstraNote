@@ -2307,6 +2307,8 @@ function buildNav() {
   $$(".nav-link", nav).forEach((link) => {
     if (
       link.getAttribute("href") === location.pathname ||
+      (link.getAttribute("href") === "/docs" &&
+        location.pathname.startsWith("/docs")) ||
       (link.getAttribute("href") === "/plans" &&
         location.pathname.startsWith("/plans"))
     )
