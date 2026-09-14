@@ -15,6 +15,13 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url><loc>https://astranote.nxlabtw.com/docs/getting-started</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://astranote.nxlabtw.com/docs/notes</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://astranote.nxlabtw.com/docs/encryption</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://astranote.nxlabtw.com/docs/sharing</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://astranote.nxlabtw.com/docs/security</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://astranote.nxlabtw.com/docs/plans</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://astranote.nxlabtw.com/docs/faq</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url>
     <loc>https://astranote.nxlabtw.com/privacy</loc>
     <changefreq>monthly</changefreq>

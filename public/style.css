@@ -1632,6 +1632,158 @@ textarea {
 .docs-closing h2 {
   font-size: 28px;
 }
+.docs-shell {
+  max-width: 1180px;
+}
+.docs-layout {
+  display: grid;
+  grid-template-columns: 238px minmax(0, 1fr);
+  gap: 52px;
+  align-items: start;
+}
+.docs-sidebar {
+  position: sticky;
+  top: 112px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+.docs-sidebar-home,
+.docs-sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 14px;
+  transition: background 0.2s, color 0.2s;
+}
+.docs-sidebar-home {
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--text);
+  font-weight: 650;
+}
+.docs-sidebar nav a:hover,
+.docs-sidebar nav a.active {
+  background: var(--button);
+  color: var(--text);
+}
+.docs-sidebar nav i,
+.docs-sidebar-home i {
+  width: 16px;
+  color: var(--primary);
+  text-align: center;
+}
+.docs-article {
+  min-width: 0;
+}
+.docs-article-head {
+  padding-bottom: 34px;
+  border-bottom: 1px solid var(--line);
+}
+.docs-article-body {
+  max-width: 780px;
+}
+.docs-article-body h2 {
+  margin: 48px 0 14px;
+  font-size: clamp(26px, 3vw, 34px);
+  scroll-margin-top: 112px;
+}
+.docs-article-body h3 {
+  margin: 0 0 8px;
+}
+.docs-article-body p {
+  color: var(--muted);
+}
+.docs-article-body code {
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: var(--button);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+.docs-flow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  margin: 26px 0;
+}
+.docs-flow > div {
+  display: grid;
+  gap: 7px;
+  min-height: 135px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+.docs-flow > div > i {
+  color: var(--primary);
+  font-size: 20px;
+}
+.docs-flow > div > span {
+  color: var(--muted);
+  font-size: 13px;
+}
+.docs-flow > .fa-arrow-right {
+  color: var(--primary);
+}
+.docs-flow--secure > div:first-child {
+  border-color: color-mix(in srgb, var(--success) 65%, var(--line));
+}
+.docs-flow--secure > div:last-child {
+  border-color: color-mix(in srgb, var(--primary) 60%, var(--line));
+}
+.docs-diagram {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 26px 0;
+}
+.docs-diagram > div {
+  display: grid;
+  gap: 8px;
+  min-height: 122px;
+  padding: 19px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+.docs-diagram > div > i {
+  color: var(--primary);
+  font-size: 19px;
+}
+.docs-diagram > div > span {
+  color: var(--muted);
+  font-size: 13px;
+}
+.docs-diagram .docs-diagram-result {
+  grid-column: 1 / -1;
+  min-height: auto;
+  border-color: color-mix(in srgb, var(--primary) 50%, var(--line));
+  background: color-mix(in srgb, var(--primary) 10%, var(--card));
+}
+.docs-next {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 52px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+}
+.docs-next a {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--primary-hover);
+  font-weight: 600;
+}
 html[lang="en"] [data-lang="zh-Hant"],
 html[lang="en"] [data-lang="ja"],
 html[lang="zh-Hant"] [data-lang="ja"],
@@ -1859,6 +2011,18 @@ html[lang="ja"] [data-lang="en"] {
   .docs-facts {
     grid-template-columns: 1fr;
   }
+  .docs-layout {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .docs-sidebar {
+    position: static;
+  }
+  .docs-sidebar nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3px;
+  }
 }
 @media (max-width: 620px) {
   .vault-fields {
@@ -1895,6 +2059,26 @@ html[lang="ja"] [data-lang="en"] {
   }
   .docs-closing {
     padding: 22px;
+  }
+  .docs-sidebar nav {
+    grid-template-columns: 1fr;
+  }
+  .docs-flow {
+    grid-template-columns: 1fr;
+  }
+  .docs-flow > .fa-arrow-right {
+    transform: rotate(90deg);
+    justify-self: center;
+  }
+  .docs-diagram {
+    grid-template-columns: 1fr;
+  }
+  .docs-diagram .docs-diagram-result {
+    grid-column: auto;
+  }
+  .docs-next {
+    align-items: flex-start;
+    flex-direction: column;
   }
   .home-section {
     padding: 80px 0;

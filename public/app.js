@@ -2237,6 +2237,10 @@ function applyLocale() {
   $$("[data-retention-days]").forEach((option) => {
     option.textContent = `${option.dataset.retentionDays} ${t("days")}`;
   });
+  if (typeof CustomEvent === "function")
+    window.dispatchEvent(
+      new CustomEvent("astranote:localechange", { detail: { language: state.language } }),
+    );
 }
 
 function buildNav() {
