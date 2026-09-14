@@ -166,7 +166,7 @@ test("paid plan layout, settings support placement and legal locales are complet
   const read = (name) =>
     fs.readFileSync(path.join(__dirname, "../public", name), "utf8");
   const plans = read("plans.html");
-  assert.ok(plans.includes('href="/#encryption"'));
+  assert.ok(plans.includes('href="/docs/encryption"'));
   assert.deepEqual(
     [...plans.matchAll(/data-plan="([a-z]+)"/g)].map((m) => m[1]),
     ["plus", "pro", "ultra", "free"],

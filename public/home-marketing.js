@@ -92,11 +92,11 @@
       shareBody:
         "AstraDrop 會建立一份有期限的獨立筆記快照，可選擇限制瀏覽次數。付費方案可用 PIN 保護；每個 Drop 在到期前都會計入帳號空間。",
       limitEyebrow: "為純文字而生",
-      limitTitle: "128 KB，比你想的更能裝。",
+      limitTitle: "128 KB，比你想的還更大。",
       limitBody:
         "文字很輕，真正常用的內容往往只有幾行。一個網址、一段指令、一份操作說明，都不需要大容量。用最多 20 篇小筆記，把常用的那些留好，就很實用。",
       storageExampleLabel: "算給你看",
-      storageExampleScenario: "20 篇筆記 × 每篇 500 個一般中文字",
+      storageExampleScenario: "20 篇筆記 × 每篇 500 個英文單字",
       storageExampleAmount: "純文字約 30 KB",
       storageExampleContext: "不到免費 128 KB 的四分之一。",
       storageExampleCaution: "以 UTF-8 每字 3 位元組估算。標題、加密與帳號資料另占空間；實際可存量依內容與加密方式而異。",
