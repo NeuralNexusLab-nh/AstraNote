@@ -3287,10 +3287,11 @@ a.note-card-link:focus-visible::after {
     color-mix(in srgb, var(--primary) 12%, var(--card)),
     var(--card) 65%
   );
-  box-shadow: 0 14px 44px color-mix(in srgb, var(--primary) 14%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary-hover) 42%, transparent), 0 16px 44px color-mix(in srgb, var(--primary-hover) 20%, transparent);
 }
 .plan-card-ultra {
-  border-color: var(--line);
+  border: 2px solid #a66ae5;
+  box-shadow: 0 0 0 1px color-mix(in srgb, #a66ae5 35%, transparent), 0 14px 40px color-mix(in srgb, #a66ae5 16%, transparent);
 }
 .plan-card-head > div {
   min-width: 0;
