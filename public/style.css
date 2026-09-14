@@ -1710,6 +1710,11 @@ body[data-page="docs"] .docs-home-legacy {
 .docs-article {
   min-width: 0;
 }
+.docs-article h1 {
+  max-width: 720px;
+  font-size: clamp(34px, 4.25vw, 50px);
+  letter-spacing: 0;
+}
 .docs-article-head {
   padding-bottom: 26px;
   border-bottom: 1px solid var(--line);
@@ -1796,6 +1801,94 @@ body[data-page="docs"] .docs-home-legacy {
   min-height: auto;
   border-color: color-mix(in srgb, var(--primary) 50%, var(--line));
   background: color-mix(in srgb, var(--primary) 10%, var(--card));
+}
+.docs-choice,
+.docs-compare {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 22px 0;
+}
+.docs-choice > div,
+.docs-compare > div {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+.docs-choice i {
+  display: block;
+  margin-bottom: 13px;
+  color: var(--primary);
+  font-size: 19px;
+}
+.docs-choice h3 {
+  font-size: 17px;
+}
+.docs-choice p,
+.docs-compare span {
+  display: block;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.docs-compare {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.docs-compare strong {
+  display: block;
+  margin-bottom: 8px;
+}
+.docs-rule {
+  height: 1px;
+  margin: 42px 0 0;
+  border: 0;
+  background: var(--line);
+}
+.docs-zero-model {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+  margin: 20px 0;
+  padding: 18px;
+  border: 1px solid color-mix(in srgb, var(--primary) 50%, var(--line));
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--primary) 9%, var(--card));
+}
+.docs-zero-model > i {
+  padding-top: 3px;
+  color: var(--primary-hover);
+  font-size: 21px;
+}
+.docs-zero-model strong,
+.docs-zero-model span {
+  display: block;
+}
+.docs-zero-model span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.docs-calculator-label {
+  display: block;
+  margin: 18px 0 7px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 650;
+}
+.docs-calculator {
+  min-width: 180px;
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--button);
+  color: var(--text);
+}
+.docs-calculator-result {
+  margin-top: 10px;
+  color: var(--primary-hover) !important;
+  font-weight: 650;
 }
 .docs-next {
   display: flex;
@@ -2036,7 +2129,9 @@ html[lang="ja"] [data-lang="en"] {
   }
   .docs-index,
   .docs-steps,
-  .docs-facts {
+  .docs-facts,
+  .docs-choice,
+  .docs-compare {
     grid-template-columns: 1fr;
   }
   .docs-layout {
