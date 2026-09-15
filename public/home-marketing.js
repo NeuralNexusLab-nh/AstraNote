@@ -63,7 +63,7 @@
       homePlansFinePrint: "Monthly prices are for 30 days. Recovery is subject to retention limits; if a subscription expires, notes exceeding your remaining plan allowance are locked.",
       encryptionTitle: "Small notes. Serious privacy options.",
       encryptionIntro: "AstraSecret, AstraConfidential, and AstraZero encrypt content on your client before upload. Choose protection that fits your note; stronger PINs matter, and titles remain visible.",
-      seoTitle: "AstraNote — Fast notes for useful text, links and private details",
+      seoTitle: "AstraNote - Write it once. Find it fast.",
       seoDescription:
         "Keep useful text, links, instructions and private details in one fast online notebook. Free 128 KB and 20 notes, title search across devices, read-only sharing, and optional advanced encryption."
     },
@@ -128,7 +128,7 @@
       homePlansFinePrint: "每月以 30 天計算。復原功能有保留期限；訂閱到期後，超出可用方案額度的筆記將被鎖定。",
       encryptionTitle: "小筆記，也能認真保護。",
       encryptionIntro: "AstraSecret、AstraConfidential 與 AstraZero 都在客戶端加密內容後才上傳。依私密程度選擇保護方式，搭配足夠強的 PIN；筆記標題仍保持可讀。",
-      seoTitle: "AstraNote — 常用內容、連結與私密文字的快速筆記",
+      seoTitle: "AstraNote - 隨手記下，隨時找到。",
       seoDescription:
         "常用內容、連結、操作說明與私密文字，集中放在 AstraNote。免費 128 KB、20 篇筆記，跨裝置搜尋標題、唯讀連結分享，也能選擇進階加密保護重要文字。"
     },
@@ -193,7 +193,7 @@
       homePlansFinePrint: "1 か月は 30 日です。復元には保存期限があります。サブスクリプション終了後、利用可能なプランの上限を超えるノートはロックされます。",
       encryptionTitle: "小さなメモにも、本格的な保護を。",
       encryptionIntro: "AstraSecret、AstraConfidential、AstraZero はアップロード前にクライアント側で内容を暗号化します。機密性に合う方式と十分に強い PIN を選んでください。タイトルは暗号化されません。",
-      seoTitle: "AstraNote — よく使う文章・リンク・秘密をすぐ残せるメモ",
+      seoTitle: "AstraNote - 書いておけば、すぐ見つかる。",
       seoDescription:
         "よく使う文章、リンク、手順や個人的な情報を AstraNote に。無料の 128 KB・20 ノート、端末をまたいだタイトル検索、読み取り専用の共有、高度な暗号化に対応します。"
     }

@@ -61,7 +61,7 @@ test("health, statistics, and 404 routes respond correctly", async () => {
 
   const missing = await fetch(`${baseUrl}/unknown-coordinate`);
   assert.equal(missing.status, 404);
-  assert.match(await missing.text(), /404 — AstraNote/);
+  assert.match(await missing.text(), /AstraNote - 404/);
 });
 
 test("session language follows Accept-Language when no saved preference exists", async () => {

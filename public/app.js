@@ -2126,7 +2126,7 @@ function applyPageSeo() {
     docs: "docs",
   }[page];
   if (pageTitleKey) {
-    const title = `${t(pageTitleKey)} — AstraNote`;
+    const title = `AstraNote - ${t(pageTitleKey)}`;
     document.title = title;
     if (page === "docs") {
       const description = t("docsSeoDescription");
@@ -2143,7 +2143,7 @@ function applyPageSeo() {
     return;
   }
   if (page !== "plans") return;
-  const title = `${t("plans")} — AstraNote`;
+  const title = `AstraNote - ${t("plans")}`;
   const description = t("plansBody");
   document.title = title;
   const setMeta = (selector, value) => {

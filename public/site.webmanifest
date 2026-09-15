@@ -4,7 +4,7 @@
   "description": "Fast, free online notes with optional encryption.",
   "icons": [
     {
-      "src": "/asset/logo.png",
+      "src": "/asset/logo.png?v=20260915",
       "sizes": "1280x1280",
       "type": "image/png",
       "purpose": "any maskable"
