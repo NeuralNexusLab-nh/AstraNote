@@ -1,0 +1,16 @@
+{
+  "name": "AstraNote",
+  "short_name": "AstraNote",
+  "description": "Fast, free online notes with optional encryption.",
+  "icons": [
+    {
+      "src": "/asset/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "theme_color": "#6177f6",
+  "background_color": "#0d0f16",
+  "display": "standalone"
+}
