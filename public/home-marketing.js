@@ -6,7 +6,7 @@
       heroKicker: "FREE · BROWSER-FIRST · ANY DEVICE",
       tagline: "Write it once. Find it fast.",
       heroLead:
-        "A small home for useful links, quick instructions, and a few lines you’ll need again.\nFind them across devices, copy and go—or keep private text encrypted.",
+        "From everyday notes and text you need to retrieve in seconds to sensitive information worth protecting—AstraNote keeps it ready when you need it.",
       begin: "Start free",
       explore: "See plans",
       purposeEyebrow: "SMALL NOTES. EVERYDAY SHORTCUTS.",
@@ -17,15 +17,15 @@
         "AstraNote uses its own lightweight account, so grabbing one note does not have to begin with opening the main email or cloud account that controls the rest of your digital life.",
       purposeIntroThree:
         "Sharing is just as direct: send a read-only link. The reader does not need an AstraNote account.",
-      quickTitle: "Your useful lines, ready to go",
+      quickTitle: "Write it down",
       quickBody:
-        "Links, commands, and replies you use again and again. Write on your phone, copy on your computer—without messaging yourself another file.",
-      secureTitle: "A few private lines deserve protection",
-      secureBody:
-        "AstraSecret for everyday privacy; AstraConfidential or AstraZero for more sensitive text, with a strong PIN you keep yourself.",
-      shareTitle: "Share a note, only for as long as it is needed",
+        "Ideas, tasks, study points, and meeting notes. Write first; organize only when you need to.",
+      shareTitle: "Retrieve it in seconds",
       shareBody:
-        "AstraDrop makes a separate note snapshot with an expiry and optional view limit. Paid plans can protect it with a PIN; every Drop uses your account storage until it expires.",
+        "Keep short text, reference details, and things you need to remember close by. Search, copy, and use them from any device.",
+      secureTitle: "Protect sensitive information",
+      secureBody:
+        "Choose AstraSecret, AstraConfidential, or AstraZero when private text deserves additional protection. Your PIN stays with you.",
       limitEyebrow: "BUILT FOR TEXT",
       limitTitle: "128 KB. More room than it sounds.",
       limitBody:
@@ -71,7 +71,7 @@
       heroKicker: "免費 · 瀏覽器即用 · 跨裝置",
       tagline: "隨手記下，隨時找到。",
       heroLead:
-        "專放常用連結、操作說明，和臨時要用的幾行字。\n跨裝置找得到、複製就能用；重要內容，也能加密保存。",
+        "從日常筆記、隨手要記的資訊，到需要妥善保護的私密文字；AstraNote 讓它們在你需要的時候，立刻就在手邊。",
       begin: "免費開始",
       explore: "了解方案",
       purposeEyebrow: "小筆記，派上大用場",
@@ -82,15 +82,15 @@
         "AstraNote 使用獨立的輕量登入。臨時只想拿一段文字時，不必先打開掌管郵件、雲端與帳號復原的主要帳號。",
       purposeIntroThree:
         "要給別人？丟一個唯讀連結就好。對方不需要 AstraNote 帳號。",
-      quickTitle: "常用的幾行，隨手就拿到",
+      quickTitle: "好好記下來",
       quickBody:
-        "網址、指令、常用回覆，集中留在這裡。手機記下，電腦複製，不用再傳訊息給自己。",
-      secureTitle: "幾行私密，也值得好好保護",
-      secureBody:
-        "日常私密用 AstraSecret；更敏感的內容可選 AstraConfidential 或 AstraZero，搭配你自行保管的強 PIN。",
-      shareTitle: "需要多久，就分享多久",
+        "想法、待辦、學習重點與會議紀錄。先寫下來，要整理時再整理。",
+      shareTitle: "需要時立刻拿到",
       shareBody:
-        "AstraDrop 會建立一份有期限的獨立筆記快照，可選擇限制瀏覽次數。付費方案可用 PIN 保護；每個 Drop 在到期前都會計入帳號空間。",
+        "短句、參考資訊與需要記得的內容，集中放在手邊。跨裝置搜尋、複製後就能使用。",
+      secureTitle: "私密內容，好好保護",
+      secureBody:
+        "私密文字可依敏感程度選擇 AstraSecret、AstraConfidential 或 AstraZero；PIN 由你自己保存。",
       limitEyebrow: "為純文字而生",
       limitTitle: "128 KB，比你想的還更大。",
       limitBody:
@@ -136,7 +136,7 @@
       heroKicker: "無料 · ブラウザですぐ使える · 端末を選ばない",
       tagline: "書いておけば、すぐ見つかる。",
       heroLead:
-        "よく使うリンク、手順メモ、また必要になる数行のために。\n端末を変えても、見つけてコピー。大切な内容は暗号化して保存。",
+        "日常のノート、すぐに取り出したい文章、大切に守りたい個人的な情報まで。必要なとき、AstraNote ですぐ手元にあります。",
       begin: "無料で始める",
       explore: "プランを見る",
       purposeEyebrow: "小さなメモが、毎日の近道に",
@@ -147,15 +147,15 @@
         "AstraNote は独立した軽量アカウントなので、短いメモ一つのためにメールやクラウド、復旧手段を持つ主要アカウントまで開く必要を減らせます。",
       purposeIntroThree:
         "共有も直接的です。読み取り専用リンクを一つ送るだけで、相手に AstraNote アカウントは必要ありません。",
-      quickTitle: "よく使う数行を、すぐ手元に",
+      quickTitle: "きちんと書き留める",
       quickBody:
-        "URL、コマンド、定型文を一か所に。スマホで書いて、パソコンでコピー。自分宛てに何度もメッセージを送らずに済みます。",
-      secureTitle: "短い秘密にも、確かな配慮を",
-      secureBody:
-        "日常のプライバシーには AstraSecret。より機密性の高い文章には AstraConfidential や AstraZero を、自分で保管する強い PIN とともに。",
-      shareTitle: "必要な間だけ、ノートを共有",
+        "アイデア、やること、学習の要点、会議メモ。まず書いて、整理は必要になったときに。",
+      shareTitle: "必要なとき、すぐ取り出す",
       shareBody:
-        "AstraDrop は有効期限付きの独立したノートのスナップショットです。閲覧回数も制限できます。有料プランでは PIN で保護でき、期限切れまでアカウント容量を使用します。",
+        "短い文章、参照情報、覚えておきたいことを手元に。端末をまたいで検索し、コピーしてすぐ使えます。",
+      secureTitle: "個人的な情報を、きちんと守る",
+      secureBody:
+        "内容の機密性に合わせて AstraSecret、AstraConfidential、AstraZero を選べます。PIN は自分で保管します。",
       limitEyebrow: "テキストのための設計",
       limitTitle: "128 KB。思ったより、たくさん書ける。",
       limitBody:
