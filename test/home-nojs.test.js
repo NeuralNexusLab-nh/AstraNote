@@ -10,7 +10,10 @@ const {
 test("no-JS homepage renders current marketing copy in all supported languages", () => {
   const english = renderHomeHtml("en");
   assert.match(english, /Write it once\. Find it fast\./u);
-  assert.match(english, /you’ll need again\.<br>Find them across devices/u);
+  assert.match(
+    english,
+    /From everyday notes and text you need to retrieve in seconds to sensitive information worth protecting—AstraNote keeps it ready when you need it\./u,
+  );
   assert.match(english, /href="\/plans"/u);
   assert.doesNotMatch(english, /hero-kicker/u);
 
@@ -19,7 +22,7 @@ test("no-JS homepage renders current marketing copy in all supported languages",
   assert.match(traditionalChinese, /隨手記下，隨時找到。/u);
   assert.match(
     traditionalChinese,
-    /專放常用連結、操作說明，和臨時要用的幾行字。<br>跨裝置找得到、複製就能用；重要內容，也能加密保存。/u,
+    /從日常筆記、隨手要記的資訊，到需要妥善保護的私密文字；AstraNote 讓它們在你需要的時候，立刻就在手邊。/u,
   );
   assert.match(traditionalChinese, /了解方案/u);
   assert.doesNotMatch(traditionalChinese, /小抄/u);
@@ -30,7 +33,10 @@ test("no-JS homepage renders current marketing copy in all supported languages",
   const japanese = renderHomeHtml("ja");
   assert.match(japanese, /lang="ja"/u);
   assert.match(japanese, /書いておけば、すぐ見つかる。/u);
-  assert.match(japanese, /また必要になる数行のために。<br>端末を変えても/u);
+  assert.match(
+    japanese,
+    /日常のノート、すぐに取り出したい文章、大切に守りたい個人的な情報まで。必要なとき、AstraNote ですぐ手元にあります。/u,
+  );
 });
 
 test("home renders every translation, responsive matrix label, and plan without JavaScript", () => {
