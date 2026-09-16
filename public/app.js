@@ -1496,10 +1496,10 @@ Object.assign(I18N.en, {
   orderIdLabel: "Order ID",
   viewPaymentDetails: "View details",
   billingData:
-    "Invoice details are deleted 90 days after the order was created and are no longer available in payment history. Already credited plan time is stored separately and is not removed with invoices. Minimal coupon-use receipts (code digest, account association and order ID) remain to prevent reuse; plaintext coupons and full payment-service responses are not stored.",
+    "Payment history keeps at most your five newest completed or terminal invoices; older entries are deleted. Invoice details are also deleted 90 days after creation. Already credited plan time is stored separately and is not removed with invoices. Minimal coupon-use receipts remain to prevent reuse; plaintext coupons and full payment-service responses are not stored.",
   billingRetentionTitle: "Payment history retention",
   billingContactSupport: "Contact support",
-  billingRetention: "Payment history is kept for 3 months (90 days from order creation), then deleted. Already credited plan time is unaffected. Save any receipts you need before then; for payment problems, contact astranote@nxlabtw.com promptly.",
+  billingRetention: "Payment history keeps at most your five newest completed or terminal invoices, and no invoice is kept beyond 90 days from creation. Already credited plan time is unaffected. Save any receipts you need before then; for payment problems, contact astranote@nxlabtw.com promptly.",
   checkPaymentStatus: "Check payment status",
   billingStatusUnavailable: "Status temporarily unavailable",
   billingExpiredHelp: "This invoice has expired and cannot be paid. If you have not sent Bitcoin, choose a plan to start a new purchase. If you already paid, do not pay again; contact support.",
@@ -1517,10 +1517,10 @@ Object.assign(I18N["zh-Hant"], {
   orderIdLabel: "訂單編號",
   viewPaymentDetails: "查看詳情",
   billingData:
-    "帳單明細於訂單建立滿 90 天後刪除，屆時無法再從付款紀錄查看。已入帳的方案天數另外保存，不會隨帳單刪除。為避免重複兌換，仍保留最少量的優惠碼使用紀錄（代碼摘要、帳號關聯與訂單編號）；不儲存優惠碼明碼或付款服務的完整回應。",
+    "付款紀錄最多保留最近5筆已完成或已結案的帳單，較舊紀錄會刪除；帳單建立90天後也會刪除。已入帳的方案天數另外保存，不會隨帳單刪除。為避免重複兌換，仍保留最少量的優惠碼使用紀錄；不儲存優惠碼明碼或付款服務的完整回應。",
   billingRetentionTitle: "付款紀錄保存期限",
   billingContactSupport: "聯絡支援",
-  billingRetention: "付款紀錄自訂單建立起保留 3 個月（90 天），之後刪除；已入帳的方案天數不受影響。需要的收據請提前自行保存，付款有問題請儘速聯絡 astranote@nxlabtw.com。",
+  billingRetention: "付款紀錄最多保留最近5筆已完成或已結案的帳單，且最久自建立日起保留90天；超過任一限制即刪除。已入帳的方案天數不受影響。需要的收據請提前自行保存，付款有問題請儘速聯絡 astranote@nxlabtw.com。",
   checkPaymentStatus: "確認付款狀態",
   billingStatusUnavailable: "暫時無法確認狀態",
   billingExpiredHelp: "此帳單已過期，無法再付款。若尚未支付 Bitcoin，可重新選擇方案建立新訂單；若已支付，請勿重複付款，請聯絡支援。",
@@ -1538,10 +1538,10 @@ Object.assign(I18N.ja, {
   orderIdLabel: "注文番号",
   viewPaymentDetails: "詳細を見る",
   billingData:
-    "請求明細は注文作成から90日後に削除され、支払い履歴でも閲覧できなくなります。付与済みのプラン期間は別に保存され、明細の削除では失われません。再利用防止に必要な最小限のクーポン記録（コードのダイジェスト、アカウント関連、注文番号）は保持します。コードの平文や決済サービスの応答全体は保存しません。",
+    "支払い履歴には、完了または終了した請求のうち新しい5件までを保持し、古い項目は削除します。請求の詳細も作成から90日後に削除されます。付与済みのプラン期間は別に保存され、明細の削除では失われません。再利用防止に必要な最小限のクーポン記録だけを保持し、コードの平文や決済サービスの応答全体は保存しません。",
   billingRetentionTitle: "支払い履歴の保存期間",
   billingContactSupport: "サポートに連絡",
-  billingRetention: "支払い履歴は注文作成から3か月（90日）保存し、その後削除します。付与済みのプラン期間には影響しません。必要な領収記録は期限前に保存し、支払いの問題は速やかに astranote@nxlabtw.com へご連絡ください。",
+  billingRetention: "支払い履歴は、完了または終了した請求のうち新しい5件まで、かつ注文作成から最長90日まで保持します。いずれかを超えると削除されます。付与済みのプラン期間には影響しません。必要な領収記録は期限前に保存し、支払いの問題は速やかに astranote@nxlabtw.com へご連絡ください。",
   checkPaymentStatus: "支払い状況を確認",
   billingStatusUnavailable: "状況を一時的に確認できません",
   billingExpiredHelp: "この請求は期限切れのため支払えません。まだ Bitcoin を送っていない場合は、プランを選んで新しい注文を作成できます。支払い済みの場合は再度支払わず、サポートへご連絡ください。",
@@ -3920,7 +3920,9 @@ function orderRow(order) {
   const link = document.createElement("a");
   link.className = "btn";
   link.href = `/plans/return?order_id=${encodeURIComponent(order.orderId)}`;
-  link.innerHTML = `<i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>${t(appearance.tone === "waiting" ? "checkPaymentStatus" : "viewPaymentDetails")}</span>`;
+  const detailsLabel = t(appearance.tone === "waiting" ? "checkPaymentStatus" : "viewPaymentDetails");
+  link.setAttribute("aria-label", detailsLabel);
+  link.innerHTML = `<i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>${detailsLabel}</span>`;
   row.append(link);
   return row;
 }

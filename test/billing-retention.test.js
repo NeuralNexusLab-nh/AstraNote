@@ -87,7 +87,9 @@ test("90-day cutoff deletes invoice details in batches and keeps coupon reservat
   assert.equal(ledger.claimCoupon(user.account, digest, old.orderId), true);
   for (let i = 0; i < 505; i++) bill(user, {
     createdAt: new Date(now - ORDER_RETENTION_MS - 864e5).toISOString(),
-    localStatus: ["created", "pending", "paid", "failed", "expired", "verification_error", "coupon_reused"][i % 7],
+    // Keep these invoices unresolved so the per-account terminal-history cap
+    // does not pre-trim this separate 90-day batch-cleanup fixture.
+    localStatus: ["created", "pending", "paid", "verification_error"][i % 4],
   });
   assert.equal(ledger.prune(now), 500);
   await mod.testables.cleanupBillingRecords(now);

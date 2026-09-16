@@ -8,7 +8,11 @@ const crypto = require("node:crypto");
 const fs = require("node:fs");
 const fsp = require("node:fs/promises");
 const path = require("node:path");
-const { OrderStore, ORDER_RETENTION_MS } = require("./lib/order-store");
+const {
+  OrderStore,
+  ORDER_RETENTION_MS,
+  MAX_ORDER_HISTORY_PER_ACCOUNT,
+} = require("./lib/order-store");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -1085,10 +1089,12 @@ async function cleanupBillingRecords(now = Date.now()) {
   try {
     let deleted;
     do {
-      deleted = await withLock("orders", () => orderStore.prune(now));
+      deleted = await withLock("orders", () =>
+        orderStore.prune(now) + orderStore.pruneExcessHistory(),
+      );
       // Yield between small batches so a historical backlog cannot monopolize Node.
-      if (deleted === 500) await new Promise(resolve => setImmediate(resolve));
-    } while (deleted === 500);
+      if (deleted >= 500) await new Promise(resolve => setImmediate(resolve));
+    } while (deleted >= 500);
   } finally {
     billingCleanupRunning = false;
   }
@@ -2402,7 +2408,12 @@ app.get(
       const username = userKey(req.auth.session.username);
       const metadata = await loadMetadata(username);
       const orders = orderStore.list(accountOrderId(metadata), Date.now() - ORDER_RETENTION_MS).map(publicOrder);
-      res.json({ orders, retentionDays: 90, supportEmail: SUPPORT_EMAIL });
+      res.json({
+        orders,
+        retentionDays: 90,
+        historyLimit: MAX_ORDER_HISTORY_PER_ACCOUNT,
+        supportEmail: SUPPORT_EMAIL,
+      });
     } catch (error) {
       next(error);
     }

@@ -3530,6 +3530,76 @@ body[data-page="home"] .zero-feature-list {
   margin: 0;
 }
 @media (max-width: 480px) {
+  .shell {
+    width: min(calc(100% - 20px), var(--max));
+  }
+  .page {
+    padding-top: 96px;
+  }
+  .form-card,
+  .card,
+  .stat-card,
+  .checkout-panel,
+  .plan-card {
+    padding: 18px;
+  }
+  .btn {
+    gap: 6px;
+    min-height: 44px;
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+  .btn-lg {
+    min-height: 46px;
+    padding: 10px 14px;
+  }
+  body[data-page="notes"] .page-head > .btn > span,
+  body[data-page="note"] .note-actions .btn > span,
+  body[data-page="note"] #copy-share-url > span,
+  .order-row > .btn > span {
+    display: none;
+  }
+  body[data-page="notes"] .page-head > .btn,
+  body[data-page="note"] .note-actions .btn,
+  body[data-page="note"] #copy-share-url,
+  .order-row > .btn {
+    width: 44px;
+    padding: 0;
+  }
+  body[data-page="note"] .note-actions {
+    gap: 6px;
+  }
+  .note-stats {
+    gap: 8px 12px;
+    font-size: 12px;
+  }
+  .note-paper,
+  .note-editor {
+    min-height: 45vh;
+    padding-left: 30px;
+    padding-right: 16px;
+    line-height: 28px;
+  }
+  .note-paper::before {
+    left: 20px;
+  }
+  .note-editor {
+    margin-top: 18px;
+  }
+  .note-title-input {
+    font-size: clamp(2rem, 11vw, 2.8rem);
+  }
+  .note-row {
+    gap: 10px;
+    padding: 14px;
+  }
+  .note-metadata {
+    gap: 3px 8px;
+    font-size: 12px;
+  }
+  .note-badges {
+    gap: 4px 8px;
+  }
   .settings-plan-balances {
     grid-template-columns: 1fr;
   }
