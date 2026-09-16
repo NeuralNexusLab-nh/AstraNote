@@ -33,10 +33,10 @@ const I18N = {
     limitTitle: "Small footprint. Deliberate limits.",
     limitBody:
       "Each account includes 128 KB across all account files and up to 20 notes. Encrypted notes commonly use about 1.4× the storage; very short notes may use more than 2×.",
-    copyright: "© 2026 NeuralNexusLab. All service rights reserved.",
+    copyright: "© 2026 NeuralNexusLab. All Rights Reserved.",
     terms: "Terms",
     privacy: "Privacy",
-    source: "Source code",
+    source: "Repository · All Rights Reserved",
     welcome: "Welcome back",
     welcomeBody: "Your constellation of notes, at a glance.",
     notebooks: "Notes",
@@ -169,10 +169,10 @@ const I18N = {
     limitTitle: "輕量空間，明確限制。",
     limitBody:
       "每個帳號的所有檔案合計 128 KB，最多 20 篇筆記。加密筆記通常約需 1.4 倍空間；很短的筆記可能超過 2 倍。",
-    copyright: "© 2026 NeuralNexusLab。保留所有服務相關權利。",
+    copyright: "© 2026 NeuralNexusLab。保留所有權利。",
     terms: "使用者協議",
     privacy: "隱私政策",
-    source: "原始碼",
+    source: "程式碼庫 · 保留所有權利",
     welcome: "歡迎回來",
     welcomeBody: "快速掌握你的筆記星圖。",
     notebooks: "筆記數量",
@@ -617,13 +617,12 @@ I18N.ja = {
   login: "ログイン",
   register: "アカウント作成",
   logout: "ログアウト",
-  copyright:
-    "© 2026 NeuralNexusLab. サービスに関するすべての権利を留保します。",
+  copyright: "© 2026 NeuralNexusLab. All Rights Reserved.",
   terms: "利用規約",
   privacy: "プライバシー",
   legalUpdated: "発効・最終更新：2026年9月1日",
   termsUpdated: "発効・最終更新：2026年9月2日",
-  source: "ソースコード",
+  source: "リポジトリ · All Rights Reserved",
   cookieTitle: "必須 Cookie",
   cookieBody:
     "AstraNote は、ログイン、セキュリティ、言語、表示設定に必要な Cookie のみを使用します。広告やアクセス解析のトラッカーは使用しません。",
@@ -3081,13 +3080,15 @@ async function initNotes() {
     );
     $("#selected-count").hidden = $("#batch-actions").hidden = !selected.size;
     const actions = selectedActions();
-    $("#batch-pin span").textContent = t(actions.pin ? "pin" : "unpin");
-    $("#batch-archive span").textContent = t(
-      actions.archive ? "archive" : "unarchive",
-    );
-    $("#batch-delete span").textContent = t(
-      account.plan.canRecover ? "moveToTrash" : "delete",
-    );
+    const pinLabel = t(actions.pin ? "pin" : "unpin");
+    const archiveLabel = t(actions.archive ? "archive" : "unarchive");
+    const deleteLabel = t(account.plan.canRecover ? "moveToTrash" : "delete");
+    $("#batch-pin span").textContent = pinLabel;
+    $("#batch-archive span").textContent = archiveLabel;
+    $("#batch-delete span").textContent = deleteLabel;
+    $("#batch-pin").setAttribute("aria-label", pinLabel);
+    $("#batch-archive").setAttribute("aria-label", archiveLabel);
+    $("#batch-delete").setAttribute("aria-label", deleteLabel);
     $$("#batch-actions button").forEach((button) => {
       button.disabled = batchBusy || !selected.size;
     });
