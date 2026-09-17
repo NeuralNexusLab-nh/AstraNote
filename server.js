@@ -515,26 +515,6 @@ async function refreshPlanState(username, metadata, now = Date.now()) {
   return { plan, lockedIds: required, payload: planPayload(metadata, now) };
 }
 
-function lockedReference(metadata, noteId) {
-  const reference = metadata.notes.find(
-    (item) => item.id === noteId && !item.trashedAt,
-  );
-  return reference?.planLockedAt ? reference : null;
-}
-
-async function lockedNotePayload(username, reference) {
-  const detail = await noteFileDetails(username, reference);
-  if (!detail) return null;
-  return {
-    id: detail.note.id,
-    name: normalizeText(detail.note.name, MAX_NOTE_NAME) || "Encrypted note",
-    bytes: detail.bytes,
-    locked: true,
-    lockedAt: reference.planLockedAt,
-    scheduledDeletionAt: reference.scheduledDeletionAt,
-  };
-}
-
 async function ensureData() {
   await fsp.mkdir(DATA_DIR, { recursive: true });
   for (const [file, initial] of [
@@ -2742,13 +2722,6 @@ app.post(
           (item) => item.id === noteId && !item.trashedAt,
         );
         if (reference) {
-          if (access.lockedIds.has(noteId))
-            return jsonError(
-              res,
-              423,
-              "note_locked",
-              "This note is locked by the current plan limit.",
-            );
           const note = await readJson(noteFile(username, noteId), null);
           if (
             !note ||
@@ -3136,22 +3109,12 @@ app.get("/api/notes/:id", requireAuth, async (req, res, next) => {
         return jsonError(res, 404, "not_found", "Account not found.");
       const access = await refreshPlanState(username, metadata);
       await saveMetadata(username, metadata);
-      if (
-        !metadata.notes.some(
-          (ref) => ref.id === req.params.id && !ref.trashedAt,
-        )
-      )
+      const reference = metadata.notes.find(
+        (ref) => ref.id === req.params.id && !ref.trashedAt,
+      );
+      if (!reference)
         return jsonError(res, 404, "not_found", "Note not found.");
-      if (access.lockedIds.has(req.params.id)) {
-        const reference = lockedReference(metadata, req.params.id);
-        const locked = await lockedNotePayload(username, reference);
-        return res.status(423).json({
-          error: "note_locked",
-          message: "Upgrade your plan to unlock this note.",
-          note: locked,
-          supportEmail: SUPPORT_EMAIL,
-        });
-      }
+      const locked = access.lockedIds.has(req.params.id);
       const note = await readJson(noteFile(username, req.params.id), null);
       if (!note) return jsonError(res, 404, "not_found", "Note not found.");
       if (isClientEncryptedMode(note.encryption)) {
@@ -3164,12 +3127,15 @@ app.get("/api/notes/:id", requireAuth, async (req, res, next) => {
           updatedAt: note.updatedAt,
           clientSalt: note.clientSalt,
           encrypted: note.content,
+          locked,
+          lockedAt: locked ? reference.planLockedAt : null,
+          scheduledDeletionAt: locked ? reference.scheduledDeletionAt : null,
           shared: false,
           shareUrl: null,
           characters: null,
           bytes: (await fsp.stat(noteFile(username, note.id))).size,
           revision: note.revision || 0,
-          hasPrevious: Boolean(note.previous),
+          hasPrevious: locked ? false : Boolean(note.previous),
         });
       }
       const payload = readServerNotePayload(note, username);
@@ -3180,12 +3146,15 @@ app.get("/api/notes/:id", requireAuth, async (req, res, next) => {
         encryption: note.encryption,
         createdAt: note.createdAt,
         updatedAt: note.updatedAt,
-        shared: Boolean(note.shareToken),
-        shareUrl: note.shareToken ? `/shared/${note.shareToken}` : null,
+        locked,
+        lockedAt: locked ? reference.planLockedAt : null,
+        scheduledDeletionAt: locked ? reference.scheduledDeletionAt : null,
+        shared: locked ? false : Boolean(note.shareToken),
+        shareUrl: !locked && note.shareToken ? `/shared/${note.shareToken}` : null,
         characters: characterCount(payload.content),
         bytes: (await fsp.stat(noteFile(username, note.id))).size,
         revision: note.revision || 0,
-        hasPrevious: Boolean(note.previous),
+        hasPrevious: locked ? false : Boolean(note.previous),
       });
     });
   } catch (error) {

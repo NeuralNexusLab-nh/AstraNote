@@ -153,7 +153,7 @@ test.after(async () => {
   await fs.rm(directory, { recursive: true, force: true });
 });
 
-test("restore cannot exceed Free note count, and locked versions expose no content", async () => {
+test("restore cannot exceed Free note count, and locked notes remain readable while versions stay blocked", async () => {
   const user = await fixture("restore_limits", "free", 21);
   let meta = await read(metaPath(user.name));
   const trash = meta.notes[20];
@@ -176,10 +176,11 @@ test("restore cannot exceed Free note count, and locked versions expose no conte
   };
   await write(notePath(user.name, largest), note);
   const locked = await request(user, "/api/notes/" + largest);
-  assert.equal(locked.status, 423);
-  assert.equal(locked.data.note.name, note.name);
-  assert.equal(locked.data.note.content, undefined);
-  assert.equal(locked.data.note.previous, undefined);
+  assert.equal(locked.status, 200);
+  assert.equal(locked.data.locked, true);
+  assert.equal(locked.data.name, note.name);
+  assert.equal(locked.data.content, note.content);
+  assert.equal(locked.data.hasPrevious, false);
   assert.equal(
     (await request(user, "/api/notes/" + largest + "/previous")).status,
     423,
@@ -345,7 +346,10 @@ test("existing Ultra accounts enforce 1024 KB server-side and lock data above th
   assert.equal(account.plan.maxBytes, 1_024_000);
   assert.equal(account.notes.find((item) => item.id === id).locked, true);
   assert.equal(account.notes.find((item) => item.id !== id).locked, false);
-  assert.equal((await request(user, "/api/notes/" + id)).status, 423);
+  const locked = await request(user, "/api/notes/" + id);
+  assert.equal(locked.status, 200);
+  assert.equal(locked.data.locked, true);
+  assert.equal(locked.data.content, note.content);
   assert.equal(
     (
       await request(user, "/api/notes/" + id, "PUT", {
@@ -942,8 +946,11 @@ test("expired Ultra locks oversized notes on Pro; only deletion or a verified up
     30 * 864e5,
   );
 
+  const readable = await request(user, "/api/notes/" + id);
+  assert.equal(readable.status, 200);
+  assert.equal(readable.data.locked, true);
+  assert.ok(readable.data.content.startsWith("EXPIRY-PRIVATE-CONTENT"));
   const denied = [
-    ["/api/notes/" + id, "GET"],
     [
       "/api/notes/" + id,
       "PUT",
@@ -953,16 +960,6 @@ test("expired Ultra locks oversized notes on Pro; only deletion or a verified up
     ["/api/notes/" + id + "/share", "POST", { enabled: false }],
     ["/api/notes/" + id + "/previous", "GET"],
     ["/api/notes/" + id + "/previous/restore", "POST", { revision: 1 }],
-    [
-      "/api/vault/key-factor",
-      "POST",
-      {
-        noteId: id,
-        clientSalt: "s".repeat(43),
-        clientHash: "c".repeat(64),
-        encryption: constants.CONFIDENTIAL_MODE,
-      },
-    ],
     ...[true, false].flatMap((value) =>
       ["pin", "archive"].map((action) => [
         "/api/notes/organize",
@@ -1101,18 +1098,20 @@ test("expired Free accounts cannot obtain client ciphertext or key factors; upgr
     };
     await write(metaPath(user.name), meta);
     const locked = await request(user, "/api/notes/" + id);
-    assert.equal(locked.status, 423);
-    assert.equal(locked.data.note.name, note.name);
-    assert.equal(locked.data.note.encrypted, undefined);
-    assert.equal(locked.data.note.clientSalt, undefined);
+    assert.equal(locked.status, 200);
+    assert.equal(locked.data.locked, true);
+    assert.equal(locked.data.name, note.name);
+    assert.deepEqual(locked.data.encrypted, before.encrypted);
+    assert.equal(locked.data.clientSalt, before.clientSalt);
     assert.equal(
       (await request(user, "/api/notes/" + id + "/previous")).status,
       423,
     );
-    assert.equal(
-      (await request(user, "/api/vault/key-factor", "POST", factorBody)).status,
-      423,
-    );
+    if (mode !== constants.ZERO_MODE)
+      assert.equal(
+        (await request(user, "/api/vault/key-factor", "POST", factorBody)).status,
+        200,
+      );
     const fresh = await read(metaPath(user.name));
     fresh.entitlements.ultraMs = 864e5;
     fresh.entitlements.updatedAt = stamp();
@@ -1201,12 +1200,12 @@ test("an insufficient upgrade keeps oversized notes locked until sufficient allo
     updatedAt: new Date(Date.now() - 1000).toISOString(),
   };
   await write(metaPath(user.name), meta);
-  assert.equal((await request(user, "/api/notes/" + large.id)).status, 423);
+  assert.equal((await request(user, "/api/notes/" + large.id)).status, 200);
   const lockedAt = (await read(metaPath(user.name))).notes[0].planLockedAt;
   let changed = await read(metaPath(user.name));
   changed.entitlements.plusMs = 30 * 864e5;
   await write(metaPath(user.name), changed);
-  assert.equal((await request(user, "/api/notes/" + large.id)).status, 423);
+  assert.equal((await request(user, "/api/notes/" + large.id)).status, 200);
   assert.equal((await request(user, "/api/notes/" + small.id)).status, 200);
   assert.equal(
     (await read(metaPath(user.name))).notes[0].planLockedAt,
@@ -1268,7 +1267,10 @@ test("locked notes can be permanently deleted, but cannot be moved into trash", 
   const note = await read(notePath(user.name, id));
   note.content = "x".repeat(130000);
   await write(notePath(user.name, id), note);
-  assert.equal((await request(user, "/api/notes/" + id)).status, 423);
+  const locked = await request(user, "/api/notes/" + id);
+  assert.equal(locked.status, 200);
+  assert.equal(locked.data.locked, true);
+  assert.equal(locked.data.content, note.content);
   assert.equal(
     (await request(user, "/api/notes/" + id, "DELETE", {})).status,
     403,

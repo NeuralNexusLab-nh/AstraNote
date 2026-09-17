@@ -747,7 +747,7 @@ Object.assign(I18N.en, {
   noteLocked: "Locked",
   noteLockedTitle: "This note is locked",
   noteLockedBody:
-    "This note exceeds your current plan allowance. Upgrade to Plus or Pro to unlock it. Only its title, size, and deletion date remain available.",
+    "This note exceeds your current plan allowance. You may read it or permanently delete it; editing, sharing, organization, recovery and new Drops require an upgrade.",
   scheduledDeletion: "Permanent deletion scheduled for {date}",
   viewPlans: "View plans",
   lockedAccountWarning:
@@ -825,7 +825,7 @@ Object.assign(I18N["zh-Hant"], {
   noteLocked: "已鎖定",
   noteLockedTitle: "這篇筆記已被鎖定",
   noteLockedBody:
-    "此筆記超出目前方案額度。請升級至 Plus 或 Pro 以解鎖；目前只能查看標題、大小與預定刪除時間。",
+    "此筆記超出目前方案額度。你仍可閱讀或永久刪除；編輯、分享、整理、復原與建立新的 Drop 需要先升級解鎖。",
   scheduledDeletion: "預計於 {date} 永久刪除",
   viewPlans: "查看方案",
   lockedAccountWarning:
@@ -917,7 +917,7 @@ Object.assign(I18N.ja, {
   noteLocked: "ロック中",
   noteLockedTitle: "このノートはロックされています",
   noteLockedBody:
-    "現在のプラン上限を超えています。Plus または Pro にアップグレードすると解除できます。表示できるのはタイトル、サイズ、削除予定日のみです。",
+    "このノートは現在のプラン上限を超えています。閲覧または完全削除はできますが、編集、共有、整理、復元、新しい Drop の作成にはアップグレードによる解除が必要です。",
   scheduledDeletion: "{date} に完全削除予定",
   viewPlans: "プランを見る",
   lockedAccountWarning:
@@ -1020,7 +1020,7 @@ Object.assign(I18N["en"], {
   confidentialPlanRequired:
     "Plus, Pro or Ultra is required for new AstraConfidential notes.",
   noteLockedBody:
-    "This note exceeds your current allowance. Upgrade to unlock it; only its title, size and deletion date are available.",
+    "This note exceeds your current allowance. You may read it or permanently delete it; editing, sharing, organization, recovery and new Drops require an upgrade.",
   pinned: "Pinned",
   pin: "Pin",
   unpin: "Unpin",
@@ -1260,7 +1260,7 @@ Object.assign(I18N["ja"], {
   confidentialPlanRequired:
     "新しい AstraConfidential ノートには Plus、Pro または Ultra が必要です。",
   noteLockedBody:
-    "現在のプラン上限を超えています。アップグレードすると解除できます。タイトル、サイズ、削除予定日のみ表示できます。",
+    "このノートは現在のプラン上限を超えています。閲覧または完全削除はできますが、編集、共有、整理、復元、新しい Drop の作成にはアップグレードによる解除が必要です。",
   pinned: "ピン留め済み",
   pin: "ピン留め",
   unpin: "ピンを外す",
@@ -1630,15 +1630,15 @@ Object.assign(I18N["en"], {
     "Usable keys exist temporarily in client memory while you unlock or edit. A compromised device, malicious application code or a guessed PIN can still expose content. This protection is not a promise of absolute security.",
   lockedAccessTermsTitle: "What a locked note allows",
   lockedAccessTerms:
-    "When a plan expires or usage exceeds its allowance, over-limit notes are locked immediately, largest first. Only the title, size, lock status and deletion deadlines remain visible; you may permanently delete the note or upgrade for sufficient allowance. Reading content or ciphertext, decryption-factor requests, editing, sharing, pinning or unpinning, moving, archiving or unarchiving, trash restoration, and viewing or restoring a previous version are refused by the server. Existing pins and archive status do not bypass the lock. An upgrade clears a lock only when the new allowance permits it. Continuous over-limit locks expire after 30 days; trash retains its original expiry and may be deleted sooner. Neither pinning nor upgrading extends a trash deadline. Content previously downloaded or decrypted on your own device cannot be recalled by the service.",
+    "When a plan expires or usage exceeds its allowance, over-limit notes are locked immediately, largest first. A locked note remains readable and may be permanently deleted. The server refuses editing, sharing, pinning or unpinning, moving, archiving or unarchiving, recovery actions and new Drop creation until an adequate upgrade unlocks it. Existing pins and archive status do not bypass the lock. An upgrade clears a lock only when the new allowance permits it. Continuous over-limit locks expire after 30 days; trash retains its original expiry and may be deleted sooner. Neither pinning nor upgrading extends a trash deadline.",
   privacyNotebookTitle: "Notes, search and client encryption",
   privacyNotebookData:
     "AstraNote keeps note titles, pin and archive status, encryption metadata, and—for eligible notes—one previous version and trash timestamps. Titles stay unencrypted. Title search runs on the note list already loaded by your client; search queries are not submitted to a search service, and content is not decrypted or indexed for search. Folders and tags are no longer supported; retired classification fields are removed when account metadata is saved, without deleting note content.",
   privacyRetention:
     "Ultra and Admin manual deletion normally moves an unlocked note into trash for the chosen 1, 3, 7, 14 or 30 days (default 7). Trash and the one previous version count toward storage. A permanent deletion, account deletion, or a 30-day over-limit deletion does not create a recoverable copy. Trash keeps its original deadline after downgrade, locking, or upgrade; an expired item cannot be restored even if scheduled file cleanup has not run yet. A remaining trash item keeps the navigation entry available after downgrade, but over-limit locked items cannot be restored until unlocked within an adequate allowance.",
-  termsUpdated: "Effective and last updated: 5 September 2026",
+  termsUpdated: "Effective and last updated: 17 September 2026",
   expiryLockNotice:
-    "When your subscription expires, notes exceeding your remaining plan allowance are locked, largest first. You can only view their title and size, delete them, or upgrade to unlock. After 30 continuous days locked, they are permanently deleted. Trash keeps its original expiry, which may be sooner.",
+    "When your subscription expires, notes exceeding your remaining plan allowance are locked, largest first. You may read or permanently delete them, or upgrade to unlock. After 30 continuous days locked, they are permanently deleted. Trash keeps its original expiry, which may be sooner.",
   zeroServerFeature: "No reliance on server encryption environment variables",
 });
 Object.assign(I18N["zh-Hant"], {
@@ -1666,15 +1666,15 @@ Object.assign(I18N["zh-Hant"], {
     "解鎖或編輯期間，可用金鑰會短暫存在客戶端記憶體。受控制的裝置、惡意程式碼或被猜中的 PIN 仍可能使內容外洩；這不是絕對安全的保證。",
   lockedAccessTermsTitle: "筆記鎖定後的存取限制",
   lockedAccessTerms:
-    "方案到期或超出額度時，超額筆記會立即由大到小鎖定。只保留標題、容量、鎖定狀態及刪除期限；你可永久刪除該筆記，或升級至足夠額度。後端拒絕讀取內容或密文、取得解密因子、編輯、分享、釘選或取消釘選、移動、封存或取消封存、垃圾桶還原，以及讀取或還原上一版本。既有釘選或封存狀態不能繞過鎖定。升級後仍須符合新額度才會解鎖。連續超額鎖定滿30天會永久刪除；垃圾桶維持原到期時間，可能更早清除。釘選或升級不會延長垃圾桶期限。使用者曾自行下載或在裝置上解密的內容，無法由本服務追溯收回。",
+    "方案到期或超出額度時，超額筆記會立即由大到小鎖定。鎖定筆記仍可閱讀與永久刪除；在升級到足夠額度前，後端會拒絕編輯、分享、釘選或取消釘選、移動、封存或取消封存、復原操作與建立新的 Drop。既有釘選或封存狀態不能繞過鎖定。升級後仍須符合新額度才會解鎖。連續超額鎖定滿30天會永久刪除；垃圾桶維持原到期時間，可能更早清除。釘選或升級不會延長垃圾桶期限。",
   privacyNotebookTitle: "筆記整理、搜尋與客戶端加密",
   privacyNotebookData:
     "AstraNote 保存筆記標題、釘選及封存狀態、加密中繼資料，以及符合資格筆記的上一版本與垃圾桶時間紀錄。標題不加密。標題搜尋僅在客戶端已載入的筆記清單中執行，不會將查詢字串傳至搜尋服務，也不會為搜尋解密或建立內容索引。資料夾與標籤功能已取消；舊分類欄位於帳號中繼資料儲存時清理，不刪除筆記內容。",
   privacyRetention:
     "Ultra 與 Admin 手動刪除未鎖定筆記時，原則上移至垃圾桶，依選擇保留1、3、7、14或30天，預設7天。垃圾桶與上一版本都計入空間。永久刪除、刪除帳號及超額鎖定滿30天的系統刪除，不會建立可復原副本。降級、鎖定或升級均不延長垃圾桶原到期時間；即使排程尚未實際清理檔案，已到期項目也不能還原。降級後只要仍有垃圾桶項目，就保留導覽入口；超額鎖定的項目須先取得足夠額度並解鎖才能還原。",
-  termsUpdated: "生效及最後更新：2026 年 9 月 5 日",
+  termsUpdated: "生效及最後更新：2026 年 9 月 17 日",
   expiryLockNotice:
-    "訂閱到期後，超出剩餘方案額度的筆記會從容量最大者開始鎖定。你只能查看標題與容量、刪除筆記，或升級解鎖；連續鎖定滿30天將永久刪除。垃圾桶維持原期限，可能更早清除。",
+    "訂閱到期後，超出剩餘方案額度的筆記會從容量最大者開始鎖定。你仍可閱讀或永久刪除，或升級解鎖；連續鎖定滿30天將永久刪除。垃圾桶維持原期限，可能更早清除。",
   zeroServerFeature: "不依賴伺服器加密環境變數",
 });
 Object.assign(I18N["ja"], {
@@ -1702,15 +1702,15 @@ Object.assign(I18N["ja"], {
     "解除・編集中は、利用可能な鍵がクライアントのメモリーに一時的に存在します。侵害された端末、悪意あるコード、推測された PIN からは内容が漏れる可能性があり、絶対的な安全の保証ではありません。",
   lockedAccessTermsTitle: "ロック中のノートの制限",
   lockedAccessTerms:
-    "期限切れや上限超過では、容量の大きいノートから直ちにロックします。タイトル、サイズ、ロック状態、削除期限のみ表示でき、完全削除または十分な容量へのアップグレードが可能です。内容・暗号文・復号用因子の取得、編集、共有、ピン留めと解除、移動、アーカイブと解除、ゴミ箱からの復元、直前のバージョンの閲覧・復元はサーバー側で拒否します。既存のピンやアーカイブで回避できません。アップグレード後も新しい上限を満たす場合のみ解除します。上限超過のロックが30日続くと完全削除し、ゴミ箱は元の期限でそれより早く削除される場合があります。ピン留めやアップグレードでゴミ箱の期限は延長されません。すでに端末に保存・復号された内容をサービス側で回収することはできません。",
+    "期限切れや上限超過では、容量の大きいノートから直ちにロックします。ロック中でも閲覧と完全削除はできますが、十分なアップグレードで解除するまで編集、共有、ピン留めと解除、移動、アーカイブと解除、復元、新しい Drop の作成はサーバー側で拒否します。既存のピンやアーカイブで回避できません。アップグレード後も新しい上限を満たす場合のみ解除します。上限超過のロックが30日続くと完全削除し、ゴミ箱は元の期限でそれより早く削除される場合があります。ピン留めやアップグレードでゴミ箱の期限は延長されません。",
   privacyNotebookTitle: "ノート整理、検索とクライアント暗号化",
   privacyNotebookData:
     "タイトル、ピンとアーカイブの状態、暗号化メタデータ、対象ノートの直前のバージョンとゴミ箱の日時を保存します。タイトルは平文です。タイトル検索はクライアントに読み込み済みの一覧だけで行い、検索語を検索サービスに送信せず、内容の復号や検索用索引の作成もしません。フォルダーとタグは廃止し、アカウント情報の保存時に旧分類を除去します。ノートの内容は削除しません。",
   privacyRetention:
     "Ultra と Admin が未ロックのノートを手動削除した場合、通常はゴミ箱に移動し、1・3・7・14・30日から選んだ期間（既定7日）保管します。ゴミ箱と直前のバージョンも容量に含みます。完全削除、アカウント削除、30日間の上限超過によるシステム削除では復元用コピーを作りません。降格・ロック・アップグレードでも元の期限は延長せず、ファイル清掃の実行前でも期限後は復元できません。降格後もゴミ箱に項目があればナビゲーションを残しますが、上限超過でロックされた項目は十分な容量で解除するまで復元できません。",
-  termsUpdated: "施行・最終更新：2026年9月5日",
+  termsUpdated: "施行・最終更新：2026年9月17日",
   expiryLockNotice:
-    "契約期限後、残りのプラン上限を超えるノートは容量の大きい順にロックされます。タイトルとサイズの確認、完全削除、アップグレードによる解除のみ可能です。ロックが30日続くと完全削除します。ゴミ箱は元の期限で、それより早く削除される場合があります。",
+    "契約期限後、残りのプラン上限を超えるノートは容量の大きい順にロックされます。閲覧または完全削除、アップグレードによる解除が可能です。ロックが30日続くと完全削除します。ゴミ箱は元の期限で、それより早く削除される場合があります。",
   zeroServerFeature: "サーバーの暗号化用環境変数に依存しない",
 });
 
@@ -3482,7 +3482,8 @@ function renderLockedNote(note) {
     `<span class="pill"><i class="fa-solid fa-lock" aria-hidden="true"></i> ${t("noteLocked")}</span><span><i class="fa-solid fa-hard-drive" aria-hidden="true"></i> ${formatBytes(note.bytes)}</span>`;
   $(".note-controls").hidden = true;
   $(".note-secondary-actions").hidden = true;
-  $("#note-content").hidden = true;
+  $("#note-content").hidden = false;
+  $("#note-content").textContent = note.content || "";
   const panel = $("#locked-note-panel");
   panel.hidden = false;
   $("#locked-delete-date").textContent = t("scheduledDeletion").replace(
@@ -3525,6 +3526,10 @@ async function initNote() {
     `${note.characters.toLocaleString()} ${t("characters")}`;
   $("#note-size").textContent = formatBytes(note.bytes);
   $("#note-updated").textContent = formatUtc(note.updatedAt);
+  if (note.locked) {
+    renderLockedNote(note);
+    return;
+  }
   $("#edit-note").href = `/notes/${note.id}/edit`;
   const reference =
     state.account.notes.find((item) => item.id === note.id) || {};
