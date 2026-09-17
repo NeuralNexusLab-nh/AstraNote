@@ -1017,14 +1017,12 @@ textarea {
 }
 .captcha-box {
   width: 100%;
-  min-height: 210px;
-  display: grid;
-  place-items: center;
-  padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: rgba(var(--canvas-rgb), 0.35);
-  overflow: visible;
+  min-height: 0;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: hidden;
 }
 .captcha-heading {
   display: flex;
@@ -1036,8 +1034,13 @@ textarea {
 }
 .captcha-box > *,
 .captcha-box iframe {
+  display: block;
   width: 100% !important;
-  max-width: none !important;
+  max-width: 100% !important;
+}
+.captcha-box iframe {
+  /* Defend the form layout if a remote CAPTCHA resize message is malformed. */
+  height: 320px !important;
 }
 .captcha-parking {
   position: fixed;
