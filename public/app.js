@@ -2313,7 +2313,7 @@ function applyLocale() {
     window.dispatchEvent(
       new CustomEvent("astranote:localechange", { detail: { language: state.language } }),
     );
-  queueMicrotask(normalizeStaticProtectionLabels);
+  Promise.resolve().then(normalizeStaticProtectionLabels);
 }
 
 function buildNav() {
