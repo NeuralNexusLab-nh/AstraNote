@@ -2274,7 +2274,7 @@ function normalizeStaticProtectionLabels() {
   while (walker.nextNode()) nodes.push(walker.currentNode);
   for (const node of nodes) {
     const parent = node.parentElement;
-    if (!parent || parent.closest("script, style, textarea, input, select, code, pre, [data-i18n]")) continue;
+    if (!parent || parent.closest("script, style, textarea, input, select, code, pre")) continue;
     const source = node.__astranoteProtectionSource ?? node.nodeValue;
     node.__astranoteProtectionSource = source;
     const normalized = source
