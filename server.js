@@ -78,12 +78,12 @@ const PLAN_DEFINITIONS = Object.freeze({
   admin: { maxBytes: Infinity, maxNotes: Infinity, monthlySats: 0 },
 });
 const DROP_PLAN_LIMITS = Object.freeze({
-  free: { count: 1, durationMs: 864e5, modes: new Set(["basic", "aes-128-gcm-new", "aes-256-gcm-new"]) },
-  plus: { count: 5, durationMs: 7 * 864e5, modes: new Set(["basic", "aes-128-gcm-new", "aes-256-gcm-new", "secret"]) },
-  pro: { count: 20, durationMs: 7 * 864e5, modes: new Set(["basic", "aes-128-gcm-new", "aes-256-gcm-new", "secret", "confidential"]) },
-  ultra: { count: 50, durationMs: 30 * 864e5, modes: new Set(["basic", "aes-128-gcm-new", "aes-256-gcm-new", "secret", "confidential"]) },
-  beta: { count: Infinity, durationMs: 30 * 864e5, modes: new Set(["basic", "aes-128-gcm-new", "aes-256-gcm-new", "secret", "confidential"]) },
-  admin: { count: Infinity, durationMs: 30 * 864e5, modes: new Set(["basic", "aes-128-gcm-new", "aes-256-gcm-new", "secret", "confidential"]) },
+  free: { count: 1, durationMs: 864e5, modes: new Set(["basic", "aes-256-gcm-new"]) },
+  plus: { count: 5, durationMs: 7 * 864e5, modes: new Set(["basic", "aes-256-gcm-new", "secret"]) },
+  pro: { count: 20, durationMs: 7 * 864e5, modes: new Set(["basic", "aes-256-gcm-new", "secret", "confidential"]) },
+  ultra: { count: 50, durationMs: 30 * 864e5, modes: new Set(["basic", "aes-256-gcm-new", "secret", "confidential"]) },
+  beta: { count: Infinity, durationMs: 30 * 864e5, modes: new Set(["basic", "aes-256-gcm-new", "secret", "confidential"]) },
+  admin: { count: Infinity, durationMs: 30 * 864e5, modes: new Set(["basic", "aes-256-gcm-new", "secret", "confidential"]) },
 });
 const DROP_DURATIONS_MS = new Set([5 * 60_000, 60 * 60_000, 864e5, 7 * 864e5, 30 * 864e5]);
 const DROP_VIEW_LIMITS = new Set([1, 5, 10, 20, 50]);
@@ -3690,7 +3690,7 @@ app.post(
       const sourceName = normalizeText(req.body.sourceName, MAX_NOTE_NAME);
       if (
         !validDropId(id) ||
-        !["basic", "aes-128-gcm-new", "aes-256-gcm-new", "secret", "confidential"].includes(mode) ||
+        !["basic", "aes-256-gcm-new", "secret", "confidential"].includes(mode) ||
         !DROP_DURATIONS_MS.has(durationMs) ||
         (!Number.isFinite(Date.parse(createdAt)) ||
           Math.abs(Date.now() - Date.parse(createdAt)) > 5 * 60_000) ||

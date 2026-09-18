@@ -2217,7 +2217,7 @@ function renderPlanComparison() {
     ["astraAiAllowance", null, [t("astraAiBasic"), t("astraAiMore"), t("astraAiMore"), t("astraAiMost")]],
     ["organizeFeature", "organizeDetail", [false, true, true, true]],
     ["AstraDrop", "dropAllowance", ["1 · 24h", "5 · 7d", "20 · 7d", "50 · 30d"]],
-    ["dropEncryption", null, ["Basic · AES-128 · AES-256", "Basic · AES-128 · AES-256 · DropSecret", "Basic · AES-128 · AES-256 · DropSecret · DropConfidential", "Basic · AES-128 · AES-256 · DropSecret · DropConfidential"]],
+    ["dropEncryption", null, ["Basic · AES-256", "Basic · AES-256 · DropSecret", "Basic · AES-256 · DropSecret · DropConfidential", "Basic · AES-256 · DropSecret · DropConfidential"]],
     ["AstraZero", null, [false, false, true, true]],
     ["recoveryFeature", "recoveryDetail", [false, false, false, true]],
     ["prioritySupport", "prioritySupportDetail", [false, false, false, true]],
