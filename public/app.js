@@ -2277,11 +2277,24 @@ function normalizeStaticProtectionLabels() {
     if (!parent || parent.closest("script, style, textarea, input, select, code, pre, [data-i18n]")) continue;
     const source = node.__astranoteProtectionSource ?? node.nodeValue;
     node.__astranoteProtectionSource = source;
-    node.nodeValue = source
+    const normalized = source
       .replace(/(?<!\()AstraSecret(?!\))/gu, names.secret)
       .replace(/(?<!\()AstraConfidential(?!\s+SCHybrid|\))/gu, names.confidential)
       .replace(/(?<!\()AstraZero(?!\))/gu, names.zero);
+    if (node.nodeValue !== normalized) node.nodeValue = normalized;
   }
+}
+
+// Some marketing pages render their localized copy after app.js has applied the
+// initial locale. Watch only those public explanatory pages so a later render
+// cannot reintroduce the internal product names. User note pages are excluded.
+let protectionLabelObserver;
+function observeStaticProtectionLabels() {
+  if (!new Set(["home", "plans", "new-note", "terms", "privacy"]).has(page)) return;
+  const main = document.querySelector("main");
+  if (!main || protectionLabelObserver) return;
+  protectionLabelObserver = new MutationObserver(() => normalizeStaticProtectionLabels());
+  protectionLabelObserver.observe(main, { childList: true, subtree: true, characterData: true });
 }
 
 function applyLocale() {
@@ -2305,6 +2318,7 @@ function applyLocale() {
   applyPageSeo();
   renderPlanComparison();
   normalizeStaticProtectionLabels();
+  observeStaticProtectionLabels();
   if (state.billingOrders) renderOrders(state.billingOrders);
   $$("[data-retention-days]").forEach((option) => {
     option.textContent = `${option.dataset.retentionDays} ${t("days")}`;
