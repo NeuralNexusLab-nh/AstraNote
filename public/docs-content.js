@@ -108,9 +108,9 @@
         ? { secret: "シークレット（AstraSecret）", confidential: "コンフィデンシャル（AstraConfidential）", zero: "最高機密（AstraZero）" }
         : { secret: "Secret (AstraSecret)", confidential: "Confidential (AstraConfidential)", zero: "Top Secret (AstraZero)" };
     body = body
-      .replace(/(?<!\()AstraSecret(?!\))/gu, protectionNames.secret)
-      .replace(/(?<!\()AstraConfidential(?!\s+SCHybrid|\))/gu, protectionNames.confidential)
-      .replace(/(?<!\()AstraZero(?!\))/gu, protectionNames.zero);
+      .replace(/(?<![(（])AstraSecret(?![)）])/gu, protectionNames.secret)
+      .replace(/(?<![(（])AstraConfidential(?!\s+SCHybrid|[)）])/gu, protectionNames.confidential)
+      .replace(/(?<![(（])AstraZero(?![)）])/gu, protectionNames.zero);
     const current = sections.findIndex(([key]) => key === route);
     const previous = current <= 0 ? ["home", "fa-book-open"] : sections[current - 1];
     const next = current < 0 || current === sections.length - 1 ? null : sections[current + 1];

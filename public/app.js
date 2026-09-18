@@ -2278,9 +2278,9 @@ function normalizeStaticProtectionLabels() {
     const source = node.__astranoteProtectionSource ?? node.nodeValue;
     node.__astranoteProtectionSource = source;
     const normalized = source
-      .replace(/(?<!\()AstraSecret(?!\))/gu, names.secret)
-      .replace(/(?<!\()AstraConfidential(?!\s+SCHybrid|\))/gu, names.confidential)
-      .replace(/(?<!\()AstraZero(?!\))/gu, names.zero);
+      .replace(/(?<![(（])AstraSecret(?![)）])/gu, names.secret)
+      .replace(/(?<![(（])AstraConfidential(?!\s+SCHybrid|[)）])/gu, names.confidential)
+      .replace(/(?<![(（])AstraZero(?![)）])/gu, names.zero);
     if (node.nodeValue !== normalized) node.nodeValue = normalized;
   }
 }
