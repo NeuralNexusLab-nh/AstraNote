@@ -448,6 +448,7 @@ body[data-page="home"] .site-nav:not(.scrolled) .nav-link.active {
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
+.feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .stats-grid {
   grid-template-columns: repeat(2, 1fr);
 }
@@ -532,6 +533,9 @@ body[data-page="home"] .site-nav:not(.scrolled) .nav-link.active {
   border-radius: inherit;
   transition: width 0.7s ease;
 }
+.ai-meter[data-level="good"] span { background: #48b979; }
+.ai-meter[data-level="warning"] span { background: #de9a38; }
+.ai-meter[data-level="low"] span { background: var(--danger); }
 .meter .demo-progress {
   width: 42%;
 }
@@ -1227,6 +1231,11 @@ textarea {
   flex-wrap: nowrap;
   justify-content: flex-end;
 }
+.astra-ai-form, .astra-ai-preview { display: grid; gap: 14px; }
+.astra-ai-form textarea, .astra-ai-preview textarea { width: 100%; resize: vertical; }
+.astra-ai-preview textarea { min-height: 260px; }
+.astra-ai-message { margin: 0; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--button); line-height: 1.6; }
+.astra-ai-warning { margin: 0; color: var(--danger); font-weight: 700; line-height: 1.55; }
 .note-controls {
   width: min(620px, 100%);
   display: grid;
@@ -2327,9 +2336,14 @@ html[lang="ja"] [data-lang="en"] {
     left: 26px;
   }
   .note-actions {
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: stretch;
     width: 100%;
   }
+  .note-actions .btn, .note-actions .share-toggle { min-width: 0; justify-content: center; }
+  .note-actions .btn span, .note-actions .share-toggle > span { overflow: hidden; text-overflow: ellipsis; }
+  .astra-ai-preview textarea { min-height: 42vh; }
   .note-controls {
     width: 100%;
     justify-items: stretch;

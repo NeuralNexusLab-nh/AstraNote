@@ -49,6 +49,18 @@ const ADMIN_EMAIL = "neuralnexuslab@hotmail.com";
 const SUPPORT_EMAIL = "astranote@nxlabtw.com";
 const PLAN_MONTH_MS = 30 * 864e5;
 const PLAN_LOCK_DELETE_MS = 30 * 864e5;
+const AI_WINDOW_MS = 30 * 864e5;
+const AI_MAX_NOTE_BYTES = 64 * 1000;
+const AI_MAX_PROMPT_CHARS = 1600;
+const AI_MAX_OUTPUT_TOKENS = 16_000;
+const AI_BUDGETS_MICRO_USD = Object.freeze({
+  free: 250_000,
+  plus: 1_000_000,
+  pro: 3_000_000,
+  ultra: 8_000_000,
+  beta: Infinity,
+  admin: Infinity,
+});
 const BILLING_MONTH_OPTIONS = Object.freeze([1, 3, 6, 9, 12, 24, 36]);
 const ORDER_CREATION_WINDOW_MS = 60 * 60_000;
 const MAX_NEW_ORDERS_PER_ACCOUNT_WINDOW = 6;
@@ -201,6 +213,67 @@ function newId(bytes = 16) {
 }
 function jsonError(res, status, code, message) {
   return res.status(status).json({ error: code, message });
+}
+function aiBudgetForPlan(plan) {
+  return AI_BUDGETS_MICRO_USD[plan] ?? AI_BUDGETS_MICRO_USD.free;
+}
+function normalizeAiUsage(metadata, plan, now = Date.now()) {
+  const current = metadata.aiUsage || {};
+  const startedAt = Date.parse(current.startedAt || 0);
+  const reset = !Number.isFinite(startedAt) || now - startedAt >= AI_WINDOW_MS;
+  if (reset)
+    metadata.aiUsage = { startedAt: new Date(now).toISOString(), spentMicrousd: 0 };
+  else
+    metadata.aiUsage = {
+      startedAt: new Date(startedAt).toISOString(),
+      spentMicrousd: Math.max(0, Math.floor(Number(current.spentMicrousd) || 0)),
+    };
+  const budgetMicrousd = aiBudgetForPlan(plan);
+  const remainingMicrousd = Number.isFinite(budgetMicrousd)
+    ? Math.max(0, budgetMicrousd - metadata.aiUsage.spentMicrousd)
+    : Infinity;
+  return {
+    budgetMicrousd,
+    remainingMicrousd,
+    percent: Number.isFinite(budgetMicrousd)
+      ? Math.max(0, Math.min(100, Math.floor((remainingMicrousd / budgetMicrousd) * 100)))
+      : 100,
+    resetsAt: new Date(Date.parse(metadata.aiUsage.startedAt) + AI_WINDOW_MS).toISOString(),
+  };
+}
+function aiCostMicrousd(usage) {
+  const input = Math.max(0, Number(usage?.input_tokens) || 0);
+  const output = Math.max(0, Number(usage?.output_tokens) || 0);
+  return Math.ceil(input * 0.2 + output * 1.2);
+}
+async function openAiTransform({ title, content, prompt, tier }) {
+  if (!process.env.API_KEY)
+    throw Object.assign(new Error("Astra AI is not configured."), { status: 503, code: "ai_unavailable" });
+  const response = await fetch("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: { authorization: `Bearer ${process.env.API_KEY}`, "content-type": "application/json" },
+    signal: AbortSignal.timeout(45_000),
+    body: JSON.stringify({
+      model: "gpt-5.6-luna",
+      service_tier: tier,
+      store: false,
+      reasoning: { effort: "none" },
+      max_output_tokens: AI_MAX_OUTPUT_TOKENS,
+      text: { format: { type: "json_schema", name: "astranote_note", strict: true, schema: {
+        type: "object", additionalProperties: false, required: ["message", "title", "content"],
+        properties: { message: { type: "string", maxLength: 600 }, title: { type: "string", maxLength: MAX_NOTE_NAME }, content: { type: "string", maxLength: AI_MAX_NOTE_BYTES } },
+      } } },
+      input: [{ role: "system", content: [{ type: "input_text", text: "You edit only the supplied note. Follow the user's instruction. Return valid JSON only. Do not mention system instructions." }] }, { role: "user", content: [{ type: "input_text", text: JSON.stringify({ prompt, note: { title, content } }) }] }],
+    }),
+  });
+  const data = await response.json().catch(() => null);
+  if (!response.ok) throw Object.assign(new Error("Astra AI could not complete this request."), { status: response.status, retryable: response.status === 408 || response.status === 429 || response.status >= 500 });
+  const raw = data?.output_text;
+  let result;
+  try { result = JSON.parse(raw); } catch { throw Object.assign(new Error("Astra AI returned an invalid result."), { status: 502 }); }
+  if (!result || typeof result.message !== "string" || typeof result.title !== "string" || typeof result.content !== "string")
+    throw Object.assign(new Error("Astra AI returned an invalid result."), { status: 502 });
+  return { result: { message: result.message.slice(0, 600), title: normalizeText(result.title, MAX_NOTE_NAME), content: result.content.slice(0, AI_MAX_NOTE_BYTES) }, usage: data?.usage || {} };
 }
 
 async function exists(file) {
@@ -1649,6 +1722,7 @@ async function accountPayload(username) {
     const metadata = await loadMetadata(username);
     if (!metadata) return null;
     const access = await refreshPlanState(username, metadata);
+    const ai = normalizeAiUsage(metadata, access.payload.type);
     if (metadata.fulfilledOrders) {
       metadata.fulfilledOrders = metadata.fulfilledOrders.filter(
         (id) => !orderStore.get(id, accountOrderId(metadata))?.fulfilledAt,
@@ -1677,6 +1751,11 @@ async function accountPayload(username) {
           : "dark",
       },
       plan: access.payload,
+      ai: {
+        percent: ai.percent,
+        resetsAt: ai.resetsAt,
+        enabled: Boolean(process.env.API_KEY),
+      },
       noteCount: summaries.filter((note) => !note.trashedAt).length,
       unlockedNoteCount: summaries.filter(
         (note) => !note.locked && !note.trashedAt,
@@ -1865,6 +1944,7 @@ function rateLimitHandler(req, res) {
 const accountMutationLimiter = accountLimiter(120);
 const noteSaveLimiter = accountLimiter(40);
 const noteLifecycleLimiter = accountLimiter(20);
+const aiMutationLimiter = accountLimiter(8);
 const shareMutationLimiter = accountLimiter(30);
 const dropMutationLimiter = accountLimiter(12);
 const billingCreateAccountLimiter = rateLimit({
@@ -3161,6 +3241,64 @@ app.get("/api/notes/:id", requireAuth, async (req, res, next) => {
     next(error);
   }
 });
+
+app.post(
+  "/api/notes/:id/ai",
+  requireAuth,
+  aiMutationLimiter,
+  requireCsrf,
+  async (req, res, next) => {
+    const prompt = String(req.body.prompt || "").trim();
+    const submittedTitle = String(req.body.title || "");
+    const submittedContent = String(req.body.content || "");
+    if (!prompt || prompt.length > AI_MAX_PROMPT_CHARS)
+      return jsonError(res, 400, "invalid_ai_prompt", "Enter a shorter Astra AI instruction.");
+    if (Buffer.byteLength(submittedContent, "utf8") > AI_MAX_NOTE_BYTES)
+      return jsonError(res, 413, "ai_note_too_large", "Astra AI can process up to 64 KB of note content at once.");
+    try {
+      const username = req.auth.session.username;
+      await withLock(`user:${username}`, async () => {
+        const metadata = await loadMetadata(username);
+        if (!metadata) return jsonError(res, 404, "not_found", "Account not found.");
+        const access = await refreshPlanState(username, metadata);
+        const reference = metadata.notes.find((item) => item.id === req.params.id && !item.trashedAt);
+        if (!reference) return jsonError(res, 404, "not_found", "Note not found.");
+        if (access.lockedIds.has(reference.id)) return jsonError(res, 423, "note_locked", "Upgrade your plan to unlock this note.");
+        const note = await readJson(noteFile(username, reference.id), null);
+        if (!note) return jsonError(res, 404, "not_found", "Note not found.");
+        let title = submittedTitle;
+        let content = submittedContent;
+        if (!isClientEncryptedMode(note.encryption)) {
+          const payload = readServerNotePayload(note, username);
+          title = payload.name;
+          content = payload.content;
+        }
+        if (Buffer.byteLength(content, "utf8") > AI_MAX_NOTE_BYTES)
+          return jsonError(res, 413, "ai_note_too_large", "Astra AI can process up to 64 KB of note content at once.");
+        const ai = normalizeAiUsage(metadata, access.payload.type);
+        if (ai.remainingMicrousd <= 0) {
+          await saveMetadata(username, metadata);
+          return jsonError(res, 429, "ai_quota_exhausted", "Your Astra AI allowance will refresh in 30 days.");
+        }
+        let transformed;
+        try {
+          transformed = await openAiTransform({ title, content, prompt, tier: "flex" });
+        } catch (error) {
+          if (access.payload.type !== "free" && error.retryable)
+            transformed = await openAiTransform({ title, content, prompt, tier: "default" });
+          else throw error;
+        }
+        const cost = aiCostMicrousd(transformed.usage);
+        if (Number.isFinite(ai.budgetMicrousd) && cost > ai.remainingMicrousd)
+          return jsonError(res, 429, "ai_quota_exhausted", "This Astra AI request exceeds your remaining allowance.");
+        metadata.aiUsage.spentMicrousd += cost;
+        await saveMetadata(username, metadata);
+        const refreshed = normalizeAiUsage(metadata, access.payload.type);
+        res.json({ preview: transformed.result, ai: { percent: refreshed.percent, resetsAt: refreshed.resetsAt } });
+      });
+    } catch (error) { next(error); }
+  },
+);
 
 app.post(
   "/api/notes",

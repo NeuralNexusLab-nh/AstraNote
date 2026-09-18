@@ -1714,6 +1714,49 @@ Object.assign(I18N["ja"], {
   zeroServerFeature: "サーバーの暗号化用環境変数に依存しない",
 });
 
+Object.assign(I18N.en, {
+  astraAi: "Astra AI", aiEveryThirtyDays: "Available every 30 days",
+  astraAiUnavailable: "Currently unavailable",
+  aiTitle: "More than saved text", aiBody: "Use Astra AI, sharing, AstraDrop, and recovery tools when a note needs to do more than stay saved.",
+  astraAiPrompt: "Astra AI instruction", astraAiPromptPlaceholder: "Describe how Astra AI should improve this note…",
+  astraAiBody: "Describe how you want Astra AI to revise this note.", astraAiGenerate: "Generate preview",
+  astraAiPromptRequired: "Enter an instruction for Astra AI.",
+  astraAiBusyWarning: "Astra AI is processing your note. Do not close this window, refresh, or leave AstraNote; leaving cancels this request and nothing will be saved.",
+  astraAiPreview: "Astra AI preview", astraAiPreviewBody: "Review the suggested title and content before saving.", saveChanges: "Save changes", discardResult: "Discard result",
+  astraAiEncryptedNotice: "Your unlocked title, content and instruction are sent to the AI service for this request. Your PIN and encryption key are not sent or stored.",
+  astraAiAllowance: "Astra AI", astraAiBasic: "Included", astraAiMore: "More available", astraAiMost: "Most available",
+  aiPrivacyTitle: "Astra AI and your note", aiPrivacyText: "When you choose Astra AI, the title, content and instruction for that request are sent to OpenAI to create a preview. Nothing changes until you choose to save it. For a PIN-protected note, its unlocked text is sent only for that request; your PIN and encryption key are not sent or stored.",
+  standardEncryptionOption: "Standard encryption (AES-256-GCM)", legacyEncryptionOption: "Legacy encryption (AES-128-GCM)", secretOption: "Secret (AstraSecret)", confidentialOption: "Confidential (AstraConfidential)", zeroOption: "Top Secret (AstraZero)",
+});
+Object.assign(I18N["zh-Hant"], {
+  astraAi: "Astra AI", aiEveryThirtyDays: "每 30 天可用額度",
+  astraAiUnavailable: "目前無法使用",
+  aiTitle: "不只保存文字", aiBody: "需要更多用途時，可使用 Astra AI、分享、AstraDrop 與復原工具。",
+  astraAiPrompt: "Astra AI 指令", astraAiPromptPlaceholder: "說明你希望 Astra AI 如何修改這篇筆記…",
+  astraAiBody: "說明你希望 Astra AI 如何修改這篇筆記。", astraAiGenerate: "產生預覽",
+  astraAiPromptRequired: "請輸入給 Astra AI 的指令。",
+  astraAiBusyWarning: "Astra AI 正在處理筆記。請勿關閉此視窗、重新整理頁面或離開 AstraNote；離開後本次處理會取消，結果不會儲存。",
+  astraAiPreview: "Astra AI 預覽", astraAiPreviewBody: "儲存前，請確認建議的新標題與內容。", saveChanges: "儲存變更", discardResult: "捨棄結果",
+  astraAiEncryptedNotice: "為完成本次 Astra AI 修改，已解鎖的筆記標題、內容與指令會傳送至 AI 處理服務。PIN 與加密金鑰不會傳送或儲存。",
+  astraAiAllowance: "Astra AI", astraAiBasic: "包含", astraAiMore: "更多可用額度", astraAiMost: "最多可用額度",
+  aiPrivacyTitle: "Astra AI 與你的筆記", aiPrivacyText: "當你選擇使用 Astra AI，該次的筆記標題、內容與指令會傳送至 OpenAI 產生預覽。你選擇儲存前，不會改動筆記。使用 PIN 的筆記會僅為這次處理傳送已解鎖文字；PIN 與加密金鑰不會傳送或儲存。",
+  standardEncryptionOption: "一般加密（AES-256-GCM）", legacyEncryptionOption: "舊版加密（AES-128-GCM）", secretOption: "秘密（AstraSecret）", confidentialOption: "機密（AstraConfidential）", zeroOption: "最高機密（AstraZero）",
+});
+Object.assign(I18N.ja, {
+  astraAi: "Astra AI", aiEveryThirtyDays: "30日ごとの利用枠",
+  astraAiUnavailable: "現在利用できません",
+  aiTitle: "保存するだけではない", aiBody: "Astra AI、共有、AstraDrop、復元機能で、ノートをもっと役立てられます。",
+  astraAiPrompt: "Astra AI への指示", astraAiPromptPlaceholder: "Astra AI にこのノートをどう改善してほしいか入力してください…",
+  astraAiBody: "このノートをどのように変更したいか入力してください。", astraAiGenerate: "プレビューを作成",
+  astraAiPromptRequired: "Astra AI への指示を入力してください。",
+  astraAiBusyWarning: "Astra AI がノートを処理中です。この画面を閉じたり、更新したり、AstraNote から離れたりしないでください。離れると処理は中止され、結果は保存されません。",
+  astraAiPreview: "Astra AI プレビュー", astraAiPreviewBody: "保存前に、提案されたタイトルと内容を確認してください。", saveChanges: "変更を保存", discardResult: "結果を破棄",
+  astraAiEncryptedNotice: "このリクエストでは、解除済みのタイトル、内容、指示が AI 処理サービスへ送信されます。PIN と暗号鍵は送信・保存されません。",
+  astraAiAllowance: "Astra AI", astraAiBasic: "含まれる", astraAiMore: "より多く利用可能", astraAiMost: "最大の利用枠",
+  aiPrivacyTitle: "Astra AI とノート", aiPrivacyText: "Astra AI を選ぶと、そのリクエストのノート名、内容、指示がプレビュー作成のため OpenAI に送信されます。保存を選ぶまでノートは変更されません。PIN 保護ノートでは、解除済みの文章だけがこの処理のために送信され、PIN と暗号鍵は送信・保存されません。",
+  standardEncryptionOption: "標準暗号化（AES-256-GCM）", legacyEncryptionOption: "旧式暗号化（AES-128-GCM）", secretOption: "シークレット（AstraSecret）", confidentialOption: "コンフィデンシャル（AstraConfidential）", zeroOption: "最高機密（AstraZero）",
+});
+
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const page = document.body.dataset.page || "";
@@ -1811,10 +1854,11 @@ function encryptionLabel(mode) {
   if (mode === "none") return t("unencrypted");
   if (mode === LEGACY_SCHYBRID_MODE) return "AstraConfidential SCHybrid";
   if ([LEGACY_CONFIDENTIAL_MODE, CONFIDENTIAL_MODE].includes(mode))
-    return "AstraConfidential";
-  if (mode === ASTRA_SECRET_MODE) return "AstraSecret";
-  if (mode === ZERO_MODE) return "AstraZero";
-  if (CURRENT_AES_MODES.has(mode)) return CURRENT_AES_MODES.get(mode);
+    return t("confidentialOption");
+  if (mode === ASTRA_SECRET_MODE) return t("secretOption");
+  if (mode === ZERO_MODE) return t("zeroOption");
+  if (mode === "aes-128-gcm" || mode === "aes-128-gcm-new") return t("legacyEncryptionOption");
+  if (mode === "aes-256-gcm" || mode === "aes-256-gcm-new") return t("standardEncryptionOption");
   return mode.toUpperCase();
 }
 function isClientEncryptedMode(mode) {
@@ -2170,6 +2214,7 @@ function renderPlanComparison() {
     ["basicEncryption", null, [true, true, true, true]],
     ["AstraSecret", null, [true, true, true, true]],
     ["AstraConfidential", null, [false, true, true, true]],
+    ["astraAiAllowance", null, [t("astraAiBasic"), t("astraAiMore"), t("astraAiMore"), t("astraAiMost")]],
     ["organizeFeature", "organizeDetail", [false, true, true, true]],
     ["AstraDrop", "dropAllowance", ["1 · 24h", "5 · 7d", "20 · 7d", "50 · 30d"]],
     ["dropEncryption", null, ["Basic · AES-128 · AES-256", "Basic · AES-128 · AES-256 · DropSecret", "Basic · AES-128 · AES-256 · DropSecret · DropConfidential", "Basic · AES-128 · AES-256 · DropSecret · DropConfidential"]],
@@ -2460,7 +2505,7 @@ function modal({
   );
   cancelButton.onclick = cancelDialog;
   backdrop.addEventListener("click", (e) => {
-    if (e.target === backdrop) cancelDialog();
+    if (e.target === backdrop && backdrop.dataset.busy !== "true") cancelDialog();
   });
   confirmButton.onclick = async () => {
     confirmButton.disabled = true;
@@ -2995,10 +3040,17 @@ async function initDashboard() {
     account.maxBytes === null
       ? `${formatBytes(account.usedBytes)} / ${t("unlimited")}`
       : `${formatBytes(account.usedBytes)} / ${formatBytes(account.maxBytes)}`;
-  $("#age-count").textContent = Math.max(
-    0,
-    Math.floor((Date.now() - Date.parse(account.createdAt)) / 864e5),
-  );
+  const aiPercent = account.ai?.percent ?? 0;
+  $("#ai-percent").textContent = `${aiPercent}%`;
+  const aiMeter = $(".ai-meter span");
+  if (aiMeter) {
+    aiMeter.style.width = `${Math.max(0, Math.min(100, aiPercent))}%`;
+    aiMeter.parentElement.dataset.level =
+      aiPercent >= 70 ? "good" : aiPercent >= 30 ? "warning" : "low";
+  }
+  $("#ai-caption").textContent = account.ai?.enabled
+    ? t("aiEveryThirtyDays")
+    : t("astraAiUnavailable");
   $(".meter span").style.setProperty(
     "--progress",
     `${account.maxBytes === null ? 0 : Math.min(100, (account.usedBytes / account.maxBytes) * 100)}%`,
@@ -3492,6 +3544,114 @@ function renderLockedNote(note) {
   );
   $("#locked-delete-note").onclick = () => deleteNote(note);
 }
+function openAstraAi(note, unlockedPin = null) {
+  const content = document.createElement("div");
+  content.className = "astra-ai-form";
+  const prompt = document.createElement("textarea");
+  prompt.maxLength = 1600;
+  prompt.rows = 5;
+  prompt.placeholder = t("astraAiPromptPlaceholder");
+  prompt.setAttribute("aria-label", t("astraAiPrompt"));
+  content.append(prompt);
+  if (isClientEncryptedMode(note.encryption)) {
+    const notice = document.createElement("p");
+    notice.className = "field-help";
+    notice.textContent = t("astraAiEncryptedNotice");
+    const pin = document.createElement("input");
+    pin.type = "text";
+    pin.autocomplete = "new-password";
+    pin.name = `astra-ai-pin-${randomHex(4)}`;
+    pin.maxLength = 16;
+    pin.placeholder = t("vaultPin");
+    pin.dataset.aiPin = "true";
+    pin.className = "vault-pin-input";
+    pin.setAttribute("data-1p-ignore", "true");
+    content.append(notice, pin);
+  }
+  const warning = document.createElement("p");
+  warning.className = "astra-ai-warning";
+  warning.hidden = true;
+  warning.textContent = t("astraAiBusyWarning");
+  content.append(warning);
+  modal({
+    title: t("astraAi"),
+    body: t("astraAiBody"),
+    content,
+    confirm: t("astraAiGenerate"),
+    onConfirm: async (close, button) => {
+      if (!prompt.value.trim()) throw new Error(t("astraAiPromptRequired"));
+      const pin = $("[data-ai-pin]", content);
+      if (pin && !validVaultPin(pin.value, note.encryption, true))
+        throw new Error(vaultPinError(note.encryption));
+      // This confirms the PIN that unlocked the note in this tab. It is never
+      // sent to Astra AI or persisted by the browser.
+      if (pin && pin.value !== unlockedPin) throw new Error(vaultPinError(note.encryption));
+      const backdrop = button.closest(".modal-backdrop");
+      const cancelButton = button.closest(".modal-actions").querySelector("button:not(.btn-primary)");
+      backdrop.dataset.busy = "true";
+      warning.hidden = false;
+      button.disabled = true;
+      if (cancelButton) cancelButton.disabled = true;
+      try {
+        const preview = await api(`/api/notes/${note.id}/ai`, {
+          method: "POST",
+          body: { prompt: prompt.value.trim(), title: note.name, content: note.content },
+        });
+        backdrop.dataset.busy = "false";
+        close();
+        openAstraAiPreview(note, preview, unlockedPin);
+      } catch (error) {
+        backdrop.dataset.busy = "false";
+        warning.hidden = true;
+        if (cancelButton) cancelButton.disabled = false;
+        throw error;
+      }
+    },
+  });
+}
+function openAstraAiPreview(note, result, unlockedPin = null) {
+  const content = document.createElement("div");
+  content.className = "astra-ai-preview";
+  const message = document.createElement("p");
+  message.className = "astra-ai-message";
+  message.textContent = result.preview.message;
+  const title = document.createElement("input");
+  title.value = result.preview.title;
+  title.maxLength = 80;
+  const body = document.createElement("textarea");
+  body.value = result.preview.content;
+  body.rows = 14;
+  content.append(message, title, body);
+  modal({
+    title: t("astraAiPreview"),
+    body: t("astraAiPreviewBody"),
+    content,
+    confirm: t("saveChanges"),
+    cancel: t("discardResult"),
+    onConfirm: async (close, button) => {
+      button.disabled = true;
+      try {
+        const request = { name: title.value, content: body.value, revision: note.revision };
+        if (isClientEncryptedMode(note.encryption)) {
+          const normalizedName = title.value.normalize("NFC").trim();
+          if (!normalizedName) throw new Error(t("noteNameRequired"));
+          request.encrypted = await encryptConfidentialPayload(
+            note.id, note.clientSalt, unlockedPin,
+            { content: body.value.normalize("NFC") }, note.encryption,
+            note.encryption === ZERO_MODE ? note.encrypted : null,
+          );
+          delete request.content;
+        }
+        const saved = await api(`/api/notes/${note.id}`, { method: "PUT", body: request });
+        close();
+        location.href = saved.redirect;
+      } catch (error) {
+        button.disabled = false;
+        throw error;
+      }
+    },
+  });
+}
 async function initNote() {
   if (!(await requireAccount())) return;
   let note;
@@ -3504,11 +3664,13 @@ async function initNote() {
     }
     throw error;
   }
+  let vaultPin = null;
   if (isClientEncryptedMode(note.encryption)) {
     try {
       const unlocked = await unlockConfidential(note);
       note.name = unlocked.payload.name;
       note.content = unlocked.payload.content;
+      vaultPin = unlocked.pin;
       note.characters = Array.from(note.content).filter(
         (character) => !/\s/u.test(character),
       ).length;
@@ -3531,6 +3693,7 @@ async function initNote() {
     return;
   }
   $("#edit-note").href = `/notes/${note.id}/edit`;
+  $("#astra-ai").onclick = () => openAstraAi(note, vaultPin);
   const reference =
     state.account.notes.find((item) => item.id === note.id) || {};
   for (const [action, key] of [
