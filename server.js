@@ -2847,7 +2847,7 @@ app.post(
             res,
             403,
             "plan_required",
-            "Plus, Pro or Ultra is required to create an AstraConfidential note.",
+            "Plus, Pro or Ultra is required to create a Confidential (AstraConfidential) note.",
           );
         const available =
           mode === LEGACY_SCHYBRID_MODE
@@ -2858,7 +2858,7 @@ app.post(
             res,
             503,
             "vault_unavailable",
-            "This AstraConfidential encryption version is not configured.",
+            "This Confidential (AstraConfidential) encryption version is not configured.",
           );
         const serverFactor = deriveVaultFactor(
           metadata,
@@ -3352,7 +3352,7 @@ app.post(
           : "vault_unavailable",
         confidentialSecret || encryption === ZERO_MODE
           ? "Encrypted note data is invalid."
-          : "AstraConfidential is not configured.",
+          : "Confidential (AstraConfidential) is not configured.",
       );
     if (currentAes && !confidentialSecret)
       return jsonError(
@@ -3380,13 +3380,13 @@ app.post(
         )
           throw Object.assign(
             new Error(
-              "Plus, Pro or Ultra is required to create an AstraConfidential note.",
+              "Plus, Pro or Ultra is required to create a Confidential (AstraConfidential) note.",
             ),
             { status: 403 },
           );
         if (encryption === ZERO_MODE && !access.payload.canCreateZero)
           throw Object.assign(
-            new Error("Pro or Ultra is required for AstraZero."),
+            new Error("Pro or Ultra is required for Top Secret (AstraZero)."),
             { status: 403 },
           );
         const maxNotes = access.payload.maxNotes ?? Infinity;
@@ -3611,7 +3611,7 @@ app.post(
         const note = await readJson(noteFile(username, req.params.id), null);
         if (isClientEncryptedMode(note?.encryption))
           throw Object.assign(
-            new Error("Sharing is unavailable for AstraConfidential notes."),
+            new Error("Sharing is unavailable for Confidential (AstraConfidential) notes."),
             { status: 409 },
           );
         if (req.body.enabled === true)

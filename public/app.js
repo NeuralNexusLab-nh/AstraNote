@@ -1726,7 +1726,7 @@ Object.assign(I18N.en, {
   astraAiEncryptedNotice: "Your unlocked title, content and instruction are sent to the AI service for this request. Your PIN and encryption key are not sent or stored.",
   astraAiAllowance: "Astra AI", astraAiBasic: "Included", astraAiMore: "More available", astraAiMost: "Most available",
   aiPrivacyTitle: "Astra AI and your note", aiPrivacyText: "When you choose Astra AI, the title, content and instruction for that request are sent to OpenAI to create a preview. Nothing changes until you choose to save it. For a PIN-protected note, its unlocked text is sent only for that request; your PIN and encryption key are not sent or stored.",
-  standardEncryptionOption: "Standard encryption (AES-256-GCM)", legacyEncryptionOption: "Legacy encryption (AES-128-GCM)", secretOption: "Secret (AstraSecret)", confidentialOption: "Confidential (AstraConfidential)", zeroOption: "Top Secret (AstraZero)",
+  standardEncryptionOption: "Standard encryption (AES-256-GCM)", legacyEncryptionOption: "Legacy encryption (AES-128-GCM)", secretOption: "Secret (AstraSecret)", confidentialOption: "Confidential (AstraConfidential)", zeroOption: "Top Secret (AstraZero)", legacySchybridOption: "Legacy Confidential (AstraConfidential SCHybrid)", astraSecretIncluded: "Secret (AstraSecret) everyday protection", confidentialIncluded: "Confidential (AstraConfidential) advanced protection", zeroIncluded: "Top Secret (AstraZero) · client-generated keys", basicEncryption: "No encryption · Standard encryption (AES-256-GCM)",
 });
 Object.assign(I18N["zh-Hant"], {
   astraAi: "Astra AI", aiEveryThirtyDays: "每 30 天可用額度",
@@ -1740,7 +1740,7 @@ Object.assign(I18N["zh-Hant"], {
   astraAiEncryptedNotice: "為完成本次 Astra AI 修改，已解鎖的筆記標題、內容與指令會傳送至 AI 處理服務。PIN 與加密金鑰不會傳送或儲存。",
   astraAiAllowance: "Astra AI", astraAiBasic: "包含", astraAiMore: "更多可用額度", astraAiMost: "最多可用額度",
   aiPrivacyTitle: "Astra AI 與你的筆記", aiPrivacyText: "當你選擇使用 Astra AI，該次的筆記標題、內容與指令會傳送至 OpenAI 產生預覽。你選擇儲存前，不會改動筆記。使用 PIN 的筆記會僅為這次處理傳送已解鎖文字；PIN 與加密金鑰不會傳送或儲存。",
-  standardEncryptionOption: "一般加密（AES-256-GCM）", legacyEncryptionOption: "舊版加密（AES-128-GCM）", secretOption: "秘密（AstraSecret）", confidentialOption: "機密（AstraConfidential）", zeroOption: "最高機密（AstraZero）",
+  standardEncryptionOption: "一般加密（AES-256-GCM）", legacyEncryptionOption: "舊版加密（AES-128-GCM）", secretOption: "秘密（AstraSecret）", confidentialOption: "機密（AstraConfidential）", zeroOption: "最高機密（AstraZero）", legacySchybridOption: "舊版機密（AstraConfidential SCHybrid）", astraSecretIncluded: "秘密（AstraSecret）日常保護", confidentialIncluded: "機密（AstraConfidential）進階保護", zeroIncluded: "最高機密（AstraZero）· 客戶端產生金鑰", basicEncryption: "不加密 · 一般加密（AES-256-GCM）",
 });
 Object.assign(I18N.ja, {
   astraAi: "Astra AI", aiEveryThirtyDays: "30日ごとの利用枠",
@@ -1754,7 +1754,7 @@ Object.assign(I18N.ja, {
   astraAiEncryptedNotice: "このリクエストでは、解除済みのタイトル、内容、指示が AI 処理サービスへ送信されます。PIN と暗号鍵は送信・保存されません。",
   astraAiAllowance: "Astra AI", astraAiBasic: "含まれる", astraAiMore: "より多く利用可能", astraAiMost: "最大の利用枠",
   aiPrivacyTitle: "Astra AI とノート", aiPrivacyText: "Astra AI を選ぶと、そのリクエストのノート名、内容、指示がプレビュー作成のため OpenAI に送信されます。保存を選ぶまでノートは変更されません。PIN 保護ノートでは、解除済みの文章だけがこの処理のために送信され、PIN と暗号鍵は送信・保存されません。",
-  standardEncryptionOption: "標準暗号化（AES-256-GCM）", legacyEncryptionOption: "旧式暗号化（AES-128-GCM）", secretOption: "シークレット（AstraSecret）", confidentialOption: "コンフィデンシャル（AstraConfidential）", zeroOption: "最高機密（AstraZero）",
+  standardEncryptionOption: "標準暗号化（AES-256-GCM）", legacyEncryptionOption: "旧式暗号化（AES-128-GCM）", secretOption: "シークレット（AstraSecret）", confidentialOption: "コンフィデンシャル（AstraConfidential）", zeroOption: "最高機密（AstraZero）", legacySchybridOption: "旧式コンフィデンシャル（AstraConfidential SCHybrid）", astraSecretIncluded: "シークレット（AstraSecret）の日常保護", confidentialIncluded: "コンフィデンシャル（AstraConfidential）の高度な保護", zeroIncluded: "最高機密（AstraZero）・クライアントで鍵を生成", basicEncryption: "暗号化なし · 標準暗号化（AES-256-GCM）",
 });
 
 const $ = (selector, root = document) => root.querySelector(selector);
@@ -1852,7 +1852,7 @@ async function sha256Hex(value) {
 }
 function encryptionLabel(mode) {
   if (mode === "none") return t("unencrypted");
-  if (mode === LEGACY_SCHYBRID_MODE) return "AstraConfidential SCHybrid";
+  if (mode === LEGACY_SCHYBRID_MODE) return t("legacySchybridOption");
   if ([LEGACY_CONFIDENTIAL_MODE, CONFIDENTIAL_MODE].includes(mode))
     return t("confidentialOption");
   if (mode === ASTRA_SECRET_MODE) return t("secretOption");
@@ -2212,13 +2212,13 @@ function renderPlanComparison() {
     ["totalStorage", null, ["128 KB", "256 KB", "512 KB", "1024 KB"]],
     ["noteAllowance", null, ["20", "50", t("unlimited"), t("unlimited")]],
     ["basicEncryption", null, [true, true, true, true]],
-    ["AstraSecret", null, [true, true, true, true]],
-    ["AstraConfidential", null, [false, true, true, true]],
+    ["secretOption", null, [true, true, true, true]],
+    ["confidentialOption", null, [false, true, true, true]],
     ["astraAiAllowance", null, [t("astraAiBasic"), t("astraAiMore"), t("astraAiMore"), t("astraAiMost")]],
     ["organizeFeature", "organizeDetail", [false, true, true, true]],
     ["AstraDrop", "dropAllowance", ["1 · 24h", "5 · 7d", "20 · 7d", "50 · 30d"]],
     ["dropEncryption", null, ["Basic · AES-256", "Basic · AES-256 · DropSecret", "Basic · AES-256 · DropSecret · DropConfidential", "Basic · AES-256 · DropSecret · DropConfidential"]],
-    ["AstraZero", null, [false, false, true, true]],
+    ["zeroOption", null, [false, false, true, true]],
     ["recoveryFeature", "recoveryDetail", [false, false, false, true]],
     ["prioritySupport", "prioritySupportDetail", [false, false, false, true]],
   ];
@@ -2257,6 +2257,33 @@ function renderPlanComparison() {
   );
 }
 
+// Marketing, plan, and legal pages contain static explanatory copy as well as
+// translated strings. Keep their product-facing labels consistent without
+// touching a user's note title or content.
+function normalizeStaticProtectionLabels() {
+  if (!new Set(["home", "plans", "new-note", "terms", "privacy"]).has(page)) return;
+  const main = document.querySelector("main");
+  if (!main) return;
+  const names = state.language === "zh-Hant"
+    ? { secret: "秘密（AstraSecret）", confidential: "機密（AstraConfidential）", zero: "最高機密（AstraZero）" }
+    : state.language === "ja"
+      ? { secret: "シークレット（AstraSecret）", confidential: "コンフィデンシャル（AstraConfidential）", zero: "最高機密（AstraZero）" }
+      : { secret: "Secret (AstraSecret)", confidential: "Confidential (AstraConfidential)", zero: "Top Secret (AstraZero)" };
+  const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  for (const node of nodes) {
+    const parent = node.parentElement;
+    if (!parent || parent.closest("script, style, textarea, input, select, code, pre, [data-i18n]")) continue;
+    const source = node.__astranoteProtectionSource ?? node.nodeValue;
+    node.__astranoteProtectionSource = source;
+    node.nodeValue = source
+      .replace(/(?<!\()AstraSecret(?!\))/gu, names.secret)
+      .replace(/(?<!\()AstraConfidential(?!\s+SCHybrid|\))/gu, names.confidential)
+      .replace(/(?<!\()AstraZero(?!\))/gu, names.zero);
+  }
+}
+
 function applyLocale() {
   document.documentElement.lang = state.language;
   document.documentElement.dataset.theme = state.theme;
@@ -2277,6 +2304,7 @@ function applyLocale() {
   if (selector) selector.value = state.language;
   applyPageSeo();
   renderPlanComparison();
+  normalizeStaticProtectionLabels();
   if (state.billingOrders) renderOrders(state.billingOrders);
   $$("[data-retention-days]").forEach((option) => {
     option.textContent = `${option.dataset.retentionDays} ${t("days")}`;
@@ -2285,6 +2313,7 @@ function applyLocale() {
     window.dispatchEvent(
       new CustomEvent("astranote:localechange", { detail: { language: state.language } }),
     );
+  queueMicrotask(normalizeStaticProtectionLabels);
 }
 
 function buildNav() {

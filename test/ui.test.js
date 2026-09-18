@@ -217,7 +217,7 @@ test("paid plan layout, settings support placement and legal locales are complet
     ),
   );
   assert.ok(
-    comparison.indexOf('"organizeFeature"') < comparison.indexOf('"AstraZero"'),
+    comparison.indexOf('"organizeFeature"') < comparison.indexOf('"zeroOption"'),
   );
   assert.ok(comparison.includes('"1024 KB"'));
   assert.ok(plans.includes("1024 KB"));
