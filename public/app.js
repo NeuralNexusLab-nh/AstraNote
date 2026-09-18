@@ -2512,11 +2512,23 @@ function modal({
     try {
       await onConfirm?.(close, confirmButton);
     } catch (error) {
-      toast(error.message);
+      showError(error);
       confirmButton.disabled = false;
     }
   };
   return { close, dialog, confirmButton };
+}
+
+function showError(error) {
+  const message = typeof error === "string" ? error : error?.message || t("error");
+  modal({
+    title: t("error"),
+    body: message,
+    confirm: t("understood"),
+    showCancel: false,
+    danger: true,
+    onConfirm: async (close) => close(),
+  });
 }
 
 function unlockConfidential(note) {
@@ -2694,7 +2706,7 @@ function noteAction(icon, label, run, danger = false) {
     try {
       await run();
     } catch (error) {
-      toast(error.message || t("error"));
+      showError(error);
     } finally {
       button.disabled = false;
     }
@@ -3044,9 +3056,12 @@ async function initDashboard() {
   $("#ai-percent").textContent = `${aiPercent}%`;
   const aiMeter = $(".ai-meter span");
   if (aiMeter) {
-    aiMeter.style.width = `${Math.max(0, Math.min(100, aiPercent))}%`;
-    aiMeter.parentElement.dataset.level =
+    const progress = Math.max(0, Math.min(100, aiPercent));
+    const meter = aiMeter.parentElement;
+    meter.style.setProperty("--progress", `${progress}%`);
+    meter.dataset.level =
       aiPercent >= 70 ? "good" : aiPercent >= 30 ? "warning" : "low";
+    meter.setAttribute("aria-valuenow", String(Math.round(progress)));
   }
   $("#ai-caption").textContent = account.ai?.enabled
     ? t("aiEveryThirtyDays")
@@ -3261,7 +3276,7 @@ async function initNotes() {
       });
       await refresh();
     } catch (error) {
-      toast(error.message);
+      showError(error);
     } finally {
       batchBusy = false;
       updateSelection();
@@ -3714,7 +3729,7 @@ async function initNote() {
         });
         location.reload();
       } catch (error) {
-        toast(error.message);
+        showError(error);
         button.disabled = false;
       }
     };
@@ -3722,7 +3737,7 @@ async function initNote() {
   $("#previous-note").hidden = !note.hasPrevious;
   $("#previous-note").onclick = () =>
     showPrevious(note).catch((error) => {
-      if (!error.cancelled) toast(error.message);
+      if (!error.cancelled) showError(error);
     });
   $("#delete-note").onclick = () => deleteNote(note);
   $("#create-drop").onclick = () => {
@@ -3760,7 +3775,7 @@ async function initNote() {
       shareInput.focus();
       shareInput.select();
       if (!document.execCommand("copy")) {
-        toast(t("error"));
+        showError(t("error"));
         return;
       }
       shareInput.setSelectionRange(0, 0);
@@ -3781,7 +3796,7 @@ async function initNote() {
       showShareUrl(result.url);
     } catch (error) {
       shareToggle.checked = !enabled;
-      toast(error.message);
+      showError(error);
     } finally {
       shareToggle.disabled = false;
     }
@@ -3861,7 +3876,7 @@ async function initEditor() {
       dirty = false;
       location.href = result.redirect;
     } catch (error) {
-      toast(error.message);
+      showError(error);
       button.disabled = false;
     }
   };
@@ -3960,7 +3975,7 @@ async function initSettings() {
       applyLocale();
       toast(t("saved"));
     } catch (error) {
-      toast(error.message);
+      showError(error);
     } finally {
       saveButton.disabled = false;
     }

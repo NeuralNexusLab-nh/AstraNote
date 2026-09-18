@@ -268,9 +268,21 @@ async function openAiTransform({ title, content, prompt, tier }) {
   });
   const data = await response.json().catch(() => null);
   if (!response.ok) throw Object.assign(new Error("Astra AI could not complete this request."), { status: response.status, retryable: response.status === 408 || response.status === 429 || response.status >= 500 });
-  const raw = data?.output_text;
+  // Responses normally exposes `output_text`, but structured responses can also
+  // arrive as an output_text content item. Supporting both keeps the API
+  // contract stable across service tiers without logging private note content.
+  const outputContent = Array.isArray(data?.output)
+    ? data.output.flatMap((item) => Array.isArray(item?.content) ? item.content : [])
+    : [];
+  const raw = typeof data?.output_text === "string"
+    ? data.output_text
+    : outputContent.find((item) => typeof item?.text === "string")?.text;
   let result;
-  try { result = JSON.parse(raw); } catch { throw Object.assign(new Error("Astra AI returned an invalid result."), { status: 502 }); }
+  try {
+    result = JSON.parse(String(raw || "").trim().replace(/^```json\s*/i, "").replace(/\s*```$/, ""));
+  } catch {
+    throw Object.assign(new Error("Astra AI returned an invalid result."), { status: 502 });
+  }
   if (!result || typeof result.message !== "string" || typeof result.title !== "string" || typeof result.content !== "string")
     throw Object.assign(new Error("Astra AI returned an invalid result."), { status: 502 });
   return { result: { message: result.message.slice(0, 600), title: normalizeText(result.title, MAX_NOTE_NAME), content: result.content.slice(0, AI_MAX_NOTE_BYTES) }, usage: data?.usage || {} };
@@ -4038,6 +4050,7 @@ const pages = {
   "/docs/encryption": "docs-article.html",
   "/docs/sharing": "docs-article.html",
   "/docs/security": "docs-article.html",
+  "/docs/astra-ai": "docs-article.html",
   "/docs/plans": "docs-article.html",
   "/docs/faq": "docs-article.html",
   "/plans": "plans.html",
@@ -4180,5 +4193,6 @@ module.exports = {
     accountOrderId,
     cleanupBillingRecords,
     retainedOrder,
+    openAiTransform,
   },
 };

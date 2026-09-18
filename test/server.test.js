@@ -15,6 +15,7 @@ process.env.ASTRANOTE_VAULT_SECRET =
   "test-only-independent-vault-secret-that-is-longer-than-sixty-four-characters-123456789";
 process.env.ASTRA_CONFIDENTIAL_KEY =
   "test-only-new-confidential-key-that-is-independent-and-longer-than-sixty-four-characters-987654321";
+process.env.API_KEY = "test-only-api-key";
 
 const { app, ensureData, constants, testables } = require("../server");
 
@@ -29,6 +30,22 @@ test.before(async () => {
       resolve();
     });
   });
+});
+
+test("Astra AI accepts structured Responses output content", async () => {
+  const originalFetch = global.fetch;
+  global.fetch = async () => new Response(JSON.stringify({
+    output: [{ type: "message", content: [{ type: "output_text", text: JSON.stringify({
+      message: "Made the note clearer.", title: "Clear note", content: "A concise result.",
+    }) }] }],
+    usage: { input_tokens: 10, output_tokens: 12 },
+  }), { status: 200, headers: { "content-type": "application/json" } });
+  try {
+    const result = await testables.openAiTransform({ title: "Before", content: "Original", prompt: "Improve it", tier: "flex" });
+    assert.deepEqual(result.result, { message: "Made the note clearer.", title: "Clear note", content: "A concise result." });
+  } finally {
+    global.fetch = originalFetch;
+  }
 });
 
 test.after(async () => {

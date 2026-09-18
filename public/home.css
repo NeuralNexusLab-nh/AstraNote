@@ -26,10 +26,11 @@ body[data-page="home"] .section-head h2,
 body[data-page="home"] .section-head > p:last-child { margin-bottom: 0; line-height: 1.8; }
 .home-intro { max-width: 690px; }
 body[data-page="home"] .eyebrow { font-size: .8125rem; letter-spacing: .09em; }
-body[data-page="home"] .feature-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
-body[data-page="home"] .feature-card { padding: 24px 0 0; border-radius: 0; border-top: 1px solid var(--line); background: none; }
+/* Four cards remain a deliberate 2 × 2 reading grid instead of an uneven row. */
+body[data-page="home"] .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; }
+body[data-page="home"] .feature-card { min-height: 178px; padding: 26px 0 0; border-radius: 0; border-top: 1px solid var(--line); background: none; }
 body[data-page="home"] .feature-card:hover { transform: none; border-color: transparent; border-top-color: var(--primary-hover); }
-body[data-page="home"] .feature-heading { font-size: 1.0625rem; line-height: 1.55; gap: 10px; margin-bottom: 12px; text-wrap: balance; }
+body[data-page="home"] .feature-heading { align-items: flex-start; font-size: 1.0625rem; line-height: 1.55; gap: 10px; margin-bottom: 12px; text-wrap: balance; }
 body[data-page="home"] .feature-icon { width: 28px; height: 28px; border: 0; font-size: 1.125rem; color: var(--primary-hover); }
 body[data-page="home"] .feature-card p { line-height: 1.85; text-wrap: pretty; }
 .home-plans { border-block: 1px solid var(--line); background: color-mix(in srgb, var(--card) 28%, var(--canvas)); }
@@ -100,7 +101,7 @@ body[data-page="home"] .site-nav.open:not(.scrolled) .mobile-toggle { background
 .home-nojs-languages { padding: 24px; display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; }
 .home-nojs-languages a { display: inline-flex; align-items: center; min-height: 44px; }
 @media (max-width: 900px) {
-  .home-plan-grid, body[data-page="home"] .feature-grid { grid-template-columns: minmax(0, 1fr); }
+  .home-plan-grid { grid-template-columns: minmax(0, 1fr); }
   .home-plan-grid { max-width: 620px; margin-inline: auto; }
   .home-plan-description { min-height: 0; }
   .home-free { grid-template-columns: auto minmax(0, 1fr); gap: 16px 24px; }
@@ -116,6 +117,8 @@ body[data-page="home"] .site-nav.open:not(.scrolled) .mobile-toggle { background
   .hero-actions .btn { padding: 11px 16px; min-height: 46px; font-size: .875rem; }
   body[data-page="home"] .home-section { padding: 60px 0; }
   body[data-page="home"] .section-head { margin-bottom: 28px; }
+  body[data-page="home"] .feature-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  body[data-page="home"] .feature-card { min-height: 0; padding-top: 20px; }
   .home-plan { padding: 24px; }
   .storage-example { padding: 24px; }
   .home-free { padding: 24px; grid-template-columns: minmax(0, 1fr); }

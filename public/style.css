@@ -1231,6 +1231,14 @@ textarea {
   flex-wrap: nowrap;
   justify-content: flex-end;
 }
+body[data-page="note"] .note-actions .btn,
+body[data-page="note"] .note-actions .share-toggle {
+  min-height: 38px;
+  padding: 7px 11px;
+  font-size: 13px;
+}
+body[data-page="note"] .note-actions .btn i,
+body[data-page="note"] .note-actions .share-toggle > i { font-size: .92em; }
 .astra-ai-form, .astra-ai-preview { display: grid; gap: 14px; }
 .astra-ai-form textarea, .astra-ai-preview textarea { width: 100%; resize: vertical; }
 .astra-ai-preview textarea { min-height: 260px; }
@@ -1983,17 +1991,18 @@ body[data-page="docs"] .docs-home-legacy {
 .docs-faq-list dd b { background: var(--button); color: var(--muted); }
 .docs-plan-overview { margin-top: 30px; }
 .docs-plan-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
-.docs-plan-card, .docs-plan-free { padding: 19px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+.docs-plan-card, .docs-plan-free { padding: 22px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+.docs-plan-card { display: flex; min-width: 0; flex-direction: column; }
 .docs-plan-card header, .docs-plan-free header { display: flex; gap: 10px; align-items: flex-start; }
 .docs-plan-card header > i, .docs-plan-free header > i { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 9px; background: var(--button); color: var(--primary); }
-.docs-plan-card h2, .docs-plan-free h2 { margin: 0; font-size: 20px; }
-.docs-plan-card header p, .docs-plan-free header p { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
-.docs-plan-card > strong { display: block; margin: 18px 0 14px; font-size: 18px; }
-.docs-plan-card > strong small { color: var(--muted); font-size: 11px; font-weight: 500; }
+.docs-plan-card h2, .docs-plan-free h2 { margin: 0; font-size: 21px; letter-spacing: -.02em; }
+.docs-plan-card header p, .docs-plan-free header p { margin: 3px 0 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.docs-plan-card > strong { display: flex; align-items: baseline; gap: 6px; margin: 20px 0 16px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--button); font-size: 17px; letter-spacing: -.015em; }
+.docs-plan-card > strong small { color: var(--muted); font-size: 12px; font-weight: 500; }
 .docs-plan-card ul, .docs-plan-free ul { display: grid; gap: 9px; margin: 0; padding: 0; list-style: none; }
-.docs-plan-card li, .docs-plan-free li { color: var(--muted); font-size: 13px; line-height: 1.45; }
+.docs-plan-card li, .docs-plan-free li { color: var(--muted); font-size: 13px; line-height: 1.55; }
 .docs-plan-card li i { width: 17px; color: var(--primary); text-align: center; }
-.docs-plan-card > p { margin: 18px 0 0; padding-top: 15px; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.55; }
+.docs-plan-card > p { margin: auto 0 0; padding-top: 17px; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.6; }
 .docs-plan-pro { border-color: color-mix(in srgb, var(--primary) 65%, var(--line)); background: color-mix(in srgb, var(--primary) 7%, var(--card)); }
 .docs-plan-ultra { border-color: color-mix(in srgb, #a66ae5 65%, var(--line)); }
 .docs-plan-ultra header > i { color: #a66ae5; }
@@ -3597,6 +3606,8 @@ body[data-page="home"] .zero-feature-list {
   }
   body[data-page="note"] .note-actions .btn {
     width: auto;
+    min-height: 44px;
+    padding: 0;
   }
   body[data-page="notes"] .note-filter-toggle > span[data-i18n] {
     display: none;

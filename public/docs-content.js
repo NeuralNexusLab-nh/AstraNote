@@ -93,7 +93,15 @@
     const lang = locale(); const page = item[lang]; const active = route;
     const nav = sections.map(([slug, icon], i) => `<a href="/docs/${slug}" class="${slug === active ? "active" : ""}"><i class="fa-solid ${icon}" aria-hidden="true"></i>${names[lang][i]}</a>`).join("");
     const label = route === "home" ? (lang === "zh-Hant" ? "文件首頁" : lang === "ja" ? "ドキュメント" : "Documentation") : names[lang][sections.findIndex(([slug]) => slug === route)];
-    const body = route === "encryption" ? encryptionGuide[lang] : page.body;
+    let body = route === "encryption" ? encryptionGuide[lang] : page.body;
+    if (route === "encryption") {
+      const normal = lang === "zh-Hant"
+        ? "<p class=\"docs-callout\"><i class=\"fa-solid fa-lock\" aria-hidden=\"true\"></i><strong>普通加密（AES-256-GCM）</strong>適合不需要 PIN、但希望加密儲存的情況；舊 AES-128 筆記仍可讀取，但不能再新建。</p>"
+        : lang === "ja"
+          ? "<p class=\"docs-callout\"><i class=\"fa-solid fa-lock\" aria-hidden=\"true\"></i><strong>通常暗号化（AES-256-GCM）</strong>は PIN を使わずに暗号化保存したい場合の選択肢です。従来の AES-128 ノートは読めますが、新規作成はできません。</p>"
+          : "<p class=\"docs-callout\"><i class=\"fa-solid fa-lock\" aria-hidden=\"true\"></i><strong>Normal encryption (AES-256-GCM)</strong> is for encrypted storage without a PIN. Legacy AES-128 notes remain readable, but cannot be newly created.</p>";
+      body = body.replace("</section><hr class=\"docs-rule\">", `${normal}</section><hr class=\"docs-rule\">`);
+    }
     const current = sections.findIndex(([key]) => key === route);
     const previous = current <= 0 ? ["home", "fa-book-open"] : sections[current - 1];
     const next = current < 0 || current === sections.length - 1 ? null : sections[current + 1];
@@ -106,6 +114,15 @@
         ? [["/terms", "fa-scale-balanced", "利用規約"], ["/privacy", "fa-shield-halved", "プライバシー"], ["https://github.com/NeuralNexusLab-nh/AstraNote", "fa-github", "リポジトリ · All Rights Reserved", true], ["mailto:vdp@nxlabtw.com", "fa-bug", "脆弱性を報告"]]
         : [["/terms", "fa-scale-balanced", "Terms"], ["/privacy", "fa-shield-halved", "Privacy"], ["https://github.com/NeuralNexusLab-nh/AstraNote", "fa-github", "Repository · All Rights Reserved", true], ["mailto:vdp@nxlabtw.com", "fa-bug", "Report a vulnerability"]];
     root.innerHTML = `<div class="docs-layout"><aside class="docs-sidebar"><a class="docs-sidebar-home ${route === "home" ? "active" : ""}" href="/docs"><i class="fa-solid fa-book-open" aria-hidden="true"></i>${lang === "zh-Hant" ? "文件首頁" : lang === "ja" ? "ドキュメント" : "Documentation"}</a><nav aria-label="Documentation">${nav}</nav><div class="docs-sidebar-links">${utilityLinks.map(([href, icon, text, external]) => `<a href="${href}"${external ? ' target="_blank" rel="noopener noreferrer"' : ""}><i class="fa-${icon === "fa-github" ? "brands" : "solid"} ${icon}" aria-hidden="true"></i>${text}</a>`).join("")}</div></aside><article class="docs-article"><header class="docs-article-head reveal visible"><p class="eyebrow"><i class="fa-solid fa-book-open" aria-hidden="true"></i>${label}</p><h1>${page.title}</h1><p class="muted docs-lead">${page.lead}</p></header><div class="docs-article-body">${body}</div><footer class="docs-next"><a href="${pagePath(previous[0])}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>${previousText}</span></a>${next ? `<a href="${pagePath(next[0])}"><span>${nextText}</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>` : `<a href="mailto:astranote@nxlabtw.com"><span>${nextText}</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>`}</footer></article></div>`;
+    if (route === "encryption") {
+      const names = lang === "zh-Hant"
+        ? ["Secret（AstraSecret）", "機密（AstraConfidential）", "最高機密（AstraZero）"]
+        : lang === "ja"
+          ? ["シークレット（AstraSecret）", "コンフィデンシャル（AstraConfidential）", "最高機密（AstraZero）"]
+          : ["Secret (AstraSecret)", "Confidential (AstraConfidential)", "Top Secret (AstraZero)"];
+      root.querySelectorAll(".docs-encryption-map article header h2, .docs-protection-compare > div:not(.docs-protection-head) strong")
+        .forEach((heading, index) => { heading.textContent = names[index]; });
+    }
     const zeroBadge = root.querySelector(".docs-zero-card header b");
     if (zeroBadge) zeroBadge.textContent = lang === "zh-Hant" ? "僅限 Pro 與 Ultra" : lang === "ja" ? "Pro・Ultra 限定" : "Pro & Ultra only";
     const title = `AstraNote - ${page.title}`;
