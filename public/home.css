@@ -64,6 +64,8 @@ body[data-page="home"] .feature-card p { line-height: 1.85; text-wrap: pretty; }
 .home-free h3 i { color: var(--muted); }
 .home-free p { margin: 0; line-height: 1.7; }
 .home-free .muted { font-size: .875rem; margin-top: 4px; }
+.home-free-ai { display: flex; align-items: baseline; gap: 9px; margin-top: 7px !important; color: var(--muted); font-size: .8125rem; }
+.home-free-ai i { width: 16px; color: var(--primary-hover); text-align: center; }
 .home-free .btn { min-height: 44px; font-size: .875rem; white-space: normal; }
 .home-plans-after { display: flex; justify-content: space-between; align-items: flex-start; gap: 28px; margin-top: 24px; }
 .home-plan-footnotes { max-width: 710px; color: var(--muted); font-size: .8125rem; line-height: 1.8; }

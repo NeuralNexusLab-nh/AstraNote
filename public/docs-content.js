@@ -140,6 +140,22 @@
         ? [["/terms", "fa-scale-balanced", "利用規約"], ["/privacy", "fa-shield-halved", "プライバシー"], ["https://github.com/NeuralNexusLab-nh/AstraNote", "fa-github", "リポジトリ · All Rights Reserved", true], ["mailto:vdp@nxlabtw.com", "fa-bug", "脆弱性を報告"]]
         : [["/terms", "fa-scale-balanced", "Terms"], ["/privacy", "fa-shield-halved", "Privacy"], ["https://github.com/NeuralNexusLab-nh/AstraNote", "fa-github", "Repository · All Rights Reserved", true], ["mailto:vdp@nxlabtw.com", "fa-bug", "Report a vulnerability"]];
     root.innerHTML = `<div class="docs-layout"><aside class="docs-sidebar"><a class="docs-sidebar-home ${route === "home" ? "active" : ""}" href="/docs"><i class="fa-solid fa-book-open" aria-hidden="true"></i>${lang === "zh-Hant" ? "文件首頁" : lang === "ja" ? "ドキュメント" : "Documentation"}</a><nav aria-label="Documentation">${nav}</nav><div class="docs-sidebar-links">${utilityLinks.map(([href, icon, text, external]) => `<a href="${href}"${external ? ' target="_blank" rel="noopener noreferrer"' : ""}><i class="fa-${icon === "fa-github" ? "brands" : "solid"} ${icon}" aria-hidden="true"></i>${text}</a>`).join("")}</div></aside><article class="docs-article"><header class="docs-article-head reveal visible"><p class="eyebrow"><i class="fa-solid fa-book-open" aria-hidden="true"></i>${label}</p><h1>${page.title}</h1><p class="muted docs-lead">${page.lead}</p></header><div class="docs-article-body">${body}</div><footer class="docs-next"><a href="${pagePath(previous[0])}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>${previousText}</span></a>${next ? `<a href="${pagePath(next[0])}"><span>${nextText}</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>` : `<a href="mailto:astranote@nxlabtw.com"><span>${nextText}</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>`}</footer></article></div>`;
+    if (route === "plans") {
+      [
+        [".docs-plan-plus", "aiPlanPlus"],
+        [".docs-plan-pro", "aiPlanPro"],
+        [".docs-plan-ultra", "aiPlanUltra"],
+        [".docs-plan-free", "aiPlanFree"],
+      ].forEach(([selector, key]) => {
+        const list = root.querySelector(`${selector} ul`);
+        if (!list) return;
+        const item = document.createElement("li");
+        item.className = "docs-ai-feature";
+        item.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i><span></span>';
+        item.querySelector("span").textContent = t(key);
+        list.append(item);
+      });
+    }
     if (route === "encryption") {
       const names = lang === "zh-Hant"
         ? ["秘密（AstraSecret）", "機密（AstraConfidential）", "最高機密（AstraZero）"]
