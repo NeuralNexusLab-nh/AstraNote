@@ -31,7 +31,7 @@ AstraNote states that it uses only necessary cookies for sign-in, security, lang
 - Documentation: https://astranote.nxlabtw.com/docs
 - Getting started: https://astranote.nxlabtw.com/docs/getting-started
 - Encryption guide: https://astranote.nxlabtw.com/docs/encryption
-- Sharing and AstraDrop: https://astranote.nxlabtw.com/docs/sharing
+- Sharing: https://astranote.nxlabtw.com/docs/sharing
 - Account security: https://astranote.nxlabtw.com/docs/security
 - Privacy: https://astranote.nxlabtw.com/privacy
 - Terms: https://astranote.nxlabtw.com/terms

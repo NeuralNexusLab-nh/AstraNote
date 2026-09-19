@@ -747,7 +747,7 @@ Object.assign(I18N.en, {
   noteLocked: "Locked",
   noteLockedTitle: "This note is locked",
   noteLockedBody:
-    "This note exceeds your current plan allowance. You may read it or permanently delete it; editing, sharing, organization, recovery and new Drops require an upgrade.",
+    "This note exceeds your current plan allowance. You may read it or permanently delete it; editing, sharing, organization and recovery require an upgrade.",
   scheduledDeletion: "Permanent deletion scheduled for {date}",
   viewPlans: "View plans",
   lockedAccountWarning:
@@ -825,7 +825,7 @@ Object.assign(I18N["zh-Hant"], {
   noteLocked: "已鎖定",
   noteLockedTitle: "這篇筆記已被鎖定",
   noteLockedBody:
-    "此筆記超出目前方案額度。你仍可閱讀或永久刪除；編輯、分享、整理、復原與建立新的 Drop 需要先升級解鎖。",
+    "此筆記超出目前方案額度。你仍可閱讀或永久刪除；編輯、分享、整理與復原需要先升級解鎖。",
   scheduledDeletion: "預計於 {date} 永久刪除",
   viewPlans: "查看方案",
   lockedAccountWarning:
@@ -917,7 +917,7 @@ Object.assign(I18N.ja, {
   noteLocked: "ロック中",
   noteLockedTitle: "このノートはロックされています",
   noteLockedBody:
-    "このノートは現在のプラン上限を超えています。閲覧または完全削除はできますが、編集、共有、整理、復元、新しい Drop の作成にはアップグレードによる解除が必要です。",
+    "このノートは現在のプラン上限を超えています。閲覧または完全削除はできますが、編集、共有、整理、復元にはアップグレードによる解除が必要です。",
   scheduledDeletion: "{date} に完全削除予定",
   viewPlans: "プランを見る",
   lockedAccountWarning:
@@ -980,13 +980,6 @@ Object.assign(I18N["en"], {
   chooseUltra: "Choose Ultra",
   comparePlans: "Compare plans",
   compareFeature: "Feature",
-  AstraDrop: "AstraDrop",
-  dropAllowance: "Active drops · maximum lifetime",
-  dropEncryption: "AstraDrop protection",
-  freeDropFeature: "1 Drop · Basic / AES · 24 hours",
-  plusDropFeature: "5 Drops · + DropSecret · 7 days",
-  proDropFeature: "20 Drops · + DropConfidential · 7 days",
-  ultraDropFeature: "50 Drops · + DropConfidential · 30 days",
   usernameRules: "3–24 characters. Use letters, numbers, and underscores only.",
   passwordRules: "10–256 characters. Do not use a common password or include your username.",
   passwordConfirmationRules: "The two passwords must match.",
@@ -1020,7 +1013,7 @@ Object.assign(I18N["en"], {
   confidentialPlanRequired:
     "Plus, Pro or Ultra is required for new AstraConfidential notes.",
   noteLockedBody:
-    "This note exceeds your current allowance. You may read it or permanently delete it; editing, sharing, organization, recovery and new Drops require an upgrade.",
+    "This note exceeds your current allowance. You may read it or permanently delete it; editing, sharing, organization and recovery require an upgrade.",
   pinned: "Pinned",
   pin: "Pin",
   unpin: "Unpin",
@@ -1108,13 +1101,6 @@ Object.assign(I18N["zh-Hant"], {
   chooseUltra: "選擇 Ultra",
   comparePlans: "方案比較",
   compareFeature: "功能",
-  AstraDrop: "AstraDrop",
-  dropAllowance: "同時存在數量 · 最長有效期",
-  dropEncryption: "AstraDrop 加密",
-  freeDropFeature: "1 個 Drop · Basic / AES · 24 小時",
-  plusDropFeature: "5 個 Drop · 加入 DropSecret · 7 天",
-  proDropFeature: "20 個 Drop · 加入 DropConfidential · 7 天",
-  ultraDropFeature: "50 個 Drop · 加入 DropConfidential · 30 天",
   usernameRules: "3～24 個字元，只能使用英文字母、數字與底線。",
   passwordRules: "10～256 個字元；不可使用常見密碼，也不可包含使用者名稱。",
   passwordConfirmationRules: "兩次輸入的密碼必須相同。",
@@ -1221,13 +1207,6 @@ Object.assign(I18N["ja"], {
   chooseUltra: "Ultra を選ぶ",
   comparePlans: "プラン比較",
   compareFeature: "機能",
-  AstraDrop: "AstraDrop",
-  dropAllowance: "同時に作成できる数・最長の有効期限",
-  dropEncryption: "AstraDrop の暗号化",
-  freeDropFeature: "Drop 1件・Basic / AES・24時間",
-  plusDropFeature: "Drop 5件・DropSecret を追加・7日間",
-  proDropFeature: "Drop 20件・DropConfidential を追加・7日間",
-  ultraDropFeature: "Drop 50件・DropConfidential を追加・30日間",
   usernameRules: "3～24文字。英字、数字、アンダースコアのみ使用できます。",
   passwordRules: "10～256文字。よくあるパスワードやユーザー名を含むものは使用できません。",
   passwordConfirmationRules: "2つのパスワードは一致している必要があります。",
@@ -1260,7 +1239,7 @@ Object.assign(I18N["ja"], {
   confidentialPlanRequired:
     "新しい AstraConfidential ノートには Plus、Pro または Ultra が必要です。",
   noteLockedBody:
-    "このノートは現在のプラン上限を超えています。閲覧または完全削除はできますが、編集、共有、整理、復元、新しい Drop の作成にはアップグレードによる解除が必要です。",
+    "このノートは現在のプラン上限を超えています。閲覧または完全削除はできますが、編集、共有、整理、復元にはアップグレードによる解除が必要です。",
   pinned: "ピン留め済み",
   pin: "ピン留め",
   unpin: "ピンを外す",
@@ -1338,17 +1317,17 @@ Object.assign(I18N.ja, { termsUpdated: "施行・最終更新：2026年9月5日"
 Object.assign(I18N.en, {
   docs: "Documentation",
   docsSeoDescription:
-    "Learn how AstraNote notes, encryption, sharing, AstraDrop, plans, storage and account security work.",
+    "Learn how AstraNote notes, encryption, sharing, plans, storage and account security work.",
 });
 Object.assign(I18N["zh-Hant"], {
   docs: "文件",
   docsSeoDescription:
-    "了解 AstraNote 的筆記、加密、分享、AstraDrop、方案、空間與帳號安全機制。",
+    "了解 AstraNote 的筆記、加密、分享、方案、空間與帳號安全機制。",
 });
 Object.assign(I18N.ja, {
   docs: "ドキュメント",
   docsSeoDescription:
-    "AstraNote のノート、暗号化、共有、AstraDrop、プラン、容量、アカウント保護について説明します。",
+    "AstraNote のノート、暗号化、共有、プラン、容量、アカウント保護について説明します。",
 });
 Object.assign(I18N.ja, {
   tagline: "書き留めて、必要なときに見つける。",
@@ -1630,7 +1609,7 @@ Object.assign(I18N["en"], {
     "Usable keys exist temporarily in client memory while you unlock or edit. A compromised device, malicious application code or a guessed PIN can still expose content. This protection is not a promise of absolute security.",
   lockedAccessTermsTitle: "What a locked note allows",
   lockedAccessTerms:
-    "When a plan expires or usage exceeds its allowance, over-limit notes are locked immediately, largest first. A locked note remains readable and may be permanently deleted. The server refuses editing, sharing, pinning or unpinning, moving, archiving or unarchiving, recovery actions and new Drop creation until an adequate upgrade unlocks it. Existing pins and archive status do not bypass the lock. An upgrade clears a lock only when the new allowance permits it. Continuous over-limit locks expire after 30 days; trash retains its original expiry and may be deleted sooner. Neither pinning nor upgrading extends a trash deadline.",
+    "When a plan expires or usage exceeds its allowance, over-limit notes are locked immediately, largest first. A locked note remains readable and may be permanently deleted. The server refuses editing, sharing, pinning or unpinning, moving, archiving or unarchiving, and recovery actions until an adequate upgrade unlocks it. Existing pins and archive status do not bypass the lock. An upgrade clears a lock only when the new allowance permits it. Continuous over-limit locks expire after 30 days; trash retains its original expiry and may be deleted sooner. Neither pinning nor upgrading extends a trash deadline.",
   privacyNotebookTitle: "Notes, search and client encryption",
   privacyNotebookData:
     "AstraNote keeps note titles, pin and archive status, encryption metadata, and—for eligible notes—one previous version and trash timestamps. Titles stay unencrypted. Title search runs on the note list already loaded by your client; search queries are not submitted to a search service, and content is not decrypted or indexed for search. Folders and tags are no longer supported; retired classification fields are removed when account metadata is saved, without deleting note content.",
@@ -1666,7 +1645,7 @@ Object.assign(I18N["zh-Hant"], {
     "解鎖或編輯期間，可用金鑰會短暫存在客戶端記憶體。受控制的裝置、惡意程式碼或被猜中的 PIN 仍可能使內容外洩；這不是絕對安全的保證。",
   lockedAccessTermsTitle: "筆記鎖定後的存取限制",
   lockedAccessTerms:
-    "方案到期或超出額度時，超額筆記會立即由大到小鎖定。鎖定筆記仍可閱讀與永久刪除；在升級到足夠額度前，後端會拒絕編輯、分享、釘選或取消釘選、移動、封存或取消封存、復原操作與建立新的 Drop。既有釘選或封存狀態不能繞過鎖定。升級後仍須符合新額度才會解鎖。連續超額鎖定滿30天會永久刪除；垃圾桶維持原到期時間，可能更早清除。釘選或升級不會延長垃圾桶期限。",
+    "方案到期或超出額度時，超額筆記會立即由大到小鎖定。鎖定筆記仍可閱讀與永久刪除；在升級到足夠額度前，後端會拒絕編輯、分享、釘選或取消釘選、移動、封存或取消封存與復原操作。既有釘選或封存狀態不能繞過鎖定。升級後仍須符合新額度才會解鎖。連續超額鎖定滿30天會永久刪除；垃圾桶維持原到期時間，可能更早清除。釘選或升級不會延長垃圾桶期限。",
   privacyNotebookTitle: "筆記整理、搜尋與客戶端加密",
   privacyNotebookData:
     "AstraNote 保存筆記標題、釘選及封存狀態、加密中繼資料，以及符合資格筆記的上一版本與垃圾桶時間紀錄。標題不加密。標題搜尋僅在客戶端已載入的筆記清單中執行，不會將查詢字串傳至搜尋服務，也不會為搜尋解密或建立內容索引。資料夾與標籤功能已取消；舊分類欄位於帳號中繼資料儲存時清理，不刪除筆記內容。",
@@ -1702,7 +1681,7 @@ Object.assign(I18N["ja"], {
     "解除・編集中は、利用可能な鍵がクライアントのメモリーに一時的に存在します。侵害された端末、悪意あるコード、推測された PIN からは内容が漏れる可能性があり、絶対的な安全の保証ではありません。",
   lockedAccessTermsTitle: "ロック中のノートの制限",
   lockedAccessTerms:
-    "期限切れや上限超過では、容量の大きいノートから直ちにロックします。ロック中でも閲覧と完全削除はできますが、十分なアップグレードで解除するまで編集、共有、ピン留めと解除、移動、アーカイブと解除、復元、新しい Drop の作成はサーバー側で拒否します。既存のピンやアーカイブで回避できません。アップグレード後も新しい上限を満たす場合のみ解除します。上限超過のロックが30日続くと完全削除し、ゴミ箱は元の期限でそれより早く削除される場合があります。ピン留めやアップグレードでゴミ箱の期限は延長されません。",
+    "期限切れや上限超過では、容量の大きいノートから直ちにロックします。ロック中でも閲覧と完全削除はできますが、十分なアップグレードで解除するまで編集、共有、ピン留めと解除、移動、アーカイブと解除、復元はサーバー側で拒否します。既存のピンやアーカイブで回避できません。アップグレード後も新しい上限を満たす場合のみ解除します。上限超過のロックが30日続くと完全削除し、ゴミ箱は元の期限でそれより早く削除される場合があります。ピン留めやアップグレードでゴミ箱の期限は延長されません。",
   privacyNotebookTitle: "ノート整理、検索とクライアント暗号化",
   privacyNotebookData:
     "タイトル、ピンとアーカイブの状態、暗号化メタデータ、対象ノートの直前のバージョンとゴミ箱の日時を保存します。タイトルは平文です。タイトル検索はクライアントに読み込み済みの一覧だけで行い、検索語を検索サービスに送信せず、内容の復号や検索用索引の作成もしません。フォルダーとタグは廃止し、アカウント情報の保存時に旧分類を除去します。ノートの内容は削除しません。",
@@ -2219,8 +2198,6 @@ function renderPlanComparison() {
     ["confidentialOption", null, [false, true, true, true]],
     ["astraAiAllowance", null, [t("aiAllowanceFree"), t("aiAllowancePlus"), t("aiAllowancePro"), t("aiAllowanceUltra")]],
     ["organizeFeature", "organizeDetail", [false, true, true, true]],
-    ["AstraDrop", "dropAllowance", ["1 · 24h", "5 · 7d", "20 · 7d", "50 · 30d"]],
-    ["dropEncryption", null, ["Basic · AES-256", "Basic · AES-256 · DropSecret", "Basic · AES-256 · DropSecret · DropConfidential", "Basic · AES-256 · DropSecret · DropConfidential"]],
     ["zeroOption", null, [false, false, true, true]],
     ["recoveryFeature", "recoveryDetail", [false, false, false, true]],
     ["prioritySupport", "prioritySupportDetail", [false, false, false, true]],
@@ -3803,18 +3780,6 @@ async function initNote() {
       if (!error.cancelled) showError(error);
     });
   $("#delete-note").onclick = () => deleteNote(note);
-  $("#create-drop").onclick = () => {
-    sessionStorage.setItem(
-      "astranote_drop_source",
-      JSON.stringify({
-        id: note.id,
-        name: note.name,
-        content: note.content,
-        encryption: note.encryption,
-      }),
-    );
-    location.href = `/drops/new?note=${encodeURIComponent(note.id)}`;
-  };
   const shareToggle = $("#share-note");
   const shareRow = $("#share-url-row");
   const shareInput = $("#share-url");
