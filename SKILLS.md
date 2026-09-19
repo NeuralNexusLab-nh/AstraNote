@@ -1,19 +1,19 @@
-# AstraNote design and interface guide
+# Design and interface guide
 
-Use this guide whenever changing AstraNote's visual design, front-end copy, layout, or interaction. The goal is a calm, polished online notebook: fast enough for a tiny piece of information, capable enough for private and important text. It must feel like one considered product, not a collection of generic SaaS screens.
+Use this guide whenever changing visual design, front-end copy, layout, or interaction. The goal is a calm, polished online notebook: fast enough for a tiny piece of information, capable enough for private and important text. It must feel like one considered product, not a collection of generic SaaS screens.
 
 ## Product feeling
 
 - **Quiet confidence.** The interface is refined, useful, and private without looking like a crypto product, a hacker dashboard, or a space-themed toy.
 - **Fast before complicated.** Prioritize finding, writing, saving, and returning to short text. Advanced capability must stay discoverable but never dominate the main task.
-- **Four equal strengths.** Present AstraNote as a capable notebook, strong optional encryption, fast cross-device access, and useful supporting tools. Do not let one of these erase the others.
+- **Four equal strengths.** Present the product as a capable notebook, strong optional encryption, fast cross-device access, and useful supporting tools. Do not let one of these erase the others.
 - **Plain language.** Use friendly, specific sentences. Avoid needless technical detail, mixed-language jargon, dramatic slogans, and claims that overstate security.
 - **Titles identify; content is protected.** Explain this distinction clearly wherever encryption is discussed. Never imply that a title is encrypted when it is not.
 
 ## Visual language
 
 - Preserve the existing color tokens, typography, page width, card system, border system, and dark/light themes. Add tokens rather than hard-coding ad hoc colors.
-- Use the primary AstraNote accent, not Bitcoin orange, metallic gold, loud gradients, or Web3 visual clichés.
+- Use the existing primary accent, not Bitcoin orange, metallic gold, loud gradients, or Web3 visual clichés.
 - Cards should have restrained rounded corners, a clear border, balanced internal padding, and a visible purpose. Do not nest decorative cards without a hierarchy reason.
 - Maintain a deliberate spacing rhythm. A grid row should look intentionally full: three related items should be three equal cards on wide screens, not two above one. When a feature is removed, rebalance the remaining grid rather than leaving a full-width orphan or dead area.
 - Keep titles, values, labels, and units on sensible baselines. Never make a unit visually larger than its number, and do not force awkward line breaks such as a number on one line and its unit on the next.
@@ -41,16 +41,16 @@ Use this guide whenever changing AstraNote's visual design, front-end copy, layo
 ## Theme, plan, and status treatment
 
 - Dark mode is the default; light mode must be equally legible. Check accents, borders, logo marks, outlined plan labels, and muted text in both themes.
-- The signed-in plan badge aligns vertically with the AstraNote wordmark and is an outlined rounded rectangle, not a detached decorative sticker.
+- The signed-in plan badge aligns vertically with the wordmark and is an outlined rounded rectangle, not a detached decorative sticker.
 - Visual plan hierarchy: Free is restrained; Plus is refined green; Pro is a clear featured blue treatment; Ultra is a premium purple treatment; Admin is the strongest premium treatment. These colors must still work in dark and light mode.
 - Use color together with text and iconography for statuses. Errors and irreversible limits deserve a clear custom dialog or inline error state; do not hide important failures in a fleeting corner message.
 
 ## Motion
 
-- Keep AstraNote's existing reveal and transition language: short, subtle, purposeful motion that confirms a change without delaying work.
+- Keep the existing reveal and transition language: short, subtle, purposeful motion that confirms a change without delaying work.
 - The home starfield may respond gently to scrolling, but must not reduce readability or compete with the message.
 - Do not add decorative spinning coins, 3D objects, intrusive animations, or repeated motion that distracts from notes.
-- Loading states must be unambiguous. A long-running action, especially Astra AI, needs visible progress or a spinner plus clear status—not only a warning message.
+- Loading states must be unambiguous. A long-running action needs visible progress or a spinner plus clear status—not only a warning message.
 
 ## Forms, CAPTCHA, and dialogs
 
@@ -73,7 +73,7 @@ Use this guide whenever changing AstraNote's visual design, front-end copy, layo
 
 - All visible product copy must exist in English, Traditional Chinese, and Japanese through the existing localization system. Do not build parallel per-page language logic.
 - English should be direct and polished. Traditional Chinese should sound natural rather than mechanically translated. Japanese should keep the same intent and rhythm without forcing literal wording.
-- Prefer clear product names: **Normal encryption (AES-256-GCM)**, **Secret (AstraSecret)**, **Confidential (AstraConfidential)**, and **Top Secret (AstraZero)**. Keep legacy labels only where needed to open old notes.
+- Use friendly, descriptive protection labels. Keep technical identifiers as a secondary detail only when they help someone recognize existing content.
 - Avoid unexplained internal names, environment variable names, implementation details, and security promises that a user cannot evaluate.
 
 ## Review before shipping
