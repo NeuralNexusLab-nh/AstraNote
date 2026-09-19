@@ -2667,7 +2667,10 @@ function actionModal({ title, body, confirm, danger = true, extra, run, requires
     captcha.classList.remove("captcha-parking");
     captcha.inert = false;
     captcha.removeAttribute("aria-hidden");
-    content.append(captcha);
+    const captchaBox = document.createElement("div");
+    captchaBox.className = "captcha-box";
+    captchaBox.append(captcha);
+    content.append(captchaBox);
   }
   const result = modal({
     title,

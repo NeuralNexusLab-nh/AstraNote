@@ -986,6 +986,7 @@ textarea {
 .captcha-box {
   width: 100%;
   min-height: 0;
+  max-height: 320px;
   display: block;
   padding: 0;
   border: 0;
@@ -1005,6 +1006,7 @@ textarea {
   display: block;
   width: 100% !important;
   max-width: 100% !important;
+  max-height: 320px !important;
 }
 .captcha-box iframe {
   /* Defend the form layout if a remote CAPTCHA resize message is malformed. */
