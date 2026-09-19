@@ -1829,8 +1829,8 @@ body[data-page="docs"] .docs-home-legacy {
   font-size: 13px;
 }
 .docs-diagram .docs-diagram-result {
-  grid-column: 1 / -1;
-  min-height: auto;
+  grid-column: auto;
+  min-height: 112px;
   border-color: color-mix(in srgb, var(--primary) 50%, var(--line));
   background: color-mix(in srgb, var(--primary) 10%, var(--card));
 }

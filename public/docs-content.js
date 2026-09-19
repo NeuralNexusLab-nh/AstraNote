@@ -130,7 +130,7 @@
       .replace(/(?<![(（])AstraZero(?![)）])/gu, protectionNames.zero);
     const current = sections.findIndex(([key]) => key === route);
     const previous = current <= 0 ? ["home", "fa-book-open"] : sections[current - 1];
-    const next = current < 0 || current === sections.length - 1 ? null : sections[current + 1];
+    const next = current === sections.length - 1 ? null : sections[Math.max(current + 1, 0)];
     const pagePath = (key) => key === "home" ? "/docs" : `/docs/${key}`;
     const previousText = previous[0] === "home" ? (lang === "zh-Hant" ? "文件首頁" : lang === "ja" ? "ドキュメント" : "Documentation") : names[lang][sections.findIndex(([key]) => key === previous[0])];
     const nextText = next ? names[lang][sections.findIndex(([key]) => key === next[0])] : (lang === "zh-Hant" ? "聯絡我們" : lang === "ja" ? "お問い合わせ" : "Contact us");
@@ -146,7 +146,9 @@
         : lang === "ja"
           ? ["シークレット（AstraSecret）", "コンフィデンシャル（AstraConfidential）", "最高機密（AstraZero）"]
           : ["Secret (AstraSecret)", "Confidential (AstraConfidential)", "Top Secret (AstraZero)"];
-      root.querySelectorAll(".docs-encryption-map article header h2, .docs-protection-compare > div:not(.docs-protection-head) strong")
+      root.querySelectorAll(".docs-encryption-map article header h2")
+        .forEach((heading, index) => { heading.textContent = names[index]; });
+      root.querySelectorAll(".docs-protection-compare > div:not(.docs-protection-head) strong")
         .forEach((heading, index) => { heading.textContent = names[index]; });
     }
     const zeroBadge = root.querySelector(".docs-zero-card header b");
