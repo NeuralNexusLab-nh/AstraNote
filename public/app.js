@@ -1715,74 +1715,47 @@ Object.assign(I18N["ja"], {
 });
 
 Object.assign(I18N.en, {
-  aiSpotlightEyebrow: "ASTRA AI",
-  aiSpotlightTitle: "Fast enough for a quick note. Careful enough to trust.",
-  aiSpotlightBody: "Astra AI turns one clear instruction into a usable title-and-content proposal. It is built to save time without making decisions for you—or hiding what a request sends.",
-  aiSpotlightCta: "Explore Astra AI",
-  aiPointOneTitle: "Fast: one instruction, useful draft",
-  aiPointOneBody: "Turn rough writing into clearer steps, a better structure, or a version for a different reader.",
-  aiPointTwoTitle: "Convenient: preview before saving",
-  aiPointTwoBody: "See the proposed title and content together, then save it only when it is right for you.",
-  aiPointThreeTitle: "Secure by design: clear boundaries",
-  aiPointThreeBody: "Only the title, content and your instruction are processed for a request; PINs and encryption keys are never sent or stored.",
   astraAi: "Astra AI", aiEveryThirtyDays: "Available every 30 days",
   astraAiUnavailable: "Currently unavailable",
   aiTitle: "Astra AI, on your terms", aiBody: "One instruction, a complete preview, and your final approval turn a note into its next useful version.",
   astraAiPrompt: "Astra AI instruction", astraAiPromptPlaceholder: "Describe how Astra AI should improve this note…",
   astraAiBody: "Describe how you want Astra AI to revise this note.", astraAiGenerate: "Generate preview",
   astraAiPromptRequired: "Enter an instruction for Astra AI.",
-  astraAiBusyWarning: "Astra AI is processing your note. Do not close this window, refresh, or leave AstraNote; leaving cancels this request and nothing will be saved.",
+  astraAiWorking: "Request sent. Astra AI is preparing your preview…", astraAiWorkingShort: "Preparing preview…",
+  astraAiBusyWarning: "Please keep this window open. Closing it, refreshing, or leaving AstraNote cancels this request and nothing will be saved.",
   astraAiPreview: "Astra AI preview", astraAiPreviewBody: "Review the suggested title and content before saving.", saveChanges: "Save changes", discardResult: "Discard result",
   astraAiEncryptedNotice: "Your unlocked title, content and instruction are sent to the AI service for this request. Your PIN and encryption key are not sent or stored.",
-  astraAiAllowance: "Astra AI", astraAiBasic: "Included", astraAiMore: "More available", astraAiMost: "Most available",
+  astraAiAllowance: "Astra AI · every 30 days", astraAiBasic: "Included", astraAiMore: "More available", astraAiMost: "Most available", aiAllowanceFree: "1× Free", aiAllowancePlus: "4× Free", aiAllowancePro: "12× Free", aiAllowanceUltra: "32× Free",
   aiPrivacyTitle: "Astra AI and your note", aiPrivacyText: "When you choose Astra AI, the title, content and instruction for that request are sent to OpenAI to create a preview. Nothing changes until you choose to save it. For a PIN-protected note, its unlocked text is sent only for that request; your PIN and encryption key are not sent or stored.",
   standardEncryptionOption: "Standard encryption (AES-256-GCM)", legacyEncryptionOption: "Legacy encryption (AES-128-GCM)", secretOption: "Secret (AstraSecret)", confidentialOption: "Confidential (AstraConfidential)", zeroOption: "Top Secret (AstraZero)", legacySchybridOption: "Legacy Confidential (AstraConfidential SCHybrid)", astraSecretIncluded: "Secret (AstraSecret) everyday protection", confidentialIncluded: "Confidential (AstraConfidential) advanced protection", zeroIncluded: "Top Secret (AstraZero) · client-generated keys", basicEncryption: "No encryption · Standard encryption (AES-256-GCM)",
 });
 Object.assign(I18N["zh-Hant"], {
-  aiSpotlightEyebrow: "ASTRA AI",
-  aiSpotlightTitle: "夠快，適合隨手筆記；夠慎重，才值得信任。",
-  aiSpotlightBody: "Astra AI 把一句清楚指令整理成可用的標題與內容提案。它替你省時間，卻不替你做決定，也不隱瞞一次處理會傳送什麼。",
-  aiSpotlightCta: "了解 Astra AI",
-  aiPointOneTitle: "快速：一句指令，變成可用草稿",
-  aiPointOneBody: "把粗略文字整理成步驟、更清楚的結構，或改寫給不同讀者。",
-  aiPointTwoTitle: "方便：儲存前先看完整預覽",
-  aiPointTwoBody: "建議標題與內容會一起呈現；確定適合你，再選擇儲存。",
-  aiPointThreeTitle: "安全：清楚的資料邊界",
-  aiPointThreeBody: "一次處理只使用筆記標題、內容與你的指令；PIN 與加密金鑰絕不傳送或儲存。",
   astraAi: "Astra AI", aiEveryThirtyDays: "每 30 天可用額度",
   astraAiUnavailable: "目前無法使用",
   aiTitle: "Astra AI，由你掌握", aiBody: "一句指令、完整預覽、由你確認儲存；把筆記更快整理成下一個可用版本。",
   astraAiPrompt: "Astra AI 指令", astraAiPromptPlaceholder: "說明你希望 Astra AI 如何修改這篇筆記…",
   astraAiBody: "說明你希望 Astra AI 如何修改這篇筆記。", astraAiGenerate: "產生預覽",
   astraAiPromptRequired: "請輸入給 Astra AI 的指令。",
-  astraAiBusyWarning: "Astra AI 正在處理筆記。請勿關閉此視窗、重新整理頁面或離開 AstraNote；離開後本次處理會取消，結果不會儲存。",
+  astraAiWorking: "已送出。Astra AI 正在準備預覽…", astraAiWorkingShort: "正在準備預覽…",
+  astraAiBusyWarning: "請保持此視窗開啟。關閉、重新整理或離開 AstraNote 會取消本次處理，結果不會儲存。",
   astraAiPreview: "Astra AI 預覽", astraAiPreviewBody: "儲存前，請確認建議的新標題與內容。", saveChanges: "儲存變更", discardResult: "捨棄結果",
   astraAiEncryptedNotice: "為完成本次 Astra AI 修改，已解鎖的筆記標題、內容與指令會傳送至 AI 處理服務。PIN 與加密金鑰不會傳送或儲存。",
-  astraAiAllowance: "Astra AI", astraAiBasic: "包含", astraAiMore: "更多可用額度", astraAiMost: "最多可用額度",
+  astraAiAllowance: "Astra AI · 每 30 天", astraAiBasic: "包含", astraAiMore: "更多可用額度", astraAiMost: "最多可用額度", aiAllowanceFree: "Free 的 1 倍", aiAllowancePlus: "Free 的 4 倍", aiAllowancePro: "Free 的 12 倍", aiAllowanceUltra: "Free 的 32 倍",
   aiPrivacyTitle: "Astra AI 與你的筆記", aiPrivacyText: "當你選擇使用 Astra AI，該次的筆記標題、內容與指令會傳送至 OpenAI 產生預覽。你選擇儲存前，不會改動筆記。使用 PIN 的筆記會僅為這次處理傳送已解鎖文字；PIN 與加密金鑰不會傳送或儲存。",
   standardEncryptionOption: "一般加密（AES-256-GCM）", legacyEncryptionOption: "舊版加密（AES-128-GCM）", secretOption: "秘密（AstraSecret）", confidentialOption: "機密（AstraConfidential）", zeroOption: "最高機密（AstraZero）", legacySchybridOption: "舊版機密（AstraConfidential SCHybrid）", astraSecretIncluded: "秘密（AstraSecret）日常保護", confidentialIncluded: "機密（AstraConfidential）進階保護", zeroIncluded: "最高機密（AstraZero）· 客戶端產生金鑰", basicEncryption: "不加密 · 一般加密（AES-256-GCM）",
 });
 Object.assign(I18N.ja, {
-  aiSpotlightEyebrow: "ASTRA AI",
-  aiSpotlightTitle: "素早く使えて、慎重に任せられる。",
-  aiSpotlightBody: "Astra AI は一つの明確な指示から、使えるタイトルと内容の提案を作ります。時間を節約しながらも、あなたの代わりに決めたり、送信内容を曖昧にしたりしません。",
-  aiSpotlightCta: "Astra AI について",
-  aiPointOneTitle: "速い：一つの指示から使える下書きへ",
-  aiPointOneBody: "粗い文章を手順や読みやすい構成、別の読み手向けの文章に整えられます。",
-  aiPointTwoTitle: "手軽：保存前に全体を確認",
-  aiPointTwoBody: "提案されたタイトルと内容をまとめて見て、納得したときだけ保存できます。",
-  aiPointThreeTitle: "安全：明確なデータの境界",
-  aiPointThreeBody: "処理に使うのはノートのタイトル、本文と指示だけです。PIN と暗号鍵は送信も保存もされません。",
   astraAi: "Astra AI", aiEveryThirtyDays: "30日ごとの利用枠",
   astraAiUnavailable: "現在利用できません",
   aiTitle: "あなたが決める Astra AI", aiBody: "一つの指示、全体のプレビュー、最後の承認で、ノートを次に使える形へ整えます。",
   astraAiPrompt: "Astra AI への指示", astraAiPromptPlaceholder: "Astra AI にこのノートをどう改善してほしいか入力してください…",
   astraAiBody: "このノートをどのように変更したいか入力してください。", astraAiGenerate: "プレビューを作成",
   astraAiPromptRequired: "Astra AI への指示を入力してください。",
-  astraAiBusyWarning: "Astra AI がノートを処理中です。この画面を閉じたり、更新したり、AstraNote から離れたりしないでください。離れると処理は中止され、結果は保存されません。",
+  astraAiWorking: "送信しました。Astra AI がプレビューを準備しています…", astraAiWorkingShort: "プレビューを準備中…",
+  astraAiBusyWarning: "この画面を開いたままにしてください。閉じる、更新する、AstraNote から離れると処理は中止され、結果は保存されません。",
   astraAiPreview: "Astra AI プレビュー", astraAiPreviewBody: "保存前に、提案されたタイトルと内容を確認してください。", saveChanges: "変更を保存", discardResult: "結果を破棄",
   astraAiEncryptedNotice: "このリクエストでは、解除済みのタイトル、内容、指示が AI 処理サービスへ送信されます。PIN と暗号鍵は送信・保存されません。",
-  astraAiAllowance: "Astra AI", astraAiBasic: "含まれる", astraAiMore: "より多く利用可能", astraAiMost: "最大の利用枠",
+  astraAiAllowance: "Astra AI · 30日ごと", astraAiBasic: "含まれる", astraAiMore: "より多く利用可能", astraAiMost: "最大の利用枠", aiAllowanceFree: "Free の 1倍", aiAllowancePlus: "Free の 4倍", aiAllowancePro: "Free の 12倍", aiAllowanceUltra: "Free の 32倍",
   aiPrivacyTitle: "Astra AI とノート", aiPrivacyText: "Astra AI を選ぶと、そのリクエストのノート名、内容、指示がプレビュー作成のため OpenAI に送信されます。保存を選ぶまでノートは変更されません。PIN 保護ノートでは、解除済みの文章だけがこの処理のために送信され、PIN と暗号鍵は送信・保存されません。",
   standardEncryptionOption: "標準暗号化（AES-256-GCM）", legacyEncryptionOption: "旧式暗号化（AES-128-GCM）", secretOption: "シークレット（AstraSecret）", confidentialOption: "コンフィデンシャル（AstraConfidential）", zeroOption: "最高機密（AstraZero）", legacySchybridOption: "旧式コンフィデンシャル（AstraConfidential SCHybrid）", astraSecretIncluded: "シークレット（AstraSecret）の日常保護", confidentialIncluded: "コンフィデンシャル（AstraConfidential）の高度な保護", zeroIncluded: "最高機密（AstraZero）・クライアントで鍵を生成", basicEncryption: "暗号化なし · 標準暗号化（AES-256-GCM）",
 });
@@ -2244,7 +2217,7 @@ function renderPlanComparison() {
     ["basicEncryption", null, [true, true, true, true]],
     ["secretOption", null, [true, true, true, true]],
     ["confidentialOption", null, [false, true, true, true]],
-    ["astraAiAllowance", null, [t("astraAiBasic"), t("astraAiMore"), t("astraAiMore"), t("astraAiMost")]],
+    ["astraAiAllowance", null, [t("aiAllowanceFree"), t("aiAllowancePlus"), t("aiAllowancePro"), t("aiAllowanceUltra")]],
     ["organizeFeature", "organizeDetail", [false, true, true, true]],
     ["AstraDrop", "dropAllowance", ["1 · 24h", "5 · 7d", "20 · 7d", "50 · 30d"]],
     ["dropEncryption", null, ["Basic · AES-256", "Basic · AES-256 · DropSecret", "Basic · AES-256 · DropSecret · DropConfidential", "Basic · AES-256 · DropSecret · DropConfidential"]],
@@ -3660,7 +3633,14 @@ function openAstraAi(note, unlockedPin = null) {
   warning.className = "astra-ai-warning";
   warning.hidden = true;
   warning.textContent = t("astraAiBusyWarning");
-  content.append(warning);
+  const progress = document.createElement("div");
+  progress.className = "astra-ai-progress";
+  progress.hidden = true;
+  progress.setAttribute("role", "status");
+  progress.setAttribute("aria-live", "polite");
+  progress.innerHTML = `<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><span></span>`;
+  progress.querySelector("span").textContent = t("astraAiWorking");
+  content.append(progress, warning);
   modal({
     title: t("astraAi"),
     body: t("astraAiBody"),
@@ -3678,6 +3658,11 @@ function openAstraAi(note, unlockedPin = null) {
       const cancelButton = button.closest(".modal-actions").querySelector("button:not(.btn-primary)");
       backdrop.dataset.busy = "true";
       warning.hidden = false;
+      progress.hidden = false;
+      prompt.disabled = true;
+      if (pin) pin.disabled = true;
+      button.innerHTML = `<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><span></span>`;
+      button.querySelector("span").textContent = t("astraAiWorkingShort");
       button.disabled = true;
       if (cancelButton) cancelButton.disabled = true;
       try {
@@ -3691,6 +3676,11 @@ function openAstraAi(note, unlockedPin = null) {
       } catch (error) {
         backdrop.dataset.busy = "false";
         warning.hidden = true;
+        progress.hidden = true;
+        prompt.disabled = false;
+        if (pin) pin.disabled = false;
+        button.innerHTML = `<i class="fa-solid fa-check" aria-hidden="true"></i><span></span>`;
+        button.querySelector("span").textContent = t("astraAiGenerate");
         if (cancelButton) cancelButton.disabled = false;
         throw error;
       }
