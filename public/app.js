@@ -1715,6 +1715,16 @@ Object.assign(I18N["ja"], {
 });
 
 Object.assign(I18N.en, {
+  aiSpotlightEyebrow: "ASTRA AI",
+  aiSpotlightTitle: "Turn a rough note into a useful next draft.",
+  aiSpotlightBody: "Give Astra AI one clear instruction—make this easier to scan, turn it into steps, or rewrite it for a different reader. It suggests a new title and content, but changes nothing unless you decide to save.",
+  aiSpotlightCta: "Explore Astra AI",
+  aiPointOneTitle: "Start with your instruction",
+  aiPointOneBody: "You decide the goal, tone, and what should change.",
+  aiPointTwoTitle: "Review before anything changes",
+  aiPointTwoBody: "A preview gives you the proposed title and content first.",
+  aiPointThreeTitle: "You keep the final say",
+  aiPointThreeBody: "Save the result, or discard it and leave the original untouched.",
   astraAi: "Astra AI", aiEveryThirtyDays: "Available every 30 days",
   astraAiUnavailable: "Currently unavailable",
   aiTitle: "More than saved text", aiBody: "Use Astra AI, sharing, AstraDrop, and recovery tools when a note needs to do more than stay saved.",
@@ -1729,6 +1739,16 @@ Object.assign(I18N.en, {
   standardEncryptionOption: "Standard encryption (AES-256-GCM)", legacyEncryptionOption: "Legacy encryption (AES-128-GCM)", secretOption: "Secret (AstraSecret)", confidentialOption: "Confidential (AstraConfidential)", zeroOption: "Top Secret (AstraZero)", legacySchybridOption: "Legacy Confidential (AstraConfidential SCHybrid)", astraSecretIncluded: "Secret (AstraSecret) everyday protection", confidentialIncluded: "Confidential (AstraConfidential) advanced protection", zeroIncluded: "Top Secret (AstraZero) · client-generated keys", basicEncryption: "No encryption · Standard encryption (AES-256-GCM)",
 });
 Object.assign(I18N["zh-Hant"], {
+  aiSpotlightEyebrow: "ASTRA AI",
+  aiSpotlightTitle: "把粗略筆記，整理成下一個可用版本。",
+  aiSpotlightBody: "給 Astra AI 一句清楚指令：讓內容更好掃讀、整理成步驟，或改寫給不同讀者。它會提出新標題與內容預覽；只有你按下儲存，筆記才會改變。",
+  aiSpotlightCta: "了解 Astra AI",
+  aiPointOneTitle: "先說清楚你的方向",
+  aiPointOneBody: "目標、語氣與要修改的地方，都由你決定。",
+  aiPointTwoTitle: "修改前，先看完整預覽",
+  aiPointTwoBody: "建議標題與內容會先交給你確認。",
+  aiPointThreeTitle: "最後決定權一直在你手上",
+  aiPointThreeBody: "你可以儲存結果，或捨棄它，原筆記不會被碰。",
   astraAi: "Astra AI", aiEveryThirtyDays: "每 30 天可用額度",
   astraAiUnavailable: "目前無法使用",
   aiTitle: "不只保存文字", aiBody: "需要更多用途時，可使用 Astra AI、分享、AstraDrop 與復原工具。",
@@ -1743,6 +1763,16 @@ Object.assign(I18N["zh-Hant"], {
   standardEncryptionOption: "一般加密（AES-256-GCM）", legacyEncryptionOption: "舊版加密（AES-128-GCM）", secretOption: "秘密（AstraSecret）", confidentialOption: "機密（AstraConfidential）", zeroOption: "最高機密（AstraZero）", legacySchybridOption: "舊版機密（AstraConfidential SCHybrid）", astraSecretIncluded: "秘密（AstraSecret）日常保護", confidentialIncluded: "機密（AstraConfidential）進階保護", zeroIncluded: "最高機密（AstraZero）· 客戶端產生金鑰", basicEncryption: "不加密 · 一般加密（AES-256-GCM）",
 });
 Object.assign(I18N.ja, {
+  aiSpotlightEyebrow: "ASTRA AI",
+  aiSpotlightTitle: "下書きを、次に使えるノートへ。",
+  aiSpotlightBody: "Astra AI には一つの明確な指示を渡します。読みやすくする、手順にする、別の読み手向けに書き直す。新しいタイトルと内容を提案しますが、保存を選ぶまでノートは変わりません。",
+  aiSpotlightCta: "Astra AI について",
+  aiPointOneTitle: "まず方向を伝える",
+  aiPointOneBody: "目的、文体、変えたい部分は自分で決めます。",
+  aiPointTwoTitle: "変更前にプレビューを確認",
+  aiPointTwoBody: "提案されたタイトルと内容を先に確認できます。",
+  aiPointThreeTitle: "最後に決めるのはあなた",
+  aiPointThreeBody: "保存するか破棄するかを選べ、元のノートはそのままです。",
   astraAi: "Astra AI", aiEveryThirtyDays: "30日ごとの利用枠",
   astraAiUnavailable: "現在利用できません",
   aiTitle: "保存するだけではない", aiBody: "Astra AI、共有、AstraDrop、復元機能で、ノートをもっと役立てられます。",
