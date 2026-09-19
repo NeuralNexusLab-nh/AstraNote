@@ -53,10 +53,10 @@ const AI_MAX_NOTE_BYTES = 64 * 1000;
 const AI_MAX_PROMPT_CHARS = 1600;
 const AI_MAX_OUTPUT_TOKENS = 16_000;
 const AI_BUDGETS_MICRO_USD = Object.freeze({
-  free: 125_000,
-  plus: 500_000,
-  pro: 1_500_000,
-  ultra: 4_000_000,
+  free: 20_000,
+  plus: 100_000,
+  pro: 300_000,
+  ultra: 900_000,
   beta: Infinity,
   admin: Infinity,
 });
