@@ -2448,18 +2448,20 @@ function modal({
   dialog.className = "modal";
   dialog.setAttribute("role", "dialog");
   dialog.setAttribute("aria-modal", "true");
+  const dialogContent = document.createElement("div");
+  dialogContent.className = "modal-content";
   const heading = document.createElement("h2");
   heading.id = `dialog-title-${randomHex(4)}`;
   dialog.setAttribute("aria-labelledby", heading.id);
   heading.textContent = title;
-  dialog.append(heading);
+  dialogContent.append(heading);
   if (body) {
     const p = document.createElement("p");
     p.className = "muted";
     p.textContent = body;
-    dialog.append(p);
+    dialogContent.append(p);
   }
-  if (content) dialog.append(content);
+  if (content) dialogContent.append(content);
   const actions = document.createElement("div");
   actions.className = "modal-actions";
   const cancelButton = document.createElement("button");
@@ -2472,7 +2474,7 @@ function modal({
   confirmButton.querySelector("span").textContent = confirm;
   if (showCancel) actions.append(cancelButton);
   actions.append(confirmButton);
-  dialog.append(actions);
+  dialog.append(dialogContent, actions);
   backdrop.append(dialog);
   document.body.append(backdrop);
   const close = () => {

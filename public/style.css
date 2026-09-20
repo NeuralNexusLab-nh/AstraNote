@@ -986,12 +986,13 @@ textarea {
 .captcha-box {
   width: 100%;
   min-height: 0;
-  max-height: 320px;
+  max-height: min(460px, 62dvh);
   display: block;
   padding: 0;
   border: 0;
   background: transparent;
-  overflow: hidden;
+  overflow: auto;
+  overscroll-behavior: contain;
 }
 .captcha-heading {
   display: flex;
@@ -1006,11 +1007,6 @@ textarea {
   display: block;
   width: 100% !important;
   max-width: 100% !important;
-  max-height: 320px !important;
-}
-.captcha-box iframe {
-  /* Defend the form layout if a remote CAPTCHA resize message is malformed. */
-  height: 320px !important;
 }
 .captcha-parking {
   position: fixed;
@@ -1417,13 +1413,21 @@ body[data-page="note"] .note-actions .share-toggle > i { font-size: .92em; }
 .modal {
   width: min(520px, 100%);
   max-height: calc(100vh - 40px);
-  overflow: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   box-sizing: border-box;
-  padding: 30px;
   border-radius: 22px;
   background: var(--card);
   border: 1px solid var(--line);
   animation: modalIn 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.modal-content {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 30px;
 }
 .modal h2 {
   font-size: 28px;
@@ -1433,13 +1437,13 @@ body[data-page="note"] .note-actions .share-toggle > i { font-size: .92em; }
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 24px;
   flex-wrap: wrap;
-  position: sticky;
-  bottom: -30px;
+  flex: 0 0 auto;
   z-index: 1;
-  padding: 18px 0 0;
+  margin: 0;
+  padding: 16px 30px 30px;
   background: var(--card);
+  border-top: 1px solid var(--line);
 }
 .modal-actions .btn {
   min-width: 0;
@@ -3664,8 +3668,10 @@ body[data-page="home"] .zero-feature-list {
   .modal {
     width: 100%;
     max-height: calc(100dvh - 20px);
-    padding: 22px 18px;
     border-radius: 18px;
+  }
+  .modal-content {
+    padding: 22px 18px;
   }
   .modal h2 {
     font-size: 23px;
@@ -3673,9 +3679,8 @@ body[data-page="home"] .zero-feature-list {
   .modal-actions {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    bottom: -18px;
     gap: 8px;
-    padding-top: 14px;
+    padding: 14px 18px 18px;
   }
   .modal-actions .btn {
     width: 100%;
