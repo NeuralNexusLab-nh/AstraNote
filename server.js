@@ -1717,12 +1717,6 @@ async function accountPayload(username) {
 
 app.set("trust proxy", 1);
 app.disable("x-powered-by");
-app.use((req, res, next) => {
-  console.log(
-    `IP: ${req.ip}, method: ${req.method}, path: ${req.path}, UA: ${req.headers["user-agent"]}`,
-  );
-  next();
-});
 app.use(
   helmet({
     frameguard: false,
