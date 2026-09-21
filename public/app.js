@@ -2442,6 +2442,7 @@ function modal({
   title,
   body,
   content,
+  dialogClass = "",
   confirm = t("proceed"),
   cancel = t("cancel"),
   danger = false,
@@ -2454,7 +2455,7 @@ function modal({
   const backdrop = document.createElement("div");
   backdrop.className = "modal-backdrop";
   const dialog = document.createElement("section");
-  dialog.className = "modal";
+  dialog.className = `modal ${dialogClass}`.trim();
   dialog.setAttribute("role", "dialog");
   dialog.setAttribute("aria-modal", "true");
   const dialogContent = document.createElement("div");
@@ -2669,7 +2670,16 @@ function unlockConfidential(note) {
   });
 }
 
-function actionModal({ title, body, confirm, danger = true, extra, run, requiresCaptcha = true }) {
+function actionModal({
+  title,
+  body,
+  confirm,
+  danger = true,
+  extra,
+  run,
+  requiresCaptcha = true,
+  dialogClass = "",
+}) {
   if (requiresCaptcha) resetCaptcha("action");
   const content = document.createElement("div");
   if (extra) content.append(extra);
@@ -2687,6 +2697,7 @@ function actionModal({ title, body, confirm, danger = true, extra, run, requires
     title,
     body,
     content,
+    dialogClass,
     confirm,
     danger,
     onConfirm: async (close) => {
@@ -4060,9 +4071,10 @@ async function initSettings() {
     actionModal({
       title: t("deleteAccountTitle"),
       body: t("deleteAccountBody"),
-      confirm: t("requestDeletion"),
-      extra,
-      run: () =>
+    confirm: t("requestDeletion"),
+    extra,
+    dialogClass: "account-delete-modal",
+    run: () =>
         api("/api/account/delete", {
           method: "POST",
           body: {

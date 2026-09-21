@@ -1008,6 +1008,21 @@ textarea {
   width: 100% !important;
   max-width: 100% !important;
 }
+/* Account deletion has two confirmation fields as well as a CAPTCHA. Chromium's
+   layout zoom keeps the entire verification usable without making this one dialog
+   needlessly tall on ordinary laptop and phone viewports. */
+.account-delete-modal .modal-content {
+  padding-bottom: 18px;
+}
+.account-delete-modal .modal-form-stack .form-group {
+  margin-bottom: 14px;
+}
+.account-delete-modal .captcha-box {
+  zoom: 0.82;
+  width: 121.95%;
+  max-width: 121.95%;
+  max-height: min(380px, 58dvh);
+}
 .captcha-parking {
   position: fixed;
   left: -10000px;
