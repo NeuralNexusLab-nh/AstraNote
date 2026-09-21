@@ -732,6 +732,9 @@ Object.assign(I18N.en, {
   numberOfMonths: "Subscription duration (months)",
   total: "Total",
   continueToSatora: "Continue to payment on Satora",
+  checkoutVerificationTitle: "Confirm before continuing",
+  checkoutVerificationBody:
+    "Complete the human verification before AstraNote creates your payment request on Satora.",
   paymentHistory: "Payment history",
   noPayments: "No payments yet.",
   billingSupport:
@@ -811,6 +814,9 @@ Object.assign(I18N["zh-Hant"], {
   numberOfMonths: "訂閱月數",
   total: "本次合計",
   continueToSatora: "前往 Satora 付款",
+  checkoutVerificationTitle: "前往付款前確認",
+  checkoutVerificationBody:
+    "請先完成人類驗證，AstraNote 才會在 Satora 建立付款請求。",
   paymentHistory: "付款紀錄",
   noPayments: "目前沒有付款紀錄。",
   billingSupport: "付款有問題時請勿再次付款，並在7天內聯絡：",
@@ -903,6 +909,9 @@ Object.assign(I18N.ja, {
   numberOfMonths: "契約月数",
   total: "合計",
   continueToSatora: "Satora で支払う",
+  checkoutVerificationTitle: "支払い前の確認",
+  checkoutVerificationBody:
+    "AstraNote が Satora に支払いリクエストを作成する前に、人間による操作の確認を完了してください。",
   paymentHistory: "支払い履歴",
   noPayments: "支払い履歴はまだありません。",
   billingSupport: "問題がある場合は再度支払わず、7日以内にご連絡ください：",
@@ -4330,27 +4339,31 @@ async function initPlans() {
     });
   });
   monthsInput.addEventListener("change", updateTotal);
-  $("#checkout-button").addEventListener("click", async () => {
+  $("#checkout-button").addEventListener("click", () => {
     const message = $("#checkout-message");
     message.textContent = "";
     if (!selectedPlan) return;
-    const button = $("#checkout-button");
-    button.disabled = true;
-    try {
-      const result = await api("/api/billing/create", {
-        method: "POST",
-        body: {
-          plan: selectedPlan,
-          months: Number(monthsInput.value),
-          checkoutToken,
-        },
-      });
-      location.href =
-        result.redirect || `/plans/return?order_id=${result.order.orderId}`;
-    } catch (error) {
-      message.textContent = error.message;
-      button.disabled = false;
-    }
+    actionModal({
+      title: t("checkoutVerificationTitle"),
+      body: t("checkoutVerificationBody"),
+      confirm: t("continueToSatora"),
+      danger: false,
+      run: async () => {
+        const result = await api("/api/billing/create", {
+          method: "POST",
+          body: {
+            plan: selectedPlan,
+            months: Number(monthsInput.value),
+            checkoutToken,
+            captcha: state.actionCaptcha,
+          },
+        });
+        return {
+          redirect:
+            result.redirect || `/plans/return?order_id=${result.order.orderId}`,
+        };
+      },
+    });
   });
   if (state.session?.authenticated) await loadOrders(!new URLSearchParams(location.search).has("order_id"));
   const orderId = new URLSearchParams(location.search).get("order_id");

@@ -2418,6 +2418,7 @@ app.post(
   billingCreateIpLimiter,
   billingCreateAccountLimiter,
   requireCsrf,
+  verifyCaptcha,
   async (req, res, next) => {
     const plan = String(req.body.plan || "").toLowerCase();
     const months = Number(req.body.months);
