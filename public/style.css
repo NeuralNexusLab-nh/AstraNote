@@ -1142,17 +1142,22 @@ textarea {
   box-shadow: 0 0 16px var(--primary);
 }
 .note-paper {
+  --writing-line-height: 32px;
+  --writing-top: 14px;
   margin-top: 28px;
   min-height: 55vh;
   padding: 14px 32px 40px 72px;
   border-radius: 16px;
-  background: repeating-linear-gradient(
+  background-color: var(--card);
+  background-image: linear-gradient(
     to bottom,
-    var(--card) 0,
-    var(--card) 31px,
-    var(--line) 32px
+    transparent calc(100% - 1px),
+    var(--line) calc(100% - 1px)
   );
-  line-height: 32px;
+  background-position: 0 var(--writing-top);
+  background-repeat: repeat-y;
+  background-size: 100% var(--writing-line-height);
+  line-height: var(--writing-line-height);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   position: relative;
@@ -1178,6 +1183,8 @@ textarea {
   border-bottom: 1px solid var(--primary);
 }
 .note-editor {
+  --writing-line-height: 32px;
+  --writing-top: 7px;
   display: block;
   width: 100%;
   min-height: 60vh;
@@ -1186,13 +1193,16 @@ textarea {
   border: 0;
   border-radius: 16px;
   padding: 7px 30px 40px 72px;
-  line-height: 32px;
-  background: repeating-linear-gradient(
+  line-height: var(--writing-line-height);
+  background-color: var(--card);
+  background-image: linear-gradient(
     to bottom,
-    var(--card) 0,
-    var(--card) 31px,
-    var(--line) 32px
+    transparent calc(100% - 1px),
+    var(--line) calc(100% - 1px)
   );
+  background-position: 0 var(--writing-top);
+  background-repeat: repeat-y;
+  background-size: 100% var(--writing-line-height);
 }
 .note-stats {
   display: flex;
@@ -3651,7 +3661,7 @@ body[data-page="home"] .zero-feature-list {
     min-height: 45vh;
     padding-left: 30px;
     padding-right: 16px;
-    line-height: 28px;
+    --writing-line-height: 28px;
   }
   .note-paper::before {
     left: 20px;
