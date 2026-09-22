@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const { rateLimit, ipKeyGenerator } = require("express-rate-limit");
 const argon2 = require("argon2");
 const crypto = require("node:crypto");
+const net = require("node:net");
 const fs = require("node:fs");
 const fsp = require("node:fs/promises");
 const path = require("node:path");
@@ -1232,21 +1233,47 @@ async function cleanupPlanLocks() {
   }
 }
 function parseCookies(header = "") {
-  return Object.fromEntries(
-    header
-      .split(";")
-      .map((part) => part.trim().split("=").map(decodeURIComponent))
-      .filter((x) => x.length === 2),
-  );
+  const cookies = Object.create(null);
+  for (const segment of String(header).split(";")) {
+    const separator = segment.indexOf("=");
+    if (separator < 1) continue;
+    const key = segment.slice(0, separator).trim();
+    const value = segment.slice(separator + 1).trim();
+    if (!key) continue;
+    try {
+      cookies[decodeURIComponent(key)] = decodeURIComponent(value);
+    } catch {
+      // Malformed cookies are untrusted input. Ignore them rather than
+      // allowing one to turn an otherwise harmless request into a 500 error.
+    }
+  }
+  return cookies;
 }
-function setSessionCookie(res, username, token, expiresAt) {
-  res.cookie("astranote_session", `${userKey(username)}.${token}`, {
+function requestIsSecure(req) {
+  const forwarded = String(req.get("x-forwarded-proto") || "")
+    .split(",")[0]
+    .trim()
+    .toLowerCase();
+  return req.secure || forwarded === "https";
+}
+function sessionCookieOptions(req, expires) {
+  return {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    // Hosted HTTPS stays protected even when NODE_ENV was not configured;
+    // plain local HTTP remains usable for development and test runs.
+    secure: requestIsSecure(req),
     sameSite: "lax",
     path: "/",
-    expires: new Date(expiresAt),
+    ...(expires ? { expires: new Date(expires) } : {}),
+  };
+}
+function setSessionCookie(req, res, username, token, expiresAt) {
+  res.cookie("astranote_session", `${userKey(username)}.${token}`, {
+    ...sessionCookieOptions(req, expiresAt),
   });
+}
+function clearSessionCookie(req, res) {
+  res.clearCookie("astranote_session", sessionCookieOptions(req));
 }
 function parseSessionCookie(req) {
   const value = parseCookies(req.headers.cookie).astranote_session;
@@ -1273,10 +1300,9 @@ function sessionDevice(req) {
 function publicIpForLookup(value) {
   const ip = String(value || "").replace(/^::ffff:/i, "").trim();
   // The endpoint accepts a literal address only. This prevents request header
-  // input from changing the host or path being fetched.
-  return /^(?:\d{1,3}\.){3}\d{1,3}$/.test(ip) || /^[0-9a-f:]+$/i.test(ip)
-    ? ip
-    : null;
+  // input from changing the host or path being fetched. node:net also rejects
+  // malformed lookalikes such as 999.999.999.999.
+  return net.isIP(ip) ? ip : null;
 }
 async function sessionLocation(req) {
   const ip = publicIpForLookup(requestIp(req));
@@ -1330,7 +1356,7 @@ async function createSession(username, req, res) {
     while (own.length > 5) delete sessions[own.shift()[0]];
     await writeUserSessions(username, sessions);
   });
-  setSessionCookie(res, username, token, record.expiresAt);
+  setSessionCookie(req, res, username, token, record.expiresAt);
   return record;
 }
 async function destroySessionToken(username, token) {
@@ -1392,7 +1418,7 @@ async function requireAuth(req, res, next) {
       // browser cookies remain valid during the one-time storage migration.
     }
     if (!session) {
-      res.clearCookie("astranote_session", { path: "/" });
+      clearSessionCookie(req, res);
       return jsonError(
         res,
         401,
@@ -1407,10 +1433,10 @@ async function requireAuth(req, res, next) {
     const metadata = await loadMetadata(session.username);
     if (metadata && accountIsBanned(metadata)) {
       await destroySessionToken(session.username, token);
-      res.clearCookie("astranote_session", { path: "/" });
+      clearSessionCookie(req, res);
       return jsonError(res, 403, "account_banned", "This account is currently unavailable.");
     }
-    setSessionCookie(res, session.username, token, session.expiresAt);
+    setSessionCookie(req, res, session.username, token, session.expiresAt);
     req.auth = { token, session };
     await updateOnlineUser(session.username);
     next();
@@ -1719,7 +1745,9 @@ app.set("trust proxy", 1);
 app.disable("x-powered-by");
 app.use(
   helmet({
-    frameguard: false,
+    // CSP frame-ancestors covers modern browsers; retain the legacy header so
+    // older clients cannot be clickjacked into account or payment actions.
+    frameguard: { action: "sameorigin" },
     contentSecurityPolicy: {
       useDefaults: false,
       directives: {
@@ -1804,7 +1832,9 @@ app.use(
     handler: rateLimitHandler,
   }),
 );
-app.use(express.json({ limit: "6mb", strict: true }));
+// Client-encrypted notes expand when encoded, but never need a 6 MB body.
+// This keeps the 2 MB note allowance while reducing pre-auth memory exposure.
+app.use(express.json({ limit: "3mb", strict: true }));
 app.use(express.urlencoded({ extended: false, limit: "20kb" }));
 app.use((req, res, next) => {
   const origin = req.get("origin");
@@ -1986,7 +2016,7 @@ app.get("/api/session", async (req, res) => {
     });
     // The old record stays only until its original expiry so a browser that
     // has not yet received the upgraded cookie keeps working.
-    setSessionCookie(res, username, token, session.expiresAt);
+    setSessionCookie(req, res, username, token, session.expiresAt);
   } else {
     const { username } = supplied;
     const sessions = await withLock(`sessions:${username}`, () =>
@@ -2001,7 +2031,7 @@ app.get("/api/session", async (req, res) => {
   const metadata = await loadMetadata(session.username);
   if (metadata && accountIsBanned(metadata)) {
     await destroySessionToken(session.username, token);
-    res.clearCookie("astranote_session", { path: "/" });
+    clearSessionCookie(req, res);
     return res.json({ authenticated: false, preferredLanguage });
   }
   const deletion = await findDeletion(session.username);
@@ -2263,7 +2293,7 @@ app.post(
   async (req, res, next) => {
     try {
       await destroySessionToken(req.auth.session.username, req.auth.token);
-      res.clearCookie("astranote_session", { path: "/" });
+      clearSessionCookie(req, res);
       res.json({ ok: true, redirect: "/" });
     } catch (error) {
       next(error);
@@ -3674,7 +3704,7 @@ app.post(
         await writeJson(ONLINE_USERS_FILE, record);
         await atomicWrite(ONLINE_FILE, `${record.users.length}\n`);
       });
-      res.clearCookie("astranote_session", { path: "/" });
+      clearSessionCookie(req, res);
       res.json({
         ok: true,
         redirect: "/",
@@ -3857,5 +3887,8 @@ module.exports = {
     cleanupBillingRecords,
     retainedOrder,
     openAiTransform,
+    parseCookies,
+    publicIpForLookup,
+    sessionCookieOptions,
   },
 };

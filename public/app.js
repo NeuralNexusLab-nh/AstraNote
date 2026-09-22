@@ -3984,7 +3984,22 @@ async function initSettings() {
       const card = document.createElement("article");
       card.className = "session-card";
       const location = session.location?.country || t("locationUnavailable");
-      card.innerHTML = `<div class="session-card-main"><strong><i class="fa-solid fa-desktop" aria-hidden="true"></i> ${session.device}</strong><span>${session.ip} · ${location}</span><small>${t("signedInAt")}: ${formatUtc(session.createdAt)} · ${t("lastActive")}: ${formatUtc(session.lastSeenAt)}</small></div>`;
+      // Session fields originate outside this page (proxy headers and the
+      // location lookup). Use text nodes, never HTML interpolation, so a bad
+      // value cannot become a stored XSS payload in account settings.
+      const details = document.createElement("div");
+      details.className = "session-card-main";
+      const device = document.createElement("strong");
+      const icon = document.createElement("i");
+      icon.className = "fa-solid fa-desktop";
+      icon.setAttribute("aria-hidden", "true");
+      device.append(icon, document.createTextNode(` ${session.device || "Browser"}`));
+      const address = document.createElement("span");
+      address.textContent = `${session.ip || "Unavailable"} · ${location}`;
+      const timing = document.createElement("small");
+      timing.textContent = `${t("signedInAt")}: ${formatUtc(session.createdAt)} · ${t("lastActive")}: ${formatUtc(session.lastSeenAt)}`;
+      details.append(device, address, timing);
+      card.append(details);
       const button = document.createElement("button");
       button.type = "button";
       button.className = "btn btn-outline";

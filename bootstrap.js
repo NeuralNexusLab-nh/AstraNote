@@ -272,7 +272,7 @@ function renderHomeHtml(language) {
 }
 
 const homeHelmet = helmet({
-  frameguard: false,
+  frameguard: { action: "sameorigin" },
   contentSecurityPolicy: {
     useDefaults: false,
     directives: {

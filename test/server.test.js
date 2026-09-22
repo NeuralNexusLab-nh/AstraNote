@@ -101,6 +101,32 @@ test("session language follows Accept-Language when no saved preference exists",
   assert.equal((await japanese.json()).preferredLanguage, "ja");
 });
 
+test("malformed cookies fail closed without causing a server error", async () => {
+  const response = await fetch(`${baseUrl}/api/session`, {
+    headers: { cookie: "astranote_session=%E0%A4%A; theme=dark" },
+  });
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).authenticated, false);
+  assert.deepEqual(Object.keys(testables.parseCookies("broken=%E0%A4%A")), []);
+});
+
+test("IP lookup accepts only real literal addresses and session cookies require HTTPS", () => {
+  assert.equal(testables.publicIpForLookup("203.0.113.8"), "203.0.113.8");
+  assert.equal(testables.publicIpForLookup("2001:db8::8"), "2001:db8::8");
+  assert.equal(testables.publicIpForLookup("999.999.999.999"), null);
+  assert.equal(testables.publicIpForLookup("attacker.example"), null);
+  const secure = testables.sessionCookieOptions({
+    secure: false,
+    get: (name) => (name === "x-forwarded-proto" ? "https" : undefined),
+  });
+  assert.equal(secure.secure, true);
+  const local = testables.sessionCookieOptions({
+    secure: false,
+    get: () => undefined,
+  });
+  assert.equal(local.secure, false);
+});
+
 test("today's activity counts each authenticated account once for any request", async () => {
   const token = crypto.randomBytes(32).toString("base64url");
   const now = Date.now();
@@ -154,6 +180,7 @@ test("security headers allow only the configured application and CAPTCHA sources
   assert.match(csp, /frame-src[^;]*https:\/\/nexacaptcha\.nxlabtw\.com/);
   assert.match(csp, /script-src[^;]*'wasm-unsafe-eval'/);
   assert.equal(response.headers.get("x-content-type-options"), "nosniff");
+  assert.equal(response.headers.get("x-frame-options"), "SAMEORIGIN");
   assert.match(response.headers.get("permissions-policy"), /camera=\(\)/);
 
   const cors = await fetch(`${baseUrl}/api/stats`, {
