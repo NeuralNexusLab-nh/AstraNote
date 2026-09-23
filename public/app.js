@@ -33,7 +33,7 @@ const I18N = {
     limitTitle: "Small footprint. Deliberate limits.",
     limitBody:
       "Each account includes 128 KB across all account files and up to 20 notes. Encrypted notes commonly use about 1.4× the storage; very short notes may use more than 2×.",
-    copyright: "© 2026 NeuralNexusLab. All Rights Reserved.",
+    copyright: "© 2026 NXLabTW. All Rights Reserved.",
     terms: "Terms",
     privacy: "Privacy",
     source: "Repository · All Rights Reserved",
@@ -169,7 +169,7 @@ const I18N = {
     limitTitle: "輕量空間，明確限制。",
     limitBody:
       "每個帳號的所有檔案合計 128 KB，最多 20 篇筆記。加密筆記通常約需 1.4 倍空間；很短的筆記可能超過 2 倍。",
-    copyright: "© 2026 NeuralNexusLab。保留所有權利。",
+    copyright: "© 2026 NXLabTW。保留所有權利。",
     terms: "使用者協議",
     privacy: "隱私政策",
     source: "程式碼庫 · 保留所有權利",
@@ -617,7 +617,7 @@ I18N.ja = {
   login: "ログイン",
   register: "アカウント作成",
   logout: "ログアウト",
-  copyright: "© 2026 NeuralNexusLab. All Rights Reserved.",
+  copyright: "© 2026 NXLabTW. All Rights Reserved.",
   terms: "利用規約",
   privacy: "プライバシー",
   legalUpdated: "発効・最終更新：2026年9月1日",
@@ -728,7 +728,7 @@ Object.assign(I18N.en, {
   choosePro: "Choose Pro",
   completePurchase: "Complete your purchase",
   satoraExplanation:
-    "You will continue to Satora, NeuralNexusLab's Bitcoin payment service. Returning to AstraNote does not prove payment; your plan activates only after server verification.",
+    "You will continue to Satora, NXLabTW's Bitcoin payment service. Returning to AstraNote does not prove payment; your plan activates only after server verification.",
   numberOfMonths: "Subscription duration (months)",
   total: "Total",
   continueToSatora: "Continue to payment on Satora",
@@ -810,7 +810,7 @@ Object.assign(I18N["zh-Hant"], {
   choosePro: "選擇 Pro",
   completePurchase: "完成購買",
   satoraExplanation:
-    "接下來會前往 NeuralNexusLab 的 Bitcoin 付款服務 Satora。返回 AstraNote 不代表付款成功，方案只會在後端驗證後啟用。",
+    "接下來會前往 NXLabTW 的 Bitcoin 付款服務 Satora。返回 AstraNote 不代表付款成功，方案只會在後端驗證後啟用。",
   numberOfMonths: "訂閱月數",
   total: "本次合計",
   continueToSatora: "前往 Satora 付款",
@@ -905,7 +905,7 @@ Object.assign(I18N.ja, {
   choosePro: "Pro を選択",
   completePurchase: "購入を完了",
   satoraExplanation:
-    "NeuralNexusLab の Bitcoin 決済サービス Satora に移動します。AstraNote に戻っただけでは支払い済みとはみなされず、サーバー検証後に有効化されます。",
+    "NXLabTW の Bitcoin 決済サービス Satora に移動します。AstraNote に戻っただけでは支払い済みとはみなされず、サーバー検証後に有効化されます。",
   numberOfMonths: "契約月数",
   total: "合計",
   continueToSatora: "Satora で支払う",
@@ -2420,7 +2420,7 @@ function buildNav() {
 function buildFooter() {
   const footer = document.createElement("footer");
   footer.className = "site-footer";
-  footer.innerHTML = `<div class="shell footer-inner"><div class="footer-links"><a href="mailto:astranote@nxlabtw.com"><i class="fa-regular fa-envelope"></i> astranote@nxlabtw.com</a><a href="/terms"><i class="fa-solid fa-scale-balanced"></i> <span data-i18n="terms"></span></a><a href="/privacy"><i class="fa-solid fa-shield-halved"></i> <span data-i18n="privacy"></span></a><a href="https://github.com/NeuralNexusLab-nh/AstraNote" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> <span data-i18n="source"></span></a><a href="https://nxlabtw.com" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i> NeuralNexusLab</a></div><span data-i18n="copyright"></span></div>`;
+  footer.innerHTML = `<div class="shell footer-inner"><div class="footer-links"><a href="mailto:astranote@nxlabtw.com"><i class="fa-regular fa-envelope"></i> astranote@nxlabtw.com</a><a href="/terms"><i class="fa-solid fa-scale-balanced"></i> <span data-i18n="terms"></span></a><a href="/privacy"><i class="fa-solid fa-shield-halved"></i> <span data-i18n="privacy"></span></a><a href="https://github.com/NeuralNexusLab-nh/AstraNote" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> <span data-i18n="source"></span></a><a href="https://nxlabtw.com" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i> NXLabTW</a></div><span data-i18n="copyright"></span></div>`;
   document.body.append(footer);
 }
 

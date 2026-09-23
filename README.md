@@ -1,6 +1,6 @@
 # AstraNote
 
-Copyright © 2026 NeuralNexusLab. All Rights Reserved. This is proprietary
+Copyright © 2026 NXLabTW. All Rights Reserved. This is proprietary
 software; see [LICENSE](LICENSE).
 
 > Write it down. Find it whenever you need it.
@@ -175,8 +175,8 @@ rollback cannot read orders created in SQLite.
 ## Licence
 
 Repository source code is proprietary and protected by [All Rights Reserved](LICENSE).
-AstraNote and NeuralNexusLab names, logos, service data, user content, and
+AstraNote and NXLabTW names, logos, service data, user content, and
 third-party materials are not granted as trademarks or user content by that
 licence.
 
-Copyright 2026 NeuralNexusLab.
+Copyright 2026 NXLabTW.

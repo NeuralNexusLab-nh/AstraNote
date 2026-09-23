@@ -1,6 +1,6 @@
 # AstraNote
 
-AstraNote is a free, lightweight online notebook by NeuralNexusLab. It is designed for fast access to small pieces of text from any modern browser, without requiring an app installation or forcing users to sign in to their primary email or cloud ecosystem account.
+AstraNote is a free, lightweight online notebook by NXLabTW. It is designed for fast access to small pieces of text from any modern browser, without requiring an app installation or forcing users to sign in to their primary email or cloud ecosystem account.
 
 ## Canonical URL
 https://astranote.nxlabtw.com/
@@ -38,5 +38,5 @@ AstraNote states that it uses only necessary cookies for sign-in, security, lang
 - Source: https://github.com/NeuralNexusLab-nh/AstraNote
 
 ## Operator
-NeuralNexusLab
+NXLabTW
 https://nxlabtw.com/
