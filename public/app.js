@@ -2446,6 +2446,7 @@ function modal({
   confirm = t("proceed"),
   cancel = t("cancel"),
   danger = false,
+  confirmIcon = danger ? "fa-trash-can" : "fa-check",
   showCancel = true,
   onConfirm,
   onCancel,
@@ -2480,7 +2481,7 @@ function modal({
   cancelButton.querySelector("span").textContent = cancel;
   const confirmButton = document.createElement("button");
   confirmButton.className = `btn ${danger ? "btn-danger-filled" : "btn-primary"}`;
-  confirmButton.innerHTML = `<i class="fa-solid ${danger ? "fa-trash-can" : "fa-check"}"></i><span></span>`;
+  confirmButton.innerHTML = `<i class="fa-solid ${confirmIcon}" aria-hidden="true"></i><span></span>`;
   confirmButton.querySelector("span").textContent = confirm;
   if (showCancel) actions.append(cancelButton);
   actions.append(confirmButton);
@@ -2562,6 +2563,7 @@ function showError(error) {
     confirm: t("understood"),
     showCancel: false,
     danger: true,
+    confirmIcon: "fa-check",
     onConfirm: async (close) => close(),
   });
 }
