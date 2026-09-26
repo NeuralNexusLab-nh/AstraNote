@@ -3738,6 +3738,9 @@ app.use(
     dotfiles: "deny",
   }),
 );
+app.get("/.well-known/security.txt", (req, res) =>
+  res.type("text/plain; charset=utf-8").sendFile(path.join(PUBLIC_DIR, "security.txt")),
+);
 app.use(express.static(PUBLIC_DIR, { extensions: false, dotfiles: "deny" }));
 
 const pages = {
