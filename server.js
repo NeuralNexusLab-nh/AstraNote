@@ -1918,7 +1918,10 @@ async function accountPayload(username) {
       emailSecurity: {
         verified: metadata.emailVerified === true,
         twoFactorEnabled: metadata.emailVerified === true && metadata.emailTwoFactor === true,
-        showVerificationBanner: planForMetadata(metadata) === "free" && metadata.emailVerified !== true,
+        // Every unverified account should see the security reminder. Free is
+        // the only tier where verification also increases the storage quota.
+        showVerificationBanner: metadata.emailVerified !== true,
+        verificationUnlocksStorage: planForMetadata(metadata) === "free",
       },
       plan: access.payload,
       ai: {
