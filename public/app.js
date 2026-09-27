@@ -3269,7 +3269,6 @@ async function initAuthForm(kind) {
         actions.append(back, confirm);
         form.append(codeGroup, sentTo, formMessage, actions);
         setupOtpInputs(form);
-        showMailSentModal();
         return;
       }
       const next = params.get("next");
