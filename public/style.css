@@ -1038,10 +1038,12 @@ body.has-email-verification-banner .page { padding-top: 186px; }
   margin-bottom: 14px;
 }
 .account-delete-modal .captcha-box {
-  zoom: 0.82;
-  width: 121.95%;
-  max-width: 121.95%;
-  max-height: min(380px, 58dvh);
+  /* Keep deletion confirmation compact: the CAPTCHA remains fully usable, but
+     no longer dominates the two-field confirmation dialog. */
+  zoom: 0.72;
+  width: 138.89%;
+  max-width: 138.89%;
+  max-height: min(320px, 46dvh);
 }
 .captcha-parking {
   position: fixed;
