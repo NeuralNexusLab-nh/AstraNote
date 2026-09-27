@@ -169,7 +169,7 @@ test("coupon policies normalize identity, fail closed, and keep the operator exc
   assert.equal(policy({ coupon: { code: "different" } }).reusable, false);
   assert.equal(
     mod.testables.isReusableCouponDigest(
-      "ffad76e6b85e72e9f4f3fb46125dfcb19fd363ca5d155fa5603f7e5b083ff010",
+      "cfac7fb4d85dc8c216061ee731a56b9169decda34575fc568f3ff34143d6ade0",
     ),
     true,
   );

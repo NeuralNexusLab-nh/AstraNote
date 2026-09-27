@@ -72,11 +72,9 @@ const AI_BUDGETS_MICRO_USD = Object.freeze({
 const BILLING_MONTH_OPTIONS = Object.freeze([1, 3, 6, 9, 12, 24, 36]);
 const ORDER_CREATION_WINDOW_MS = 60 * 60_000;
 const MAX_NEW_ORDERS_PER_ACCOUNT_WINDOW = 6;
-// This is a SHA-256 digest of a random 256-bit operator coupon. The coupon is
-// configured only in Satora; publishing its digest is safe because the source
-// value has enough entropy to make offline guessing infeasible.
+// Keep the operator's reusable coupon out of public UI and plaintext source.
 const REUSABLE_COUPON_DIGEST =
-  "ffad76e6b85e72e9f4f3fb46125dfcb19fd363ca5d155fa5603f7e5b083ff010";
+  "cfac7fb4d85dc8c216061ee731a56b9169decda34575fc568f3ff34143d6ade0";
 const SATORA_BASE_URL = "https://satora.nxlabtw.com";
 const SATORA_RETURN_URL = "https://astranote.nxlabtw.com/plans/return";
 const PLAN_DEFINITIONS = Object.freeze({
