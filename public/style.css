@@ -984,12 +984,25 @@ textarea {
   color: var(--danger);
 }
 .auth-forgot { display: inline-block; margin-top: 8px; text-decoration: none; }
-.email-verification-banner { position: relative; z-index: 88; background: color-mix(in srgb, var(--danger) 78%, #381421); border-bottom: 1px solid color-mix(in srgb, var(--danger) 60%, var(--line)); color: #fff; }
-.email-verification-banner > .shell { min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 14px; font-size: 14px; }
-.email-verification-banner span { display: inline-flex; align-items: center; gap: 8px; }
-.email-verification-banner .btn { min-height: 36px; padding: 7px 13px; white-space: nowrap; }
-.settings-email-security { display: flex; flex-direction: column; gap: 11px; }
+.email-verification-banner { position: fixed; z-index: 99; top: 88px; left: 0; right: 0; background: #8b1e35; border-block: 1px solid #c7526d; color: #fff; box-shadow: 0 8px 22px rgba(44, 8, 18, .2); }
+.email-verification-banner > .shell { min-height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 14px; font-size: 14px; }
+.email-banner-copy { display: inline-flex; align-items: center; gap: 8px; font-weight: 650; color: #fff; }
+.email-banner-action { min-height: 38px; padding: 7px 14px; white-space: nowrap; color: #fff; background: #fff; color: #76162b; border-color: #fff; }
+.email-banner-action:hover, .email-banner-action:focus-visible { background: #fff6f7; color: #5c0c1d; }
+body.has-email-verification-banner .page { padding-top: 186px; }
+.settings-email-security, .settings-password-security { display: flex; flex-direction: column; gap: 11px; }
 .settings-email-security .check-row small { display: block; margin-top: 4px; color: var(--muted); font-weight: 400; }
+.otp-inputs { display: grid; grid-template-columns: repeat(6, 48px); justify-content: center; gap: 9px; margin-top: 10px; }
+.otp-inputs input { min-width: 0; height: 52px; margin: 0; padding: 0; text-align: center; font: 700 21px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+@media (max-width: 480px) {
+  .email-verification-banner { top: 80px; }
+  .email-verification-banner > .shell { min-height: 0; padding-top: 9px; padding-bottom: 9px; align-items: flex-start; }
+  .email-banner-copy { font-size: 12px; line-height: 1.35; }
+  .email-banner-action { min-height: 36px; padding: 6px 10px; font-size: 12px; }
+  body.has-email-verification-banner .page { padding-top: 178px; }
+  .otp-inputs { grid-template-columns: repeat(6, minmax(0, 42px)); gap: 6px; }
+  .otp-inputs input { height: 48px; }
+}
 .captcha-box {
   width: 100%;
   min-height: 0;
@@ -2303,7 +2316,7 @@ html[lang="ja"] [data-lang="en"] {
 @media (max-width: 620px) {
   .email-verification-banner > .shell { padding-top: 8px; padding-bottom: 8px; align-items: flex-start; }
   .email-verification-banner > .shell > span { line-height: 1.35; }
-  .email-verification-banner .btn span { display: none; }
+  .email-verification-banner .btn span { display: inline; }
   .vault-fields {
     grid-template-columns: 1fr;
     padding: 17px;

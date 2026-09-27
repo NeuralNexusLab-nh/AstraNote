@@ -1266,12 +1266,14 @@ async function cleanupPlanLocks() {
       metadata.emailAuth ||= {};
       metadata.emailAuth.planNotices ||= {};
       let notice = null;
-      if (metadata.emailVerified && days > 1 && days <= 7 && !metadata.emailAuth.planNotices.sevenDays) { notice = { key: "sevenDays", title: "Your AstraNote plan expires in 7 days", body: "Your plan is close to expiry. Renew to keep your current allowance and features." }; }
-      if (metadata.emailVerified && days > 0 && days <= 1 && !metadata.emailAuth.planNotices.oneDay) { notice = { key: "oneDay", title: "Your AstraNote plan expires in 1 day", body: "Renew now to avoid notes being locked above the Free allowance." }; }
-      if (metadata.emailVerified && remainingBefore > 0 && remainingAfter === 0 && lockCount > lockedBefore && !metadata.emailAuth.planNotices.locked) { notice = { key: "locked", title: "Some AstraNote notes are locked", body: `${lockCount} notes are locked because your plan expired. Upgrade to unlock them; continuously locked notes are deleted after 30 days.` }; }
+      if (metadata.emailVerified && days > 1 && days <= 7 && !metadata.emailAuth.planNotices.sevenDays) notice = { key: "sevenDays", copyKey: "planSeven" };
+      if (metadata.emailVerified && days > 0 && days <= 1 && !metadata.emailAuth.planNotices.oneDay) notice = { key: "oneDay", copyKey: "planOne" };
+      if (metadata.emailVerified && remainingBefore > 0 && remainingAfter === 0 && lockCount > lockedBefore && !metadata.emailAuth.planNotices.locked) notice = { key: "locked", copyKey: "locked", values: { count: lockCount } };
       if (notice) {
-        const template = emailTemplate({ title: notice.title, body: notice.body, actionLabel: "View plans", actionUrl: "https://astranote.nxlabtw.com/plans", language: metadata.settings?.language || "en" });
-        await sendMail({ to: metadata.email, from: "plan@mail.nxlabtw.com", subject: notice.title, template }).catch(() => null);
+        const language = metadata.settings?.language || "en";
+        const copy = emailCopy(language, notice.copyKey, notice.values);
+        const template = emailTemplate({ ...copy, actionLabel: language === "zh-Hant" ? "查看方案" : language === "ja" ? "プランを見る" : "View plans", actionUrl: "https://astranote.nxlabtw.com/plans", language });
+        await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template }).catch(() => null);
         metadata.emailAuth.planNotices[notice.key] = utcNow();
       }
       await saveMetadata(entry.name, metadata);
@@ -1710,11 +1712,55 @@ function escapeHtml(value) {
 function emailTemplate({ title, body, actionLabel, actionUrl, code, language = "en" }) {
   const safeTitle = escapeHtml(title);
   const safeBody = escapeHtml(body);
-  const action = actionUrl ? `<a href="${escapeHtml(actionUrl)}" style="display:inline-block;padding:13px 20px;border-radius:12px;background:linear-gradient(135deg,#6d7cff,#8b6cff);color:#fff;text-decoration:none;font:700 15px Arial,sans-serif">${escapeHtml(actionLabel)}</a>` : "";
-  const fallback = actionUrl ? `<p style="margin:22px 0 7px;color:#98a4c7;font:13px/1.55 Arial,sans-serif">If the button does not open, copy this link:</p><p style="margin:0;overflow-wrap:anywhere;color:#cbd5ff;font:12px/1.6 ui-monospace,monospace">${escapeHtml(actionUrl)}</p>` : "";
-  const codeBlock = code ? `<div style="margin:22px 0;padding:17px;border:1px solid rgba(139,108,255,.55);border-radius:14px;background:#0a1024;color:#eef2ff;text-align:center;letter-spacing:.28em;font:700 28px ui-monospace,monospace">${escapeHtml(code.slice(0,3) + " " + code.slice(3))}</div>` : "";
-  const text = `${title}\n\n${body}${code ? `\n\n${code}` : ""}${actionUrl ? `\n\n${actionUrl}` : ""}\n\nThis expires in 10 minutes.`;
-  return { text, html: `<!doctype html><html lang="${escapeHtml(language)}"><body style="margin:0;padding:28px 14px;background:#050816;color:#eef2ff"><main style="max-width:600px;margin:0 auto;border:1px solid rgba(142,157,210,.24);border-radius:20px;overflow:hidden;background:#10172d;box-shadow:0 18px 48px rgba(0,0,0,.32)"><header style="padding:20px 24px;border-bottom:1px solid rgba(142,157,210,.2);font:700 18px Arial,sans-serif"><img src="https://astranote.nxlabtw.com/asset/logo.png" width="28" height="28" alt="" style="vertical-align:middle;margin-right:9px;border-radius:7px">AstraNote</header><section style="padding:32px 24px"><h1 style="margin:0 0 13px;color:#fff;font:700 27px/1.18 Arial,sans-serif">${safeTitle}</h1><p style="margin:0 0 22px;color:#c4cbe4;font:15px/1.65 Arial,sans-serif">${safeBody}</p>${codeBlock}${action}${fallback}<p style="margin:25px 0 0;padding-top:16px;border-top:1px solid rgba(142,157,210,.18);color:#98a4c7;font:12px/1.55 Arial,sans-serif">This message expires in 10 minutes. If you did not request it, you can safely ignore it.</p></section></main></body></html>` };
+  const copy = language === "zh-Hant"
+    ? { fallback: "若按鈕無法開啟，請複製以下連結：", expiry: "此連結或驗證碼將在 10 分鐘後失效。若非你本人操作，請直接忽略此信。" }
+    : language === "ja"
+      ? { fallback: "ボタンが開かない場合は、次のリンクをコピーしてください。", expiry: "このリンクまたは確認コードは 10 分後に失効します。心当たりがない場合は、このメールを無視してください。" }
+      : { fallback: "If the button does not open, copy this link:", expiry: "This link or code expires in 10 minutes. If you did not request it, you can safely ignore this email." };
+  const action = actionUrl ? `<table role="presentation" cellspacing="0" cellpadding="0" style="margin:24px 0 0"><tr><td style="border-radius:12px;background:#7180ff"><a href="${escapeHtml(actionUrl)}" style="display:inline-block;padding:14px 20px;border-radius:12px;color:#fff;text-decoration:none;font:700 15px Arial,sans-serif">${escapeHtml(actionLabel)}</a></td></tr></table>` : "";
+  const fallback = actionUrl ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:22px 0 0;border:1px solid #263354;border-radius:12px;background:#0b1125"><tr><td style="padding:14px 16px"><p style="margin:0 0 7px;color:#aeb9d8;font:13px/1.55 Arial,sans-serif">${copy.fallback}</p><p style="margin:0;overflow-wrap:anywhere;color:#d7deff;font:12px/1.6 ui-monospace,monospace">${escapeHtml(actionUrl)}</p></td></tr></table>` : "";
+  const codeBlock = code ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:24px 0 0;border:1px solid #4959a8;border-radius:14px;background:#0b1129"><tr><td style="padding:18px;color:#fff;text-align:center;letter-spacing:.16em;font:700 30px ui-monospace,monospace">${escapeHtml(code)}</td></tr></table>` : "";
+  const text = `${title}\n\n${body}${code ? `\n\n${code}` : ""}${actionUrl ? `\n\n${actionUrl}` : ""}\n\n${copy.expiry}`;
+  return { text, html: `<!doctype html><html lang="${escapeHtml(language)}"><body style="margin:0;padding:0;background:#050816;color:#eef2ff"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#050816"><tr><td style="padding:32px 14px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;border:1px solid #283452;border-radius:20px;overflow:hidden;background:#10172d"><tr><td style="padding:20px 24px;border-bottom:1px solid #283452"><img src="https://astranote.nxlabtw.com/asset/logo.png" width="30" height="30" alt="" style="vertical-align:middle;margin-right:10px;border-radius:8px"><span style="vertical-align:middle;color:#fff;font:700 18px Arial,sans-serif">AstraNote</span></td></tr><tr><td style="padding:32px 24px"><h1 style="margin:0 0 14px;color:#fff;font:700 27px/1.2 Arial,sans-serif">${safeTitle}</h1><p style="margin:0;color:#c7d0e9;font:15px/1.7 Arial,sans-serif">${safeBody}</p>${codeBlock}${action}${fallback}<p style="margin:26px 0 0;padding-top:16px;border-top:1px solid #283452;color:#98a6c8;font:12px/1.6 Arial,sans-serif">${copy.expiry}</p></td></tr></table></td></tr></table></body></html>` };
+}
+function emailCopy(language, key, values = {}) {
+  const copies = {
+    en: {
+      verify: { subject: "Verify your AstraNote email", title: "Verify your email", body: "Verify your email to unlock the full 128 KB Free allowance and email security features.", actionLabel: "Verify email" },
+      login: { subject: "Your AstraNote sign-in code", title: "Confirm this sign-in", body: "Enter this code in AstraNote. Sign-in IP: {ip}.", },
+      reset: { subject: "Reset your AstraNote password", title: "Reset your password", body: "We received a request to reset your AstraNote password. If this was not you, you can safely ignore this email.", actionLabel: "Reset password" },
+      delete: { subject: "Confirm AstraNote account deletion", title: "Confirm account deletion", body: "Enter this code in AstraNote to permanently delete your account. This cannot be undone." },
+      payment: { subject: "AstraNote payment confirmed", title: "Your plan is active", body: "Your AstraNote {plan} plan is active for {days} days." },
+      security: { subject: "AstraNote sign-in security notice", title: "Unsuccessful sign-in attempts", body: "{count} unsuccessful password attempts were made from {ip}{country}." },
+      planSeven: { subject: "Your AstraNote plan expires in 7 days", title: "Your AstraNote plan expires in 7 days", body: "Your plan is close to expiry. Renew to keep your current allowance and features." },
+      planOne: { subject: "Your AstraNote plan expires in 1 day", title: "Your AstraNote plan expires in 1 day", body: "Renew now to avoid notes being locked above the Free allowance." },
+      locked: { subject: "Some AstraNote notes are locked", title: "Some AstraNote notes are locked", body: "{count} notes are locked because your plan expired. Upgrade to unlock them, and check Trash for notes that may still be handled before their scheduled deletion after 30 days." },
+    },
+    "zh-Hant": {
+      verify: { subject: "驗證你的 AstraNote Email", title: "驗證你的 Email", body: "完成 Email 驗證，即可啟用完整的 128 KB Free 空間與 Email 安全功能。", actionLabel: "驗證 Email" },
+      login: { subject: "你的 AstraNote 登入驗證碼", title: "確認這次登入", body: "請在 AstraNote 輸入此驗證碼。登入 IP：{ip}。" },
+      reset: { subject: "重設你的 AstraNote 密碼", title: "重設密碼", body: "我們收到重設 AstraNote 密碼的要求。如果不是你本人操作，請直接忽略此信。", actionLabel: "重設密碼" },
+      delete: { subject: "確認刪除 AstraNote 帳號", title: "確認刪除帳號", body: "請在 AstraNote 輸入此驗證碼，永久刪除帳號。此操作無法復原。" },
+      payment: { subject: "AstraNote 付款已確認", title: "你的方案已啟用", body: "你的 AstraNote {plan} 方案已啟用 {days} 天。" },
+      security: { subject: "AstraNote 登入安全通知", title: "偵測到登入失敗", body: "來自 {ip}{country} 的密碼登入失敗已達 {count} 次。" },
+      planSeven: { subject: "你的 AstraNote 方案將在 7 天後到期", title: "你的 AstraNote 方案將在 7 天後到期", body: "你的方案即將到期。請續訂以保留目前的空間額度與功能。" },
+      planOne: { subject: "你的 AstraNote 方案將在 1 天後到期", title: "你的 AstraNote 方案將在 1 天後到期", body: "請立即續訂，避免超出 Free 額度的筆記被鎖定。" },
+      locked: { subject: "部分 AstraNote 筆記已被鎖定", title: "部分 AstraNote 筆記已被鎖定", body: "你的方案已到期，已有 {count} 篇筆記被鎖定。請升級以解鎖，並前往垃圾桶檢查仍可處理、尚未到期的筆記。" },
+    },
+    ja: {
+      verify: { subject: "AstraNote メール認証", title: "メールを認証", body: "メールを認証すると、Free の完全な 128 KB とメール保護機能を利用できます。", actionLabel: "メールを認証" },
+      login: { subject: "AstraNote のサインインコード", title: "サインインを確認", body: "このコードを AstraNote に入力してください。サインイン IP：{ip}。" },
+      reset: { subject: "AstraNote パスワードの再設定", title: "パスワードを再設定", body: "AstraNote のパスワード再設定を受け付けました。心当たりがない場合は、このメールを無視してください。", actionLabel: "パスワードを再設定" },
+      delete: { subject: "AstraNote アカウント削除の確認", title: "アカウント削除の確認", body: "このコードを AstraNote に入力すると、アカウントを完全に削除します。この操作は元に戻せません。" },
+      payment: { subject: "AstraNote の支払いを確認しました", title: "プランが有効になりました", body: "AstraNote {plan} プランを {days} 日間ご利用いただけます。" },
+      security: { subject: "AstraNote サインインセキュリティ通知", title: "サインイン失敗を検知しました", body: "{ip}{country} からのパスワードによるサインイン失敗が {count} 回ありました。" },
+      planSeven: { subject: "AstraNote プランは7日後に終了します", title: "AstraNote プランは7日後に終了します", body: "プランの期限が近づいています。現在の容量と機能を維持するには更新してください。" },
+      planOne: { subject: "AstraNote プランは1日後に終了します", title: "AstraNote プランは1日後に終了します", body: "Free 上限を超えるノートのロックを避けるには、今すぐ更新してください。" },
+      locked: { subject: "一部の AstraNote ノートがロックされています", title: "一部の AstraNote ノートがロックされています", body: "プランの期限切れにより {count} 件のノートがロックされています。解除するにはアップグレードし、期限前に対応できるノートがないかゴミ箱も確認してください。" },
+    },
+  };
+  const selected = copies[language]?.[key] || copies.en[key];
+  return Object.fromEntries(Object.entries(selected).map(([name, text]) => [name, String(text).replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "")]));
 }
 async function sendMail({ to, from, subject, template, bypassDaily = false }) {
   if (!process.env.ZSKEY) throw Object.assign(new Error("Email delivery is unavailable."), { status: 503, code: "email_unavailable" });
@@ -2337,8 +2383,9 @@ app.post(
           const lastAlert = Date.parse(current.emailAuth.failedSignInAlertAt || 0);
           if (current.emailVerified && recent.length >= 5 && (!Number.isFinite(lastAlert) || now - lastAlert >= 24 * 60 * 60_000)) {
             const location = await sessionLocation(req);
-            const template = emailTemplate({ title: "Unsuccessful sign-in attempts", body: `${recent.length} unsuccessful password attempts were made from ${requestIp(req)}${location.country ? ` · ${location.country}` : ""}.`, language: current.settings?.language || "en" });
-            await sendMail({ to: current.email, from: "security@mail.nxlabtw.com", subject: "AstraNote sign-in security notice", template }).catch(() => {});
+            const copy = emailCopy(current.settings?.language || "en", "security", { count: recent.length, ip: requestIp(req), country: location.country ? ` · ${location.country}` : "" });
+            const template = emailTemplate({ ...copy, language: current.settings?.language || "en" });
+            await sendMail({ to: current.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template }).catch(() => {});
             current.emailAuth.failedSignInAlertAt = new Date(now).toISOString();
           }
           await saveMetadata(current.username, current);
@@ -2364,8 +2411,9 @@ app.post(
             throw Object.assign(new Error("Email rate limit reached."), { status: 429, code: "email_rate_limited" });
           const code = makeEmailCode();
           current.emailAuth.login = { digest: codeDigest(code), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
-          const template = emailTemplate({ title: "Confirm this sign-in", body: `Enter this code in AstraNote. Sign-in IP: ${requestIp(req)}.`, code, language: current.settings?.language || "en" });
-          await sendMail({ to: current.email, from: "login@mail.nxlabtw.com", subject: "Your AstraNote sign-in code", template });
+          const copy = emailCopy(current.settings?.language || "en", "login", { ip: requestIp(req) });
+          const template = emailTemplate({ ...copy, code, language: current.settings?.language || "en" });
+          await sendMail({ to: current.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
           recordActionSent(current, "login");
           await saveMetadata(current.username, current);
         });
@@ -2415,8 +2463,9 @@ app.post("/api/email/verification/send", requireAuth, accountMutationLimiter, re
       const token = makeEmailToken();
       metadata.emailAuth.verify = { digest: tokenDigest(token), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
       const url = `https://astranote.nxlabtw.com/verify-email#u=${encodeURIComponent(metadata.username)}&token=${encodeURIComponent(token)}`;
-      const template = emailTemplate({ title: "Verify your email", body: "Verify your email to unlock the full 128 KB Free allowance and email security features.", actionLabel: "Verify email", actionUrl: url, language: metadata.settings?.language || "en" });
-      await sendMail({ to: metadata.email, from: "verify@mail.nxlabtw.com", subject: "Verify your AstraNote email", template });
+      const copy = emailCopy(metadata.settings?.language || "en", "verify");
+      const template = emailTemplate({ ...copy, actionUrl: url, language: metadata.settings?.language || "en" });
+      await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
       recordActionSent(metadata, "verify");
       await saveMetadata(username, metadata);
     });
@@ -2448,8 +2497,9 @@ app.post("/api/password/reset/request", passwordResetIpLimiter, async (req, res,
       const token = makeEmailToken();
       current.emailAuth.reset = { digest: tokenDigest(token), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
       const url = `https://astranote.nxlabtw.com/reset-password#u=${encodeURIComponent(current.username)}&token=${encodeURIComponent(token)}`;
-      const template = emailTemplate({ title: "Reset your password", body: "We received a request to reset your AstraNote password. If this was not you, you can safely ignore this email.", actionLabel: "Reset password", actionUrl: url, language: current.settings?.language || "en" });
-      await sendMail({ to: current.email, from: "reset@mail.nxlabtw.com", subject: "Reset your AstraNote password", template, bypassDaily: true });
+      const copy = emailCopy(current.settings?.language || "en", "reset");
+      const template = emailTemplate({ ...copy, actionUrl: url, language: current.settings?.language || "en" });
+      await sendMail({ to: current.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template, bypassDaily: true });
       await saveMetadata(current.username, current);
     });
     res.json({ ok: true });
@@ -2967,8 +3017,9 @@ app.get(
             metadata.emailAuth ||= {};
             metadata.emailAuth.planReceipts ||= [];
             if (metadata.emailVerified && !metadata.emailAuth.planReceipts.includes(order.orderId)) {
-              const template = emailTemplate({ title: "Your plan is active", body: `Your AstraNote ${order.plan} plan is active for ${order.months * 30} days.`, language: metadata.settings?.language || "en" });
-              await sendMail({ to: metadata.email, from: "plan@mail.nxlabtw.com", subject: `AstraNote ${order.plan} payment confirmed`, template });
+              const copy = emailCopy(metadata.settings?.language || "en", "payment", { plan: order.plan, days: order.months * 30 });
+              const template = emailTemplate({ ...copy, language: metadata.settings?.language || "en" });
+              await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
               metadata.emailAuth.planReceipts = [...metadata.emailAuth.planReceipts.slice(-19), order.orderId];
             }
             await saveMetadata(username, metadata);
@@ -3934,8 +3985,9 @@ app.post(
         const metadata = await loadMetadata(username);
         const code = makeEmailCode();
         metadata.emailAuth.delete = { digest: codeDigest(code), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
-        const template = emailTemplate({ title: "Confirm account deletion", body: "Enter this code in AstraNote to permanently delete your account. This cannot be undone.", code, language: metadata.settings?.language || "en" });
-        await sendMail({ to: metadata.email, from: "delete@mail.nxlabtw.com", subject: "Confirm AstraNote account deletion", template });
+        const copy = emailCopy(metadata.settings?.language || "en", "delete");
+        const template = emailTemplate({ ...copy, code, language: metadata.settings?.language || "en" });
+        await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
         await saveMetadata(username, metadata);
       });
       res.json({ ok: true, emailVerificationRequired: true });

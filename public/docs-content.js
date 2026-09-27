@@ -107,6 +107,31 @@
     "zh-Hant": `<hr class="docs-rule"><h2 id="secret">AstraSecret：日常私密保護</h2><p>AstraSecret 以你自行保存的 4–6 位數字 PIN，在客戶端保護內容。它適合希望為日常私密文字多加一道保護的人；但短數字 PIN 的抗猜測能力有限，不應把它當成高價值機密的最強選擇。</p><hr class="docs-rule"><h2 id="confidential">AstraConfidential：更強的使用者持有保護</h2><p>AstraConfidential 使用區分大小寫、4–16 字元的可列印 ASCII PIN。強烈建議使用不重複、隨機產生的 12–16 字元 PIN。內容會先在客戶端加密再上傳，並結合帳號綁定與伺服器端保護；PIN 不會被儲存，也無法復原。</p><hr class="docs-rule"><h2 id="zero">AstraZero：金鑰只在你的客戶端產生</h2><p>AstraZero 是最重視隱私的模式。它的加密金鑰完全在你的客戶端產生，伺服器不存在可取得的相同環境金鑰。僅取得伺服器權限或檔案，攻擊者拿到的是加密資料，而不是可直接讀取的明文。</p><div class="docs-zero-model"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><div><strong>如果伺服器權限外洩</strong><span>攻擊者仍須取得你的 PIN、控制可信任裝置在解鎖時的狀態，或成功突破另一個安全邊界。只有伺服器權限，不能直接讀取 AstraZero 筆記。</span></div></div><h3>PIN 猜測空間，不是假裝精準的破解時間</h3><p>我們不能誠實地給出固定算力或固定破解時間：它取決於 PIN 是否隨機、長度、攻擊者硬體與實際攻擊路徑。若 PIN 是從 94 個允許的可列印 ASCII 字元均勻隨機選出，離線暴力猜測平均需要 <code>94ⁿ ÷ 2</code> 次。</p><label class="docs-calculator-label" for="zero-pin-length">用於說明的隨機 PIN 長度</label><select id="zero-pin-length" class="docs-calculator"><option value="4">4 個字元</option><option value="8">8 個字元</option><option value="12" selected>12 個字元</option><option value="16">16 個字元</option></select><p class="docs-calculator-result" id="zero-guess-result" aria-live="polite"></p><p class="docs-callout"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>人為挑選或重複使用的 PIN，實際熵值可能遠低於這個示例。計算器不會要求或接收你的真實 PIN。</p>`,
     ja: `<hr class="docs-rule"><h2 id="secret">AstraSecret：日常的なプライバシー</h2><p>AstraSecret は、自分で保管する 4〜6 桁の PIN でクライアント側から内容を守ります。日常的な私的文章にもう一つの壁を加えたい場合に向きます。短い数字 PIN の推測耐性は限られるため、高価値の秘密に対する最強の選択肢としては扱わないでください。</p><hr class="docs-rule"><h2 id="confidential">AstraConfidential：より強い利用者保管型の保護</h2><p>AstraConfidential は大文字と小文字を区別する、4〜16 文字の印字可能 ASCII PIN を使います。固有でランダムな 12〜16 文字の PIN を強く推奨します。内容はアップロード前にクライアントで暗号化され、アカウントに結び付いた保護とサーバー側保護を組み合わせます。PIN は保存も復旧もされません。</p><hr class="docs-rule"><h2 id="zero">AstraZero：鍵はクライアントだけで生成</h2><p>AstraZero は最もプライバシーを重視する方式です。暗号鍵はクライアントだけで生成され、サーバーには取得可能な同等の環境鍵がありません。サーバーの権限やファイルだけを得ても、攻撃者が持つのは暗号化データであり、直接読める平文ではありません。</p><div class="docs-zero-model"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><div><strong>サーバーアクセスが露出した場合</strong><span>攻撃者にはさらに PIN、解除中の信頼済み端末の支配、または別の防御境界の突破が必要です。サーバーアクセスだけでは AstraZero ノートを直接読めません。</span></div></div><h3>PIN の推測空間。断定的な解析時間ではありません</h3><p>固定の計算能力や解析時間を正直に示すことはできません。PIN のランダム性、長さ、攻撃者のハードウェア、実際の攻撃経路に依存するためです。94 個の許可された印字可能 ASCII 文字から均等ランダムに選んだ PIN では、オフライン推測の平均回数は <code>94ⁿ ÷ 2</code> です。</p><label class="docs-calculator-label" for="zero-pin-length">説明用のランダム PIN 長</label><select id="zero-pin-length" class="docs-calculator"><option value="4">4 文字</option><option value="8">8 文字</option><option value="12" selected>12 文字</option><option value="16">16 文字</option></select><p class="docs-calculator-result" id="zero-guess-result" aria-live="polite"></p><p class="docs-callout"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>人が選んだ PIN や再利用した PIN は、この例よりはるかに低いエントロピーになることがあります。計算機は実際の PIN を尋ねたり受け取ったりしません。</p>`,
   };
+  // Password reset is available to verified-email accounts; only note PINs are
+  // intentionally unrecoverable. Normalize older document copy before render.
+  const recoveryCopy = {
+    en: [
+      ["Password recovery is intentionally unavailable, so use a password manager or another safe method to keep it.", "Verify your email so you can reset a forgotten password; use a password manager or another safe method to keep it."],
+      ["AstraNote cannot restore a forgotten PIN or password.", "AstraNote cannot restore a forgotten PIN, but verified-email accounts can reset a password."],
+      ["No. Password recovery is unavailable, and your PIN is never recoverable by AstraNote. Keep both somewhere safe.", "A verified-email account can reset a forgotten password. Your PIN is never recoverable by AstraNote, so keep it somewhere safe."],
+    ],
+    "zh-Hant": [
+      ["AstraNote 刻意不提供密碼復原，請使用密碼管理器或其他安全方式保存密碼。", "完成 Email 驗證後可重設忘記的密碼；仍建議使用密碼管理器或其他安全方式保存密碼。"],
+      ["AstraNote 無法復原忘記的 PIN 或密碼。", "AstraNote 無法復原忘記的 PIN；已驗證 Email 的帳號可以重設密碼。"],
+      ["不能。服務不提供密碼復原；PIN 也無法由 AstraNote 復原。請自行安全保存兩者。", "已驗證 Email 的帳號可以重設忘記的密碼；PIN 仍無法由 AstraNote 復原，請自行安全保存。"],
+    ],
+    ja: [
+      ["AstraNote には意図的にパスワード復旧がないため、パスワードマネージャーなどで安全に保管してください。", "メール認証済みならパスワードを再設定できます。パスワードマネージャーなどで安全に保管してください。"],
+      ["忘れた PIN やパスワードは復旧できません。", "忘れた PIN は復旧できませんが、メール認証済みならパスワードを再設定できます。"],
+      ["できません。パスワード復旧はなく、PIN も AstraNote では復旧できません。どちらも安全に保管してください。", "メール認証済みなら忘れたパスワードを再設定できます。PIN は AstraNote では復旧できないため、安全に保管してください。"],
+    ],
+  };
+  Object.values(content).forEach((document) => {
+    Object.entries(recoveryCopy).forEach(([language, replacements]) => {
+      if (!document?.[language]?.body) return;
+      document[language].body = replacements.reduce((body, [from, to]) => body.replaceAll(from, to), document[language].body);
+    });
+  });
   const locale = () => {
     const value = document.documentElement.lang || localStorage.getItem("astranote_language") || navigator.language || "en";
     return value.toLowerCase().startsWith("zh") ? "zh-Hant" : value.toLowerCase().startsWith("ja") ? "ja" : "en";

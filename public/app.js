@@ -122,7 +122,7 @@ const I18N = {
     username: "Username",
     password: "Password",
     noRecovery:
-      "AstraNote does not offer password recovery. Keep your password safe.",
+      "Use a verified Email to reset a forgotten password. Keep your PINs safe; AstraNote cannot recover them.",
     registerTitle: "Create your AstraNote",
     registerBody: "A quiet corner of the universe, ready for your thoughts.",
     email: "Email",
@@ -254,7 +254,7 @@ const I18N = {
     signInBody: "輸入帳號資料並完成人類驗證。",
     username: "使用者名稱",
     password: "密碼",
-    noRecovery: "AstraNote 不提供密碼復原，請妥善保存密碼。",
+    noRecovery: "已驗證 Email 可用於重設忘記的密碼；PIN 仍請自行妥善保存。",
     registerTitle: "建立 AstraNote",
     registerBody: "宇宙中的一處寧靜角落，等待你的想法。",
     email: "電子郵件",
@@ -754,7 +754,7 @@ Object.assign(I18N.en, {
   scheduledDeletion: "Permanent deletion scheduled for {date}",
   viewPlans: "View plans",
   lockedAccountWarning:
-    "{count} notes are locked. Notes that stay locked for 30 days are permanently deleted, and AstraNote is not responsible for their recovery.",
+    "{count} notes are locked. Check Trash for notes that still have a separate retention deadline. Notes that stay locked for 30 days are permanently deleted, and AstraNote is not responsible for their recovery.",
   planEndingTitle: "Your {plan} time is almost over",
   planEndingFallback:
     "{plan} has {days} days remaining. After that, AstraNote will switch to {fallback}.",
@@ -835,7 +835,7 @@ Object.assign(I18N["zh-Hant"], {
   scheduledDeletion: "預計於 {date} 永久刪除",
   viewPlans: "查看方案",
   lockedAccountWarning:
-    "目前有 {count} 篇筆記被鎖定。持續鎖定滿30天後會永久刪除，AstraNote 不負資料恢復責任。",
+    "目前有 {count} 篇筆記被鎖定。請前往垃圾桶檢查仍在保留期限內的筆記；持續鎖定滿30天後會永久刪除，AstraNote 不負資料恢復責任。",
   planEndingTitle: "你的 {plan} 時間即將用完",
   planEndingFallback: "{plan} 剩餘 {days} 天，之後會自動切換至 {fallback}。",
   planEndingFree:
@@ -930,7 +930,7 @@ Object.assign(I18N.ja, {
   scheduledDeletion: "{date} に完全削除予定",
   viewPlans: "プランを見る",
   lockedAccountWarning:
-    "{count}件のノートがロック中です。30日間継続してロックされると完全に削除され、AstraNote は復元の責任を負いません。",
+    "{count}件のノートがロック中です。元の保管期限内のノートはゴミ箱も確認してください。30日間継続してロックされると完全に削除され、AstraNote は復元の責任を負いません。",
   planEndingTitle: "{plan} の残り期間が少なくなっています",
   planEndingFallback:
     "{plan} は残り{days}日です。その後 {fallback} に切り替わります。",
@@ -1446,7 +1446,7 @@ Object.assign(I18N.ja, {
   signInBody: "ログイン情報を入力し、人間による操作の確認を完了してください。",
   username: "ユーザー名",
   password: "パスワード",
-  noRecovery: "パスワードの復元はできません。安全に保管してください。",
+  noRecovery: "認証済みメールでパスワードを再設定できます。PIN はご自身で安全に保管してください。",
   registerTitle: "AstraNote をはじめる",
   registerBody: "毎日の記録をひとつの場所に。",
   email: "メールアドレス",
@@ -1577,13 +1577,13 @@ Object.assign(I18N.ja, {
   understood: "確認しました",
 });
 Object.assign(I18N.en, {
-  usernameOrEmail: "Username or Email", forgotPassword: "Forgot password?", emailSecurity: "Email security", emailVerified: "Email verified", emailUnverified: "Email not verified", verifyNow: "Verify now", resend: "Resend", emailTwoFactor: "Email two-step verification", emailTwoFactorHelp: "After your password is correct, AstraNote will email a six-digit sign-in code.", currentPassword: "Current password", newPassword: "New password", verificationCode: "Verification code", confirmSignIn: "Confirm your sign-in", codeSentTo: "A six-digit code was sent to {email}.", emailBanner: "Verify your Email to unlock the full 128 KB and email security features.", resetPassword: "Reset password", resetPasswordBody: "Enter your Email and we will send a reset link if it is available.", resetRequested: "If this Email is available, a reset link has been sent.", verifyEmailTitle: "Verify your Email", verifyEmailBody: "Verifying your Email unlocks the full 128 KB Free allowance.", verifiedSuccess: "Your Email has been verified.", deleteCodeTitle: "Confirm account deletion", deleteCodeBody: "Enter the six-digit code sent to your Email to permanently delete this account.", sendError: "Sending failed. Please try again later.", passwordRecoveryAvailable: "Verified Email accounts can reset a forgotten password securely."
+  usernameOrEmail: "Username or Email", forgotPassword: "Forgot password?", emailSecurity: "Email security", passwordSecurity: "Password", passwordSecurityHelp: "Change your password without changing the separate protection factors used by existing encrypted notes.", emailVerified: "Email verified", emailUnverified: "Email not verified", verifyNow: "Verify now", resend: "Resend", emailTwoFactor: "Email two-step verification", emailTwoFactorHelp: "After your password is correct, AstraNote will email a six-digit sign-in code.", currentPassword: "Current password", newPassword: "New password", verificationCode: "Verification code", confirmSignIn: "Confirm your sign-in", codeSentTo: "A six-digit code was sent to {email}.", emailBanner: "Verify your Email to unlock the full 128 KB and email security features.", resetPassword: "Reset password", resetPasswordBody: "Enter your Email and we will send a reset link if it is available.", resetRequested: "If this Email is available, a reset link has been sent.", emailSentTitle: "Email sent", emailSentBody: "Check your inbox and Spam or Junk folder for the AstraNote email.", verifyEmailTitle: "Verify your Email", verifyEmailBody: "Verifying your Email unlocks the full 128 KB Free allowance.", verifiedSuccess: "Your Email has been verified.", deleteCodeTitle: "Confirm account deletion", deleteCodeBody: "Enter the six-digit code sent to your Email to permanently delete this account.", sendError: "Sending failed. Please try again later.", passwordRecoveryAvailable: "Verified Email accounts can reset a forgotten password securely."
 });
 Object.assign(I18N["zh-Hant"], {
-  usernameOrEmail: "使用者名稱或 Email", forgotPassword: "忘記密碼？", emailSecurity: "Email 安全", emailVerified: "Email 已驗證", emailUnverified: "Email 尚未驗證", verifyNow: "立即驗證", resend: "重新寄送", emailTwoFactor: "Email 兩步驟驗證", emailTwoFactorHelp: "帳密正確後，AstraNote 會寄送六位數登入碼。", currentPassword: "目前密碼", newPassword: "新密碼", verificationCode: "驗證碼", confirmSignIn: "確認這次登入", codeSentTo: "六位數驗證碼已寄至 {email}。", emailBanner: "驗證你的 Email，即可啟用完整 128 KB 空間與帳號安全功能。", resetPassword: "重設密碼", resetPasswordBody: "輸入 Email；若此帳號可用，系統會寄送重設連結。", resetRequested: "如果此 Email 可用，重設連結已寄出。", verifyEmailTitle: "驗證你的 Email", verifyEmailBody: "完成驗證後，即可啟用完整的 128 KB Free 空間。", verifiedSuccess: "你的 Email 已完成驗證。", deleteCodeTitle: "確認刪除帳號", deleteCodeBody: "請輸入寄至 Email 的六位數字，永久刪除帳號。", sendError: "發送錯誤，請稍後再試。", passwordRecoveryAvailable: "已驗證 Email 的帳號可安全重設忘記的密碼。"
+  usernameOrEmail: "使用者名稱或 Email", forgotPassword: "忘記密碼？", emailSecurity: "Email 安全", passwordSecurity: "密碼", passwordSecurityHelp: "變更登入密碼不會變更既有加密筆記使用的獨立保護資料。", emailVerified: "Email 已驗證", emailUnverified: "Email 尚未驗證", verifyNow: "立即驗證", resend: "重新寄送", emailTwoFactor: "Email 兩步驟驗證", emailTwoFactorHelp: "帳密正確後，AstraNote 會寄送六位數登入碼。", currentPassword: "目前密碼", newPassword: "新密碼", verificationCode: "驗證碼", confirmSignIn: "確認這次登入", codeSentTo: "六位數驗證碼已寄至 {email}。", emailBanner: "驗證你的 Email，即可啟用完整 128 KB 空間與帳號安全功能。", resetPassword: "重設密碼", resetPasswordBody: "輸入 Email；若此帳號可用，系統會寄送重設連結。", resetRequested: "如果此 Email 可用，重設連結已寄出。", emailSentTitle: "信件已寄出", emailSentBody: "請檢查收件匣，以及垃圾郵件或促銷內容資料夾中的 AstraNote 信件。", verifyEmailTitle: "驗證你的 Email", verifyEmailBody: "完成驗證後，即可啟用完整的 128 KB Free 空間。", verifiedSuccess: "你的 Email 已完成驗證。", deleteCodeTitle: "確認刪除帳號", deleteCodeBody: "請輸入寄至 Email 的六位數字，永久刪除帳號。", sendError: "發送錯誤，請稍後再試。", passwordRecoveryAvailable: "已驗證 Email 的帳號可安全重設忘記的密碼。"
 });
 Object.assign(I18N.ja, {
-  usernameOrEmail: "ユーザー名またはメールアドレス", forgotPassword: "パスワードをお忘れですか？", emailSecurity: "メールのセキュリティ", emailVerified: "メール認証済み", emailUnverified: "メール未認証", verifyNow: "今すぐ認証", resend: "再送", emailTwoFactor: "メール二段階認証", emailTwoFactorHelp: "パスワードが正しい場合、AstraNote から6桁のコードを送信します。", currentPassword: "現在のパスワード", newPassword: "新しいパスワード", verificationCode: "認証コード", confirmSignIn: "サインインを確認", codeSentTo: "6桁のコードを {email} に送信しました。", emailBanner: "メールを認証すると、完全な128 KBとアカウント保護を利用できます。", resetPassword: "パスワードを再設定", resetPasswordBody: "メールアドレスを入力してください。利用可能な場合は再設定リンクを送信します。", resetRequested: "このメールアドレスが利用可能な場合、再設定リンクを送信しました。", verifyEmailTitle: "メールを認証", verifyEmailBody: "認証すると、Free の完全な128 KBを利用できます。", verifiedSuccess: "メール認証が完了しました。", deleteCodeTitle: "アカウント削除の確認", deleteCodeBody: "メールに送信した6桁のコードを入力すると、アカウントを完全に削除します。", sendError: "送信に失敗しました。しばらくしてからもう一度お試しください。", passwordRecoveryAvailable: "認証済みメールのアカウントは、忘れたパスワードを安全に再設定できます。"
+  usernameOrEmail: "ユーザー名またはメールアドレス", forgotPassword: "パスワードをお忘れですか？", emailSecurity: "メールのセキュリティ", passwordSecurity: "パスワード", passwordSecurityHelp: "ログインパスワードを変更しても、既存の暗号化ノートで使う独立した保護情報は変更されません。", emailVerified: "メール認証済み", emailUnverified: "メール未認証", verifyNow: "今すぐ認証", resend: "再送", emailTwoFactor: "メール二段階認証", emailTwoFactorHelp: "パスワードが正しい場合、AstraNote から6桁のコードを送信します。", currentPassword: "現在のパスワード", newPassword: "新しいパスワード", verificationCode: "認証コード", confirmSignIn: "サインインを確認", codeSentTo: "6桁のコードを {email} に送信しました。", emailBanner: "メールを認証すると、完全な128 KBとアカウント保護を利用できます。", resetPassword: "パスワードを再設定", resetPasswordBody: "メールアドレスを入力してください。利用可能な場合は再設定リンクを送信します。", resetRequested: "このメールアドレスが利用可能な場合、再設定リンクを送信しました。", emailSentTitle: "メールを送信しました", emailSentBody: "受信トレイと迷惑メールフォルダーで AstraNote からのメールを確認してください。", verifyEmailTitle: "メールを認証", verifyEmailBody: "認証すると、Free の完全な128 KBを利用できます。", verifiedSuccess: "メール認証が完了しました。", deleteCodeTitle: "アカウント削除の確認", deleteCodeBody: "メールに送信した6桁のコードを入力すると、アカウントを完全に削除します。", sendError: "送信に失敗しました。しばらくしてからもう一度お試しください。", passwordRecoveryAvailable: "認証済みメールのアカウントは、忘れたパスワードを安全に再設定できます。"
 });
 
 const state = {
@@ -1636,7 +1636,7 @@ Object.assign(I18N["en"], {
     "Ultra and Admin manual deletion normally moves an unlocked note into trash for the chosen 1, 3, 7, 14 or 30 days (default 7). Trash and the one previous version count toward storage. A permanent deletion, account deletion, or a 30-day over-limit deletion does not create a recoverable copy. Trash keeps its original deadline after downgrade, locking, or upgrade; an expired item cannot be restored even if scheduled file cleanup has not run yet. A remaining trash item keeps the navigation entry available after downgrade, but over-limit locked items cannot be restored until unlocked within an adequate allowance.",
   termsUpdated: "Effective and last updated: 17 September 2026",
   expiryLockNotice:
-    "When your subscription expires, notes exceeding your remaining plan allowance are locked, largest first. You may read or permanently delete them, or upgrade to unlock. After 30 continuous days locked, they are permanently deleted. Trash keeps its original expiry, which may be sooner.",
+    "When your subscription expires, notes exceeding your remaining plan allowance are locked, largest first. You may read or permanently delete them, or upgrade to unlock. Check Trash for notes that still have their original retention deadline. After 30 continuous days locked, they are permanently deleted. Trash may expire sooner.",
   zeroServerFeature: "No reliance on server encryption environment variables",
 });
 Object.assign(I18N["zh-Hant"], {
@@ -1672,7 +1672,7 @@ Object.assign(I18N["zh-Hant"], {
     "Ultra 與 Admin 手動刪除未鎖定筆記時，原則上移至垃圾桶，依選擇保留1、3、7、14或30天，預設7天。垃圾桶與上一版本都計入空間。永久刪除、刪除帳號及超額鎖定滿30天的系統刪除，不會建立可復原副本。降級、鎖定或升級均不延長垃圾桶原到期時間；即使排程尚未實際清理檔案，已到期項目也不能還原。降級後只要仍有垃圾桶項目，就保留導覽入口；超額鎖定的項目須先取得足夠額度並解鎖才能還原。",
   termsUpdated: "生效及最後更新：2026 年 9 月 17 日",
   expiryLockNotice:
-    "訂閱到期後，超出剩餘方案額度的筆記會從容量最大者開始鎖定。你仍可閱讀或永久刪除，或升級解鎖；連續鎖定滿30天將永久刪除。垃圾桶維持原期限，可能更早清除。",
+    "訂閱到期後，超出剩餘方案額度的筆記會從容量最大者開始鎖定。你仍可閱讀或永久刪除，或升級解鎖；也請前往垃圾桶檢查仍在原保留期限內的筆記。連續鎖定滿30天將永久刪除；垃圾桶可能更早清除。",
   zeroServerFeature: "不依賴伺服器加密環境變數",
 });
 Object.assign(I18N["ja"], {
@@ -1708,7 +1708,7 @@ Object.assign(I18N["ja"], {
     "Ultra と Admin が未ロックのノートを手動削除した場合、通常はゴミ箱に移動し、1・3・7・14・30日から選んだ期間（既定7日）保管します。ゴミ箱と直前のバージョンも容量に含みます。完全削除、アカウント削除、30日間の上限超過によるシステム削除では復元用コピーを作りません。降格・ロック・アップグレードでも元の期限は延長せず、ファイル清掃の実行前でも期限後は復元できません。降格後もゴミ箱に項目があればナビゲーションを残しますが、上限超過でロックされた項目は十分な容量で解除するまで復元できません。",
   termsUpdated: "施行・最終更新：2026年9月17日",
   expiryLockNotice:
-    "契約期限後、残りのプラン上限を超えるノートは容量の大きい順にロックされます。閲覧または完全削除、アップグレードによる解除が可能です。ロックが30日続くと完全削除します。ゴミ箱は元の期限で、それより早く削除される場合があります。",
+    "契約期限後、残りのプラン上限を超えるノートは容量の大きい順にロックされます。閲覧または完全削除、アップグレードによる解除が可能です。元の保管期限内のノートはゴミ箱も確認してください。ロックが30日続くと完全削除し、ゴミ箱はそれより早く削除される場合があります。",
   zeroServerFeature: "サーバーの暗号化用環境変数に依存しない",
 });
 
@@ -2372,11 +2372,12 @@ function buildNav() {
   if (authenticated && state.account?.emailSecurity?.showVerificationBanner) {
     const banner = document.createElement("aside");
     banner.className = "email-verification-banner";
-    banner.innerHTML = `<div class="shell"><span><i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i> ${t("emailBanner")}</span><button type="button" class="btn btn-danger"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>${t("verifyNow")}</span></button></div>`;
+    banner.innerHTML = `<div class="shell"><span class="email-banner-copy"><i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i> ${t("emailBanner")}</span><button type="button" class="btn email-banner-action"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>${t("verifyNow")}</span></button></div>`;
     nav.after(banner);
+    document.body.classList.add("has-email-verification-banner");
     $("button", banner).onclick = async (event) => {
       event.currentTarget.disabled = true;
-      try { await api("/api/email/verification/send", { method: "POST", body: {} }); toast(t("saved")); }
+      try { await api("/api/email/verification/send", { method: "POST", body: {} }); showMailSentModal(); }
       catch (error) { showError(error); }
       finally { event.currentTarget.disabled = false; }
     };
@@ -2559,7 +2560,7 @@ function modal({
     }
   });
   requestAnimationFrame(() =>
-    (dialog.querySelector("input, select, textarea") || cancelButton).focus(),
+    (dialog.querySelector("input, select, textarea") || (showCancel ? cancelButton : confirmButton)).focus(),
   );
   cancelButton.onclick = cancelDialog;
   backdrop.addEventListener("click", (e) => {
@@ -2588,6 +2589,49 @@ function showError(error) {
     confirmIcon: "fa-check",
     onConfirm: async (close) => close(),
   });
+}
+
+function showMailSentModal() {
+  modal({
+    title: t("emailSentTitle"),
+    body: t("emailSentBody"),
+    confirm: t("understood"),
+    showCancel: false,
+    confirmIcon: "fa-envelope-open-text",
+    onConfirm: async (close) => close(),
+  });
+}
+
+function setupOtpInputs(form) {
+  const inputs = $$("[data-otp]", form);
+  const applyDigits = (start, value) => {
+    const digits = String(value || "").replace(/\D/g, "").slice(0, inputs.length - start);
+    if (!digits) return;
+    [...digits].forEach((digit, offset) => { inputs[start + offset].value = digit; });
+    inputs[Math.min(start + digits.length, inputs.length - 1)].focus();
+  };
+  inputs.forEach((input, index) => {
+    input.addEventListener("input", (event) => {
+      const value = event.currentTarget.value.replace(/\D/g, "");
+      event.currentTarget.value = value.slice(-1);
+      if (value.length > 1) applyDigits(index, value);
+      else if (value && index < inputs.length - 1) inputs[index + 1].focus();
+    });
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Backspace" && !input.value && index > 0) {
+        inputs[index - 1].focus();
+        inputs[index - 1].value = "";
+      }
+    });
+    input.addEventListener("paste", (event) => {
+      event.preventDefault();
+      applyDigits(index, event.clipboardData?.getData("text"));
+    });
+  });
+}
+
+function otpCode(form) {
+  return $$("[data-otp]", form).map((input) => input.value).join("");
 }
 
 function unlockConfidential(note) {
@@ -3082,7 +3126,7 @@ async function initAuthForm(kind) {
     }
     button.disabled = true;
     const data = twoFactorUsername
-      ? { username: twoFactorUsername, code: String(form.code?.value || "") }
+      ? { username: twoFactorUsername, code: otpCode(form) }
       : Object.fromEntries(new FormData(form));
     if (needsCaptcha) data.captcha = state.captcha;
     const storedLanguage = getStoredPreference("astranote_language");
@@ -3097,7 +3141,9 @@ async function initAuthForm(kind) {
       const result = await api(endpoint, { method: "POST", body: data });
       if (result.twoFactorRequired) {
         twoFactorUsername = result.username;
-        form.innerHTML = `<div class="form-group"><label for="login-code">${t("verificationCode")}</label><input id="login-code" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required autofocus></div><p class="field-help">${t("codeSentTo").replace("{email}", result.email)}</p><p class="form-message" role="alert"></p><div class="form-actions"><a class="muted" href="/login"><i class="fa-solid fa-arrow-left"></i> ${t("backHome")}</a><button class="btn btn-primary btn-lg" type="submit"><i class="fa-solid fa-shield-halved"></i><span>${t("confirmSignIn")}</span></button></div>`;
+        form.innerHTML = `<div class="form-group"><label id="login-code-label">${t("verificationCode")}</label><div class="otp-inputs" role="group" aria-labelledby="login-code-label">${Array.from({ length: 6 }, (_, index) => `<input data-otp inputmode="numeric" autocomplete="${index === 0 ? "one-time-code" : "off"}" maxlength="1" pattern="[0-9]" aria-label="${t("verificationCode")} ${index + 1}"${index === 0 ? " autofocus" : ""}>`).join("")}</div></div><p class="field-help">${t("codeSentTo").replace("{email}", result.email)}</p><p class="form-message" role="alert"></p><div class="form-actions"><a class="muted" href="/login"><i class="fa-solid fa-arrow-left"></i> ${t("backHome")}</a><button class="btn btn-primary btn-lg" type="submit"><i class="fa-solid fa-shield-halved"></i><span>${t("confirmSignIn")}</span></button></div>`;
+        setupOtpInputs(form);
+        showMailSentModal();
         return;
       }
       const next = params.get("next");
@@ -3145,12 +3191,18 @@ async function initResetPassword() {
   $("#reset-email-group").hidden = hasToken;
   $("#reset-new-password").hidden = !hasToken;
   $("#reset-confirm-password").hidden = !hasToken;
+  const emailInput = $("#reset-email", form);
+  const passwordInput = $("#reset-password", form);
+  const confirmationInput = $("#reset-confirm", form);
+  emailInput.required = !hasToken;
+  passwordInput.required = hasToken;
+  confirmationInput.required = hasToken;
   form.addEventListener("submit", async (event) => {
     event.preventDefault(); const message = $(".form-message", form); message.textContent = "";
     try {
-      if (!hasToken) { await api("/api/password/reset/request", { method: "POST", body: { email: form.email.value } }); message.style.color = "var(--success)"; message.textContent = t("resetRequested"); return; }
-      if (form.password.value !== form.confirmation.value) throw new Error(t("passwordConfirmationRules"));
-      const result = await api("/api/password/reset/confirm", { method: "POST", body: { token, username, password: form.password.value } });
+      if (!hasToken) { await api("/api/password/reset/request", { method: "POST", body: { email: emailInput.value } }); showMailSentModal(); return; }
+      if (passwordInput.value !== confirmationInput.value) throw new Error(t("passwordConfirmationRules"));
+      const result = await api("/api/password/reset/confirm", { method: "POST", body: { token, username, password: passwordInput.value } });
       history.replaceState(null, "", "/reset-password"); location.href = result.redirect;
     } catch (error) { message.style.color = ""; message.textContent = error.message; }
   });
