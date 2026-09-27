@@ -32,6 +32,7 @@ const SHARES_FILE = path.join(DATA_DIR, "shares.json");
 const ORDERS_FILE = path.join(DATA_DIR, "orders.json");
 const SECRET_FILE = path.join(DATA_DIR, ".server-secret");
 const EMAIL_LIMITS_FILE = path.join(DATA_DIR, "email-limits.json");
+const ADMIN_BROADCAST_AUDIT_FILE = path.join(DATA_DIR, "admin-broadcasts.json");
 
 const MAX_ACCOUNTS = 70_000;
 const MAX_NOTES = 20;
@@ -451,6 +452,18 @@ function isAdmin(metadata) {
 
 function isBeta(metadata) {
   return !isAdmin(metadata) && metadata?.beta === true;
+}
+
+async function requireAdmin(req, res, next) {
+  try {
+    const metadata = await loadMetadata(req.auth?.session?.username);
+    if (!metadata || !isAdmin(metadata))
+      return jsonError(res, 403, "admin_required", "Administrator access is required.");
+    req.admin = metadata;
+    next();
+  } catch (error) {
+    next(error);
+  }
 }
 
 function bannedUntil(metadata) {
@@ -1854,6 +1867,104 @@ async function sendMail({ to, from, subject, template }) {
     await writeJson(EMAIL_LIMITS_FILE, current);
   });
 }
+
+function emailLimitRecord(value = {}, day = utcDay()) {
+  return value.day === day
+    ? { day, total: Math.max(0, Number(value.total) || 0) }
+    : { day, total: 0 };
+}
+
+async function emailDeliveryStatus() {
+  const record = emailLimitRecord(await readJson(EMAIL_LIMITS_FILE, {}));
+  return {
+    dailyLimit: EMAIL_DAILY_LIMIT,
+    sentToday: record.total,
+    remaining: Math.max(0, EMAIL_DAILY_LIMIT - record.total),
+  };
+}
+
+function validateBroadcastContent({ subject, html, text }) {
+  const cleanSubject = normalizeText(subject, 180);
+  const cleanHtml = typeof html === "string" ? html.trim() : "";
+  const cleanText = typeof text === "string" ? text.trim() : "";
+  if (!cleanSubject || /[\r\n]/.test(cleanSubject))
+    throw Object.assign(new Error("Enter a valid email subject."), { status: 400, code: "invalid_subject" });
+  if (!cleanHtml || !cleanText || cleanHtml.length > 48_000 || cleanText.length > 24_000)
+    throw Object.assign(new Error("Enter both HTML and plain-text content within the allowed length."), { status: 400, code: "invalid_broadcast_content" });
+  // Broadcast HTML is operator-authored but must still never turn the mail API
+  // into a tracker or an active-content delivery channel if an admin session is stolen.
+  if (/<\s*\/?\s*(script|iframe|object|embed|form|base|link|meta)\b|\bon[a-z]+\s*=|javascript\s*:|\bsrc\s*=\s*["']?\s*(?:https?:|data:)|\burl\s*\(/iu.test(cleanHtml))
+    throw Object.assign(new Error("Broadcast HTML cannot contain active content, remote resources, or tracking URLs."), { status: 400, code: "unsafe_broadcast_html" });
+  return { subject: cleanSubject, html: cleanHtml, text: cleanText };
+}
+
+function normalizeAdminFilters(raw = {}) {
+  const languages = Array.isArray(raw.languages) ? raw.languages.filter((value) => ["en", "zh-Hant", "ja"].includes(value)) : [];
+  const plans = Array.isArray(raw.plans) ? raw.plans.filter((value) => ["free", "plus", "pro", "ultra", "beta", "admin"].includes(value)) : [];
+  return { languages: [...new Set(languages)], plans: [...new Set(plans)] };
+}
+
+async function listAdminUsers(filters = {}) {
+  const normalized = normalizeAdminFilters(filters);
+  const query = normalizeText(filters.query, 254).toLocaleLowerCase("en-US");
+  const entries = await fsp.readdir(DATA_DIR, { withFileTypes: true });
+  const users = [];
+  for (const entry of entries) {
+    if (!entry.isDirectory() || !USERNAME_RE.test(entry.name)) continue;
+    const metadata = await loadMetadata(entry.name);
+    if (!metadata) continue;
+    normalizeEntitlements(metadata);
+    const plan = planForMetadata(metadata);
+    const language = ["en", "zh-Hant", "ja"].includes(metadata.settings?.language)
+      ? metadata.settings.language : "en";
+    const username = String(metadata.username || entry.name);
+    const email = String(metadata.email || "");
+    if (query && !`${username}\n${email}`.toLocaleLowerCase("en-US").includes(query)) continue;
+    if (normalized.languages.length && !normalized.languages.includes(language)) continue;
+    if (normalized.plans.length && !normalized.plans.includes(plan)) continue;
+    users.push({
+      username,
+      email,
+      ip: metadata.lastLoginIp || metadata.registrationIp || null,
+      usedBytes: await noteStorageSize(entry.name),
+      emailVerified: metadata.emailVerified === true,
+      language,
+      plan,
+    });
+  }
+  return users.sort((left, right) => left.username.localeCompare(right.username));
+}
+
+async function sendAdminBroadcast({ recipients, subject, html, text, adminUsername }) {
+  if (!process.env.ZSKEY) throw Object.assign(new Error("Email delivery is unavailable."), { status: 503, code: "email_unavailable" });
+  if (!recipients.length) throw Object.assign(new Error("No verified email recipients match these filters."), { status: 400, code: "no_recipients" });
+  await withLock("email-limits", async () => {
+    const current = emailLimitRecord(await readJson(EMAIL_LIMITS_FILE, {}));
+    if (current.total + recipients.length > EMAIL_DAILY_LIMIT)
+      throw Object.assign(new Error("There are not enough emails remaining in today's shared sending limit."), { status: 429, code: "email_daily_limit" });
+    // Zeabur's batch endpoint accepts at most 100 distinct messages. Each
+    // recipient is its own message, so the local daily counter intentionally
+    // debits recipients.length, never merely one batch request.
+    const response = await fetch(`${EMAIL_API_URL}/batch`, {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${process.env.ZSKEY}` },
+      signal: AbortSignal.timeout(20_000),
+      body: JSON.stringify({ emails: recipients.map((to) => ({ from: "no-reply@mail.nxlabtw.com", to: [to], reply_to: [SUPPORT_EMAIL], subject, html, text })) }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || Number(result.total_count) !== recipients.length)
+      throw Object.assign(new Error("Email delivery failed before the broadcast was queued."), { status: response.status >= 500 ? 503 : response.status || 502, code: "email_delivery_failed" });
+    current.total += recipients.length;
+    await writeJson(EMAIL_LIMITS_FILE, current);
+    return result.job_id || null;
+  });
+  await withLock("admin-broadcasts", async () => {
+    const audit = await readJson(ADMIN_BROADCAST_AUDIT_FILE, []);
+    const records = Array.isArray(audit) ? audit : [];
+    records.unshift({ at: utcNow(), by: userKey(adminUsername), recipients: recipients.length, subjectDigest: sha256(subject) });
+    await writeJson(ADMIN_BROADCAST_AUDIT_FILE, records.slice(0, 20));
+  });
+}
 function actionRecentlySent(metadata, action, limit, windowMs, now = Date.now()) {
   const list = Array.isArray(metadata.emailAuth?.[`${action}SentAt`]) ? metadata.emailAuth[`${action}SentAt`] : [];
   const recent = list.filter((time) => now - Date.parse(time) < windowMs);
@@ -1932,6 +2043,7 @@ async function accountPayload(username) {
     const usedBytes = await noteStorageSize(username);
     return {
       username: metadata.username,
+      isAdmin: isAdmin(metadata),
       email: metadata.email,
       displayName: metadata.displayName || metadata.username,
       createdAt: metadata.createdAt,
@@ -2208,6 +2320,22 @@ const billingCreateIpLimiter = rateLimit({
   handler: rateLimitHandler,
 });
 const billingStatusLimiter = accountLimiter(30);
+const adminReadLimiter = rateLimit({
+  windowMs: 60_000,
+  limit: 20,
+  keyGenerator: accountRateKey,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
+const adminBroadcastLimiter = rateLimit({
+  windowMs: 15 * 60_000,
+  limit: 3,
+  keyGenerator: accountRateKey,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
 const vaultKeyIpLimiter = rateLimit({
   windowMs: 15 * 60_000,
   limit: 30,
@@ -2714,6 +2842,44 @@ app.get("/api/account", requireAuth, async (req, res, next) => {
     next(error);
   }
 });
+
+app.get("/api/admin/users", requireAuth, requireAdmin, adminReadLimiter, async (req, res, next) => {
+  try {
+    const filters = {
+      query: req.query.q,
+      languages: String(req.query.languages || "").split(",").filter(Boolean),
+      plans: String(req.query.plans || "").split(",").filter(Boolean),
+    };
+    const users = await listAdminUsers(filters);
+    const limit = Math.min(50, Math.max(10, Number.parseInt(req.query.limit, 10) || 25));
+    const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
+    const pages = Math.max(1, Math.ceil(users.length / limit));
+    const safePage = Math.min(page, pages);
+    res.json({
+      users: users.slice((safePage - 1) * limit, safePage * limit),
+      total: users.length,
+      verifiedRecipients: users.filter((user) => user.emailVerified).length,
+      page: safePage,
+      pages,
+      filters: normalizeAdminFilters(filters),
+      email: await emailDeliveryStatus(),
+    });
+  } catch (error) { next(error); }
+});
+
+app.post("/api/admin/broadcast", requireAuth, requireAdmin, adminBroadcastLimiter, requireCsrf, async (req, res, next) => {
+  try {
+    const content = validateBroadcastContent(req.body || {});
+    const password = String(req.body?.password || "");
+    if (!(await verifyPasswordForAccount(req.admin, password)))
+      return jsonError(res, 401, "invalid_password", "Your current password is incorrect.");
+    const users = await listAdminUsers(req.body?.filters || {});
+    const recipients = [...new Set(users.filter((user) => user.emailVerified).map((user) => user.email))];
+    await sendAdminBroadcast({ ...content, recipients, adminUsername: req.auth.session.username });
+    res.json({ ok: true, recipients: recipients.length, email: await emailDeliveryStatus() });
+  } catch (error) { next(error); }
+});
+
 app.get("/api/sessions", requireAuth, async (req, res, next) => {
   try {
     const currentId = sha256(req.auth.token);
@@ -4191,6 +4357,7 @@ const pages = {
   "/notes/new": "new-note.html",
   "/trash": "trash.html",
   "/settings": "settings.html",
+  "/admin": "admin.html",
   "/terms": "terms.html",
   "/privacy": "privacy.html",
   "/docs": "docs-article.html",

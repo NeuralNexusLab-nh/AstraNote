@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>AstraNote - Administration</title>
+    <link rel="icon" href="/favicon.ico?v=20260915-2" sizes="any" type="image/x-icon" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body data-page="admin">
+    <main class="page">
+      <div class="shell admin-shell">
+        <header class="page-head reveal">
+          <div>
+            <p class="eyebrow"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><span data-i18n="adminEyebrow"></span></p>
+            <h1 data-i18n="adminTitle"></h1>
+            <p class="muted" data-i18n="adminBody"></p>
+          </div>
+        </header>
+
+        <section class="card admin-filters reveal" aria-label="User filters">
+          <div class="admin-filter-grid">
+            <label><span data-i18n="adminSearch"></span><input id="admin-query" type="search" maxlength="254" data-i18n-placeholder="adminSearchPlaceholder" /></label>
+            <label><span data-i18n="adminLanguage"></span><select id="admin-language"><option value="">All languages</option><option value="en">English</option><option value="zh-Hant">繁體中文</option><option value="ja">日本語</option></select></label>
+            <label><span data-i18n="adminPlan"></span><select id="admin-plan"><option value="">All plans</option><option value="free">Free</option><option value="plus">Plus</option><option value="pro">Pro</option><option value="ultra">Ultra</option><option value="beta">BETA</option><option value="admin">Admin</option></select></label>
+            <button class="btn btn-primary" id="admin-refresh" type="button"><i class="fa-solid fa-rotate" aria-hidden="true"></i><span data-i18n="refresh"></span></button>
+          </div>
+          <p class="field-help" id="admin-email-limit"></p>
+        </section>
+
+        <section class="card admin-users reveal" aria-labelledby="admin-users-title">
+          <div class="section-heading"><div><p class="eyebrow"><i class="fa-solid fa-users" aria-hidden="true"></i><span data-i18n="adminUsers"></span></p><h2 id="admin-users-title"><span id="admin-user-total">—</span></h2></div><div class="admin-pagination"><button class="btn" id="admin-previous" type="button" aria-label="Previous page"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button><span id="admin-page">—</span><button class="btn" id="admin-next" type="button" aria-label="Next page"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button></div></div>
+          <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th data-i18n="adminAccount"></th><th data-i18n="adminEmail"></th><th data-i18n="adminIp"></th><th data-i18n="adminUsed"></th><th data-i18n="adminVerified"></th><th data-i18n="adminLanguage"></th><th data-i18n="adminPlan"></th></tr></thead><tbody id="admin-users-body"></tbody></table></div>
+        </section>
+
+        <section class="card admin-broadcast reveal" aria-labelledby="admin-broadcast-title">
+          <div class="section-heading"><div><p class="eyebrow"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span data-i18n="adminBroadcastEyebrow"></span></p><h2 id="admin-broadcast-title" data-i18n="adminBroadcastTitle"></h2></div></div>
+          <p class="muted" data-i18n="adminBroadcastBody"></p>
+          <form id="admin-broadcast-form" class="admin-broadcast-form">
+            <label><span data-i18n="adminSubject"></span><input id="admin-subject" required maxlength="180" /></label>
+            <label><span data-i18n="adminText"></span><textarea id="admin-text" required maxlength="24000" rows="6"></textarea></label>
+            <label><span data-i18n="adminHtml"></span><textarea id="admin-html" required maxlength="48000" rows="9" spellcheck="false"></textarea><small class="field-help" data-i18n="adminHtmlHelp"></small></label>
+            <p class="field-help" id="admin-recipient-count"></p>
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span data-i18n="adminSend"></span></button>
+          </form>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1786,6 +1786,19 @@ Object.assign(I18N.ja, { legalUpdated: "発効・最終更新：2026年9月27日
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const page = document.body.dataset.page || "";
+Object.assign(I18N.en, {
+  admin: "Administration", adminEyebrow: "ADMINISTRATION", adminTitle: "AstraNote administration", adminBody: "Review account status and send a plain, targeted service announcement.",
+  adminSearch: "Search", adminSearchPlaceholder: "Username or email", adminLanguage: "Language", adminPlan: "Plan", adminUsers: "Users", adminAccount: "Account", adminEmail: "Email", adminIp: "Last IP", adminUsed: "Used", adminVerified: "Email verified", adminBroadcastEyebrow: "EMAIL ANNOUNCEMENT", adminBroadcastTitle: "Send an announcement", adminBroadcastBody: "Only verified addresses matching the current filters receive this message. The shared daily sending limit applies.", adminSubject: "Subject", adminText: "Plain-text content", adminHtml: "HTML content", adminHtmlHelp: "Active content, remote resources, and tracking URLs are blocked.", adminSend: "Send announcement", adminRecipientCount: "Eligible verified recipients: {count}", adminEmailQuota: "{remaining} / {limit} emails remaining today · {sent} sent", adminSendConfirmTitle: "Confirm announcement", adminSendConfirmBody: "This sends to {count} verified recipients. Enter your current password to continue.", adminCurrentPassword: "Current password", adminSent: "Announcement sent to {count} recipients.", adminNoUsers: "No accounts match these filters.", adminYes: "Verified", adminNo: "Not verified",
+});
+Object.assign(I18N["zh-Hant"], {
+  admin: "管理", adminEyebrow: "管理", adminTitle: "AstraNote 管理面板", adminBody: "查看帳號狀態，並向指定對象發送服務公告。",
+  adminSearch: "搜尋", adminSearchPlaceholder: "使用者名稱或 Email", adminLanguage: "語言", adminPlan: "方案", adminUsers: "使用者", adminAccount: "帳號", adminEmail: "Email", adminIp: "最近 IP", adminUsed: "已用空間", adminVerified: "Email 已驗證", adminBroadcastEyebrow: "EMAIL 公告", adminBroadcastTitle: "發送公告", adminBroadcastBody: "只有符合目前篩選條件且已驗證的 Email 會收到此信；全站每日發信上限仍然適用。", adminSubject: "主旨", adminText: "純文字內容", adminHtml: "HTML 內容", adminHtmlHelp: "系統會封鎖主動內容、遠端資源與追蹤網址。", adminSend: "發送公告", adminRecipientCount: "符合資格且已驗證的收件者：{count} 位", adminEmailQuota: "今日剩餘 {remaining} / {limit} 封 · 已送出 {sent} 封", adminSendConfirmTitle: "確認發送公告", adminSendConfirmBody: "這將發送給 {count} 位已驗證收件者。請輸入目前密碼以繼續。", adminCurrentPassword: "目前密碼", adminSent: "公告已發送給 {count} 位收件者。", adminNoUsers: "沒有帳號符合這些篩選條件。", adminYes: "已驗證", adminNo: "未驗證",
+});
+Object.assign(I18N.ja, {
+  admin: "管理", adminEyebrow: "管理", adminTitle: "AstraNote 管理パネル", adminBody: "アカウントの状態を確認し、対象を絞ったサービスのお知らせを送信します。",
+  adminSearch: "検索", adminSearchPlaceholder: "ユーザー名またはメールアドレス", adminLanguage: "言語", adminPlan: "プラン", adminUsers: "ユーザー", adminAccount: "アカウント", adminEmail: "メール", adminIp: "最新 IP", adminUsed: "使用量", adminVerified: "メール認証", adminBroadcastEyebrow: "メールのお知らせ", adminBroadcastTitle: "お知らせを送信", adminBroadcastBody: "現在の絞り込みに一致する、認証済みメールアドレスだけに送信されます。共通の一日あたりの送信上限が適用されます。", adminSubject: "件名", adminText: "プレーンテキスト", adminHtml: "HTML コンテンツ", adminHtmlHelp: "アクティブコンテンツ、外部リソース、トラッキング URL はブロックされます。", adminSend: "お知らせを送信", adminRecipientCount: "対象の認証済み受信者：{count} 人", adminEmailQuota: "本日の残り：{remaining} / {limit} 通 · 送信済み {sent} 通", adminSendConfirmTitle: "送信を確認", adminSendConfirmBody: "認証済みの {count} 人に送信します。続行するには現在のパスワードを入力してください。", adminCurrentPassword: "現在のパスワード", adminSent: "{count} 人にお知らせを送信しました。", adminNoUsers: "この絞り込みに一致するアカウントはありません。", adminYes: "認証済み", adminNo: "未認証",
+});
+
 const t = (key) => I18N[state.language]?.[key] || I18N.en[key] || key;
 const formatBytes = (bytes) =>
   `${Number((Number(bytes || 0) / 1000).toFixed(2))} KB`;
@@ -2191,6 +2204,7 @@ function applyPageSeo() {
     trash: "trash",
     notes: "notes",
     settings: "settings",
+    admin: "admin",
     terms: "terms",
     privacy: "privacy",
     docs: "docs",
@@ -2369,6 +2383,7 @@ function buildNav() {
     ${trashLink}
     <a class="nav-link" href="/docs"><i class="fa-solid fa-book-open" aria-hidden="true"></i> <span data-i18n="docs"></span></a>
     <a class="nav-link plans-nav-link" href="/plans"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> <span data-i18n="plans"></span></a>
+    ${state.account?.isAdmin ? '<a class="nav-link" href="/admin"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> <span data-i18n="admin"></span></a>' : ""}
     <a class="nav-link" href="/settings"><i class="fa-solid fa-gear"></i> <span data-i18n="settings"></span></a>`
     : "";
   const publicPlansLink = authenticated
@@ -4701,6 +4716,79 @@ async function initPlans() {
   }
 }
 
+async function initAdmin() {
+  if (!state.account?.isAdmin) {
+    location.replace(state.session?.authenticated ? "/dashboard" : "/login?next=%2Fadmin");
+    return;
+  }
+  let currentPage = 1;
+  let latest = null;
+  const query = $("#admin-query");
+  const language = $("#admin-language");
+  const plan = $("#admin-plan");
+  const makeQuery = () => {
+    const params = new URLSearchParams({ page: String(currentPage), limit: "25" });
+    if (query.value.trim()) params.set("q", query.value.trim());
+    if (language.value) params.set("languages", language.value);
+    if (plan.value) params.set("plans", plan.value);
+    return params;
+  };
+  const render = (data) => {
+    latest = data;
+    $("#admin-user-total").textContent = String(data.total);
+    $("#admin-page").textContent = `${data.page} / ${data.pages}`;
+    $("#admin-previous").disabled = data.page <= 1;
+    $("#admin-next").disabled = data.page >= data.pages;
+    $("#admin-email-limit").textContent = t("adminEmailQuota").replace("{remaining}", data.email.remaining).replace("{limit}", data.email.dailyLimit).replace("{sent}", data.email.sentToday);
+    $("#admin-recipient-count").textContent = t("adminRecipientCount").replace("{count}", String(data.verifiedRecipients));
+    const body = $("#admin-users-body");
+    body.replaceChildren();
+    if (!data.users.length) {
+      const row = document.createElement("tr"); const cell = document.createElement("td"); cell.colSpan = 7; cell.className = "muted"; cell.textContent = t("adminNoUsers"); row.append(cell); body.append(row); return;
+    }
+    for (const user of data.users) {
+      const row = document.createElement("tr");
+      for (const value of [user.username, user.email, user.ip || "—", formatBytes(user.usedBytes), user.emailVerified ? t("adminYes") : t("adminNo"), user.language, user.plan.toUpperCase()]) {
+        const cell = document.createElement("td"); cell.textContent = value; row.append(cell);
+      }
+      body.append(row);
+    }
+  };
+  const load = async () => {
+    const data = await api(`/api/admin/users?${makeQuery().toString()}`);
+    render(data);
+  };
+  $("#admin-refresh").onclick = () => { currentPage = 1; load().catch(showError); };
+  $("#admin-previous").onclick = () => { currentPage -= 1; load().catch(showError); };
+  $("#admin-next").onclick = () => { currentPage += 1; load().catch(showError); };
+  language.onchange = plan.onchange = () => { currentPage = 1; load().catch(showError); };
+  let searchTimer;
+  query.oninput = () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => { currentPage = 1; load().catch(showError); }, 300); };
+  $("#admin-broadcast-form").onsubmit = (event) => {
+    event.preventDefault();
+    const recipientCount = latest?.verifiedRecipients || 0;
+    const content = document.createElement("label");
+    content.className = "field";
+    const label = document.createElement("span"); label.textContent = t("adminCurrentPassword");
+    const input = document.createElement("input"); input.type = "password"; input.autocomplete = "current-password"; input.required = true;
+    content.append(label, input);
+    modal({
+      title: t("adminSendConfirmTitle"),
+      body: t("adminSendConfirmBody").replace("{count}", String(recipientCount)),
+      content,
+      confirm: t("adminSend"),
+      closeOnBackdrop: false,
+      onConfirm: async (close) => {
+        const result = await api("/api/admin/broadcast", { method: "POST", body: { subject: $("#admin-subject").value, text: $("#admin-text").value, html: $("#admin-html").value, password: input.value, filters: { query: query.value.trim(), languages: language.value ? [language.value] : [], plans: plan.value ? [plan.value] : [] } } });
+        close();
+        modal({ title: t("adminBroadcastTitle"), body: t("adminSent").replace("{count}", String(result.recipients)), confirm: t("understood"), showCancel: false });
+        load().catch(showError);
+      },
+    });
+  };
+  await load();
+}
+
 function initReveal() {
   const observer = new IntersectionObserver(
     (entries) =>
@@ -4763,6 +4851,7 @@ async function boot() {
     note: initNote,
     editor: initEditor,
     settings: initSettings,
+    admin: initAdmin,
     shared: initShared,
     plans: initPlans,
   };
