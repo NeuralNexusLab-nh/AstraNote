@@ -43,6 +43,18 @@
             <label><span data-i18n="adminSubject"></span><input id="admin-subject" required maxlength="180" /></label>
             <label><span data-i18n="adminText"></span><textarea id="admin-text" required maxlength="24000" rows="6"></textarea></label>
             <label><span data-i18n="adminHtml"></span><textarea id="admin-html" required maxlength="48000" rows="9" spellcheck="false"></textarea><small class="field-help" data-i18n="adminHtmlHelp"></small></label>
+            <div class="admin-exclusions">
+              <label><span data-i18n="adminExcludeAccounts"></span><textarea id="admin-excluded-accounts" maxlength="2000" rows="3" data-i18n-placeholder="adminExcludeAccountsPlaceholder"></textarea><small class="field-help" data-i18n="adminExcludeAccountsHelp"></small></label>
+              <fieldset><legend data-i18n="adminExcludePlans"></legend><div class="admin-exclusion-options">
+                <label><input type="checkbox" name="admin-excluded-plan" value="free" /> Free</label>
+                <label><input type="checkbox" name="admin-excluded-plan" value="plus" /> Plus</label>
+                <label><input type="checkbox" name="admin-excluded-plan" value="pro" /> Pro</label>
+                <label><input type="checkbox" name="admin-excluded-plan" value="ultra" /> Ultra</label>
+                <label><input type="checkbox" name="admin-excluded-plan" value="beta" /> BETA</label>
+                <label><input type="checkbox" name="admin-excluded-plan" value="admin" /> Admin</label>
+              </div></fieldset>
+              <label class="admin-exclude-banned"><input id="admin-exclude-banned" type="checkbox" checked /><span data-i18n="adminExcludeBanned"></span></label>
+            </div>
             <p class="field-help" id="admin-recipient-count"></p>
             <button class="btn btn-primary" type="submit"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span data-i18n="adminSend"></span></button>
           </form>

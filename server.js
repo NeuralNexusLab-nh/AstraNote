@@ -1907,6 +1907,34 @@ function normalizeAdminFilters(raw = {}) {
   return { languages: [...new Set(languages)], plans: [...new Set(plans)] };
 }
 
+function normalizeBroadcastExclusions(raw = {}) {
+  const excludedPlans = Array.isArray(raw.excludedPlans)
+    ? raw.excludedPlans.filter((value) => ["free", "plus", "pro", "ultra", "beta", "admin"].includes(value))
+    : [];
+  const excludedAccounts = Array.isArray(raw.excludedAccounts)
+    ? raw.excludedAccounts.map((value) => String(value).trim().toLocaleLowerCase("en-US")).filter(Boolean)
+    : [];
+  if (excludedAccounts.length > 100 || excludedAccounts.some((value) => value.length > 254))
+    throw Object.assign(new Error("Too many excluded accounts."), { status: 400, code: "invalid_exclusions" });
+  return { excludedPlans: [...new Set(excludedPlans)], excludedAccounts: [...new Set(excludedAccounts)], excludeBanned: raw.excludeBanned === true };
+}
+
+function broadcastRecipients(users, raw = {}) {
+  const { excludedPlans, excludedAccounts, excludeBanned } = normalizeBroadcastExclusions(raw);
+  const excluded = new Set(excludedAccounts);
+  const matched = new Set();
+  const recipients = new Map();
+  for (const user of users) {
+    const username = user.username.toLocaleLowerCase("en-US");
+    const email = user.email.toLocaleLowerCase("en-US");
+    if (excluded.has(username)) matched.add(username);
+    if (excluded.has(email)) matched.add(email);
+    if (excluded.has(username) || excluded.has(email) || excludedPlans.includes(user.plan) || (excludeBanned && user.banned)) continue;
+    if (email) recipients.set(email, user.email);
+  }
+  return { recipients: [...recipients.values()], unmatched: excludedAccounts.filter((value) => !matched.has(value)) };
+}
+
 async function listAdminUsers(filters = {}) {
   const normalized = normalizeAdminFilters(filters);
   const query = normalizeText(filters.query, 254).toLocaleLowerCase("en-US");
@@ -1931,6 +1959,7 @@ async function listAdminUsers(filters = {}) {
       ip: metadata.lastLoginIp || metadata.registrationIp || null,
       usedBytes: await noteStorageSize(entry.name),
       emailVerified: metadata.emailVerified === true,
+      banned: accountIsBanned(metadata),
       language,
       plan,
     });
@@ -1940,7 +1969,7 @@ async function listAdminUsers(filters = {}) {
 
 async function sendAdminBroadcast({ recipients, subject, html, text, adminUsername }) {
   if (!process.env.ZSKEY) throw Object.assign(new Error("Email delivery is unavailable."), { status: 503, code: "email_unavailable" });
-  if (!recipients.length) throw Object.assign(new Error("No verified email recipients match these filters."), { status: 400, code: "no_recipients" });
+  if (!recipients.length) throw Object.assign(new Error("No email recipients match these filters."), { status: 400, code: "no_recipients" });
   await withLock("email-limits", async () => {
     const current = emailLimitRecord(await readJson(EMAIL_LIMITS_FILE, {}));
     if (current.total + recipients.length > EMAIL_DAILY_LIMIT)
@@ -2854,6 +2883,11 @@ app.get("/api/admin/users", requireAuth, requireAdmin, adminReadLimiter, async (
       plans: String(req.query.plans || "").split(",").filter(Boolean),
     };
     const users = await listAdminUsers(filters);
+    const { recipients, unmatched } = broadcastRecipients(users, {
+      excludedPlans: String(req.query.excludedPlans || "").split(",").filter(Boolean),
+      excludedAccounts: String(req.query.excludedAccounts || "").split(",").filter(Boolean),
+      excludeBanned: req.query.excludeBanned === "true",
+    });
     const limit = Math.min(50, Math.max(10, Number.parseInt(req.query.limit, 10) || 25));
     const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
     const pages = Math.max(1, Math.ceil(users.length / limit));
@@ -2861,7 +2895,9 @@ app.get("/api/admin/users", requireAuth, requireAdmin, adminReadLimiter, async (
     res.json({
       users: users.slice((safePage - 1) * limit, safePage * limit),
       total: users.length,
-      verifiedRecipients: users.filter((user) => user.emailVerified).length,
+      eligibleRecipients: recipients.length,
+      recipientDigest: sha256([...recipients].sort().join("\n")),
+      unmatchedExclusions: unmatched,
       page: safePage,
       pages,
       filters: normalizeAdminFilters(filters),
@@ -2877,7 +2913,11 @@ app.post("/api/admin/broadcast", requireAuth, requireAdmin, adminBroadcastLimite
     if (!(await verifyPasswordForAccount(req.admin, password)))
       return jsonError(res, 401, "invalid_password", "Your current password is incorrect.");
     const users = await listAdminUsers(req.body?.filters || {});
-    const recipients = [...new Set(users.filter((user) => user.emailVerified).map((user) => user.email))];
+    const { recipients, unmatched } = broadcastRecipients(users, req.body?.filters || {});
+    if (unmatched.length)
+      throw Object.assign(new Error("Some excluded accounts do not match the selected users. Check the usernames or email addresses before sending."), { status: 400, code: "unmatched_exclusions" });
+    if (recipients.length !== req.body?.expectedRecipients || sha256([...recipients].sort().join("\n")) !== req.body?.expectedRecipientDigest)
+      throw Object.assign(new Error("The recipient count has changed. Refresh the preview before sending."), { status: 409, code: "recipients_changed" });
     await sendAdminBroadcast({ ...content, recipients, adminUsername: req.auth.session.username });
     res.json({ ok: true, recipients: recipients.length, email: await emailDeliveryStatus() });
   } catch (error) { next(error); }
@@ -4506,5 +4546,6 @@ module.exports = {
     parseCookies,
     publicIpForLookup,
     sessionCookieOptions,
+    broadcastRecipients,
   },
 };

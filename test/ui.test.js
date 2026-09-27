@@ -24,6 +24,26 @@ function browserContext() {
   vm.runInContext(source.slice(0, source.lastIndexOf("boot().catch")), context);
   return context;
 }
+test("a notice modal closes when its confirmation has no custom action", async () => {
+  const context = browserContext();
+  const classes = new Set();
+  const createElement = () => ({
+    children: [], dataset: {}, classList: { add: (value) => classes.add(value), remove: (value) => classes.delete(value) },
+    append(...children) { this.children.push(...children); },
+    setAttribute() {}, addEventListener() {}, focus() {},
+    querySelector: (selector) => selector === "span" ? { textContent: "" } : null,
+    remove() { this.removed = true; },
+  });
+  const body = createElement();
+  body.classList = { add: (value) => classes.add(value), remove: (value) => classes.delete(value) };
+  context.document = { activeElement: null, body, createElement };
+  context.requestAnimationFrame = (callback) => callback();
+  context.crypto = require("node:crypto").webcrypto;
+  const notice = vm.runInContext('modal({ title: "Announcement sent", confirm: "Understood", showCancel: false })', context);
+  await notice.confirmButton.onclick();
+  assert.equal(body.children[0].removed, true);
+  assert.equal(classes.has("modal-open"), false);
+});
 test("locale rendering tolerates pages without retention controls", () => {
   const context = browserContext();
   for (const language of ["en", "zh-Hant", "ja"])
@@ -93,6 +113,14 @@ test("every newly introduced feature has all three translations", () => {
     "billingStatusUnavailable",
     "billingExpiredHelp",
     "billingFailedHelp",
+    "adminExcludeAccounts",
+    "adminExcludeAccountsPlaceholder",
+    "adminExcludeAccountsHelp",
+    "adminExcludePlans",
+    "adminExcludeBanned",
+    "adminUnmatchedExclusions",
+    "adminNoRecipients",
+    "adminOverDailyLimit",
   ];
   for (const language of ["en", "zh-Hant", "ja"])
     for (const key of required)

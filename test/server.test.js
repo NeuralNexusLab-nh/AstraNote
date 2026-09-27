@@ -48,6 +48,22 @@ test("Astra AI accepts structured Responses output content", async () => {
   }
 });
 
+test("admin announcements include unverified email and honor account, plan, and ban exclusions", () => {
+  const users = [
+    { username: "verified", email: "verified@example.com", emailVerified: true, plan: "free", banned: false },
+    { username: "Unverified", email: "unverified@example.com", emailVerified: false, plan: "plus", banned: false },
+    { username: "banned", email: "banned@example.com", emailVerified: true, plan: "pro", banned: true },
+    { username: "ultra", email: "ultra@example.com", emailVerified: true, plan: "ultra", banned: false },
+  ];
+  assert.deepEqual(testables.broadcastRecipients(users).recipients, users.map((user) => user.email));
+  assert.deepEqual(testables.broadcastRecipients(users, {
+    excludedAccounts: [" VERIFIED@EXAMPLE.COM "],
+    excludedPlans: ["ultra"],
+    excludeBanned: true,
+  }), { recipients: ["unverified@example.com"], unmatched: [] });
+  assert.deepEqual(testables.broadcastRecipients(users, { excludedAccounts: ["missing"] }).unmatched, ["missing"]);
+});
+
 test.after(async () => {
   await new Promise((resolve) => server.close(resolve));
   testables.closeOrderStore();

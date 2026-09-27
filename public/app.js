@@ -1788,16 +1788,19 @@ const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const page = document.body.dataset.page || "";
 Object.assign(I18N.en, {
   admin: "Administration", adminEyebrow: "ADMINISTRATION", adminTitle: "AstraNote administration", adminBody: "Review account status and send a plain, targeted service announcement.",
-  adminSearch: "Search", adminSearchPlaceholder: "Username or email", adminLanguage: "Language", adminPlan: "Plan", adminUsers: "Users", adminAccount: "Account", adminEmail: "Email", adminIp: "Last IP", adminUsed: "Used", adminVerified: "Email verified", adminBroadcastEyebrow: "EMAIL ANNOUNCEMENT", adminBroadcastTitle: "Send an announcement", adminBroadcastBody: "Only verified addresses matching the current filters receive this message. The shared daily sending limit applies.", adminSubject: "Subject", adminText: "Plain-text content", adminHtml: "HTML content", adminHtmlHelp: "Active content, remote resources, and tracking URLs are blocked.", adminSend: "Send announcement", adminRecipientCount: "Eligible verified recipients: {count}", adminEmailQuota: "{remaining} / {limit} emails remaining today · {sent} sent", adminSendConfirmTitle: "Confirm announcement", adminSendConfirmBody: "This sends to {count} verified recipients. Enter your current password to continue.", adminCurrentPassword: "Current password", adminSent: "Announcement sent to {count} recipients.", adminNoUsers: "No accounts match these filters.", adminYes: "Verified", adminNo: "Not verified",
+  adminSearch: "Search", adminSearchPlaceholder: "Username or email", adminLanguage: "Language", adminPlan: "Plan", adminUsers: "Users", adminAccount: "Account", adminEmail: "Email", adminIp: "Last IP", adminUsed: "Used", adminVerified: "Email verified", adminBroadcastEyebrow: "EMAIL ANNOUNCEMENT", adminBroadcastTitle: "Send an announcement", adminBroadcastBody: "Both verified and unverified addresses can receive an announcement. Current search, language and plan filters apply; exclusions below are applied afterward. The shared daily sending limit applies.", adminSubject: "Subject", adminText: "Plain-text content", adminHtml: "HTML content", adminHtmlHelp: "Active content, remote resources, and tracking URLs are blocked.", adminSend: "Send announcement", adminRecipientCount: "Recipients after exclusions: {count}", adminEmailQuota: "{remaining} / {limit} emails remaining today · {sent} sent", adminSendConfirmTitle: "Confirm announcement", adminSendConfirmBody: "This sends to {count} recipients, including unverified addresses. Enter your current password to continue.", adminCurrentPassword: "Current password", adminSent: "Announcement sent to {count} recipients.", adminNoUsers: "No accounts match these filters.", adminYes: "Verified", adminNo: "Not verified",
 });
 Object.assign(I18N["zh-Hant"], {
   admin: "管理", adminEyebrow: "管理", adminTitle: "AstraNote 管理面板", adminBody: "查看帳號狀態，並向指定對象發送服務公告。",
-  adminSearch: "搜尋", adminSearchPlaceholder: "使用者名稱或 Email", adminLanguage: "語言", adminPlan: "方案", adminUsers: "使用者", adminAccount: "帳號", adminEmail: "Email", adminIp: "最近 IP", adminUsed: "已用空間", adminVerified: "Email 已驗證", adminBroadcastEyebrow: "EMAIL 公告", adminBroadcastTitle: "發送公告", adminBroadcastBody: "只有符合目前篩選條件且已驗證的 Email 會收到此信；全站每日發信上限仍然適用。", adminSubject: "主旨", adminText: "純文字內容", adminHtml: "HTML 內容", adminHtmlHelp: "系統會封鎖主動內容、遠端資源與追蹤網址。", adminSend: "發送公告", adminRecipientCount: "符合資格且已驗證的收件者：{count} 位", adminEmailQuota: "今日剩餘 {remaining} / {limit} 封 · 已送出 {sent} 封", adminSendConfirmTitle: "確認發送公告", adminSendConfirmBody: "這將發送給 {count} 位已驗證收件者。請輸入目前密碼以繼續。", adminCurrentPassword: "目前密碼", adminSent: "公告已發送給 {count} 位收件者。", adminNoUsers: "沒有帳號符合這些篩選條件。", adminYes: "已驗證", adminNo: "未驗證",
+  adminSearch: "搜尋", adminSearchPlaceholder: "使用者名稱或 Email", adminLanguage: "語言", adminPlan: "方案", adminUsers: "使用者", adminAccount: "帳號", adminEmail: "Email", adminIp: "最近 IP", adminUsed: "已用空間", adminVerified: "Email 已驗證", adminBroadcastEyebrow: "EMAIL 公告", adminBroadcastTitle: "發送公告", adminBroadcastBody: "已驗證與未驗證的 Email 都可收到公告。系統會先套用上方搜尋、語言與方案篩選，再排除下方指定對象；全站每日發信上限仍然適用。", adminSubject: "主旨", adminText: "純文字內容", adminHtml: "HTML 內容", adminHtmlHelp: "系統會封鎖主動內容、遠端資源與追蹤網址。", adminSend: "發送公告", adminRecipientCount: "排除後的收件者：{count} 位", adminEmailQuota: "今日剩餘 {remaining} / {limit} 封 · 已送出 {sent} 封", adminSendConfirmTitle: "確認發送公告", adminSendConfirmBody: "這將發送給 {count} 位收件者，包含未驗證的 Email。請輸入目前密碼以繼續。", adminCurrentPassword: "目前密碼", adminSent: "公告已發送給 {count} 位收件者。", adminNoUsers: "沒有帳號符合這些篩選條件。", adminYes: "已驗證", adminNo: "未驗證",
 });
 Object.assign(I18N.ja, {
   admin: "管理", adminEyebrow: "管理", adminTitle: "AstraNote 管理パネル", adminBody: "アカウントの状態を確認し、対象を絞ったサービスのお知らせを送信します。",
-  adminSearch: "検索", adminSearchPlaceholder: "ユーザー名またはメールアドレス", adminLanguage: "言語", adminPlan: "プラン", adminUsers: "ユーザー", adminAccount: "アカウント", adminEmail: "メール", adminIp: "最新 IP", adminUsed: "使用量", adminVerified: "メール認証", adminBroadcastEyebrow: "メールのお知らせ", adminBroadcastTitle: "お知らせを送信", adminBroadcastBody: "現在の絞り込みに一致する、認証済みメールアドレスだけに送信されます。共通の一日あたりの送信上限が適用されます。", adminSubject: "件名", adminText: "プレーンテキスト", adminHtml: "HTML コンテンツ", adminHtmlHelp: "アクティブコンテンツ、外部リソース、トラッキング URL はブロックされます。", adminSend: "お知らせを送信", adminRecipientCount: "対象の認証済み受信者：{count} 人", adminEmailQuota: "本日の残り：{remaining} / {limit} 通 · 送信済み {sent} 通", adminSendConfirmTitle: "送信を確認", adminSendConfirmBody: "認証済みの {count} 人に送信します。続行するには現在のパスワードを入力してください。", adminCurrentPassword: "現在のパスワード", adminSent: "{count} 人にお知らせを送信しました。", adminNoUsers: "この絞り込みに一致するアカウントはありません。", adminYes: "認証済み", adminNo: "未認証",
+  adminSearch: "検索", adminSearchPlaceholder: "ユーザー名またはメールアドレス", adminLanguage: "言語", adminPlan: "プラン", adminUsers: "ユーザー", adminAccount: "アカウント", adminEmail: "メール", adminIp: "最新 IP", adminUsed: "使用量", adminVerified: "メール認証", adminBroadcastEyebrow: "メールのお知らせ", adminBroadcastTitle: "お知らせを送信", adminBroadcastBody: "認証済み・未認証のメールアドレスに送信できます。上の検索・言語・プランで絞り込み、下の指定対象を除外します。共通の一日あたりの送信上限が適用されます。", adminSubject: "件名", adminText: "プレーンテキスト", adminHtml: "HTML コンテンツ", adminHtmlHelp: "アクティブコンテンツ、外部リソース、トラッキング URL はブロックされます。", adminSend: "お知らせを送信", adminRecipientCount: "除外後の受信者：{count} 人", adminEmailQuota: "本日の残り：{remaining} / {limit} 通 · 送信済み {sent} 通", adminSendConfirmTitle: "送信を確認", adminSendConfirmBody: "未認証のメールアドレスを含む {count} 人に送信します。続行するには現在のパスワードを入力してください。", adminCurrentPassword: "現在のパスワード", adminSent: "{count} 人にお知らせを送信しました。", adminNoUsers: "この絞り込みに一致するアカウントはありません。", adminYes: "認証済み", adminNo: "未認証",
 });
+Object.assign(I18N.en, { adminExcludeAccounts: "Exclude accounts", adminExcludeAccountsPlaceholder: "One username or email address per line", adminExcludeAccountsHelp: "Use exact usernames or email addresses. An unknown entry blocks sending.", adminExcludePlans: "Exclude plans", adminExcludeBanned: "Exclude banned accounts", adminUnmatchedExclusions: "Unknown exclusions: {accounts}", adminNoRecipients: "No recipients match the current filters.", adminOverDailyLimit: "This announcement exceeds today's remaining email limit." });
+Object.assign(I18N["zh-Hant"], { adminExcludeAccounts: "排除指定帳號", adminExcludeAccountsPlaceholder: "每行一個使用者名稱或 Email", adminExcludeAccountsHelp: "請填寫完整使用者名稱或 Email；找不到的項目會阻止寄送。", adminExcludePlans: "排除方案", adminExcludeBanned: "排除被封鎖的帳號", adminUnmatchedExclusions: "找不到排除對象：{accounts}", adminNoRecipients: "目前篩選條件下沒有收件者。", adminOverDailyLimit: "此公告超過今日剩餘發信額度。" });
+Object.assign(I18N.ja, { adminExcludeAccounts: "アカウントを除外", adminExcludeAccountsPlaceholder: "ユーザー名またはメールアドレスを1行に1件", adminExcludeAccountsHelp: "完全なユーザー名またはメールアドレスを入力してください。不明な項目がある場合は送信できません。", adminExcludePlans: "プランを除外", adminExcludeBanned: "停止中のアカウントを除外", adminUnmatchedExclusions: "見つからない除外対象：{accounts}", adminNoRecipients: "現在の条件に一致する受信者はいません。", adminOverDailyLimit: "本日のメール送信枠を超えています。" });
 
 const t = (key) => I18N[state.language]?.[key] || I18N.en[key] || key;
 const formatBytes = (bytes) =>
@@ -2617,7 +2620,8 @@ function modal({
   confirmButton.onclick = async () => {
     confirmButton.disabled = true;
     try {
-      await onConfirm?.(close, confirmButton);
+      if (onConfirm) await onConfirm(close, confirmButton);
+      else close();
     } catch (error) {
       showError(error);
       confirmButton.disabled = false;
@@ -4722,25 +4726,45 @@ async function initAdmin() {
     return;
   }
   let currentPage = 1;
-  let latest = null;
   const query = $("#admin-query");
   const language = $("#admin-language");
   const plan = $("#admin-plan");
+  const excludedAccounts = $("#admin-excluded-accounts");
+  const excludeBanned = $("#admin-exclude-banned");
+  const excludedPlans = () => $$('[name="admin-excluded-plan"]:checked').map((input) => input.value);
+  const excludedAccountList = () => excludedAccounts.value.split(/[\r\n,]+/u).map((value) => value.trim()).filter(Boolean);
+  const broadcastFilters = () => ({
+    query: query.value.trim(),
+    languages: language.value ? [language.value] : [],
+    plans: plan.value ? [plan.value] : [],
+    excludedPlans: excludedPlans(),
+    excludedAccounts: excludedAccountList(),
+    excludeBanned: excludeBanned.checked,
+  });
   const makeQuery = () => {
     const params = new URLSearchParams({ page: String(currentPage), limit: "25" });
     if (query.value.trim()) params.set("q", query.value.trim());
     if (language.value) params.set("languages", language.value);
     if (plan.value) params.set("plans", plan.value);
+    if (excludedPlans().length) params.set("excludedPlans", excludedPlans().join(","));
+    if (excludedAccountList().length) params.set("excludedAccounts", excludedAccountList().join(","));
+    params.set("excludeBanned", String(excludeBanned.checked));
     return params;
   };
   const render = (data) => {
-    latest = data;
     $("#admin-user-total").textContent = String(data.total);
     $("#admin-page").textContent = `${data.page} / ${data.pages}`;
     $("#admin-previous").disabled = data.page <= 1;
     $("#admin-next").disabled = data.page >= data.pages;
     $("#admin-email-limit").textContent = t("adminEmailQuota").replace("{remaining}", data.email.remaining).replace("{limit}", data.email.dailyLimit).replace("{sent}", data.email.sentToday);
-    $("#admin-recipient-count").textContent = t("adminRecipientCount").replace("{count}", String(data.verifiedRecipients));
+    const recipientCount = $("#admin-recipient-count");
+    recipientCount.textContent = [
+      t("adminRecipientCount").replace("{count}", String(data.eligibleRecipients)),
+      data.unmatchedExclusions.length ? t("adminUnmatchedExclusions").replace("{accounts}", data.unmatchedExclusions.join(", ")) : "",
+      !data.eligibleRecipients ? t("adminNoRecipients") : "",
+      data.eligibleRecipients > data.email.remaining ? t("adminOverDailyLimit") : "",
+    ].filter(Boolean).join(" · ");
+    $("#admin-broadcast-form button[type='submit']").disabled = Boolean(data.unmatchedExclusions.length || !data.eligibleRecipients || data.eligibleRecipients > data.email.remaining);
     const body = $("#admin-users-body");
     body.replaceChildren();
     if (!data.users.length) {
@@ -4757,6 +4781,7 @@ async function initAdmin() {
   const load = async () => {
     const data = await api(`/api/admin/users?${makeQuery().toString()}`);
     render(data);
+    return data;
   };
   $("#admin-refresh").onclick = () => { currentPage = 1; load().catch(showError); };
   $("#admin-previous").onclick = () => { currentPage -= 1; load().catch(showError); };
@@ -4764,9 +4789,17 @@ async function initAdmin() {
   language.onchange = plan.onchange = () => { currentPage = 1; load().catch(showError); };
   let searchTimer;
   query.oninput = () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => { currentPage = 1; load().catch(showError); }, 300); };
-  $("#admin-broadcast-form").onsubmit = (event) => {
+  const refreshRecipients = () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => load().catch(showError), 250); };
+  excludedAccounts.oninput = refreshRecipients;
+  excludeBanned.onchange = refreshRecipients;
+  $$('[name="admin-excluded-plan"]').forEach((input) => { input.onchange = refreshRecipients; });
+  $("#admin-broadcast-form").onsubmit = async (event) => {
     event.preventDefault();
-    const recipientCount = latest?.verifiedRecipients || 0;
+    let preview;
+    try { preview = await load(); } catch (error) { showError(error); return; }
+    if (preview.unmatchedExclusions.length || !preview.eligibleRecipients || preview.eligibleRecipients > preview.email.remaining) return;
+    const recipientCount = preview.eligibleRecipients;
+    const filters = broadcastFilters();
     const content = document.createElement("label");
     content.className = "field";
     const label = document.createElement("span"); label.textContent = t("adminCurrentPassword");
@@ -4779,7 +4812,7 @@ async function initAdmin() {
       confirm: t("adminSend"),
       closeOnBackdrop: false,
       onConfirm: async (close) => {
-        const result = await api("/api/admin/broadcast", { method: "POST", body: { subject: $("#admin-subject").value, text: $("#admin-text").value, html: $("#admin-html").value, password: input.value, filters: { query: query.value.trim(), languages: language.value ? [language.value] : [], plans: plan.value ? [plan.value] : [] } } });
+        const result = await api("/api/admin/broadcast", { method: "POST", body: { subject: $("#admin-subject").value, text: $("#admin-text").value, html: $("#admin-html").value, password: input.value, filters, expectedRecipients: recipientCount, expectedRecipientDigest: preview.recipientDigest } });
         close();
         modal({ title: t("adminBroadcastTitle"), body: t("adminSent").replace("{count}", String(result.recipients)), confirm: t("understood"), showCancel: false });
         load().catch(showError);
