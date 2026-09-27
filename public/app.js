@@ -2610,7 +2610,13 @@ function showMailSentModal() {
 
 const EMAIL_REQUEST_COOLDOWN_MS = 10 * 60_000;
 function emailCooldownKey(kind) {
-  return `astranote_email_cooldown_${kind}`;
+  // Verification is bound to the signed-in account. Keeping this scope avoids
+  // a successful request for one account disabling verification for another
+  // account in the same browser.
+  const scope = kind === "verify"
+    ? state.session?.username || state.account?.username || "signed-out"
+    : "browser";
+  return `astranote_email_cooldown_v2_${kind}_${scope}`;
 }
 function refreshEmailCooldown(kind, button) {
   if (!button) return false;
