@@ -1780,24 +1780,19 @@ function emailCopy(language, key, values = {}) {
   const selected = copies[language]?.[key] || copies.en[key];
   return Object.fromEntries(Object.entries(selected).map(([name, text]) => [name, String(text).replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "")]));
 }
-async function sendMail({ to, from, subject, template, bypassDaily = false }) {
+async function sendMail({ to, from, subject, template }) {
   if (!process.env.ZSKEY) throw Object.assign(new Error("Email delivery is unavailable."), { status: 503, code: "email_unavailable" });
-  if (!bypassDaily) {
-    await withLock("email-limits", async () => {
-      const day = utcDay();
-      const record = await readJson(EMAIL_LIMITS_FILE, { day, total: 0 });
-      const current = record.day === day ? { day, total: Number(record.total) || 0 } : { day, total: 0 };
-      if (current.total >= EMAIL_DAILY_LIMIT)
-        throw Object.assign(new Error("Today's email sending limit has been reached. Please try again tomorrow."), { status: 429, code: "email_daily_limit" });
-      const response = await fetch(EMAIL_API_URL, { method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${process.env.ZSKEY}` }, signal: AbortSignal.timeout(12_000), body: JSON.stringify({ from, to: [to], reply_to: [SUPPORT_EMAIL], subject, html: template.html, text: template.text }) });
-      if (!response.ok) throw Object.assign(new Error("Email delivery failed."), { status: response.status >= 500 ? 503 : response.status, code: "email_delivery_failed" });
-      current.total += 1;
-      await writeJson(EMAIL_LIMITS_FILE, current);
-    });
-  } else {
+  await withLock("email-limits", async () => {
+    const day = utcDay();
+    const record = await readJson(EMAIL_LIMITS_FILE, { day, total: 0 });
+    const current = record.day === day ? { day, total: Number(record.total) || 0 } : { day, total: 0 };
+    if (current.total >= EMAIL_DAILY_LIMIT)
+      throw Object.assign(new Error("Today's email sending limit has been reached. Please try again tomorrow."), { status: 429, code: "email_daily_limit" });
     const response = await fetch(EMAIL_API_URL, { method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${process.env.ZSKEY}` }, signal: AbortSignal.timeout(12_000), body: JSON.stringify({ from, to: [to], reply_to: [SUPPORT_EMAIL], subject, html: template.html, text: template.text }) });
     if (!response.ok) throw Object.assign(new Error("Email delivery failed."), { status: response.status >= 500 ? 503 : response.status, code: "email_delivery_failed" });
-  }
+    current.total += 1;
+    await writeJson(EMAIL_LIMITS_FILE, current);
+  });
 }
 function actionRecentlySent(metadata, action, limit, windowMs, now = Date.now()) {
   const list = Array.isArray(metadata.emailAuth?.[`${action}SentAt`]) ? metadata.emailAuth[`${action}SentAt`] : [];
@@ -2070,6 +2065,36 @@ const registrationLimiter = rateLimit({
 const passwordResetIpLimiter = rateLimit({
   windowMs: 10 * 60_000,
   limit: 1,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
+function emailCodeAccountKey(req) {
+  const username = req.auth?.session?.username || normalizeText(req.body?.username, 24);
+  return USERNAME_RE.test(username || "")
+    ? `email-code-account:${userKey(username)}`
+    : `email-code-ip:${ipKeyGenerator(req.ip)}`;
+}
+const emailCodeIpLimiter = rateLimit({
+  windowMs: 10 * 60_000,
+  limit: 15,
+  keyGenerator: (req) => `email-code-ip:${ipKeyGenerator(req.ip)}`,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
+const emailCodeAccountLimiter = rateLimit({
+  windowMs: 10 * 60_000,
+  limit: 5,
+  keyGenerator: emailCodeAccountKey,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
+const emailLinkIpLimiter = rateLimit({
+  windowMs: 10 * 60_000,
+  limit: 30,
+  keyGenerator: (req) => `email-link-ip:${ipKeyGenerator(req.ip)}`,
   standardHeaders: "draft-8",
   legacyHeaders: false,
   handler: rateLimitHandler,
@@ -2451,18 +2476,25 @@ app.post(
   },
 );
 
-app.post("/api/login/verify", loginIpLimiter, async (req, res, next) => {
+app.post("/api/login/verify", loginIpLimiter, emailCodeIpLimiter, emailCodeAccountLimiter, async (req, res, next) => {
   try {
     const username = normalizeText(req.body?.username, 24);
     const code = String(req.body?.code || "").replace(/\D/g, "");
-    const metadata = await loadMetadata(username);
-    const challenge = metadata?.emailAuth?.login;
-    if (!metadata || !/^\d{6}$/.test(code) || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !safeEqual(challenge.digest, codeDigest(code)))
+    const metadata = USERNAME_RE.test(username)
+      ? await withLock(`user:${userKey(username)}`, async () => {
+          const current = await loadMetadata(username);
+          const challenge = current?.emailAuth?.login;
+          if (!current || !/^\d{6}$/.test(code) || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !safeEqual(challenge.digest, codeDigest(code)))
+            return null;
+          delete current.emailAuth.login;
+          current.lastLoginAt = utcNow();
+          current.lastLoginIp = requestIp(req);
+          await saveMetadata(current.username, current);
+          return current;
+        })
+      : null;
+    if (!metadata)
       return jsonError(res, 401, "invalid_code", "The verification code is incorrect or has expired.");
-    delete metadata.emailAuth.login;
-    metadata.lastLoginAt = utcNow();
-    metadata.lastLoginIp = requestIp(req);
-    await saveMetadata(metadata.username, metadata);
     const session = await createSession(metadata.username, req, res);
     await updateOnlineUser(metadata.username);
     res.json({ ok: true, csrf: session.csrf, redirect: "/dashboard" });
@@ -2491,16 +2523,22 @@ app.post("/api/email/verification/send", requireAuth, accountMutationLimiter, re
   } catch (error) { next(error); }
 });
 
-app.post("/api/email/verification/confirm", async (req, res, next) => {
+app.post("/api/email/verification/confirm", emailLinkIpLimiter, async (req, res, next) => {
   try {
     const token = String(req.body?.token || "");
     const username = normalizeText(req.body?.username, 24);
-    const metadata = USERNAME_RE.test(username) ? await loadMetadata(username) : null;
-    const challenge = metadata?.emailAuth?.verify;
-    if (!/^[A-Za-z0-9_-]{32,}$/.test(token) || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !safeEqual(challenge.digest, tokenDigest(token))) return jsonError(res, 400, "invalid_token", "This verification link is invalid or expired.");
-    metadata.emailVerified = true;
-    delete metadata.emailAuth.verify;
-    await saveMetadata(metadata.username, metadata);
+    const verified = USERNAME_RE.test(username) && /^[A-Za-z0-9_-]{32,}$/.test(token)
+      ? await withLock(`user:${userKey(username)}`, async () => {
+          const metadata = await loadMetadata(username);
+          const challenge = metadata?.emailAuth?.verify;
+          if (!metadata || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !safeEqual(challenge.digest, tokenDigest(token))) return false;
+          metadata.emailVerified = true;
+          delete metadata.emailAuth.verify;
+          await saveMetadata(metadata.username, metadata);
+          return true;
+        })
+      : false;
+    if (!verified) return jsonError(res, 400, "invalid_token", "This verification link is invalid or expired.");
     return res.json({ ok: true });
   } catch (error) { next(error); }
 });
@@ -2520,7 +2558,7 @@ app.post("/api/password/reset/request", passwordResetIpLimiter, async (req, res,
       const copy = emailCopy(current.settings?.language || "en", "reset");
       const location = await sessionLocation(req);
       const template = emailTemplate({ ...copy, actionUrl: url, details: emailAuditDetails(current.settings?.language || "en", current, { ip: requestIp(req), country: location.country }), language: current.settings?.language || "en" });
-      await sendMail({ to: current.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template, bypassDaily: true });
+      await sendMail({ to: current.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
       recordActionSent(current, "reset");
       await saveMetadata(current.username, current);
     });
@@ -2528,23 +2566,27 @@ app.post("/api/password/reset/request", passwordResetIpLimiter, async (req, res,
   } catch (error) { next(error); }
 });
 
-app.post("/api/password/reset/confirm", async (req, res, next) => {
+app.post("/api/password/reset/confirm", emailLinkIpLimiter, async (req, res, next) => {
   try {
     const token = String(req.body?.token || "");
     const username = normalizeText(req.body?.username, 24);
     const password = typeof req.body?.password === "string" ? req.body.password : "";
     if (!/^[A-Za-z0-9_-]{32,}$/.test(token) || password.length < 10 || password.length > 256)
       return jsonError(res, 400, "invalid_reset", "This reset link is invalid, expired, or the password does not meet requirements.");
-    const metadata = USERNAME_RE.test(username) ? await loadMetadata(username) : null;
-    const challenge = metadata?.emailAuth?.reset;
-    if (metadata && challenge && Date.parse(challenge.expiresAt) >= Date.now() && safeEqual(challenge.digest, tokenDigest(token))) {
-        metadata.passwordHash = await argon2.hash(password, { type: argon2.argon2id, memoryCost: 19456, timeCost: 2, parallelism: 1 });
-        delete metadata.emailAuth.reset;
-        await saveMetadata(metadata.username, metadata);
-        await destroyUserSessions(metadata.username);
-      return res.json({ ok: true, redirect: "/login" });
-    }
-    return jsonError(res, 400, "invalid_reset", "This reset link is invalid or expired.");
+    const resetUsername = USERNAME_RE.test(username)
+      ? await withLock(`user:${userKey(username)}`, async () => {
+          const metadata = await loadMetadata(username);
+          const challenge = metadata?.emailAuth?.reset;
+          if (!metadata || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !safeEqual(challenge.digest, tokenDigest(token))) return null;
+          metadata.passwordHash = await argon2.hash(password, { type: argon2.argon2id, memoryCost: 19456, timeCost: 2, parallelism: 1 });
+          delete metadata.emailAuth.reset;
+          await saveMetadata(metadata.username, metadata);
+          return metadata.username;
+        })
+      : null;
+    if (!resetUsername) return jsonError(res, 400, "invalid_reset", "This reset link is invalid or expired.");
+    await destroyUserSessions(resetUsername);
+    return res.json({ ok: true, redirect: "/login" });
   } catch (error) { next(error); }
 });
 
@@ -4023,19 +4065,21 @@ app.post(
   },
 );
 
-app.post("/api/account/delete/confirm", requireAuth, accountMutationLimiter, requireCsrf, async (req, res, next) => {
+app.post("/api/account/delete/confirm", requireAuth, accountMutationLimiter, emailCodeIpLimiter, emailCodeAccountLimiter, requireCsrf, async (req, res, next) => {
   try {
     const username = req.auth.session.username;
     const code = String(req.body?.code || "").replace(/\D/g, "");
-    const metadata = await loadMetadata(username);
-    const challenge = metadata?.emailAuth?.delete;
-    if (!/^\d{6}$/.test(code) || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !safeEqual(challenge.digest, codeDigest(code))) return jsonError(res, 401, "invalid_code", "The verification code is incorrect or has expired.");
-    await withLock(`user:${username}`, async () => {
+    const deleted = await withLock(`user:${userKey(username)}`, async () => {
+      const metadata = await loadMetadata(username);
+      const challenge = metadata?.emailAuth?.delete;
+      if (!metadata || !/^\d{6}$/.test(code) || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !safeEqual(challenge.digest, codeDigest(code))) return false;
       await updateShares((shares) => { for (const [key, target] of Object.entries(shares)) if (target.username === userKey(username)) delete shares[key]; });
       const target = path.resolve(userDir(username));
       if (path.dirname(target) !== DATA_DIR) throw new Error("Unsafe account deletion target.");
       await fsp.rm(target, { recursive: true, force: true });
+      return true;
     });
+    if (!deleted) return jsonError(res, 401, "invalid_code", "The verification code is incorrect or has expired.");
     await destroyUserSessions(username);
     await withLock("registration", async () => { const count = Number.parseInt(await fsp.readFile(USERS_FILE, "utf8"), 10) || 0; await atomicWrite(USERS_FILE, `${Math.max(0, count - 1)}\n`); });
     clearSessionCookie(req, res);
