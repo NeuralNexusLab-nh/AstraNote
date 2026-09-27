@@ -1783,7 +1783,7 @@ function emailAuditDetails(language, metadata, { ip = null, country = null, plan
   const details = [
     { label: labels.username, value: metadata.username },
     { label: labels.email, value: metadata.email },
-    { label: labels.time, value: `${new Date().toISOString().slice(0, 16).replace("T", " ").replaceAll("-", "/")} UTC` },
+    { label: labels.time, value: new Date().toISOString().slice(0, 16).replace("T", " ").replaceAll("-", "/") },
   ];
   if (ip) details.push({ label: labels.ip, value: ip });
   if (country) details.push({ label: labels.location, value: country });
