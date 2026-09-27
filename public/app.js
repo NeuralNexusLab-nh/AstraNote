@@ -1586,6 +1586,16 @@ Object.assign(I18N.ja, {
   usernameOrEmail: "ユーザー名またはメールアドレス", forgotPassword: "パスワードをお忘れですか？", emailSecurity: "メールのセキュリティ", passwordSecurity: "パスワード", passwordSecurityHelp: "ログインパスワードを変更しても、既存の暗号化ノートで使う独立した保護情報は変更されません。", emailVerified: "メール認証済み", emailUnverified: "メール未認証", verifyNow: "今すぐ認証", resend: "再送", emailTwoFactor: "メール二段階認証", emailTwoFactorHelp: "パスワードが正しい場合、AstraNote から6桁のコードを送信します。", currentPassword: "現在のパスワード", newPassword: "新しいパスワード", verificationCode: "認証コード", confirmSignIn: "サインインを確認", codeSentTo: "6桁のコードを {email} に送信しました。", emailBanner: "メールを認証すると、完全な128 KBとアカウント保護を利用できます。", resetPassword: "パスワードを再設定", resetPasswordBody: "メールアドレスを入力してください。利用可能な場合は再設定リンクを送信します。", resetRequested: "このメールアドレスが利用可能な場合、再設定リンクを送信しました。", emailSentTitle: "メールを送信しました", emailSentBody: "受信トレイと迷惑メールフォルダーで AstraNote からのメールを確認してください。", emailCooldown: "{minutes} 分後にもう一度お試しください", verifyEmailTitle: "メールを認証", verifyEmailBody: "認証すると、Free の完全な128 KBを利用できます。", verifiedTitle: "メール認証が完了しました", verifiedBody: "メール認証が完了しました。Free の完全な容量とメール保護機能を利用できます。", verifiedSuccess: "メール認証が完了しました。", deleteCodeTitle: "アカウント削除の確認", deleteCodeBody: "メールに送信した6桁のコードを入力すると、アカウントを完全に削除します。", sendError: "送信に失敗しました。しばらくしてからもう一度お試しください。", passwordRecoveryAvailable: "認証済みメールのアカウントは、忘れたパスワードを安全に再設定できます。"
 });
 
+Object.assign(I18N.en, {
+  emailDailyLimit: "Today's email sending limit has been reached. Please try again tomorrow.",
+});
+Object.assign(I18N["zh-Hant"], {
+  emailDailyLimit: "今日的信件寄送額度已用完，請明天再試。",
+});
+Object.assign(I18N.ja, {
+  emailDailyLimit: "本日のメール送信上限に達しました。明日もう一度お試しください。",
+});
+
 const state = {
   session: null,
   account: null,
@@ -2147,6 +2157,7 @@ async function api(url, options = {}) {
           restore_quota: t("restoreQuota"),
           note_locked: t("noteLocked"),
           order_not_found: t("billingRetention"),
+          email_daily_limit: t("emailDailyLimit"),
         }[data.error] ||
           data.message ||
           t("error"),
