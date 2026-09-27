@@ -81,9 +81,15 @@
           <p>
             You must provide accurate account information, keep your credentials
             confidential, and promptly stop using a compromised account.
-            Usernames are case-insensitively unique and cannot be changed. Email
-            verification and password recovery are not provided; loss of a
-            password may permanently prevent access. Sessions may exist on
+            Usernames are case-insensitively unique and cannot be changed. A
+            verified Email can be used for password reset, and Email two-step
+            verification may be enabled in Settings. When enabled, a correct
+            password alone does not complete sign-in: a single-use six-digit
+            code sent by Email is also required. Note PINs are independent and
+            cannot be recovered through password reset. AstraNote shares a
+            limit of 100 outgoing emails per UTC day; after it is reached,
+            verification, reset, and two-step codes cannot be sent until UTC
+            00:00. Sessions may exist on
             multiple devices. A session begins with a fourteen-day expiry, may
             extend by two days through authenticated use, and never lasts beyond
             twenty-eight days from the relevant login. You can view the signed-in
@@ -179,8 +185,8 @@
           </p>
           <h2>8. Human verification</h2>
           <p>
-            Registration, login, note creation, note deletion, payment-order
-            creation, and permanent account deletion require a CAPTCHA.
+            Registration, permanent note deletion, and payment-order creation
+            require a CAPTCHA.
             Verification data is submitted to the verification provider and
             checked server-side. Completing a CAPTCHA does not create a right to
             have a request accepted; session, CSRF, ownership, capacity, and
@@ -221,7 +227,8 @@
           <h2>11. Account deletion</h2>
           <p>
             Account deletion requires an authenticated session, the exact
-            username, the current password, and a CAPTCHA. Confirmation
+            username, the current password, and a single-use six-digit Email
+            code. Confirmation
             immediately and permanently removes the live account directory and
             notes, revokes all sessions and sharing links, and cannot be
             cancelled or restored. AstraNote provides no service backup.
@@ -282,8 +289,7 @@
           <h2>三、帳號與安全</h2>
           <p>
             您應提供正確資料、保密登入資訊，並於帳號疑遭入侵時停止使用。使用者名稱
-            不分大小寫判斷唯一且建立後不得更改。本服務不驗證
-            電子郵件，也不提供密碼復原；遺失密碼可能永久失去存取權。可同時於多裝置登入。每次登入初始有效十四日，經已登入操作每次得延長二日，但自該次登入起最長不超過二十八日。您可在設定查看已登入裝置，並結束非目前裝置的登入階段；帳號若在紀錄的 UTC 停用日期前處於停用狀態，系統不會簽發登入階段。
+            不分大小寫判斷唯一且建立後不得更改。已驗證的 Email 可用於重設密碼，也可在設定啟用 Email 兩步驟驗證。啟用後，即使密碼正確，也必須輸入寄至 Email 的一次性六位數字才能完成登入。筆記 PIN 為獨立憑證，不能藉由重設密碼復原。AstraNote 全站每天 UTC 共用 100 封寄信額度；額度用完後，Email 驗證、重設與兩步驟驗證碼都要到 UTC 00:00 後才能再寄送。可同時於多裝置登入。每次登入初始有效十四日，經已登入操作每次得延長二日，但自該次登入起最長不超過二十八日。您可在設定查看已登入裝置，並結束非目前裝置的登入階段；帳號若在紀錄的 UTC 停用日期前處於停用狀態，系統不會簽發登入階段。
           </p>
           <h2>四、使用者內容與加密</h2>
           <p>
@@ -330,7 +336,7 @@
           </p>
           <h2>八、人類驗證</h2>
           <p>
-            註冊、登入、新增筆記、刪除筆記、建立付款訂單及永久刪除帳號時須完成
+            註冊、永久刪除筆記與建立付款訂單時須完成
             CAPTCHA，驗證資料會交由驗證服務提供者並由 AstraNote 後端確認。完成
             CAPTCHA
             不代表請求必然獲准；系統仍會檢查登入階段、CSRF、所有權、容量及速率限制。
@@ -346,8 +352,7 @@
           </p>
           <h2>十一、帳號刪除</h2>
           <p>
-            永久刪除帳號須具有效登入階段、輸入完整 使用者名稱、目前密碼並完成
-            CAPTCHA。確認後，現行帳號資料夾及全部筆記會立即永久移除，所有登入階段與分享連結同時失效，且不能取消或復原。AstraNote
+            永久刪除帳號須具有效登入階段、輸入完整 使用者名稱、目前密碼及寄至 Email 的一次性六位數字。確認後，現行帳號資料夾及全部筆記會立即永久移除，所有登入階段與分享連結同時失效，且不能取消或復原。AstraNote
             不提供服務備份。確認沒有同名帳號資料夾後，使用者名稱 與 電子郵件
             得重新註冊；僅於法律要求或為法律請求之主張、行使或防禦所必要時，可能另行保留必要紀錄。
           </p>
@@ -385,7 +390,7 @@
           </p>
           <h2>3. アカウントと安全</h2>
           <p>
-            正確な情報を登録し、認証情報を秘密に保ち、不正利用が疑われる場合は利用を停止してください。ユーザー名は大文字・小文字を区別せず一意で、変更できません。メール認証とパスワード再発行は提供しません。パスワードの紛失によりアクセスを永久に失う場合があります。複数端末でログイン可能です。セッションは当初14日間、認証済み利用により2日延長でき、各ログインから最長28日です。設定でログイン中の端末を確認し、現在の端末以外のセッションを終了できます。記録された UTC の停止日までアカウントが停止中の場合、セッションは発行されません。
+            正確な情報を登録し、認証情報を秘密に保ち、不正利用が疑われる場合は利用を停止してください。ユーザー名は大文字・小文字を区別せず一意で、変更できません。認証済みメールはパスワード再設定に使え、設定からメール二段階認証も有効にできます。有効時は正しいパスワードだけではサインインできず、メールで送られる一回限りの6桁コードも必要です。ノート PIN は独立した認証情報であり、パスワード再設定では復旧できません。AstraNote 全体では UTC の一日につき100通の送信上限を共有し、上限到達後は UTC 00:00 まで認証・再設定・二段階認証コードを送信できません。複数端末でログイン可能です。セッションは当初14日間、認証済み利用により2日延長でき、各ログインから最長28日です。設定でログイン中の端末を確認し、現在の端末以外のセッションを終了できます。記録された UTC の停止日までアカウントが停止中の場合、セッションは発行されません。
           </p>
           <h2>4. 内容と暗号化</h2>
           <p>
@@ -427,8 +432,7 @@
           </p>
           <h2>8. 人間による認証</h2>
           <p>
-            登録、ログイン、ノート作成・削除、支払い注文作成、アカウント完全削除には
-            CAPTCHA
+            登録、ノートの完全削除、支払い注文作成には CAPTCHA
             が必要です。認証情報は提供者に送信し、サーバーで検証します。成功しても、セッション、CSRF、所有権、容量、頻度などの審査を免除しません。
           </p>
           <h2>9. 可用性、バックアップ、変更</h2>
@@ -441,8 +445,7 @@
           </p>
           <h2>11. アカウント削除</h2>
           <p>
-            有効なログイン、正確なユーザー名、現在のパスワード、CAPTCHA
-            が必要です。確認後、稼働中のアカウントフォルダーと全ノートを直ちに完全削除し、全セッションと共有リンクを失効させます。取り消し・復元・サービスバックアップはありません。同名フォルダーがなくなった後、ユーザー名とメールを再登録できます。法的義務または請求の主張・行使・防御に必要な別記録は保存する場合があります。
+            有効なログイン、正確なユーザー名、現在のパスワード、メールへ送った一回限りの6桁コードが必要です。確認後、稼働中のアカウントフォルダーと全ノートを直ちに完全削除し、全セッションと共有リンクを失効させます。取り消し・復元・サービスバックアップはありません。同名フォルダーがなくなった後、ユーザー名とメールを再登録できます。法的義務または請求の主張・行使・防御に必要な別記録は保存する場合があります。
           </p>
           <h2>12. 知的財産</h2>
           <p>

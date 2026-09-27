@@ -41,6 +41,14 @@
     "讓存取權一直在你手上。", "好的加密從受保護的帳號與可信任裝置開始。", `<h2 id="sessions">管理已登入裝置</h2><p>設定最多列出五個有效工作階段，顯示簡短瀏覽器名稱、IP 與可取得的國家。結束任何你不認得的工作階段。新工作階段超過上限時，最久未使用的舊工作階段會結束。</p><h2 id="secrets">密碼與 PIN</h2><p>密碼以雜湊保存，不是可讀密碼。PIN 必須由你自行保存；不要重複使用、不要放在筆記標題，且只在信任裝置輸入。AstraNote 無法復原忘記的 PIN 或密碼。</p><h2 id="limits">保護服務</h2><p>請求速率限制、CSRF 保護、簽署工作階段與不可逆操作的人類驗證可降低濫用。這些控制是補強，不取代你自己的裝置安全與不重複密碼。</p>`,
     "アクセスを自分の手に保つ。", "良い暗号化は、守られたアカウントと信頼できる端末から始まります。", `<h2 id="sessions">ログイン端末を管理</h2><p>設定には最大五つの有効なセッションが、短いブラウザ名、IP、利用可能な国情報とともに表示されます。覚えのないセッションは終了してください。上限を超える新規セッションでは、最も長く使われていない古いセッションが終了します。</p><h2 id="secrets">パスワードと PIN</h2><p>パスワードは読めるパスワードではなくハッシュとして保存されます。PIN は自分で保管し、再利用せず、ノートタイトルに書かず、信頼できる端末だけで入力してください。忘れた PIN やパスワードは復旧できません。</p><h2 id="limits">サービスの保護</h2><p>レート制限、CSRF 保護、署名付きセッション、不可逆操作の人間確認は乱用を減らします。これらは自分の端末保護と固有パスワードを補うもので、置き換えるものではありません。</p>`
   ]);
+  const emailSecurityDetails = {
+    en: `<hr class="docs-rule"><h2 id="email-security">Email verification, password reset and two-step sign-in</h2><div class="docs-facts"><div><i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i><h3>Verify Email</h3><p>Email verification unlocks the full Free allowance and enables account-recovery features.</p></div><div><i class="fa-solid fa-key" aria-hidden="true"></i><h3>Reset a password</h3><p>Verified-email accounts can request a single-use reset link. Note PINs remain separate and cannot be recovered or changed this way.</p></div><div><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><h3>Email two-step sign-in</h3><p>Enable it in Settings. After a correct password, AstraNote sends a single-use six-digit code before issuing a session.</p></div></div><h2 id="email-limit">Important email delivery limit</h2><p>AstraNote shares a service-wide limit of 100 outgoing emails per UTC day. If it is reached, no new email verification, password-reset, deletion-confirmation, or email two-step sign-in code can be sent until UTC 00:00. A password alone cannot complete sign-in while email two-step verification is enabled and a code cannot be delivered. Keep a current, verified Email and avoid waiting until urgent access is needed.</p>`,
+    "zh-Hant": `<hr class="docs-rule"><h2 id="email-security">Email 驗證、重設密碼與兩步驟登入</h2><div class="docs-facts"><div><i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i><h3>驗證 Email</h3><p>完成 Email 驗證可啟用完整 Free 空間，以及帳號復原相關功能。</p></div><div><i class="fa-solid fa-key" aria-hidden="true"></i><h3>重設密碼</h3><p>已驗證 Email 的帳號可請求一次性重設連結；筆記 PIN 仍是獨立資料，無法藉此復原或變更。</p></div><div><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><h3>Email 兩步驟登入</h3><p>可在設定開啟。密碼正確後，AstraNote 會寄送一次性的六位數登入碼，完成後才會簽發登入階段。</p></div></div><h2 id="email-limit">重要：信件寄送上限</h2><p>AstraNote 全站每天 UTC 共用 100 封寄信額度。若額度已用完，在 UTC 00:00 前無法再寄送 Email 驗證、重設密碼、刪除確認或 Email 兩步驟登入碼。若已開啟 Email 兩步驟驗證，即使密碼正確，驗證碼無法寄出時也無法完成登入。請保持 Email 可用且已驗證，不要等到需要緊急存取時才處理。</p>`,
+    ja: `<hr class="docs-rule"><h2 id="email-security">メール認証、パスワード再設定、二段階認証</h2><div class="docs-facts"><div><i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i><h3>メールを認証</h3><p>メール認証を完了すると、Free の全容量とアカウント復旧関連の機能を使えます。</p></div><div><i class="fa-solid fa-key" aria-hidden="true"></i><h3>パスワードを再設定</h3><p>メール認証済みアカウントは使い捨ての再設定リンクを要求できます。ノートの PIN は別の情報であり、この方法で復旧・変更できません。</p></div><div><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><h3>メール二段階認証</h3><p>設定で有効にできます。正しいパスワードの後、AstraNote が一度だけ使える6桁のコードを送信し、完了後にセッションを発行します。</p></div></div><h2 id="email-limit">重要：メール送信上限</h2><p>AstraNote 全体では UTC の一日につき100通の送信上限を共有します。上限に達すると UTC 00:00 まではメール認証、パスワード再設定、削除確認、メール二段階認証のコードを送信できません。メール二段階認証を有効にしている場合、正しいパスワードでもコードが届かなければサインインを完了できません。メールは利用可能かつ認証済みに保ち、緊急のアクセスが必要になるまで待たないでください。</p>`,
+  };
+  Object.entries(emailSecurityDetails).forEach(([language, details]) => {
+    content.security[language].body += details;
+  });
   content.plans = simple("plans", [
     "Know what your plan changes.", "Plans expand space and recovery tools; they do not change who owns your notes.", `<h2 id="allowance">Allowances</h2><p>Free includes 128 KB and 20 notes. Plus adds 256 KB and 50 notes. Pro adds 512 KB and unlimited notes. Ultra provides 1024 KB, unlimited notes, one previous version, configurable trash retention and priority manual support. The current <a href="/plans">Plans page</a> is the source of truth for products and prices.</p><h2 id="expiry">When paid time ends</h2><p>One month means 30 days. If your remaining entitlement changes, the highest active plan takes precedence. When an active allowance is exceeded after expiry, the largest notes are locked first. Upgrade to enough space to unlock them; do not rely on a grace period.</p><h2 id="deletion">Important limits</h2><p>Locked over-limit notes can be permanently removed after 30 days. Previous versions, trash and active AstraDrops use storage. Keep your own copy of important information and contact astranote@nxlabtw.com promptly about payment problems.</p>`,
     "知道方案真正改變了什麼。", "方案擴充空間與復原工具，不會改變筆記的所有權。", `<h2 id="allowance">額度</h2><p>Free 是 128 KB 與 20 篇筆記；Plus 為 256 KB 與 50 篇；Pro 為 512 KB 與無限筆記；Ultra 為 1024 KB、無限筆記、一個上一版本、可設定垃圾桶保留期與優先人工協助。最新產品與價格以<a href="/plans">方案頁</a>為準。</p><h2 id="expiry">付費時間結束時</h2><p>一個月固定為 30 天。剩餘權益改變時，最高的有效方案優先。到期後若用量超過有效額度，最大的筆記會先鎖定。升級至足夠空間才能解鎖，請不要依賴寬限期。</p><h2 id="deletion">重要限制</h2><p>超額鎖定筆記可能在 30 天後被永久刪除。上一版本、垃圾桶與有效 AstraDrop 都占空間。請自行保存重要資料副本，付款問題請盡快聯絡 astranote@nxlabtw.com。</p>`,
@@ -128,6 +136,43 @@
   };
   Object.values(content).forEach((document) => {
     Object.entries(recoveryCopy).forEach(([language, replacements]) => {
+      if (!document?.[language]?.body) return;
+      document[language].body = replacements.reduce((body, [from, to]) => body.replaceAll(from, to), document[language].body);
+    });
+  });
+  // AstraDrop is no longer part of AstraNote. Keep older documentation text
+  // from accidentally advertising a removed feature when this file is edited.
+  const retiredDropCopy = {
+    en: [
+      ["<li><i class=\"fa-solid fa-droplet\"></i>DropSecret & protected Drops</li>", ""],
+      ["<li><i class=\"fa-solid fa-droplet\"></i>DropConfidential</li>", ""],
+      ["<li>Basic AstraDrop</li>", ""],
+      ["active Drops and recovery copies", "recovery copies"],
+      ["Use an appropriate AstraDrop protection mode when you need an expiring separate snapshot.", "Protected notes cannot use normal sharing."],
+      [" Use AstraDrop when an expiring snapshot is appropriate.", ""],
+      ["<div><dt><b>Q</b> Is AstraDrop a live note?</dt><dd><b>A</b> No. It is an uneditable snapshot with an expiry. Later edits to the original note do not change the Drop, and its URL cannot be retrieved later.</dd></div>", ""],
+    ],
+    "zh-Hant": [
+      ["<li><i class=\"fa-solid fa-droplet\"></i>DropSecret 與受保護 Drop</li>", ""],
+      ["<li><i class=\"fa-solid fa-droplet\"></i>DropConfidential</li>", ""],
+      ["<li>基本 AstraDrop</li>", ""],
+      ["有效 Drop 與復原副本", "復原副本"],
+      ["需要限時獨立快照時，請使用合適的 AstraDrop 保護方式。", "受保護筆記無法使用一般分享。"],
+      ["需要限時快照時，可使用 AstraDrop。", ""],
+      ["<div><dt><b>問</b> AstraDrop 是即時筆記嗎？</dt><dd><b>答</b> 不是。它是不可編輯、有期限的快照。之後編輯原筆記不會改變 Drop，網址也無法事後取回。</dd></div>", ""],
+    ],
+    ja: [
+      ["<li><i class=\"fa-solid fa-droplet\"></i>DropSecret と保護 Drop</li>", ""],
+      ["<li><i class=\"fa-solid fa-droplet\"></i>DropConfidential</li>", ""],
+      ["<li>Basic AstraDrop</li>", ""],
+      ["有効な Drop、復元コピー", "復元コピー"],
+      ["期限付きの独立スナップショットには適切な AstraDrop 保護を使ってください。", "PIN 保護ノートでは通常共有を使えません。"],
+      ["期限付きスナップショットには AstraDrop を使えます。", ""],
+      ["<div><dt><b>Q</b> AstraDrop はライブノートですか？</dt><dd><b>A</b> いいえ。編集できない期限付きスナップショットです。元ノートを編集しても変わらず、URL は後から取得できません。</dd></div>", ""],
+    ],
+  };
+  Object.values(content).forEach((document) => {
+    Object.entries(retiredDropCopy).forEach(([language, replacements]) => {
       if (!document?.[language]?.body) return;
       document[language].body = replacements.reduce((body, [from, to]) => body.replaceAll(from, to), document[language].body);
     });

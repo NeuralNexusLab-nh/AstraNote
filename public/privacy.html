@@ -49,8 +49,8 @@
             The Operator determines why and how AstraNote processes personal
             data and is the data controller for this service. This policy covers
             the primary domain, backup domain, service APIs, and account data.
-            Third-party NexaCAPTCHA and Satora processing is also subject to
-            that provider’s own practices.
+            Third-party NexaCAPTCHA, Satora, and OpenAI processing is also
+            subject to each provider’s own practices.
           </p>
           <h2>2. Data collected</h2>
           <ul>
@@ -88,6 +88,13 @@
               payment ID and URL, status, TXID, and fulfilment time. The Satora
               API credential is never sent to the client.
             </li>
+            <li>
+              <strong>Astra AI:</strong> only when you choose to generate a
+              preview, the note title, note content, and instruction are sent
+              to OpenAI. The API request uses <code>store:false</code>. PINs
+              and encryption keys are not sent. Do not use this feature for
+              content you do not want processed by OpenAI.
+            </li>
           </ul>
           <h2>3. Purposes and legal bases</h2>
           <p>
@@ -110,7 +117,8 @@
           </p>
           <h2>5. Human verification</h2>
           <p>
-            For registration and permanent note or account deletion, the client loads a CAPTCHA
+            For registration, permanent note deletion, and payment-order
+            creation, the client loads a CAPTCHA
             from
             <code>nexacaptcha.nxlabtw.com</code>. AstraNote sends the resulting
             verification ID and one-time response token to NexaCAPTCHA’s fixed
@@ -122,7 +130,8 @@
           <p>
             The Operator does not proactively sell or share account data with
             advertisers or data brokers. Data may be processed by infrastructure
-            hosting, NexaCAPTCHA and Satora as necessary to operate the service;
+            hosting, NexaCAPTCHA, Satora, and OpenAI as necessary to operate
+            the service;
             disclosed when legally required; or used to protect users, systems,
             and legal rights. When you enable a sharing link, you instruct
             AstraNote to disclose that note, your public display name, and
@@ -208,7 +217,7 @@
           <p>
             營運者決定 AstraNote
             處理個人資料的目的及方式，為本服務的資料控制者。本政策適用主要及備用網域、服務
-            API 與帳號資料。NexaCAPTCHA 與 Satora
+            API 與帳號資料。NexaCAPTCHA、Satora 與 OpenAI
             的第三方處理亦受該提供者自身政策規範。
           </p>
           <h2>二、蒐集資料</h2>
@@ -241,6 +250,9 @@
               付款編號及網址、狀態、交易識別碼與交付時間。 Satora
               服務憑證不會傳送至客戶端。
             </li>
+            <li>
+              <strong>Astra AI：</strong>僅在您選擇產生預覽時，筆記標題、內容與指令才會傳送至 OpenAI。API 請求使用 <code>store:false</code>；PIN 與加密金鑰不會傳送。若不希望內容由 OpenAI 處理，請不要使用此功能。
+            </li>
           </ul>
           <h2>三、目的與依據</h2>
           <p>
@@ -255,7 +267,7 @@
           </p>
           <h2>五、人類驗證</h2>
           <p>
-            註冊、永久刪除筆記及永久刪除帳號時，客戶端會從
+            註冊、永久刪除筆記及建立付款訂單時，客戶端會從
             <code>nexacaptcha.nxlabtw.com</code> 載入 CAPTCHA。AstraNote
             會將驗證 ID 及一次性 驗證權杖 傳至 NexaCAPTCHA
             固定的後端驗證端點。驗證權杖
@@ -264,8 +276,7 @@
           </p>
           <h2>六、揭露</h2>
           <p>
-            營運者不主動向廣告商或資料仲介販售或分享帳號資料。為運作服務，託管基礎設施、NexaCAPTCHA
-            與 Satora
+            營運者不主動向廣告商或資料仲介販售或分享帳號資料。為運作服務，託管基礎設施、NexaCAPTCHA、Satora 與 OpenAI
             可能處理必要資料；依法要求或為保護使用者、系統及合法權利時亦可能揭露。開啟分享即代表您指示
             AstraNote 向連結持有人揭露指定筆記、公開顯示名稱與遮罩 電子郵件。
           </p>
@@ -314,7 +325,7 @@
           <h2>1. 管理者と適用範囲</h2>
           <p>
             運営者は処理の目的と方法を決定します。主・予備ドメイン、サービス
-            API、アカウント情報に適用します。NexaCAPTCHA と Satora
+            API、アカウント情報に適用します。NexaCAPTCHA、Satora、OpenAI
             での第三者処理には各提供者の方針も適用されます。
           </p>
           <h2>2. 収集する情報</h2>
@@ -343,6 +354,9 @@
               の残り時間、注文番号、プラン・月数、Bitcoin 金額、Satora
               支払い番号・URL、状態、取引識別番号、付与日時。圧縮した支払い記録とクーポン記録は前述のとおりです。サービスの認証秘密はクライアントに送信しません。
             </li>
+            <li>
+              Astra AI：「プレビューを生成」を選んだ場合のみ、ノート名、内容、指示を OpenAI に送信します。API リクエストには <code>store:false</code> を設定し、PIN と暗号鍵は送信しません。OpenAI に処理させたくない内容にはこの機能を使わないでください。
+            </li>
           </ul>
           <h2>3. 目的と根拠</h2>
           <p>
@@ -357,14 +371,14 @@
           </p>
           <h2>5. 人間による認証</h2>
           <p>
-            登録、ノートの完全削除、アカウント完全削除の際、クライアントは
+            登録、ノートの完全削除、支払い注文作成の際、クライアントは
             nexacaptcha.nxlabtw.com から CAPTCHA
             を読み込みます。認証識別子と一回限りの応答を固定のサーバー検証先へ送信します。トークンは原則一回のみ、5分で期限切れです。認証欄に個人情報を入力しないでください。
           </p>
           <h2>6. 提供先</h2>
           <p>
             広告主やデータ仲介業者へ積極的に販売・共有しません。ホスティング、NexaCAPTCHA、Satora
-            は運用・認証・決済に必要な情報を処理する場合があります。法的要求、利用者・システム・権利保護のため開示する場合があります。共有リンクを有効にすると、指定ノート、公開表示名、マスク済みメールを保持者に開示するよう指示したものとします。
+            と OpenAI は運用、認証、決済、またはあなたが選択した Astra AI 処理に必要な情報を処理する場合があります。法的要求、利用者・システム・権利保護のため開示する場合があります。共有リンクを有効にすると、指定ノート、公開表示名、マスク済みメールを保持者に開示するよう指示したものとします。
           </p>
           <h2>7. 保存期間</h2>
           <p>

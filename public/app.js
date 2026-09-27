@@ -1587,13 +1587,16 @@ Object.assign(I18N.ja, {
 });
 
 Object.assign(I18N.en, {
-  emailDailyLimit: "Today's email sending limit has been reached. Please try again tomorrow.",
+  emailDailyLimit: "AstraNote's shared daily email limit has been reached. Email verification, password reset, and email two-step sign-in are unavailable until UTC 00:00. Please try again tomorrow.",
+  emailSecurityOverview: "Verify your Email to unlock password reset. You can also turn on email two-step verification: after a correct password, AstraNote sends a six-digit sign-in code.",
 });
 Object.assign(I18N["zh-Hant"], {
-  emailDailyLimit: "今日的信件寄送額度已用完，請明天再試。",
+  emailDailyLimit: "AstraNote 全站今日的信件寄送額度已用完。Email 驗證、重設密碼與 Email 兩步驟登入將暫時無法使用，並於 UTC 00:00 後恢復；請明天再試。",
+  emailSecurityOverview: "驗證 Email 後即可使用忘記密碼重設；也可開啟 Email 兩步驟驗證，帳密正確後，AstraNote 會寄送六位數登入碼。",
 });
 Object.assign(I18N.ja, {
-  emailDailyLimit: "本日のメール送信上限に達しました。明日もう一度お試しください。",
+  emailDailyLimit: "AstraNote 全体の本日のメール送信上限に達しました。メール認証、パスワード再設定、メール二段階認証によるサインインは UTC 00:00 まで利用できません。明日もう一度お試しください。",
+  emailSecurityOverview: "メール認証を完了するとパスワードを再設定できます。メール二段階認証を有効にすると、正しいパスワードの後に AstraNote が6桁のサインインコードを送信します。",
 });
 Object.assign(I18N.en, {
   verifiedCloseHint: "You can now close this page.",
@@ -1743,7 +1746,7 @@ Object.assign(I18N.en, {
   astraAiPreview: "Astra AI preview", astraAiPreviewBody: "Review the suggested title and content before saving.", saveChanges: "Save changes", discardResult: "Discard result",
   astraAiEncryptedNotice: "Your unlocked title, content and instruction are sent to the AI service for this request. Your PIN and encryption key are not sent or stored.",
   astraAiAllowance: "Astra AI · every 30 days", astraAiBasic: "Included", astraAiMore: "More available", astraAiMost: "Most available", aiAllowanceFree: "Basic allowance", aiAllowancePlus: "5× Free", aiAllowancePro: "15× Free", aiAllowanceUltra: "45× Free", aiPlanFree: "Try Astra AI · basic allowance", aiPlanPlus: "More Astra AI · 5× Free allowance", aiPlanPro: "Advanced Astra AI · 15× Free allowance", aiPlanUltra: "Highest Astra AI · 45× Free allowance",
-  aiPrivacyTitle: "Astra AI and your note", aiPrivacyText: "When you choose Astra AI, the title, content and instruction for that request are sent to OpenAI to create a preview. Nothing changes until you choose to save it. For a PIN-protected note, its unlocked text is sent only for that request; your PIN and encryption key are not sent or stored.",
+  aiPrivacyTitle: "Astra AI and your note", aiPrivacyText: "When you choose Astra AI, the title, content and instruction for that request are sent to OpenAI to create a preview. The API request is configured with store:false; OpenAI processes it under its own applicable terms and privacy practices. Nothing changes until you choose to save it. For a PIN-protected note, its unlocked text is sent for that request; your PIN and encryption key are not sent or stored. Do not use Astra AI for content you do not want processed by that service.",
   standardEncryptionOption: "Standard encryption (AES-256-GCM)", legacyEncryptionOption: "Legacy encryption (AES-128-GCM)", secretOption: "Secret (AstraSecret)", confidentialOption: "Confidential (AstraConfidential)", zeroOption: "Top Secret (AstraZero)", legacySchybridOption: "Legacy Confidential (AstraConfidential SCHybrid)", astraSecretIncluded: "Secret (AstraSecret) everyday protection", confidentialIncluded: "Confidential (AstraConfidential) advanced protection", zeroIncluded: "Top Secret (AstraZero) · client-generated keys", basicEncryption: "No encryption · Standard encryption (AES-256-GCM)",
 });
 Object.assign(I18N["zh-Hant"], {
@@ -1758,7 +1761,7 @@ Object.assign(I18N["zh-Hant"], {
   astraAiPreview: "Astra AI 預覽", astraAiPreviewBody: "儲存前，請確認建議的新標題與內容。", saveChanges: "儲存變更", discardResult: "捨棄結果",
   astraAiEncryptedNotice: "為完成本次 Astra AI 修改，已解鎖的筆記標題、內容與指令會傳送至 AI 處理服務。PIN 與加密金鑰不會傳送或儲存。",
   astraAiAllowance: "Astra AI · 每 30 天", astraAiBasic: "包含", astraAiMore: "更多可用額度", astraAiMost: "最多可用額度", aiAllowanceFree: "基本用量", aiAllowancePlus: "Free 的 5 倍", aiAllowancePro: "Free 的 15 倍", aiAllowanceUltra: "Free 的 45 倍", aiPlanFree: "體驗 Astra AI · 基本用量", aiPlanPlus: "Astra AI 更多用量 · Free 的 5 倍", aiPlanPro: "Astra AI 進階用量 · Free 的 15 倍", aiPlanUltra: "Astra AI 最高用量 · Free 的 45 倍",
-  aiPrivacyTitle: "Astra AI 與你的筆記", aiPrivacyText: "當你選擇使用 Astra AI，該次的筆記標題、內容與指令會傳送至 OpenAI 產生預覽。你選擇儲存前，不會改動筆記。使用 PIN 的筆記會僅為這次處理傳送已解鎖文字；PIN 與加密金鑰不會傳送或儲存。",
+  aiPrivacyTitle: "Astra AI 與你的筆記", aiPrivacyText: "當你選擇使用 Astra AI，該次的筆記標題、內容與指令會傳送至 OpenAI 產生預覽。API 請求設定為 store:false；OpenAI 仍依其適用條款與隱私實務處理該次資料。你選擇儲存前，不會改動筆記。使用 PIN 的筆記會為這次處理傳送已解鎖文字；PIN 與加密金鑰不會傳送或儲存。不希望由該服務處理的內容，請不要使用 Astra AI。",
   standardEncryptionOption: "一般加密（AES-256-GCM）", legacyEncryptionOption: "舊版加密（AES-128-GCM）", secretOption: "秘密（AstraSecret）", confidentialOption: "機密（AstraConfidential）", zeroOption: "最高機密（AstraZero）", legacySchybridOption: "舊版機密（AstraConfidential SCHybrid）", astraSecretIncluded: "秘密（AstraSecret）日常保護", confidentialIncluded: "機密（AstraConfidential）進階保護", zeroIncluded: "最高機密（AstraZero）· 客戶端產生金鑰", basicEncryption: "不加密 · 一般加密（AES-256-GCM）",
 });
 Object.assign(I18N.ja, {
@@ -1773,9 +1776,12 @@ Object.assign(I18N.ja, {
   astraAiPreview: "Astra AI プレビュー", astraAiPreviewBody: "保存前に、提案されたタイトルと内容を確認してください。", saveChanges: "変更を保存", discardResult: "結果を破棄",
   astraAiEncryptedNotice: "このリクエストでは、解除済みのタイトル、内容、指示が AI 処理サービスへ送信されます。PIN と暗号鍵は送信・保存されません。",
   astraAiAllowance: "Astra AI · 30日ごと", astraAiBasic: "含まれる", astraAiMore: "より多く利用可能", astraAiMost: "最大の利用枠", aiAllowanceFree: "基本利用枠", aiAllowancePlus: "Free の 5倍", aiAllowancePro: "Free の 15倍", aiAllowanceUltra: "Free の 45倍", aiPlanFree: "Astra AI を試す · 基本利用枠", aiPlanPlus: "Astra AI をもっと使う · Free の5倍", aiPlanPro: "Astra AI 上級利用枠 · Free の15倍", aiPlanUltra: "Astra AI 最大利用枠 · Free の45倍",
-  aiPrivacyTitle: "Astra AI とノート", aiPrivacyText: "Astra AI を選ぶと、そのリクエストのノート名、内容、指示がプレビュー作成のため OpenAI に送信されます。保存を選ぶまでノートは変更されません。PIN 保護ノートでは、解除済みの文章だけがこの処理のために送信され、PIN と暗号鍵は送信・保存されません。",
+  aiPrivacyTitle: "Astra AI とノート", aiPrivacyText: "Astra AI を選ぶと、そのリクエストのノート名、内容、指示がプレビュー作成のため OpenAI に送信されます。API リクエストには store:false を設定していますが、OpenAI は適用される自身の規約とプライバシー実務に従ってそのデータを処理します。保存を選ぶまでノートは変更されません。PIN 保護ノートでは解除済みの文章がこの処理のために送信され、PIN と暗号鍵は送信・保存されません。そのサービスに処理させたくない内容には Astra AI を使わないでください。",
   standardEncryptionOption: "標準暗号化（AES-256-GCM）", legacyEncryptionOption: "旧式暗号化（AES-128-GCM）", secretOption: "シークレット（AstraSecret）", confidentialOption: "コンフィデンシャル（AstraConfidential）", zeroOption: "最高機密（AstraZero）", legacySchybridOption: "旧式コンフィデンシャル（AstraConfidential SCHybrid）", astraSecretIncluded: "シークレット（AstraSecret）の日常保護", confidentialIncluded: "コンフィデンシャル（AstraConfidential）の高度な保護", zeroIncluded: "最高機密（AstraZero）・クライアントで鍵を生成", basicEncryption: "暗号化なし · 標準暗号化（AES-256-GCM）",
 });
+Object.assign(I18N.en, { legalUpdated: "Effective and last updated: 27 September 2026", termsUpdated: "Effective and last updated: 27 September 2026" });
+Object.assign(I18N["zh-Hant"], { legalUpdated: "生效及最後更新：2026 年 9 月 27 日", termsUpdated: "生效及最後更新：2026 年 9 月 27 日" });
+Object.assign(I18N.ja, { legalUpdated: "発効・最終更新：2026年9月27日", termsUpdated: "発効・最終更新：2026年9月27日" });
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -3211,7 +3217,56 @@ async function initAuthForm(kind) {
       const result = await api(endpoint, { method: "POST", body: data });
       if (result.twoFactorRequired) {
         twoFactorUsername = result.username;
-        form.innerHTML = `<div class="form-group"><label id="login-code-label">${t("verificationCode")}</label><div class="otp-inputs" role="group" aria-labelledby="login-code-label">${Array.from({ length: 6 }, (_, index) => `<input data-otp inputmode="numeric" autocomplete="${index === 0 ? "one-time-code" : "off"}" maxlength="1" pattern="[0-9]" aria-label="${t("verificationCode")} ${index + 1}"${index === 0 ? " autofocus" : ""}>`).join("")}</div></div><p class="field-help">${t("codeSentTo").replace("{email}", result.email)}</p><p class="form-message" role="alert"></p><div class="form-actions"><a class="muted" href="/login"><i class="fa-solid fa-arrow-left"></i> ${t("backHome")}</a><button class="btn btn-primary btn-lg" type="submit"><i class="fa-solid fa-shield-halved"></i><span>${t("confirmSignIn")}</span></button></div>`;
+        form.replaceChildren();
+        const codeGroup = document.createElement("div");
+        codeGroup.className = "form-group";
+        const codeLabel = document.createElement("label");
+        codeLabel.id = "login-code-label";
+        codeLabel.textContent = t("verificationCode");
+        const otpInputs = document.createElement("div");
+        otpInputs.className = "otp-inputs";
+        otpInputs.setAttribute("role", "group");
+        otpInputs.setAttribute("aria-labelledby", codeLabel.id);
+        Array.from({ length: 6 }, (_, index) => {
+          const input = document.createElement("input");
+          input.setAttribute("data-otp", "");
+          input.inputMode = "numeric";
+          input.autocomplete = index === 0 ? "one-time-code" : "off";
+          input.maxLength = 1;
+          input.pattern = "[0-9]";
+          input.setAttribute("aria-label", `${t("verificationCode")} ${index + 1}`);
+          if (index === 0) input.autofocus = true;
+          otpInputs.append(input);
+        });
+        codeGroup.append(codeLabel, otpInputs);
+        const sentTo = document.createElement("p");
+        sentTo.className = "field-help";
+        sentTo.textContent = t("codeSentTo").replace("{email}", String(result.email || ""));
+        const formMessage = document.createElement("p");
+        formMessage.className = "form-message";
+        formMessage.setAttribute("role", "alert");
+        const actions = document.createElement("div");
+        actions.className = "form-actions";
+        const back = document.createElement("a");
+        back.className = "muted";
+        back.href = "/login";
+        const backIcon = document.createElement("i");
+        backIcon.className = "fa-solid fa-arrow-left";
+        backIcon.setAttribute("aria-hidden", "true");
+        const backText = document.createElement("span");
+        backText.textContent = t("backHome");
+        back.append(backIcon, document.createTextNode(" "), backText);
+        const confirm = document.createElement("button");
+        confirm.type = "submit";
+        confirm.className = "btn btn-primary btn-lg";
+        const confirmIcon = document.createElement("i");
+        confirmIcon.className = "fa-solid fa-shield-halved";
+        confirmIcon.setAttribute("aria-hidden", "true");
+        const confirmText = document.createElement("span");
+        confirmText.textContent = t("confirmSignIn");
+        confirm.append(confirmIcon, confirmText);
+        actions.append(back, confirm);
+        form.append(codeGroup, sentTo, formMessage, actions);
         setupOtpInputs(form);
         showMailSentModal();
         return;
