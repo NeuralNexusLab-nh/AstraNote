@@ -240,6 +240,113 @@ function newId(bytes = 16) {
 function jsonError(res, status, code, message) {
   return res.status(status).json({ error: code, message });
 }
+// Operation audit records deliberately contain no request body, cookie, token,
+// note content, note ID, shared-link token, or payment identifier. Logs are
+// useful for operating the service, but must not become another data store.
+const AUDIT_LEVELS = Object.freeze({
+  LOW: { icon: "✓", color: "\x1b[32m" },
+  MEDIUM: { icon: "!", color: "\x1b[33m" },
+  HIGH: { icon: "⚠", color: "\x1b[31m" },
+});
+const ANSI_RESET = "\x1b[0m";
+function cleanAuditValue(value, maxLength = 320) {
+  return String(value ?? "")
+    .replace(/[\r\n\t]+/g, " ")
+    .replace(/\s{2,}/g, " ")
+    .trim()
+    .slice(0, maxLength);
+}
+function auditTimestamp(date = new Date()) {
+  return date.toISOString().replace("T", " ").replace(/\.\d{3}Z$/, " UTC");
+}
+function auditStatusText(status) {
+  const known = {
+    200: "OK", 201: "CREATED", 202: "ACCEPTED", 204: "NO CONTENT",
+    400: "BAD REQUEST", 401: "UNAUTHORIZED", 403: "FORBIDDEN",
+    404: "NOT FOUND", 409: "CONFLICT", 410: "GONE", 413: "PAYLOAD TOO LARGE",
+    423: "LOCKED", 429: "RATE LIMITED", 500: "INTERNAL SERVER ERROR",
+    502: "BAD GATEWAY", 503: "SERVICE UNAVAILABLE",
+  };
+  return known[status] || (status >= 500 ? "SERVER ERROR" : "REQUEST COMPLETE");
+}
+function auditDescriptor(method, route, status = 0) {
+  const key = `${method.toUpperCase()} ${route}`;
+  const actions = {
+    "POST /api/register": ["CREATE ACCOUNT", "MEDIUM"],
+    "POST /api/login": ["SIGN IN", "MEDIUM", "SIGN IN FAILED"],
+    "POST /api/login/verify": ["VERIFY SIGN-IN CODE", "MEDIUM", "VERIFY SIGN-IN CODE FAILED"],
+    "POST /api/email/verification/send": ["SEND EMAIL VERIFICATION", "MEDIUM"],
+    "POST /api/email/verification/confirm": ["CONFIRM EMAIL VERIFICATION", "MEDIUM", "EMAIL VERIFICATION FAILED"],
+    "POST /api/password/reset/request": ["REQUEST PASSWORD RESET", "MEDIUM"],
+    "POST /api/password/reset/confirm": ["RESET PASSWORD", "MEDIUM", "PASSWORD RESET FAILED"],
+    "POST /api/deletion/cancel": ["CANCEL ACCOUNT DELETION", "HIGH", "CANCEL ACCOUNT DELETION FAILED"],
+    "POST /api/logout": ["SIGN OUT", "LOW"],
+    "GET /api/admin/users": ["OPEN ADMINISTRATION", "HIGH"],
+    "POST /api/admin/broadcast": ["SEND ADMIN ANNOUNCEMENT", "HIGH", "ADMIN ANNOUNCEMENT FAILED"],
+    "GET /api/sessions": ["VIEW SIGNED-IN DEVICES", "MEDIUM"],
+    "POST /api/sessions/:id/logout": ["SIGN OUT DEVICE", "MEDIUM"],
+    "POST /api/account/message/ack": ["ACKNOWLEDGE ACCOUNT MESSAGE", "LOW"],
+    "PATCH /api/settings": ["UPDATE ACCOUNT SETTINGS", "MEDIUM"],
+    "GET /api/billing/orders": ["VIEW BILLING HISTORY", "LOW"],
+    "POST /api/billing/create": ["CREATE PAYMENT ORDER", "HIGH", "CREATE PAYMENT ORDER FAILED"],
+    "GET /api/billing/status": ["VERIFY PAYMENT STATUS", "MEDIUM", "VERIFY PAYMENT STATUS FAILED"],
+    "POST /api/vault/key-factor": ["REQUEST ENCRYPTION FACTOR", "MEDIUM", "ENCRYPTION FACTOR REQUEST FAILED"],
+    "POST /api/notes/batch-delete": ["REMOVE NOTES", "HIGH", "REMOVE NOTES FAILED"],
+    "PATCH /api/notes/organize": ["ORGANIZE NOTES", "LOW"],
+    "POST /api/trash/:id/restore": ["RESTORE NOTE", "MEDIUM", "RESTORE NOTE FAILED"],
+    "DELETE /api/trash/:id": ["PERMANENTLY DELETE NOTE", "HIGH", "PERMANENT NOTE DELETION FAILED"],
+    "GET /api/notes/:id/previous": ["VIEW PREVIOUS VERSION", "LOW"],
+    "POST /api/notes/:id/previous/restore": ["RESTORE PREVIOUS VERSION", "MEDIUM", "PREVIOUS VERSION RESTORE FAILED"],
+    "GET /api/notes/:id": ["VIEW NOTE", "LOW"],
+    "POST /api/notes/:id/ai": ["USE ASTRA AI", "MEDIUM", "ASTRA AI REQUEST FAILED"],
+    "POST /api/notes": ["CREATE NOTE", "LOW", "CREATE NOTE FAILED"],
+    "PUT /api/notes/:id": ["UPDATE NOTE", "LOW", "UPDATE NOTE FAILED"],
+    "DELETE /api/notes/:id": ["REMOVE NOTE", "HIGH", "REMOVE NOTE FAILED"],
+    "POST /api/notes/:id/share": ["CHANGE NOTE SHARING", "MEDIUM", "CHANGE NOTE SHARING FAILED"],
+    "GET /api/shared/:token": ["VIEW SHARED NOTE", "LOW", "SHARED NOTE ACCESS FAILED"],
+    "POST /api/account/delete": ["REQUEST ACCOUNT DELETION", "HIGH", "ACCOUNT DELETION REQUEST FAILED"],
+    "POST /api/account/delete/confirm": ["PERMANENTLY DELETE ACCOUNT", "HIGH", "ACCOUNT DELETION FAILED"],
+  };
+  const item = actions[key];
+  if (!item) return null;
+  const failed = status >= 400;
+  return { action: failed && item[2] ? item[2] : item[0], level: item[1] };
+}
+function auditRoute(req) {
+  const path = req.path;
+  if (/^\/api\/notes\/[a-f0-9]{24}\/previous\/restore$/i.test(path)) return "/api/notes/:id/previous/restore";
+  if (/^\/api\/notes\/[a-f0-9]{24}\/previous$/i.test(path)) return "/api/notes/:id/previous";
+  if (/^\/api\/notes\/[a-f0-9]{24}\/ai$/i.test(path)) return "/api/notes/:id/ai";
+  if (/^\/api\/notes\/[a-f0-9]{24}\/share$/i.test(path)) return "/api/notes/:id/share";
+  if (/^\/api\/notes\/[a-f0-9]{24}$/i.test(path)) return "/api/notes/:id";
+  if (/^\/api\/trash\/[a-f0-9]{24}\/restore$/i.test(path)) return "/api/trash/:id/restore";
+  if (/^\/api\/trash\/[a-f0-9]{24}$/i.test(path)) return "/api/trash/:id";
+  if (/^\/api\/sessions\/[a-f0-9]{64}\/logout$/i.test(path)) return "/api/sessions/:id/logout";
+  if (/^\/api\/shared\/[A-Za-z0-9_-]{43}$/.test(path)) return "/api/shared/:token";
+  return path;
+}
+function setAuditUser(req, metadata) {
+  if (!metadata?.username || !metadata?.email) return;
+  req.auditUser = { username: metadata.username, email: metadata.email };
+}
+function operationAuditLogger(req, res, next) {
+  res.once("finish", () => {
+    const route = auditRoute(req);
+    const entry = auditDescriptor(req.method, route, res.statusCode);
+    if (!entry) return;
+    const level = AUDIT_LEVELS[entry.level];
+    const outcome = res.statusCode >= 400 ? "FAILED" : "SUCCESS";
+    const label = `${level.icon} ${entry.level} · ${outcome}`;
+    const levelLabel = process.env.NO_COLOR ? label : `${level.color}${label}${ANSI_RESET}`;
+    const user = req.auditUser
+      ? `SIGNED IN · ${cleanAuditValue(req.auditUser.username, 80)} <${cleanAuditValue(req.auditUser.email, 254)}>`
+      : "ANONYMOUS";
+    console.log(
+      `${auditTimestamp()}  ${levelLabel}\n${entry.action}\nUSER: ${user}\nIP: ${cleanAuditValue(requestIp(req), 80)} · ${req.method.toUpperCase()} ${route.toUpperCase()} → ${res.statusCode} ${auditStatusText(res.statusCode)}`,
+    );
+  });
+  next();
+}
 function aiBudgetForPlan(plan) {
   return AI_BUDGETS_MICRO_USD[plan] ?? AI_BUDGETS_MICRO_USD.free;
 }
@@ -1529,6 +1636,7 @@ async function requireAuth(req, res, next) {
     }
     setSessionCookie(req, res, session.username, token, session.expiresAt);
     req.auth = { token, session };
+    setAuditUser(req, metadata);
     await updateOnlineUser(session.username);
     next();
   } catch (error) {
@@ -2204,6 +2312,9 @@ app.use((req, res, next) => {
   );
   next();
 });
+// Keep operational logs concise and safe: only recognised API actions are
+// recorded, after the response has finished, without request payloads.
+app.use(operationAuditLogger);
 app.use(
   rateLimit({
     windowMs: 60_000,
@@ -2598,6 +2709,7 @@ app.post(
         await atomicWrite(USERS_FILE, `${total}\n`);
       });
       const session = await createSession(username, req, res);
+      setAuditUser(req, { username, email });
       await updateOnlineUser(username);
       res
         .status(201)
@@ -2659,6 +2771,7 @@ app.post(
           "Username or password is incorrect.",
         );
       }
+      setAuditUser(req, metadata);
       if (accountIsBanned(metadata))
         return res.status(403).json({ error: "account_banned", message: metadata.bannedMessage || "This account is currently unavailable.", bannedUntil: metadata.banned });
       const deletion = await findDeletion(metadata.username);
@@ -2717,6 +2830,7 @@ app.post("/api/login/verify", loginIpLimiter, emailCodeIpLimiter, emailCodeAccou
       : null;
     if (!metadata)
       return jsonError(res, 401, "invalid_code", "The verification code is incorrect or has expired.");
+    setAuditUser(req, metadata);
     const session = await createSession(metadata.username, req, res);
     await updateOnlineUser(metadata.username);
     res.json({ ok: true, csrf: session.csrf, redirect: "/dashboard" });
@@ -4551,5 +4665,10 @@ module.exports = {
     publicIpForLookup,
     sessionCookieOptions,
     broadcastRecipients,
+    auditDescriptor,
+    auditRoute,
+    auditStatusText,
+    auditTimestamp,
+    cleanAuditValue,
   },
 };

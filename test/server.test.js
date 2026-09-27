@@ -126,6 +126,28 @@ test("malformed cookies fail closed without causing a server error", async () =>
   assert.deepEqual(Object.keys(testables.parseCookies("broken=%E0%A4%A")), []);
 });
 
+test("operation audit records safe route templates and clear security levels", () => {
+  assert.deepEqual(
+    testables.auditDescriptor("POST", "/api/notes", 201),
+    { action: "CREATE NOTE", level: "LOW" },
+  );
+  assert.deepEqual(
+    testables.auditDescriptor("POST", "/api/login", 401),
+    { action: "SIGN IN FAILED", level: "MEDIUM" },
+  );
+  assert.deepEqual(
+    testables.auditDescriptor("GET", "/api/admin/users", 200),
+    { action: "OPEN ADMINISTRATION", level: "HIGH" },
+  );
+  assert.equal(
+    testables.auditRoute({ path: "/api/notes/0123456789abcdef01234567", method: "GET" }),
+    "/api/notes/:id",
+  );
+  assert.equal(testables.auditStatusText(201), "CREATED");
+  assert.equal(testables.cleanAuditValue("alice\n<alice@example.com>"), "alice <alice@example.com>");
+  assert.equal(testables.auditTimestamp(new Date("2026-09-27T12:54:18.123Z")), "2026-09-27 12:54:18 UTC");
+});
+
 test("IP lookup accepts only real literal addresses and session cookies require HTTPS", () => {
   assert.equal(testables.publicIpForLookup("203.0.113.8"), "203.0.113.8");
   assert.equal(testables.publicIpForLookup("2001:db8::8"), "2001:db8::8");
