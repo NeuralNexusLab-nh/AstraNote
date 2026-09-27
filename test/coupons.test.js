@@ -107,6 +107,8 @@ test.before(async () => {
   directory = await fs.mkdtemp(path.join(os.tmpdir(), "astranote-coupons-"));
   process.env.DATA_DIR = directory;
   process.env.ASTRANOTE_SECRET = "coupon-test-secret-".repeat(5);
+  process.env.ASTRANOTE_REUSABLE_COUPON =
+    process.env.ASTRANOTE_TEST_REUSABLE_COUPON || "R".repeat(32);
   process.env.SATORA_API_KEY = "coupon-test-api-key-".repeat(4);
   originalFetch = global.fetch;
   global.fetch = async (url, options) => {
@@ -166,16 +168,31 @@ test("coupon policies normalize identity, fail closed, and keep the operator exc
     null,
   );
   assert.equal(policy({}).digest, null);
+  assert.equal(policy({ coupon: { code: "R".repeat(32) } }).reusable, true);
+  assert.equal(policy({ coupon: { code: "different" } }).reusable, false);
+  assert.equal(mod.testables.isReusableCouponDigest(digest("different")), false);
+});
+test("email codes use a keyed verifier while accepting an in-flight legacy code", () => {
+  const code = "123456";
+  const keyed = mod.testables.codeDigest(code);
+  assert.match(keyed, /^[a-f0-9]{64}$/);
+  assert.notEqual(keyed, mod.testables.legacyCodeDigest(code));
+  assert.equal(mod.testables.codeDigestMatches(keyed, code), true);
   assert.equal(
-    mod.testables.isReusableCouponDigest(
-      "cfac7fb4d85dc8c216061ee731a56b9169decda34575fc568f3ff34143d6ade0",
-    ),
+    mod.testables.codeDigestMatches(mod.testables.legacyCodeDigest(code), code),
     true,
   );
-  assert.equal(
-    mod.testables.isReusableCouponDigest(digest("different")),
-    false,
-  );
+  assert.equal(mod.testables.codeDigestMatches(keyed, "123457"), false);
+});
+test("non-expiring email receipts do not contain a credential expiry notice", () => {
+  const receipt = mod.testables.emailTemplate({
+    title: "Payment confirmed",
+    body: "Your plan is active.",
+    details: [{ label: "Plan", value: "ULTRA" }],
+    expires: false,
+  });
+  assert.doesNotMatch(receipt.text, /10 minutes/i);
+  assert.doesNotMatch(receipt.html, /10 minutes/i);
 });
 test("one coupon per account, replay-safe; different codes and different accounts still work", async () => {
   const user = await fixture("coupon_owner");

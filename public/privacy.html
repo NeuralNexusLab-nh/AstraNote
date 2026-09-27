@@ -63,9 +63,11 @@
               <strong>Use:</strong> last-login IP and UTC time, session
               identifiers, CSRF tokens, a short browser label, sign-in and
               last-use times, language, theme, public display name, storage
-              use, and note metadata. Country or region is stored only when a
-              trusted hosting header supplies it; AstraNote does not use an
-              external IP-location service.
+              use, and note metadata. To label signed-in devices and relevant
+              account-security emails, AstraNote may send a public IP address
+              to the NXLabTW-operated <code>nxlabtw.com/ipinfo/</code> endpoint
+              and store only the returned country or region. This lookup is not
+              sent to an unrelated commercial IP-location provider.
             </li>
             <li>
               <strong>Content:</strong> note names and content, encryption
@@ -78,9 +80,11 @@
               exist temporarily in client memory during use.
             </li>
             <li>
-              <strong>Security:</strong> rate-limit events, CAPTCHA verification
-              identifiers and tokens, error and operational records reasonably
-              necessary to prevent abuse.
+              <strong>Security and Email:</strong> rate-limit events, CAPTCHA
+              verification identifiers and tokens, single-use Email-verification,
+              password-reset, sign-in, and account-deletion challenge verifiers,
+              and error and operational records reasonably necessary to prevent
+              abuse. Email codes and links expire after ten minutes.
             </li>
             <li>
               <strong>Plans and payments:</strong> remaining Plus, Pro and Ultra
@@ -229,7 +233,7 @@
             <li>
               <strong>使用：</strong>最後登入 IP 與 UTC 時間、登入階段
               識別資料、CSRF
-              驗證權杖、簡短應用程式識別、登入及最近使用時間、語言、主題、公開顯示名稱、儲存用量與筆記中繼資料。僅在受信任託管標頭提供時保存國家或地區；不使用外部 IP 定位服務。
+              驗證權杖、簡短應用程式識別、登入及最近使用時間、語言、主題、公開顯示名稱、儲存用量與筆記中繼資料。為標示已登入裝置及相關帳號安全信件，AstraNote 可能將公開 IP 位址傳送至 NXLabTW 營運的 <code>nxlabtw.com/ipinfo/</code> 端點，並僅保存其回傳的國家或地區；不會將此查詢傳送給無關的商業 IP 定位服務。
             </li>
             <li>
               <strong>內容：</strong
@@ -241,8 +245,8 @@
               解鎖時，金鑰會短暫存在客戶端記憶體。
             </li>
             <li>
-              <strong>安全：</strong>速率限制事件、CAPTCHA 驗證 ID 與
-              驗證權杖，以及防止濫用所合理必要的錯誤及運作紀錄。
+              <strong>安全與 Email：</strong>速率限制事件、CAPTCHA 驗證 ID 與
+              驗證權杖、一次性 Email 驗證、重設密碼、登入及刪除帳號驗證資料的驗證值，以及防止濫用所合理必要的錯誤及運作紀錄。Email 驗證碼與連結會在十分鐘後失效。
             </li>
             <li>
               <strong>方案與付款：</strong>Plus、Pro 與 Ultra
@@ -336,7 +340,7 @@
             </li>
             <li>
               利用：最終ログイン IP・UTC 日時、セッション識別子、CSRF
-              トークン、短縮したブラウザ名、ログイン・最終利用時刻、言語、外観、公開表示名、容量、ノート情報。信頼できるホスティングのヘッダーがある場合だけ国または地域を保存し、外部 IP 位置情報サービスは利用しません。
+              トークン、短縮したブラウザ名、ログイン・最終利用時刻、言語、外観、公開表示名、容量、ノート情報。ログイン中端末と関連するアカウントセキュリティメールの表示のため、公開 IP アドレスを NXLabTW 運営の <code>nxlabtw.com/ipinfo/</code> に送信し、返された国または地域だけを保存する場合があります。無関係な商用 IP 位置情報サービスには送信しません。
             </li>
             <li>
               内容：タイトル、内容、暗号化方式、更新日時、任意の共有コード。タイトルは平文です。暗号化内容と復号検証用情報を保存します。AstraSecret、AstraConfidential、従来の
@@ -346,8 +350,8 @@
               や直接使える平文の鍵は保存しません。利用時のみ鍵がクライアントのメモリーに一時的に存在します。
             </li>
             <li>
-              安全：頻度制限、CAPTCHA
-              識別子・トークン、濫用防止に合理的に必要なエラーと運用記録。
+              安全とメール：頻度制限、CAPTCHA
+              識別子・トークン、メール認証・パスワード再設定・サインイン・アカウント削除の一回限りの検証情報、濫用防止に合理的に必要なエラーと運用記録。メールのコードとリンクは10分で失効します。
             </li>
             <li>
               プラン・支払い：Plus、Pro、Ultra

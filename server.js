@@ -72,9 +72,11 @@ const AI_BUDGETS_MICRO_USD = Object.freeze({
 const BILLING_MONTH_OPTIONS = Object.freeze([1, 3, 6, 9, 12, 24, 36]);
 const ORDER_CREATION_WINDOW_MS = 60 * 60_000;
 const MAX_NEW_ORDERS_PER_ACCOUNT_WINDOW = 6;
-// Keep the operator's reusable coupon out of public UI and plaintext source.
-const REUSABLE_COUPON_DIGEST =
-  "cfac7fb4d85dc8c216061ee731a56b9169decda34575fc568f3ff34143d6ade0";
+// The reusable coupon itself is supplied only through the server environment.
+// Its verifier is derived after the application secret is available, so neither
+// a source checkout nor a data-directory leak exposes a value that can be
+// brute-forced offline.
+let reusableCouponVerifier = null;
 const SATORA_BASE_URL = "https://satora.nxlabtw.com";
 const SATORA_RETURN_URL = "https://astranote.nxlabtw.com/plans/return";
 const PLAN_DEFINITIONS = Object.freeze({
@@ -144,6 +146,15 @@ function utcDate(value = Date.now()) {
 function sha256(value) {
   return crypto.createHash("sha256").update(value).digest("hex");
 }
+function keyedDigest(purpose, value) {
+  if (typeof appSecret !== "string" || appSecret.length < 32)
+    throw new Error("The application secret is not initialized.");
+  return crypto
+    .createHmac("sha256", appSecret)
+    .update(`astranote-v1\\0${purpose}\\0`, "utf8")
+    .update(String(value), "utf8")
+    .digest("hex");
+}
 function safeEqual(a, b) {
   const left = Buffer.from(String(a));
   const right = Buffer.from(String(b));
@@ -158,7 +169,18 @@ function freeStorageAllowance(metadata) {
     : MAX_ACCOUNT_BYTES;
 }
 function tokenDigest(token) { return sha256(`email-token\0${token}`); }
-function codeDigest(code) { return sha256(`email-code\0${code}`); }
+// A six-digit code has only one million possibilities. A keyed verifier makes
+// a stolen challenge record useless for offline guessing.
+function legacyCodeDigest(code) { return sha256(`email-code\0${code}`); }
+function codeDigest(code) { return keyedDigest("email-code", code); }
+function codeDigestMatches(storedDigest, code) {
+  // Issued codes last only ten minutes. Keep this brief fallback so a deploy
+  // never invalidates a code that was sent immediately before it.
+  return (
+    safeEqual(storedDigest, codeDigest(code)) ||
+    safeEqual(storedDigest, legacyCodeDigest(code))
+  );
+}
 function makeEmailToken() { return crypto.randomBytes(32).toString("base64url"); }
 function makeEmailCode() { return crypto.randomInt(0, 1_000_000).toString().padStart(6, "0"); }
 function normalizeLanguage(value) {
@@ -654,6 +676,17 @@ async function ensureData() {
     appSecret = crypto.randomBytes(48).toString("base64url");
     await atomicWrite(SECRET_FILE, `${appSecret}\n`);
   }
+  const configuredReusableCoupon = String(
+    process.env.ASTRANOTE_REUSABLE_COUPON || "",
+  )
+    .trim()
+    .toUpperCase();
+  // A reusable code is an operator capability, not a human-memorable coupon.
+  // Fail closed unless it has at least 192 bits of printable entropy.
+  reusableCouponVerifier =
+    /^[\x21-\x7e]{32,128}$/.test(configuredReusableCoupon)
+      ? keyedDigest("satora-reusable-coupon", configuredReusableCoupon)
+      : null;
   vaultSecret =
     typeof process.env.ASTRANOTE_VAULT_SECRET === "string" &&
     process.env.ASTRANOTE_VAULT_SECRET.length >= 64
@@ -1170,7 +1203,7 @@ function satoraPaidAmountMatchesOrder(status, order) {
   );
 }
 function isReusableCouponDigest(digest) {
-  return digest === REUSABLE_COUPON_DIGEST;
+  return Boolean(reusableCouponVerifier) && safeEqual(digest, reusableCouponVerifier);
 }
 function satoraCouponPolicy(status) {
   const coupon = status?.coupon;
@@ -1186,7 +1219,8 @@ function satoraCouponPolicy(status) {
   const code = coupon.code.trim().toUpperCase();
   if (!/^[\x21-\x7e]{1,128}$/.test(code)) return { valid: false };
   const digest = sha256(code);
-  return { valid: true, digest, reusable: isReusableCouponDigest(digest) };
+  const verifier = keyedDigest("satora-reusable-coupon", code);
+  return { valid: true, digest, reusable: isReusableCouponDigest(verifier) };
 }
 async function satoraRequest(endpoint, options = {}) {
   const apiKey = process.env.SATORA_API_KEY;
@@ -1277,7 +1311,7 @@ async function cleanupPlanLocks() {
       if (notice) {
         const language = metadata.settings?.language || "en";
         const copy = emailCopy(language, notice.copyKey, notice.values);
-        const template = emailTemplate({ ...copy, actionLabel: language === "zh-Hant" ? "查看方案" : language === "ja" ? "プランを見る" : "View plans", actionUrl: "https://astranote.nxlabtw.com/plans", details: emailAuditDetails(language, metadata), language });
+        const template = emailTemplate({ ...copy, actionLabel: language === "zh-Hant" ? "查看方案" : language === "ja" ? "プランを見る" : "View plans", actionUrl: "https://astranote.nxlabtw.com/plans", details: emailAuditDetails(language, metadata), expires: false, language });
         await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template }).catch(() => null);
         metadata.emailAuth.planNotices[notice.key] = utcNow();
       }
@@ -1721,7 +1755,7 @@ async function verifyPasswordForAccount(metadata, password) {
 function escapeHtml(value) {
   return String(value || "").replace(/[&<>\"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
 }
-function emailTemplate({ title, body, actionLabel, actionUrl, code, details = [], noticeTitle, noticeBody, danger = false, language = "en" }) {
+function emailTemplate({ title, body, actionLabel, actionUrl, code, details = [], noticeTitle, noticeBody, danger = false, expires = Boolean(code || actionUrl), language = "en" }) {
   const safeTitle = escapeHtml(title);
   const safeBody = escapeHtml(body);
   const copy = language === "zh-Hant"
@@ -1736,9 +1770,10 @@ function emailTemplate({ title, body, actionLabel, actionUrl, code, details = []
   const detailText = safeDetails.map((detail) => `${detail.label}: ${detail.value}`).join("\n");
   const detailBlock = safeDetails.length ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:22px 0 0;border:1px solid #263354;border-radius:12px;background:#0b1125"><tr><td style="padding:6px 16px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0">${safeDetails.map((detail, index) => `<tr><td style="padding:9px 0;${index ? "border-top:1px solid #202d4a;" : ""}color:#8492b9;font:600 12px/1.4 Arial,sans-serif">${escapeHtml(detail.label)}</td><td style="padding:9px 0 9px 16px;${index ? "border-top:1px solid #202d4a;" : ""}color:#e9edff;text-align:right;font:600 12px/1.4 ui-monospace,monospace;overflow-wrap:anywhere">${escapeHtml(detail.value)}</td></tr>`).join("")}</table></td></tr></table>` : "";
   const notice = noticeTitle && noticeBody ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:22px 0 0;border:1px solid ${danger ? "#8c3548" : "#384a83"};border-radius:12px;background:${danger ? "#251017" : "#101a38"}"><tr><td style="padding:15px 16px"><p style="margin:0 0 7px;color:${danger ? "#ffb6c2" : "#c7d4ff"};font:700 14px/1.4 Arial,sans-serif">${escapeHtml(noticeTitle)}</p><p style="margin:0;color:#d3dbf0;font:13px/1.65 Arial,sans-serif">${escapeHtml(noticeBody).replace(/\n/g, "<br>")}</p></td></tr></table>` : "";
-  const expires = code || actionUrl ? `\n\n${copy.expiry}` : "";
-  const text = `${title}\n\n${body}${code ? `\n\n${code}` : ""}${detailText ? `\n\n${detailText}` : ""}${noticeTitle && noticeBody ? `\n\n${noticeTitle}\n${noticeBody}` : ""}${actionUrl ? `\n\n${actionUrl}` : ""}${expires}`;
-  return { text, html: `<!doctype html><html lang="${escapeHtml(language)}"><body style="margin:0;padding:0;background:#050816;color:#eef2ff"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#050816"><tr><td style="padding:32px 14px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;border:1px solid #283452;border-radius:20px;overflow:hidden;background:#10172d"><tr><td style="padding:20px 24px;border-bottom:1px solid #283452"><img src="https://astranote.nxlabtw.com/asset/logo.png" width="30" height="30" alt="" style="vertical-align:middle;margin-right:10px;border-radius:8px"><span style="vertical-align:middle;color:#fff;font:700 18px Arial,sans-serif">AstraNote</span></td></tr><tr><td style="padding:32px 24px"><h1 style="margin:0 0 14px;color:#fff;font:700 27px/1.2 Arial,sans-serif">${safeTitle}</h1><p style="margin:0;color:#c7d0e9;font:15px/1.7 Arial,sans-serif">${safeBody}</p>${codeBlock}${detailBlock}${notice}${action}${fallback}${code || actionUrl ? `<p style="margin:26px 0 0;padding-top:16px;border-top:1px solid #283452;color:#98a6c8;font:12px/1.6 Arial,sans-serif">${copy.expiry}</p>` : ""}</td></tr></table></td></tr></table></body></html>` };
+  const expiryText = expires ? `\n\n${copy.expiry}` : "";
+  const expiryBlock = expires ? `<p style="margin:26px 0 0;padding-top:16px;border-top:1px solid #283452;color:#98a6c8;font:12px/1.6 Arial,sans-serif">${copy.expiry}</p>` : "";
+  const text = `${title}\n\n${body}${code ? `\n\n${code}` : ""}${detailText ? `\n\n${detailText}` : ""}${noticeTitle && noticeBody ? `\n\n${noticeTitle}\n${noticeBody}` : ""}${actionUrl ? `\n\n${actionUrl}` : ""}${expiryText}`;
+  return { text, html: `<!doctype html><html lang="${escapeHtml(language)}"><body style="margin:0;padding:0;background:#050816;color:#eef2ff"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#050816"><tr><td style="padding:32px 14px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;border:1px solid #283452;border-radius:20px;overflow:hidden;background:#10172d"><tr><td style="padding:20px 24px;border-bottom:1px solid #283452"><img src="https://astranote.nxlabtw.com/asset/logo.png" width="30" height="30" alt="" style="vertical-align:middle;margin-right:10px;border-radius:8px"><span style="vertical-align:middle;color:#fff;font:700 18px Arial,sans-serif">AstraNote</span></td></tr><tr><td style="padding:32px 24px"><h1 style="margin:0 0 14px;color:#fff;font:700 27px/1.2 Arial,sans-serif">${safeTitle}</h1><p style="margin:0;color:#c7d0e9;font:15px/1.7 Arial,sans-serif">${safeBody}</p>${codeBlock}${detailBlock}${notice}${action}${fallback}${expiryBlock}</td></tr></table></td></tr></table></body></html>` };
 }
 function emailAuditDetails(language, metadata, { ip = null, country = null, plan = null, days = null, activatedAt = null, expiresAt = null, status = null } = {}) {
   const labels = language === "zh-Hant"
@@ -2524,7 +2559,7 @@ app.post("/api/login/verify", loginIpLimiter, emailCodeIpLimiter, emailCodeAccou
       ? await withLock(`user:${userKey(username)}`, async () => {
           const current = await loadMetadata(username);
           const challenge = current?.emailAuth?.login;
-          if (!current || !/^\d{6}$/.test(code) || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !safeEqual(challenge.digest, codeDigest(code)))
+          if (!current || !/^\d{6}$/.test(code) || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !codeDigestMatches(challenge.digest, code))
             return null;
           delete current.emailAuth.login;
           current.lastLoginAt = utcNow();
@@ -3126,7 +3161,7 @@ app.get(
               const expiresAt = new Date(Date.parse(activatedAt) + activeDays * 864e5).toISOString();
               const copy = emailCopy(language, "payment", { plan: order.plan, days: activeDays });
               const location = await sessionLocation(req);
-              const template = emailTemplate({ ...copy, details: emailAuditDetails(language, metadata, { ip: requestIp(req), country: location.country, plan: order.plan, days: activeDays, activatedAt, expiresAt, status: paymentConfirmedLabel(language) }), language });
+              const template = emailTemplate({ ...copy, details: emailAuditDetails(language, metadata, { ip: requestIp(req), country: location.country, plan: order.plan, days: activeDays, activatedAt, expiresAt, status: paymentConfirmedLabel(language) }), expires: false, language });
               await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
               metadata.emailAuth.planReceipts = [...metadata.emailAuth.planReceipts.slice(-19), order.orderId];
             }
@@ -4116,7 +4151,7 @@ app.post("/api/account/delete/confirm", requireAuth, accountMutationLimiter, ema
     const deleted = await withLock(`user:${userKey(username)}`, async () => {
       const metadata = await loadMetadata(username);
       const challenge = metadata?.emailAuth?.delete;
-      if (!metadata || !/^\d{6}$/.test(code) || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !safeEqual(challenge.digest, codeDigest(code))) return false;
+      if (!metadata || !/^\d{6}$/.test(code) || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !codeDigestMatches(challenge.digest, code)) return false;
       await updateShares((shares) => { for (const [key, target] of Object.entries(shares)) if (target.username === userKey(username)) delete shares[key]; });
       const target = path.resolve(userDir(username));
       if (path.dirname(target) !== DATA_DIR) throw new Error("Unsafe account deletion target.");
@@ -4294,6 +4329,10 @@ module.exports = {
     satoraPaidAmountMatchesOrder,
     satoraCouponPolicy,
     isReusableCouponDigest,
+    codeDigest,
+    legacyCodeDigest,
+    codeDigestMatches,
+    emailTemplate,
     closeOrderStore: () => {
       orderStore?.close();
       orderStore = null;

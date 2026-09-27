@@ -42,10 +42,15 @@ security-sensitive actions.
 - Capacity for up to 70,000 registered accounts
 - Unguessable, revocable, `noindex` read-only sharing links
 - Argon2id password hashing and server-managed authenticated sessions
+- Email verification unlocks the full Free allowance; verified accounts can
+  reset a password and optionally require a single-use email code after a
+  correct password. Verification links and codes expire after ten minutes.
+  The service-wide email delivery limit is 100 messages per UTC day.
 - CSRF, Origin, ownership, request-size, rate-limit, and security-header controls
 - Layered IP, username, account, note-write, sharing, and public-read rate limits
 - Human verification with mandatory server-side `/api/siteverify` validation
-- Immediate permanent account deletion after username, password, and CAPTCHA confirmation
+- Immediate permanent account deletion after username, password, and a
+  single-use email code confirmation
 - Locally served Font Awesome; no font, analytics, or advertising CDN
 
 ## Project structure
