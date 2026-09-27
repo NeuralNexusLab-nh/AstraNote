@@ -903,6 +903,15 @@ body[data-page="home"] .site-nav:not(.scrolled) .nav-link.active {
   background: color-mix(in srgb, var(--success) 10%, var(--card));
   font-size: 30px;
 }
+.verification-close-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 22px 0 0;
+  color: var(--muted);
+  font-size: .92rem;
+}
+.verification-close-hint i { color: var(--success); }
 .form-group {
   margin-bottom: 22px;
 }
@@ -1029,6 +1038,50 @@ textarea {
 body.has-email-verification-banner .page { padding-top: 186px; }
 .settings-email-security, .settings-password-security { display: flex; flex-direction: column; gap: 11px; }
 .settings-email-security .check-row small { display: block; margin-top: 4px; color: var(--muted); font-weight: 400; }
+.email-two-factor-toggle {
+  min-height: 76px;
+  align-items: center;
+  gap: 14px;
+  margin: 4px 0 0;
+  padding: 14px 16px;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--card) 84%, var(--accent) 16%);
+  transition: border-color .2s ease, background .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.email-two-factor-toggle:hover { border-color: var(--accent); transform: translateY(-1px); }
+.email-two-factor-toggle:has(input:checked) { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--card)); box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent); }
+.email-two-factor-toggle input {
+  appearance: none;
+  position: relative;
+  width: 46px;
+  height: 26px;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--button);
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease;
+}
+.email-two-factor-toggle input::after {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  content: "";
+  border-radius: 50%;
+  background: var(--muted);
+  transition: transform .2s ease, background .2s ease;
+}
+.email-two-factor-toggle input:checked { border-color: var(--accent); background: var(--accent); }
+.email-two-factor-toggle input:checked::after { transform: translateX(20px); background: #fff; }
+.email-two-factor-toggle input:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent); outline-offset: 3px; }
+.email-two-factor-toggle > span { flex: 1; }
+.email-two-factor-toggle > span strong { font-size: 1rem; }
+.email-two-factor-toggle > .fa-shield-halved { color: var(--accent); font-size: 1.2rem; }
+.email-two-factor-toggle:has(input:disabled) { cursor: not-allowed; opacity: .56; }
 .otp-inputs { display: grid; grid-template-columns: repeat(6, 48px); justify-content: center; gap: 9px; margin-top: 10px; }
 .otp-inputs input { min-width: 0; height: 52px; margin: 0; padding: 0; text-align: center; font: 700 21px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
 @media (max-width: 480px) {

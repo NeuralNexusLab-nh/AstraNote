@@ -1595,6 +1595,15 @@ Object.assign(I18N["zh-Hant"], {
 Object.assign(I18N.ja, {
   emailDailyLimit: "本日のメール送信上限に達しました。明日もう一度お試しください。",
 });
+Object.assign(I18N.en, {
+  verifiedCloseHint: "You can now close this page.",
+});
+Object.assign(I18N["zh-Hant"], {
+  verifiedCloseHint: "你現在可以關閉此頁面。",
+});
+Object.assign(I18N.ja, {
+  verifiedCloseHint: "このページは閉じても大丈夫です。",
+});
 
 const state = {
   session: null,
