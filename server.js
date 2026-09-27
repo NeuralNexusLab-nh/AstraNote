@@ -1771,8 +1771,8 @@ function emailTemplate({ title, body, actionLabel, actionUrl, code, details = []
   const notice = noticeTitle && noticeBody ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:22px 0 0;border:1px solid ${danger ? "#8c3548" : "#384a83"};border-radius:12px;background:${danger ? "#251017" : "#101a38"}"><tr><td style="padding:15px 16px"><p style="margin:0 0 7px;color:${danger ? "#ffb6c2" : "#c7d4ff"};font:700 14px/1.4 Arial,sans-serif">${escapeHtml(noticeTitle)}</p><p style="margin:0;color:#d3dbf0;font:13px/1.65 Arial,sans-serif">${escapeHtml(noticeBody).replace(/\n/g, "<br>")}</p></td></tr></table>` : "";
   const expiryText = expires ? `\n\n${copy.expiry}` : "";
   const expiryBlock = expires ? `<p style="margin:26px 0 0;padding-top:16px;border-top:1px solid #283452;color:#98a6c8;font:12px/1.6 Arial,sans-serif">${copy.expiry}</p>` : "";
-  const text = `${title}\n\n${body}${code ? `\n\n${code}` : ""}${detailText ? `\n\n${detailText}` : ""}${noticeTitle && noticeBody ? `\n\n${noticeTitle}\n${noticeBody}` : ""}${actionUrl ? `\n\n${actionUrl}` : ""}${expiryText}`;
-  return { text, html: `<!doctype html><html lang="${escapeHtml(language)}"><body style="margin:0;padding:0;background:#050816;color:#eef2ff"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#050816"><tr><td style="padding:32px 14px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;border:1px solid #283452;border-radius:20px;overflow:hidden;background:#10172d"><tr><td style="padding:20px 24px;border-bottom:1px solid #283452"><img src="https://astranote.nxlabtw.com/asset/logo.png" width="30" height="30" alt="" style="vertical-align:middle;margin-right:10px;border-radius:8px"><span style="vertical-align:middle;color:#fff;font:700 18px Arial,sans-serif">AstraNote</span></td></tr><tr><td style="padding:32px 24px"><h1 style="margin:0 0 14px;color:#fff;font:700 27px/1.2 Arial,sans-serif">${safeTitle}</h1><p style="margin:0;color:#c7d0e9;font:15px/1.7 Arial,sans-serif">${safeBody}</p>${codeBlock}${detailBlock}${notice}${action}${fallback}${expiryBlock}</td></tr></table></td></tr></table></body></html>` };
+  const text = `${title}\n\n${body}${code ? `\n\n${code}` : ""}${noticeTitle && noticeBody ? `\n\n${noticeTitle}\n${noticeBody}` : ""}${detailText ? `\n\n${detailText}` : ""}${actionUrl ? `\n\n${actionUrl}` : ""}${expiryText}`;
+  return { text, html: `<!doctype html><html lang="${escapeHtml(language)}"><body style="margin:0;padding:0;background:#050816;color:#eef2ff"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#050816"><tr><td style="padding:32px 14px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;border:1px solid #283452;border-radius:20px;overflow:hidden;background:#10172d"><tr><td style="padding:20px 24px;border-bottom:1px solid #283452"><img src="https://astranote.nxlabtw.com/asset/logo.png" width="30" height="30" alt="" style="vertical-align:middle;margin-right:10px;border-radius:8px"><span style="vertical-align:middle;color:#fff;font:700 18px Arial,sans-serif">AstraNote</span></td></tr><tr><td style="padding:32px 24px"><h1 style="margin:0 0 14px;color:#fff;font:700 27px/1.2 Arial,sans-serif">${safeTitle}</h1><p style="margin:0;color:#c7d0e9;font:15px/1.7 Arial,sans-serif">${safeBody}</p>${codeBlock}${notice}${detailBlock}${action}${fallback}${expiryBlock}</td></tr></table></td></tr></table></body></html>` };
 }
 function emailAuditDetails(language, metadata, { ip = null, country = null, plan = null, days = null, activatedAt = null, expiresAt = null, status = null } = {}) {
   const labels = language === "zh-Hant"
@@ -1783,7 +1783,7 @@ function emailAuditDetails(language, metadata, { ip = null, country = null, plan
   const details = [
     { label: labels.username, value: metadata.username },
     { label: labels.email, value: metadata.email },
-    { label: labels.time, value: utcNow() },
+    { label: labels.time, value: `${new Date().toISOString().slice(0, 16).replace("T", " ").replaceAll("-", "/")} UTC` },
   ];
   if (ip) details.push({ label: labels.ip, value: ip });
   if (country) details.push({ label: labels.location, value: country });
@@ -1798,7 +1798,7 @@ function emailCopy(language, key, values = {}) {
   const copies = {
     en: {
       verify: { subject: "Verify your AstraNote email", title: "Verify your email", body: "Verify your email to unlock the full 128 KB Free allowance and email security features.", actionLabel: "Verify email" },
-      login: { subject: "Your AstraNote sign-in code", title: "Confirm this sign-in", body: "Enter this code in AstraNote. Sign-in IP: {ip}.", },
+      login: { subject: "Your AstraNote sign-in code", title: "Confirm this sign-in", body: "Enter this code in AstraNote to complete your sign-in." },
       reset: { subject: "Reset your AstraNote password", title: "Reset your password", body: "We received a request to reset your AstraNote password. If this was not you, you can safely ignore this email.", actionLabel: "Reset password" },
       delete: { subject: "Confirm AstraNote account deletion", title: "Confirm account deletion", body: "Enter this code in AstraNote to permanently delete your account. This cannot be undone." },
       payment: { subject: "AstraNote payment confirmed", title: "Your plan is active", body: "Your AstraNote {plan} plan is active for {days} days." },
@@ -1809,7 +1809,7 @@ function emailCopy(language, key, values = {}) {
     },
     "zh-Hant": {
       verify: { subject: "驗證你的 AstraNote Email", title: "驗證你的 Email", body: "完成 Email 驗證，即可啟用完整的 128 KB Free 空間與 Email 安全功能。", actionLabel: "驗證 Email" },
-      login: { subject: "你的 AstraNote 登入驗證碼", title: "確認這次登入", body: "請在 AstraNote 輸入此驗證碼。登入 IP：{ip}。" },
+      login: { subject: "你的 AstraNote 登入驗證碼", title: "確認這次登入", body: "請在 AstraNote 輸入下方驗證碼，完成這次登入。" },
       reset: { subject: "重設你的 AstraNote 密碼", title: "重設密碼", body: "我們收到重設 AstraNote 密碼的要求。如果不是你本人操作，請直接忽略此信。", actionLabel: "重設密碼" },
       delete: { subject: "確認刪除 AstraNote 帳號", title: "確認刪除帳號", body: "請在 AstraNote 輸入此驗證碼，永久刪除帳號。此操作無法復原。" },
       payment: { subject: "AstraNote 付款已確認", title: "你的方案已啟用", body: "你的 AstraNote {plan} 方案已啟用 {days} 天。" },
@@ -1820,7 +1820,7 @@ function emailCopy(language, key, values = {}) {
     },
     ja: {
       verify: { subject: "AstraNote メール認証", title: "メールを認証", body: "メールを認証すると、Free の完全な 128 KB とメール保護機能を利用できます。", actionLabel: "メールを認証" },
-      login: { subject: "AstraNote のサインインコード", title: "サインインを確認", body: "このコードを AstraNote に入力してください。サインイン IP：{ip}。" },
+      login: { subject: "AstraNote のサインインコード", title: "サインインを確認", body: "以下のコードを AstraNote に入力してサインインを完了してください。" },
       reset: { subject: "AstraNote パスワードの再設定", title: "パスワードを再設定", body: "AstraNote のパスワード再設定を受け付けました。心当たりがない場合は、このメールを無視してください。", actionLabel: "パスワードを再設定" },
       delete: { subject: "AstraNote アカウント削除の確認", title: "アカウント削除の確認", body: "このコードを AstraNote に入力すると、アカウントを完全に削除します。この操作は元に戻せません。" },
       payment: { subject: "AstraNote の支払いを確認しました", title: "プランが有効になりました", body: "AstraNote {plan} プランを {days} 日間ご利用いただけます。" },
@@ -1836,7 +1836,7 @@ function emailCopy(language, key, values = {}) {
 function emailSecurityNotice(language, type) {
   const notices = {
     en: {
-      login: { title: "Wasn't you?", body: "Do not share this code. Change your password immediately and review your signed-in devices." },
+      login: { title: "Wasn't this you?", body: "Do not share this code. Change your password immediately and review your signed-in devices." },
       delete: { title: "Permanent action", body: "This code permanently deletes your notes, settings, and account. Do not share it. If this was not you, change your password immediately and review your signed-in devices." },
     },
     "zh-Hant": {
@@ -1848,7 +1848,8 @@ function emailSecurityNotice(language, type) {
       delete: { title: "完全削除に関する警告", body: "このコードを使うとノート、設定、アカウントが完全に削除されます。共有せず、心当たりがない場合は直ちにパスワードを変更し、サインイン中の端末を確認してください。" },
     },
   };
-  return notices[language]?.[type] || notices.en[type] || null;
+  const notice = notices[language]?.[type] || notices.en[type];
+  return notice ? { noticeTitle: notice.title, noticeBody: notice.body } : {};
 }
 function paymentConfirmedLabel(language) {
   return language === "zh-Hant" ? "已確認" : language === "ja" ? "確認済み" : "Confirmed";
@@ -4529,6 +4530,9 @@ module.exports = {
     legacyCodeDigest,
     codeDigestMatches,
     emailTemplate,
+    emailCopy,
+    emailSecurityNotice,
+    emailAuditDetails,
     closeOrderStore: () => {
       orderStore?.close();
       orderStore = null;

@@ -197,6 +197,23 @@ test("non-expiring email receipts do not contain a credential expiry notice", ()
   assert.doesNotMatch(receipt.text, /10 minutes/i);
   assert.doesNotMatch(receipt.html, /10 minutes/i);
 });
+test("sign-in mail leads with the sign-in title, then shows a secondary warning and readable UTC time", () => {
+  const { emailCopy, emailSecurityNotice, emailAuditDetails, emailTemplate } = mod.testables;
+  const language = "zh-Hant";
+  const mail = emailTemplate({
+    ...emailCopy(language, "login", { ip: "203.0.113.9" }),
+    code: "123456",
+    ...emailSecurityNotice(language, "login"),
+    details: emailAuditDetails(language, { username: "test-user", email: "test@example.com" }),
+    language,
+  });
+  assert.ok(mail.html.indexOf("確認這次登入") < mail.html.indexOf("123456"));
+  assert.ok(mail.html.indexOf("123456") < mail.html.indexOf("不是你本人？"));
+  assert.ok(mail.html.indexOf("不是你本人？") < mail.html.indexOf("時間（UTC）"));
+  assert.match(mail.text, /^確認這次登入\n/u);
+  assert.match(mail.text, /\d{4}\/\d{2}\/\d{2} \d{2}:\d{2} UTC/u);
+  assert.doesNotMatch(mail.text, /\.\d{3}Z/u);
+});
 test("one coupon per account, replay-safe; different codes and different accounts still work", async () => {
   const user = await fixture("coupon_owner");
   const first = await bill(user, "ONCE");
