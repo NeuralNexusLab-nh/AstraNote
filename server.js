@@ -1790,8 +1790,10 @@ async function sendMail({ to, from, subject, template, bypassDaily = false }) {
       const record = await readJson(EMAIL_LIMITS_FILE, { day, total: 0, recipients: {} });
       const current = record.day === day ? record : { day, total: 0, recipients: {} };
       const key = emailHash(to);
-      if (current.total >= EMAIL_DAILY_LIMIT || (current.recipients[key] || 0) >= EMAIL_RECIPIENT_DAILY_LIMIT)
-        throw Object.assign(new Error("Email rate limit reached."), { status: 429, code: "email_rate_limited" });
+      if (current.total >= EMAIL_DAILY_LIMIT)
+        throw Object.assign(new Error("AstraNote has reached today's email sending limit. Please try again after 00:00 UTC."), { status: 429, code: "email_daily_limit" });
+      if ((current.recipients[key] || 0) >= EMAIL_RECIPIENT_DAILY_LIMIT)
+        throw Object.assign(new Error("This email address has reached its 10-message limit for today. Please try again after 00:00 UTC."), { status: 429, code: "email_recipient_daily_limit" });
       const response = await fetch(EMAIL_API_URL, { method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${process.env.ZSKEY}` }, signal: AbortSignal.timeout(12_000), body: JSON.stringify({ from, to: [to], reply_to: [SUPPORT_EMAIL], subject, html: template.html, text: template.text }) });
       if (!response.ok) throw Object.assign(new Error("Email delivery failed."), { status: response.status >= 500 ? 503 : response.status, code: "email_delivery_failed" });
       current.total += 1;
