@@ -1576,6 +1576,16 @@ Object.assign(I18N.ja, {
   accountMessageTitle: "AstraNote からのお知らせ",
   understood: "確認しました",
 });
+Object.assign(I18N.en, {
+  usernameOrEmail: "Username or Email", forgotPassword: "Forgot password?", emailSecurity: "Email security", emailVerified: "Email verified", emailUnverified: "Email not verified", verifyNow: "Verify now", resend: "Resend", emailTwoFactor: "Email two-step verification", emailTwoFactorHelp: "After your password is correct, AstraNote will email a six-digit sign-in code.", currentPassword: "Current password", newPassword: "New password", verificationCode: "Verification code", confirmSignIn: "Confirm your sign-in", codeSentTo: "A six-digit code was sent to {email}.", emailBanner: "Verify your Email to unlock the full 128 KB and email security features.", resetPassword: "Reset password", resetPasswordBody: "Enter your Email and we will send a reset link if it is available.", resetRequested: "If this Email is available, a reset link has been sent.", verifyEmailTitle: "Verify your Email", verifyEmailBody: "Verifying your Email unlocks the full 128 KB Free allowance.", verifiedSuccess: "Your Email has been verified.", deleteCodeTitle: "Confirm account deletion", deleteCodeBody: "Enter the six-digit code sent to your Email to permanently delete this account.", sendError: "Sending failed. Please try again later.", passwordRecoveryAvailable: "Verified Email accounts can reset a forgotten password securely."
+});
+Object.assign(I18N["zh-Hant"], {
+  usernameOrEmail: "使用者名稱或 Email", forgotPassword: "忘記密碼？", emailSecurity: "Email 安全", emailVerified: "Email 已驗證", emailUnverified: "Email 尚未驗證", verifyNow: "立即驗證", resend: "重新寄送", emailTwoFactor: "Email 兩步驟驗證", emailTwoFactorHelp: "帳密正確後，AstraNote 會寄送六位數登入碼。", currentPassword: "目前密碼", newPassword: "新密碼", verificationCode: "驗證碼", confirmSignIn: "確認這次登入", codeSentTo: "六位數驗證碼已寄至 {email}。", emailBanner: "驗證你的 Email，即可啟用完整 128 KB 空間與帳號安全功能。", resetPassword: "重設密碼", resetPasswordBody: "輸入 Email；若此帳號可用，系統會寄送重設連結。", resetRequested: "如果此 Email 可用，重設連結已寄出。", verifyEmailTitle: "驗證你的 Email", verifyEmailBody: "完成驗證後，即可啟用完整的 128 KB Free 空間。", verifiedSuccess: "你的 Email 已完成驗證。", deleteCodeTitle: "確認刪除帳號", deleteCodeBody: "請輸入寄至 Email 的六位數字，永久刪除帳號。", sendError: "發送錯誤，請稍後再試。", passwordRecoveryAvailable: "已驗證 Email 的帳號可安全重設忘記的密碼。"
+});
+Object.assign(I18N.ja, {
+  usernameOrEmail: "ユーザー名またはメールアドレス", forgotPassword: "パスワードをお忘れですか？", emailSecurity: "メールのセキュリティ", emailVerified: "メール認証済み", emailUnverified: "メール未認証", verifyNow: "今すぐ認証", resend: "再送", emailTwoFactor: "メール二段階認証", emailTwoFactorHelp: "パスワードが正しい場合、AstraNote から6桁のコードを送信します。", currentPassword: "現在のパスワード", newPassword: "新しいパスワード", verificationCode: "認証コード", confirmSignIn: "サインインを確認", codeSentTo: "6桁のコードを {email} に送信しました。", emailBanner: "メールを認証すると、完全な128 KBとアカウント保護を利用できます。", resetPassword: "パスワードを再設定", resetPasswordBody: "メールアドレスを入力してください。利用可能な場合は再設定リンクを送信します。", resetRequested: "このメールアドレスが利用可能な場合、再設定リンクを送信しました。", verifyEmailTitle: "メールを認証", verifyEmailBody: "認証すると、Free の完全な128 KBを利用できます。", verifiedSuccess: "メール認証が完了しました。", deleteCodeTitle: "アカウント削除の確認", deleteCodeBody: "メールに送信した6桁のコードを入力すると、アカウントを完全に削除します。", sendError: "送信に失敗しました。しばらくしてからもう一度お試しください。", passwordRecoveryAvailable: "認証済みメールのアカウントは、忘れたパスワードを安全に再設定できます。"
+});
+
 const state = {
   session: null,
   account: null,
@@ -2359,6 +2369,18 @@ function buildNav() {
     <div class="nav-actions"><i class="fa-solid fa-language" aria-hidden="true"></i><select class="lang-select" id="language-select" data-i18n-aria-label="languageSelector"><option value="en">EN</option><option value="zh-Hant">繁中</option><option value="ja">日本語</option></select>
     ${authenticated ? '<button class="btn" id="nav-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i><span data-i18n="logout"></span></button>' : '<a class="nav-link" href="/login"><i class="fa-solid fa-arrow-right-to-bracket"></i> <span data-i18n="login"></span></a><a class="btn btn-primary" href="/register"><i class="fa-solid fa-user-plus"></i><span data-i18n="register"></span></a>'}</div>`;
   document.body.prepend(nav);
+  if (authenticated && state.account?.emailSecurity?.showVerificationBanner) {
+    const banner = document.createElement("aside");
+    banner.className = "email-verification-banner";
+    banner.innerHTML = `<div class="shell"><span><i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i> ${t("emailBanner")}</span><button type="button" class="btn btn-danger"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>${t("verifyNow")}</span></button></div>`;
+    nav.after(banner);
+    $("button", banner).onclick = async (event) => {
+      event.currentTarget.disabled = true;
+      try { await api("/api/email/verification/send", { method: "POST", body: {} }); toast(t("saved")); }
+      catch (error) { showError(error); }
+      finally { event.currentTarget.disabled = false; }
+    };
+  }
   const mobileToggle = $(".mobile-toggle", nav);
   mobileToggle.addEventListener("click", () => {
     const open = nav.classList.toggle("open");
@@ -2707,6 +2729,7 @@ function actionModal({
       try {
         const result = await run();
         close();
+        if (result.emailVerificationRequired) return showDeleteCodeModal();
         if (result.redirect) location.href = result.redirect;
         else location.reload();
       } catch (error) {
@@ -2725,6 +2748,23 @@ function actionModal({
   requestAnimationFrame(restoreStart);
   setTimeout(restoreStart, 250);
   return result;
+}
+
+function showDeleteCodeModal() {
+  const group = document.createElement("div");
+  group.className = "form-group";
+  const label = document.createElement("label");
+  label.textContent = t("verificationCode");
+  const input = document.createElement("input");
+  input.inputMode = "numeric";
+  input.autocomplete = "one-time-code";
+  input.maxLength = 6;
+  input.pattern = "[0-9]{6}";
+  group.append(label, input);
+  modal({ title: t("deleteCodeTitle"), body: t("deleteCodeBody"), content: group, confirm: t("delete"), danger: true, onConfirm: async (close) => {
+    const result = await api("/api/account/delete/confirm", { method: "POST", body: { code: input.value } });
+    close(); location.href = result.redirect;
+  }});
 }
 
 function cookieBanner() {
@@ -3001,6 +3041,7 @@ function startStars(canvas) {
 async function initAuthForm(kind) {
   const form = $("#auth-form");
   if (!form) return;
+  let twoFactorUsername = null;
   const params = new URLSearchParams(location.search);
   const cancellation = kind === "login" && params.get("cancel") === "1";
   if (cancellation) {
@@ -3040,7 +3081,9 @@ async function initAuthForm(kind) {
       return;
     }
     button.disabled = true;
-    const data = Object.fromEntries(new FormData(form));
+    const data = twoFactorUsername
+      ? { username: twoFactorUsername, code: String(form.code?.value || "") }
+      : Object.fromEntries(new FormData(form));
     if (needsCaptcha) data.captcha = state.captcha;
     const storedLanguage = getStoredPreference("astranote_language");
     if (storedLanguage || kind === "register")
@@ -3050,8 +3093,13 @@ async function initAuthForm(kind) {
       data.legalCapacity = form.legalCapacity.checked;
     }
     try {
-      const endpoint = cancellation ? "/api/deletion/cancel" : `/api/${kind}`;
+      const endpoint = twoFactorUsername ? "/api/login/verify" : cancellation ? "/api/deletion/cancel" : `/api/${kind}`;
       const result = await api(endpoint, { method: "POST", body: data });
+      if (result.twoFactorRequired) {
+        twoFactorUsername = result.username;
+        form.innerHTML = `<div class="form-group"><label for="login-code">${t("verificationCode")}</label><input id="login-code" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required autofocus></div><p class="field-help">${t("codeSentTo").replace("{email}", result.email)}</p><p class="form-message" role="alert"></p><div class="form-actions"><a class="muted" href="/login"><i class="fa-solid fa-arrow-left"></i> ${t("backHome")}</a><button class="btn btn-primary btn-lg" type="submit"><i class="fa-solid fa-shield-halved"></i><span>${t("confirmSignIn")}</span></button></div>`;
+        return;
+      }
       const next = params.get("next");
       location.href =
         !cancellation && next && /^\/(?!\/)/u.test(next)
@@ -3075,6 +3123,36 @@ async function initAuthForm(kind) {
       message.textContent = error.message;
       button.disabled = false;
     }
+  });
+}
+
+async function initVerifyEmail() {
+  const message = $(".form-message");
+  const link = new URLSearchParams(location.hash.slice(1));
+  const token = link.get("token");
+  const username = link.get("u");
+  if (!token) { message.textContent = t("error"); return; }
+  try { await api("/api/email/verification/confirm", { method: "POST", body: { token, username } }); message.style.color = "var(--success)"; message.textContent = t("verifiedSuccess"); history.replaceState(null, "", "/verify-email"); }
+  catch (error) { message.textContent = error.message; }
+}
+
+async function initResetPassword() {
+  const form = $("#reset-password-form");
+  const link = new URLSearchParams(location.hash.slice(1));
+  const token = link.get("token");
+  const username = link.get("u");
+  const hasToken = Boolean(token);
+  $("#reset-email-group").hidden = hasToken;
+  $("#reset-new-password").hidden = !hasToken;
+  $("#reset-confirm-password").hidden = !hasToken;
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault(); const message = $(".form-message", form); message.textContent = "";
+    try {
+      if (!hasToken) { await api("/api/password/reset/request", { method: "POST", body: { email: form.email.value } }); message.style.color = "var(--success)"; message.textContent = t("resetRequested"); return; }
+      if (form.password.value !== form.confirmation.value) throw new Error(t("passwordConfirmationRules"));
+      const result = await api("/api/password/reset/confirm", { method: "POST", body: { token, username, password: form.password.value } });
+      history.replaceState(null, "", "/reset-password"); location.href = result.redirect;
+    } catch (error) { message.style.color = ""; message.textContent = error.message; }
   });
 }
 
@@ -3961,6 +4039,22 @@ async function initSettings() {
   form.displayName.value = account.displayName;
   form.theme.value = account.settings.theme || state.theme;
   form.language.value = account.settings.language || state.language;
+  const emailStatus = $("#email-security-status");
+  const verifyButton = $("#verify-email");
+  if (emailStatus) emailStatus.textContent = `${account.email} · ${t(account.emailSecurity?.verified ? "emailVerified" : "emailUnverified")}`;
+  if (verifyButton) {
+    verifyButton.hidden = account.emailSecurity?.verified === true;
+    verifyButton.onclick = async () => {
+      verifyButton.disabled = true;
+      try { await api("/api/email/verification/send", { method: "POST", body: {} }); toast(t("saved")); }
+      catch (error) { showError(error); }
+      finally { verifyButton.disabled = false; }
+    };
+  }
+  if (form.emailTwoFactor) {
+    form.emailTwoFactor.checked = account.emailSecurity?.twoFactorEnabled === true;
+    form.emailTwoFactor.disabled = account.emailSecurity?.verified !== true;
+  }
   $("#settings-plan").textContent = planDisplayName(account.plan.type);
   $("#priority-support").hidden = !account.plan.canRecover;
   $("#settings-ultra-days").textContent =
@@ -4036,6 +4130,8 @@ async function initSettings() {
           ...(account.plan.canRecover
             ? { trashDays: Number(form.trashDays.value) }
             : {}),
+          emailTwoFactor: Boolean(form.emailTwoFactor?.checked),
+          ...(form.newPassword?.value ? { currentPassword: form.currentPassword.value, newPassword: form.newPassword.value, passwordConfirmation: form.passwordConfirmation.value } : {}),
         },
       });
       state.theme = form.theme.value;
@@ -4459,6 +4555,8 @@ async function boot() {
   const initializers = {
     home: initHome,
     login: () => initAuthForm("login"),
+    "verify-email": initVerifyEmail,
+    "reset-password": initResetPassword,
     register: () => initAuthForm("register"),
     dashboard: initDashboard,
     notes: initNotes,

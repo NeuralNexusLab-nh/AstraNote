@@ -983,6 +983,13 @@ textarea {
   margin: 14px 0 0;
   color: var(--danger);
 }
+.auth-forgot { display: inline-block; margin-top: 8px; text-decoration: none; }
+.email-verification-banner { position: relative; z-index: 88; background: color-mix(in srgb, var(--danger) 78%, #381421); border-bottom: 1px solid color-mix(in srgb, var(--danger) 60%, var(--line)); color: #fff; }
+.email-verification-banner > .shell { min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 14px; font-size: 14px; }
+.email-verification-banner span { display: inline-flex; align-items: center; gap: 8px; }
+.email-verification-banner .btn { min-height: 36px; padding: 7px 13px; white-space: nowrap; }
+.settings-email-security { display: flex; flex-direction: column; gap: 11px; }
+.settings-email-security .check-row small { display: block; margin-top: 4px; color: var(--muted); font-weight: 400; }
 .captcha-box {
   width: 100%;
   min-height: 0;
@@ -2294,6 +2301,9 @@ html[lang="ja"] [data-lang="en"] {
   }
 }
 @media (max-width: 620px) {
+  .email-verification-banner > .shell { padding-top: 8px; padding-bottom: 8px; align-items: flex-start; }
+  .email-verification-banner > .shell > span { line-height: 1.35; }
+  .email-verification-banner .btn span { display: none; }
   .vault-fields {
     grid-template-columns: 1fr;
     padding: 17px;

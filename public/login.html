@@ -21,12 +21,12 @@
           <p class="muted" data-auth-body data-i18n="signInBody"></p>
           <form id="auth-form" novalidate>
             <div class="form-group">
-              <label for="username" data-i18n="username"></label
+              <label for="username" data-i18n="usernameOrEmail"></label
               ><input
                 id="username"
                 name="username"
                 autocomplete="username"
-                maxlength="24"
+                maxlength="254"
                 required
               />
             </div>
@@ -40,7 +40,7 @@
                 maxlength="256"
                 required
               />
-              <p class="field-help" data-i18n="noRecovery"></p>
+              <a class="field-help auth-forgot" href="/reset-password" data-i18n="forgotPassword"></a>
             </div>
             <p class="form-message" role="alert"></p>
             <div class="form-actions">
@@ -60,7 +60,7 @@
             <i class="fa-solid fa-lock"></i> PRIVATE BY DEFAULT
           </p>
           <h2 data-i18n="tagline"></h2>
-          <p class="muted" data-i18n="noRecovery"></p>
+          <p class="muted" data-i18n="passwordRecoveryAvailable"></p>
         </aside>
       </div>
     </main>

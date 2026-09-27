@@ -31,10 +31,15 @@ const DELETES_FILE = path.join(DATA_DIR, "deletes.json");
 const SHARES_FILE = path.join(DATA_DIR, "shares.json");
 const ORDERS_FILE = path.join(DATA_DIR, "orders.json");
 const SECRET_FILE = path.join(DATA_DIR, ".server-secret");
+const EMAIL_LIMITS_FILE = path.join(DATA_DIR, "email-limits.json");
 
 const MAX_ACCOUNTS = 70_000;
 const MAX_NOTES = 20;
 const MAX_ACCOUNT_BYTES = 128 * 1000;
+const UNVERIFIED_FREE_BYTES = 32 * 1000;
+const EMAIL_TOKEN_MS = 10 * 60_000;
+const EMAIL_DAILY_LIMIT = 100;
+const EMAIL_RECIPIENT_DAILY_LIMIT = 10;
 const MAX_NOTE_BYTES = 2 * 1024 * 1000;
 const MAX_NOTE_NAME = 80;
 const MAX_DISPLAY_NAME = 40;
@@ -47,6 +52,7 @@ const TERMS_VERSION = "2026-09-05";
 const TRASH_DAYS = Object.freeze([1, 3, 7, 14, 30]);
 const ADMIN_EMAIL = "neuralnexuslab@hotmail.com";
 const SUPPORT_EMAIL = "astranote@nxlabtw.com";
+const EMAIL_API_URL = "https://api.zeabur.com/api/v1/zsend/emails";
 const PLAN_MONTH_MS = 30 * 864e5;
 const PLAN_LOCK_DELETE_MS = 30 * 864e5;
 const AI_WINDOW_MS = 30 * 864e5;
@@ -140,6 +146,16 @@ function safeEqual(a, b) {
 function userKey(username) {
   return username.toLowerCase();
 }
+function emailHash(email) { return sha256(String(email || "").trim().toLowerCase()); }
+function freeStorageAllowance(metadata) {
+  return metadata?.emailQuotaRestricted === true && metadata?.emailVerified !== true
+    ? UNVERIFIED_FREE_BYTES
+    : MAX_ACCOUNT_BYTES;
+}
+function tokenDigest(token) { return sha256(`email-token\0${token}`); }
+function codeDigest(code) { return sha256(`email-code\0${code}`); }
+function makeEmailToken() { return crypto.randomBytes(32).toString("base64url"); }
+function makeEmailCode() { return crypto.randomInt(0, 1_000_000).toString().padStart(6, "0"); }
 function normalizeLanguage(value) {
   const language = String(value || "")
     .trim()
@@ -358,6 +374,20 @@ async function purgeRetiredSnapshotData() {
 async function loadMetadata(username) {
   const metadata = await readJson(metadataFile(username), null);
   if (!metadata) return null;
+  // A stable, non-login credential factor lets people reset their password
+  // without changing the server component used by legacy Secret/Confidential
+  // notes. Copying the existing hash is compatibility-only; new accounts get
+  // a random factor during registration.
+  if (typeof metadata.cryptoFactor !== "string" || metadata.cryptoFactor.length < 32)
+    metadata.cryptoFactor = metadata.passwordHash;
+  metadata.emailVerified = metadata.emailVerified === true;
+  metadata.emailQuotaRestricted = metadata.emailQuotaRestricted === true;
+  metadata.emailTwoFactor = metadata.emailVerified && metadata.emailTwoFactor === true;
+  metadata.emailAuth ||= {};
+  for (const key of ["verify", "reset", "login", "delete"])
+    if (Date.parse(metadata.emailAuth[key]?.expiresAt || 0) < Date.now()) delete metadata.emailAuth[key];
+  for (const key of ["verifySentAt", "loginSentAt"])
+    if (Array.isArray(metadata.emailAuth[key])) metadata.emailAuth[key] = metadata.emailAuth[key].filter((time) => Date.now() - Date.parse(time) < 24 * 60 * 60_000);
   metadata.banned = /^\d{4}\/\d{2}\/\d{2}$/.test(metadata.banned || "")
     ? metadata.banned
     : "0000/00/00";
@@ -447,7 +477,9 @@ function planForMetadata(metadata) {
 
 function planPayload(metadata, now = Date.now()) {
   const plan = planForMetadata(metadata);
-  const definition = PLAN_DEFINITIONS[plan];
+  const definition = plan === "free"
+    ? { ...PLAN_DEFINITIONS.free, maxBytes: freeStorageAllowance(metadata) }
+    : PLAN_DEFINITIONS[plan];
   const plusMs = Math.max(0, metadata.entitlements?.plusMs || 0);
   const proMs = Math.max(0, metadata.entitlements?.proMs || 0);
   const ultraMs = Math.max(0, metadata.entitlements?.ultraMs || 0);
@@ -889,7 +921,10 @@ function deriveVaultFactor(
     .update("\0")
     .update(metadata.email.toLowerCase())
     .update("\0")
-    .update(metadata.passwordHash)
+    // This account-specific value deliberately survives a login-password
+    // change. Existing accounts receive their old password hash once as a
+    // compatibility value, so previously encrypted notes remain decryptable.
+    .update(metadata.cryptoFactor || metadata.passwordHash)
     .update("\0")
     .update(noteId)
     .update("\0")
@@ -1222,7 +1257,23 @@ async function cleanupPlanLocks() {
         !metadata.notes.some((ref) => ref.trashedAt)
       )
         return;
+      const remainingBefore = Math.max(metadata.entitlements?.plusMs || 0, metadata.entitlements?.proMs || 0, metadata.entitlements?.ultraMs || 0);
+      const lockedBefore = metadata.notes.filter((reference) => reference.planLockedAt).length;
       await refreshPlanState(entry.name, metadata);
+      const remainingAfter = Math.max(metadata.entitlements?.plusMs || 0, metadata.entitlements?.proMs || 0, metadata.entitlements?.ultraMs || 0);
+      const days = Math.ceil(remainingAfter / 864e5);
+      const lockCount = metadata.notes.filter((reference) => reference.planLockedAt).length;
+      metadata.emailAuth ||= {};
+      metadata.emailAuth.planNotices ||= {};
+      let notice = null;
+      if (metadata.emailVerified && days > 1 && days <= 7 && !metadata.emailAuth.planNotices.sevenDays) { notice = { key: "sevenDays", title: "Your AstraNote plan expires in 7 days", body: "Your plan is close to expiry. Renew to keep your current allowance and features." }; }
+      if (metadata.emailVerified && days > 0 && days <= 1 && !metadata.emailAuth.planNotices.oneDay) { notice = { key: "oneDay", title: "Your AstraNote plan expires in 1 day", body: "Renew now to avoid notes being locked above the Free allowance." }; }
+      if (metadata.emailVerified && remainingBefore > 0 && remainingAfter === 0 && lockCount > lockedBefore && !metadata.emailAuth.planNotices.locked) { notice = { key: "locked", title: "Some AstraNote notes are locked", body: `${lockCount} notes are locked because your plan expired. Upgrade to unlock them; continuously locked notes are deleted after 30 days.` }; }
+      if (notice) {
+        const template = emailTemplate({ title: notice.title, body: notice.body, actionLabel: "View plans", actionUrl: "https://astranote.nxlabtw.com/plans", language: metadata.settings?.language || "en" });
+        await sendMail({ to: metadata.email, from: "plan@mail.nxlabtw.com", subject: notice.title, template }).catch(() => null);
+        metadata.emailAuth.planNotices[notice.key] = utcNow();
+      }
       await saveMetadata(entry.name, metadata);
     }).catch((error) =>
       console.error(
@@ -1638,6 +1689,66 @@ async function accountEmailExists(email) {
   }
   return false;
 }
+async function findAccountByEmail(email) {
+  const target = String(email || "").trim().toLowerCase();
+  if (!target) return null;
+  const entries = await fsp.readdir(DATA_DIR, { withFileTypes: true });
+  for (const entry of entries) {
+    if (!entry.isDirectory() || !USERNAME_RE.test(entry.name)) continue;
+    const metadata = await loadMetadata(entry.name);
+    if (metadata?.email?.toLowerCase() === target) return metadata;
+  }
+  return null;
+}
+async function findAccountByIdentifier(value) {
+  const identifier = normalizeText(value, 254);
+  return USERNAME_RE.test(identifier) ? loadMetadata(identifier) : findAccountByEmail(identifier);
+}
+function escapeHtml(value) {
+  return String(value || "").replace(/[&<>\"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+}
+function emailTemplate({ title, body, actionLabel, actionUrl, code, language = "en" }) {
+  const safeTitle = escapeHtml(title);
+  const safeBody = escapeHtml(body);
+  const action = actionUrl ? `<a href="${escapeHtml(actionUrl)}" style="display:inline-block;padding:13px 20px;border-radius:12px;background:linear-gradient(135deg,#6d7cff,#8b6cff);color:#fff;text-decoration:none;font:700 15px Arial,sans-serif">${escapeHtml(actionLabel)}</a>` : "";
+  const fallback = actionUrl ? `<p style="margin:22px 0 7px;color:#98a4c7;font:13px/1.55 Arial,sans-serif">If the button does not open, copy this link:</p><p style="margin:0;overflow-wrap:anywhere;color:#cbd5ff;font:12px/1.6 ui-monospace,monospace">${escapeHtml(actionUrl)}</p>` : "";
+  const codeBlock = code ? `<div style="margin:22px 0;padding:17px;border:1px solid rgba(139,108,255,.55);border-radius:14px;background:#0a1024;color:#eef2ff;text-align:center;letter-spacing:.28em;font:700 28px ui-monospace,monospace">${escapeHtml(code.slice(0,3) + " " + code.slice(3))}</div>` : "";
+  const text = `${title}\n\n${body}${code ? `\n\n${code}` : ""}${actionUrl ? `\n\n${actionUrl}` : ""}\n\nThis expires in 10 minutes.`;
+  return { text, html: `<!doctype html><html lang="${escapeHtml(language)}"><body style="margin:0;padding:28px 14px;background:#050816;color:#eef2ff"><main style="max-width:600px;margin:0 auto;border:1px solid rgba(142,157,210,.24);border-radius:20px;overflow:hidden;background:#10172d;box-shadow:0 18px 48px rgba(0,0,0,.32)"><header style="padding:20px 24px;border-bottom:1px solid rgba(142,157,210,.2);font:700 18px Arial,sans-serif"><img src="https://astranote.nxlabtw.com/asset/logo.png" width="28" height="28" alt="" style="vertical-align:middle;margin-right:9px;border-radius:7px">AstraNote</header><section style="padding:32px 24px"><h1 style="margin:0 0 13px;color:#fff;font:700 27px/1.18 Arial,sans-serif">${safeTitle}</h1><p style="margin:0 0 22px;color:#c4cbe4;font:15px/1.65 Arial,sans-serif">${safeBody}</p>${codeBlock}${action}${fallback}<p style="margin:25px 0 0;padding-top:16px;border-top:1px solid rgba(142,157,210,.18);color:#98a4c7;font:12px/1.55 Arial,sans-serif">This message expires in 10 minutes. If you did not request it, you can safely ignore it.</p></section></main></body></html>` };
+}
+async function sendMail({ to, from, subject, template, bypassDaily = false }) {
+  if (!process.env.ZSKEY) throw Object.assign(new Error("Email delivery is unavailable."), { status: 503, code: "email_unavailable" });
+  if (!bypassDaily) {
+    await withLock("email-limits", async () => {
+      const day = utcDay();
+      const record = await readJson(EMAIL_LIMITS_FILE, { day, total: 0, recipients: {} });
+      const current = record.day === day ? record : { day, total: 0, recipients: {} };
+      const key = emailHash(to);
+      if (current.total >= EMAIL_DAILY_LIMIT || (current.recipients[key] || 0) >= EMAIL_RECIPIENT_DAILY_LIMIT)
+        throw Object.assign(new Error("Email rate limit reached."), { status: 429, code: "email_rate_limited" });
+      const response = await fetch(EMAIL_API_URL, { method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${process.env.ZSKEY}` }, signal: AbortSignal.timeout(12_000), body: JSON.stringify({ from, to: [to], reply_to: [SUPPORT_EMAIL], subject, html: template.html, text: template.text }) });
+      if (!response.ok) throw Object.assign(new Error("Email delivery failed."), { status: response.status >= 500 ? 503 : response.status, code: "email_delivery_failed" });
+      current.total += 1;
+      current.recipients[key] = (current.recipients[key] || 0) + 1;
+      await writeJson(EMAIL_LIMITS_FILE, current);
+    });
+  } else {
+    const response = await fetch(EMAIL_API_URL, { method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${process.env.ZSKEY}` }, signal: AbortSignal.timeout(12_000), body: JSON.stringify({ from, to: [to], reply_to: [SUPPORT_EMAIL], subject, html: template.html, text: template.text }) });
+    if (!response.ok) throw Object.assign(new Error("Email delivery failed."), { status: response.status >= 500 ? 503 : response.status, code: "email_delivery_failed" });
+  }
+}
+function actionRecentlySent(metadata, action, limit, windowMs, now = Date.now()) {
+  const list = Array.isArray(metadata.emailAuth?.[`${action}SentAt`]) ? metadata.emailAuth[`${action}SentAt`] : [];
+  const recent = list.filter((time) => now - Date.parse(time) < windowMs);
+  metadata.emailAuth ||= {};
+  metadata.emailAuth[`${action}SentAt`] = recent;
+  return recent.length >= limit;
+}
+function recordActionSent(metadata, action, now = Date.now()) {
+  metadata.emailAuth ||= {};
+  const key = `${action}SentAt`;
+  metadata.emailAuth[key] = [...(metadata.emailAuth[key] || []).filter((time) => now - Date.parse(time) < 24 * 60 * 60_000), new Date(now).toISOString()];
+}
 async function noteSummary(username, reference) {
   const note = await readJson(noteFile(username, reference.id), null);
   if (!note) return null;
@@ -1717,6 +1828,11 @@ async function accountPayload(username) {
         theme: ["dark", "light"].includes(metadata.settings?.theme)
           ? metadata.settings.theme
           : "dark",
+      },
+      emailSecurity: {
+        verified: metadata.emailVerified === true,
+        twoFactorEnabled: metadata.emailVerified === true && metadata.emailTwoFactor === true,
+        showVerificationBanner: planForMetadata(metadata) === "free" && metadata.emailVerified !== true,
       },
       plan: access.payload,
       ai: {
@@ -1885,6 +2001,13 @@ const loginUsernameLimiter = rateLimit({
 const registrationLimiter = rateLimit({
   windowMs: 60 * 60_000,
   limit: 10,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
+const passwordResetIpLimiter = rateLimit({
+  windowMs: 60 * 60_000,
+  limit: 2,
   standardHeaders: "draft-8",
   legacyHeaders: false,
   handler: rateLimitHandler,
@@ -2129,6 +2252,11 @@ app.post(
             timeCost: 2,
             parallelism: 1,
           }),
+          cryptoFactor: crypto.randomBytes(48).toString("base64url"),
+          emailVerified: false,
+          emailQuotaRestricted: true,
+          emailTwoFactor: false,
+          emailAuth: {},
           createdAt,
           registrationIp: requestIp(req),
           lastLoginAt: createdAt,
@@ -2188,40 +2316,33 @@ app.post(
   loginIpLimiter,
   loginUsernameLimiter,
   async (req, res, next) => {
-    const username = normalizeText(req.body.username, 24);
+    const username = normalizeText(req.body.username, 254);
     const password =
       typeof req.body.password === "string" ? req.body.password : "";
     try {
-      const metadata = USERNAME_RE.test(username)
-        ? await loadMetadata(username)
-        : null;
+      const metadata = await findAccountByIdentifier(username);
       const valid =
         metadata &&
         (await argon2
           .verify(metadata.passwordHash, password)
           .catch(() => false));
-      if (!valid)
-        return jsonError(
-          res,
-          401,
-          "invalid_credentials",
-          "Username or password is incorrect.",
-        );
-      if (accountIsBanned(metadata))
-        return res.status(403).json({
-          error: "account_banned",
-          message: metadata.bannedMessage || "This account is currently unavailable.",
-          bannedUntil: metadata.banned,
+      if (!valid) {
+        if (metadata) await withLock(`user:${userKey(metadata.username)}`, async () => {
+          const current = await loadMetadata(metadata.username);
+          const now = Date.now();
+          current.emailAuth ||= {};
+          const recent = (current.emailAuth.failedSignIns || []).filter((entry) => now - Date.parse(entry.at) < 15 * 60_000 && entry.ip === requestIp(req));
+          recent.push({ at: new Date(now).toISOString(), ip: requestIp(req) });
+          current.emailAuth.failedSignIns = recent.slice(-6);
+          const lastAlert = Date.parse(current.emailAuth.failedSignInAlertAt || 0);
+          if (current.emailVerified && recent.length >= 5 && (!Number.isFinite(lastAlert) || now - lastAlert >= 24 * 60 * 60_000)) {
+            const location = await sessionLocation(req);
+            const template = emailTemplate({ title: "Unsuccessful sign-in attempts", body: `${recent.length} unsuccessful password attempts were made from ${requestIp(req)}${location.country ? ` · ${location.country}` : ""}.`, language: current.settings?.language || "en" });
+            await sendMail({ to: current.email, from: "security@mail.nxlabtw.com", subject: "AstraNote sign-in security notice", template }).catch(() => {});
+            current.emailAuth.failedSignInAlertAt = new Date(now).toISOString();
+          }
+          await saveMetadata(current.username, current);
         });
-      const deletion = await findDeletion(username);
-      if (deletion) {
-        if (deletion.status === "cooling_off") {
-          return res.status(409).json({
-            error: "deletion_pending",
-            message: "This account is pending deletion.",
-            reversibleUntil: deletion.reversibleUntil,
-          });
-        }
         return jsonError(
           res,
           401,
@@ -2229,20 +2350,131 @@ app.post(
           "Username or password is incorrect.",
         );
       }
+      if (accountIsBanned(metadata))
+        return res.status(403).json({ error: "account_banned", message: metadata.bannedMessage || "This account is currently unavailable.", bannedUntil: metadata.banned });
+      const deletion = await findDeletion(metadata.username);
+      if (deletion) {
+        if (deletion.status === "cooling_off") return res.status(409).json({ error: "deletion_pending", message: "This account is pending deletion.", reversibleUntil: deletion.reversibleUntil });
+        return jsonError(res, 401, "invalid_credentials", "Username or password is incorrect.");
+      }
+      if (metadata.emailTwoFactor === true && metadata.emailVerified === true) {
+        await withLock(`user:${userKey(metadata.username)}`, async () => {
+          const current = await loadMetadata(metadata.username);
+          if (actionRecentlySent(current, "login", 3, 60 * 60_000))
+            throw Object.assign(new Error("Email rate limit reached."), { status: 429, code: "email_rate_limited" });
+          const code = makeEmailCode();
+          current.emailAuth.login = { digest: codeDigest(code), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
+          const template = emailTemplate({ title: "Confirm this sign-in", body: `Enter this code in AstraNote. Sign-in IP: ${requestIp(req)}.`, code, language: current.settings?.language || "en" });
+          await sendMail({ to: current.email, from: "login@mail.nxlabtw.com", subject: "Your AstraNote sign-in code", template });
+          recordActionSent(current, "login");
+          await saveMetadata(current.username, current);
+        });
+        return res.json({ ok: true, twoFactorRequired: true, username: metadata.username, email: maskEmail(metadata.email) });
+      }
       metadata.lastLoginAt = utcNow();
       metadata.lastLoginIp = requestIp(req);
       metadata.settings ||= { theme: "dark" };
       if (normalizeLanguage(req.body.language))
         metadata.settings.language = normalizeLanguage(req.body.language);
-      await saveMetadata(username, metadata);
-      const session = await createSession(username, req, res);
-      await updateOnlineUser(username);
+      await saveMetadata(metadata.username, metadata);
+      const session = await createSession(metadata.username, req, res);
+      await updateOnlineUser(metadata.username);
       res.json({ ok: true, csrf: session.csrf, redirect: "/dashboard" });
     } catch (error) {
       next(error);
     }
   },
 );
+
+app.post("/api/login/verify", loginIpLimiter, async (req, res, next) => {
+  try {
+    const username = normalizeText(req.body?.username, 24);
+    const code = String(req.body?.code || "").replace(/\D/g, "");
+    const metadata = await loadMetadata(username);
+    const challenge = metadata?.emailAuth?.login;
+    if (!metadata || !/^\d{6}$/.test(code) || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !safeEqual(challenge.digest, codeDigest(code)))
+      return jsonError(res, 401, "invalid_code", "The verification code is incorrect or has expired.");
+    delete metadata.emailAuth.login;
+    metadata.lastLoginAt = utcNow();
+    metadata.lastLoginIp = requestIp(req);
+    await saveMetadata(metadata.username, metadata);
+    const session = await createSession(metadata.username, req, res);
+    await updateOnlineUser(metadata.username);
+    res.json({ ok: true, csrf: session.csrf, redirect: "/dashboard" });
+  } catch (error) { next(error); }
+});
+
+app.post("/api/email/verification/send", requireAuth, accountMutationLimiter, requireCsrf, async (req, res, next) => {
+  try {
+    const username = req.auth.session.username;
+    await withLock(`user:${userKey(username)}`, async () => {
+      const metadata = await loadMetadata(username);
+      if (metadata.emailVerified) return;
+      if (actionRecentlySent(metadata, "verify", 2, 60 * 60_000))
+        throw Object.assign(new Error("Email rate limit reached."), { status: 429, code: "email_rate_limited" });
+      const token = makeEmailToken();
+      metadata.emailAuth.verify = { digest: tokenDigest(token), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
+      const url = `https://astranote.nxlabtw.com/verify-email#u=${encodeURIComponent(metadata.username)}&token=${encodeURIComponent(token)}`;
+      const template = emailTemplate({ title: "Verify your email", body: "Verify your email to unlock the full 128 KB Free allowance and email security features.", actionLabel: "Verify email", actionUrl: url, language: metadata.settings?.language || "en" });
+      await sendMail({ to: metadata.email, from: "verify@mail.nxlabtw.com", subject: "Verify your AstraNote email", template });
+      recordActionSent(metadata, "verify");
+      await saveMetadata(username, metadata);
+    });
+    res.json({ ok: true });
+  } catch (error) { next(error); }
+});
+
+app.post("/api/email/verification/confirm", async (req, res, next) => {
+  try {
+    const token = String(req.body?.token || "");
+    const username = normalizeText(req.body?.username, 24);
+    const metadata = USERNAME_RE.test(username) ? await loadMetadata(username) : null;
+    const challenge = metadata?.emailAuth?.verify;
+    if (!/^[A-Za-z0-9_-]{32,}$/.test(token) || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !safeEqual(challenge.digest, tokenDigest(token))) return jsonError(res, 400, "invalid_token", "This verification link is invalid or expired.");
+    metadata.emailVerified = true;
+    delete metadata.emailAuth.verify;
+    await saveMetadata(metadata.username, metadata);
+    return res.json({ ok: true });
+  } catch (error) { next(error); }
+});
+
+app.post("/api/password/reset/request", passwordResetIpLimiter, async (req, res, next) => {
+  try {
+    const email = normalizeText(req.body?.email, 254).toLowerCase();
+    const metadata = await findAccountByEmail(email);
+    // Deliberately indistinguishable responses prevent account enumeration.
+    if (metadata?.emailVerified) await withLock(`user:${userKey(metadata.username)}`, async () => {
+      const current = await loadMetadata(metadata.username);
+      const token = makeEmailToken();
+      current.emailAuth.reset = { digest: tokenDigest(token), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
+      const url = `https://astranote.nxlabtw.com/reset-password#u=${encodeURIComponent(current.username)}&token=${encodeURIComponent(token)}`;
+      const template = emailTemplate({ title: "Reset your password", body: "We received a request to reset your AstraNote password. If this was not you, you can safely ignore this email.", actionLabel: "Reset password", actionUrl: url, language: current.settings?.language || "en" });
+      await sendMail({ to: current.email, from: "reset@mail.nxlabtw.com", subject: "Reset your AstraNote password", template, bypassDaily: true });
+      await saveMetadata(current.username, current);
+    });
+    res.json({ ok: true });
+  } catch (error) { next(error); }
+});
+
+app.post("/api/password/reset/confirm", async (req, res, next) => {
+  try {
+    const token = String(req.body?.token || "");
+    const username = normalizeText(req.body?.username, 24);
+    const password = typeof req.body?.password === "string" ? req.body.password : "";
+    if (!/^[A-Za-z0-9_-]{32,}$/.test(token) || password.length < 10 || password.length > 256)
+      return jsonError(res, 400, "invalid_reset", "This reset link is invalid, expired, or the password does not meet requirements.");
+    const metadata = USERNAME_RE.test(username) ? await loadMetadata(username) : null;
+    const challenge = metadata?.emailAuth?.reset;
+    if (metadata && challenge && Date.parse(challenge.expiresAt) >= Date.now() && safeEqual(challenge.digest, tokenDigest(token))) {
+        metadata.passwordHash = await argon2.hash(password, { type: argon2.argon2id, memoryCost: 19456, timeCost: 2, parallelism: 1 });
+        delete metadata.emailAuth.reset;
+        await saveMetadata(metadata.username, metadata);
+        await destroyUserSessions(metadata.username);
+      return res.json({ ok: true, redirect: "/login" });
+    }
+    return jsonError(res, 400, "invalid_reset", "This reset link is invalid or expired.");
+  } catch (error) { next(error); }
+});
 
 app.post(
   "/api/deletion/cancel",
@@ -2411,6 +2643,20 @@ app.patch(
               status: 400,
             });
           metadata.displayName = displayName;
+        }
+        if (req.body.emailTwoFactor !== undefined) {
+          if (req.body.emailTwoFactor === true && !metadata.emailVerified)
+            throw Object.assign(new Error("Verify your email before enabling two-step verification."), { status: 400, code: "email_unverified" });
+          metadata.emailTwoFactor = req.body.emailTwoFactor === true;
+        }
+        if (req.body.newPassword !== undefined) {
+          const oldPassword = typeof req.body.currentPassword === "string" ? req.body.currentPassword : "";
+          const nextPassword = typeof req.body.newPassword === "string" ? req.body.newPassword : "";
+          if (nextPassword.length < 10 || nextPassword.length > 256 || String(req.body.passwordConfirmation || "") !== nextPassword)
+            throw Object.assign(new Error("Enter a matching password between 10 and 256 characters."), { status: 400, code: "weak_password" });
+          if (!(await argon2.verify(metadata.passwordHash, oldPassword).catch(() => false)))
+            throw Object.assign(new Error("Current password is incorrect."), { status: 401, code: "invalid_credentials" });
+          metadata.passwordHash = await argon2.hash(nextPassword, { type: argon2.argon2id, memoryCost: 19456, timeCost: 2, parallelism: 1 });
         }
         await saveMetadataWithinQuota(username, metadata);
       });
@@ -2692,6 +2938,8 @@ app.get(
                 const key = `${order.plan}Ms`;
                 metadata.entitlements[key] += order.months * PLAN_MONTH_MS;
                 metadata.fulfilledOrders.push(order.orderId);
+                metadata.emailAuth ||= {};
+                metadata.emailAuth.planNotices = {};
               }
               metadata.entitlements.updatedAt = new Date(now).toISOString();
               await refreshPlanState(username, metadata, now);
@@ -2716,6 +2964,13 @@ app.get(
             );
             if (!metadata.fulfilledOrders.length)
               delete metadata.fulfilledOrders;
+            metadata.emailAuth ||= {};
+            metadata.emailAuth.planReceipts ||= [];
+            if (metadata.emailVerified && !metadata.emailAuth.planReceipts.includes(order.orderId)) {
+              const template = emailTemplate({ title: "Your plan is active", body: `Your AstraNote ${order.plan} plan is active for ${order.months * 30} days.`, language: metadata.settings?.language || "en" });
+              await sendMail({ to: metadata.email, from: "plan@mail.nxlabtw.com", subject: `AstraNote ${order.plan} payment confirmed`, template });
+              metadata.emailAuth.planReceipts = [...metadata.emailAuth.planReceipts.slice(-19), order.orderId];
+            }
             await saveMetadata(username, metadata);
           }).catch(() => console.error("Deferred payment receipt cleanup."));
           return order;
@@ -3673,47 +3928,42 @@ app.post(
           "invalid_credentials",
           "Username or password is incorrect.",
         );
+      if (!current.emailVerified)
+        return jsonError(res, 403, "email_unverified", "Verify your email before deleting this account.");
       await withLock(`user:${username}`, async () => {
         const metadata = await loadMetadata(username);
-        if (!metadata)
-          throw Object.assign(new Error("Account not found."), { status: 404 });
-        await updateShares((shares) => {
-          for (const [key, target] of Object.entries(shares))
-            if (target.username === userKey(username)) delete shares[key];
-        });
-        const target = path.resolve(userDir(username));
-        if (path.dirname(target) !== DATA_DIR)
-          throw new Error("Unsafe account deletion target.");
-        await fsp.rm(target, { recursive: true, force: true });
+        const code = makeEmailCode();
+        metadata.emailAuth.delete = { digest: codeDigest(code), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
+        const template = emailTemplate({ title: "Confirm account deletion", body: "Enter this code in AstraNote to permanently delete your account. This cannot be undone.", code, language: metadata.settings?.language || "en" });
+        await sendMail({ to: metadata.email, from: "delete@mail.nxlabtw.com", subject: "Confirm AstraNote account deletion", template });
+        await saveMetadata(username, metadata);
       });
-      await destroyUserSessions(username);
-      await cancelDeletion(username);
-      await withLock("registration", async () => {
-        const count =
-          Number.parseInt(await fsp.readFile(USERS_FILE, "utf8"), 10) || 0;
-        await atomicWrite(USERS_FILE, `${Math.max(0, count - 1)}\n`);
-      });
-      await withLock("online", async () => {
-        const record = await readJson(ONLINE_USERS_FILE, {
-          date: utcDay(),
-          users: [],
-        });
-        record.users = record.users.filter(
-          (entry) => entry !== userKey(username),
-        );
-        await writeJson(ONLINE_USERS_FILE, record);
-        await atomicWrite(ONLINE_FILE, `${record.users.length}\n`);
-      });
-      clearSessionCookie(req, res);
-      res.json({
-        ok: true,
-        redirect: "/",
-      });
+      res.json({ ok: true, emailVerificationRequired: true });
     } catch (error) {
       next(error);
     }
   },
 );
+
+app.post("/api/account/delete/confirm", requireAuth, accountMutationLimiter, requireCsrf, async (req, res, next) => {
+  try {
+    const username = req.auth.session.username;
+    const code = String(req.body?.code || "").replace(/\D/g, "");
+    const metadata = await loadMetadata(username);
+    const challenge = metadata?.emailAuth?.delete;
+    if (!/^\d{6}$/.test(code) || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !safeEqual(challenge.digest, codeDigest(code))) return jsonError(res, 401, "invalid_code", "The verification code is incorrect or has expired.");
+    await withLock(`user:${username}`, async () => {
+      await updateShares((shares) => { for (const [key, target] of Object.entries(shares)) if (target.username === userKey(username)) delete shares[key]; });
+      const target = path.resolve(userDir(username));
+      if (path.dirname(target) !== DATA_DIR) throw new Error("Unsafe account deletion target.");
+      await fsp.rm(target, { recursive: true, force: true });
+    });
+    await destroyUserSessions(username);
+    await withLock("registration", async () => { const count = Number.parseInt(await fsp.readFile(USERS_FILE, "utf8"), 10) || 0; await atomicWrite(USERS_FILE, `${Math.max(0, count - 1)}\n`); });
+    clearSessionCookie(req, res);
+    res.json({ ok: true, redirect: "/" });
+  } catch (error) { next(error); }
+});
 
 app.use(
   "/asset",
@@ -3746,6 +3996,8 @@ app.use(express.static(PUBLIC_DIR, { extensions: false, dotfiles: "deny" }));
 const pages = {
   "/": "index.html",
   "/login": "login.html",
+  "/verify-email": "verify-email.html",
+  "/reset-password": "reset-password.html",
   "/register": "register.html",
   "/dashboard": "dashboard.html",
   "/notes": "notes.html",
