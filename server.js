@@ -1272,7 +1272,7 @@ async function cleanupPlanLocks() {
       if (notice) {
         const language = metadata.settings?.language || "en";
         const copy = emailCopy(language, notice.copyKey, notice.values);
-        const template = emailTemplate({ ...copy, actionLabel: language === "zh-Hant" ? "查看方案" : language === "ja" ? "プランを見る" : "View plans", actionUrl: "https://astranote.nxlabtw.com/plans", language });
+        const template = emailTemplate({ ...copy, actionLabel: language === "zh-Hant" ? "查看方案" : language === "ja" ? "プランを見る" : "View plans", actionUrl: "https://astranote.nxlabtw.com/plans", details: emailAuditDetails(language, metadata), language });
         await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template }).catch(() => null);
         metadata.emailAuth.planNotices[notice.key] = utcNow();
       }
@@ -1709,7 +1709,7 @@ async function findAccountByIdentifier(value) {
 function escapeHtml(value) {
   return String(value || "").replace(/[&<>\"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
 }
-function emailTemplate({ title, body, actionLabel, actionUrl, code, language = "en" }) {
+function emailTemplate({ title, body, actionLabel, actionUrl, code, details = [], language = "en" }) {
   const safeTitle = escapeHtml(title);
   const safeBody = escapeHtml(body);
   const copy = language === "zh-Hant"
@@ -1720,8 +1720,28 @@ function emailTemplate({ title, body, actionLabel, actionUrl, code, language = "
   const action = actionUrl ? `<table role="presentation" cellspacing="0" cellpadding="0" style="margin:24px 0 0"><tr><td style="border-radius:12px;background:#7180ff"><a href="${escapeHtml(actionUrl)}" style="display:inline-block;padding:14px 20px;border-radius:12px;color:#fff;text-decoration:none;font:700 15px Arial,sans-serif">${escapeHtml(actionLabel)}</a></td></tr></table>` : "";
   const fallback = actionUrl ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:22px 0 0;border:1px solid #263354;border-radius:12px;background:#0b1125"><tr><td style="padding:14px 16px"><p style="margin:0 0 7px;color:#aeb9d8;font:13px/1.55 Arial,sans-serif">${copy.fallback}</p><p style="margin:0;overflow-wrap:anywhere;color:#d7deff;font:12px/1.6 ui-monospace,monospace">${escapeHtml(actionUrl)}</p></td></tr></table>` : "";
   const codeBlock = code ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:24px 0 0;border:1px solid #4959a8;border-radius:14px;background:#0b1129"><tr><td style="padding:18px;color:#fff;text-align:center;letter-spacing:.16em;font:700 30px ui-monospace,monospace">${escapeHtml(code)}</td></tr></table>` : "";
-  const text = `${title}\n\n${body}${code ? `\n\n${code}` : ""}${actionUrl ? `\n\n${actionUrl}` : ""}\n\n${copy.expiry}`;
-  return { text, html: `<!doctype html><html lang="${escapeHtml(language)}"><body style="margin:0;padding:0;background:#050816;color:#eef2ff"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#050816"><tr><td style="padding:32px 14px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;border:1px solid #283452;border-radius:20px;overflow:hidden;background:#10172d"><tr><td style="padding:20px 24px;border-bottom:1px solid #283452"><img src="https://astranote.nxlabtw.com/asset/logo.png" width="30" height="30" alt="" style="vertical-align:middle;margin-right:10px;border-radius:8px"><span style="vertical-align:middle;color:#fff;font:700 18px Arial,sans-serif">AstraNote</span></td></tr><tr><td style="padding:32px 24px"><h1 style="margin:0 0 14px;color:#fff;font:700 27px/1.2 Arial,sans-serif">${safeTitle}</h1><p style="margin:0;color:#c7d0e9;font:15px/1.7 Arial,sans-serif">${safeBody}</p>${codeBlock}${action}${fallback}<p style="margin:26px 0 0;padding-top:16px;border-top:1px solid #283452;color:#98a6c8;font:12px/1.6 Arial,sans-serif">${copy.expiry}</p></td></tr></table></td></tr></table></body></html>` };
+  const safeDetails = Array.isArray(details) ? details.filter((detail) => detail?.label && detail?.value !== undefined && detail?.value !== null).slice(0, 8) : [];
+  const detailText = safeDetails.map((detail) => `${detail.label}: ${detail.value}`).join("\n");
+  const detailBlock = safeDetails.length ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:22px 0 0;border:1px solid #263354;border-radius:12px;background:#0b1125"><tr><td style="padding:14px 16px">${safeDetails.map((detail) => `<p style="margin:0 0 8px;color:#aeb9d8;font:12px/1.45 Arial,sans-serif"><span style="display:inline-block;min-width:112px;color:#8492b9">${escapeHtml(detail.label)}</span><strong style="color:#e9edff;font:600 12px/1.45 ui-monospace,monospace;overflow-wrap:anywhere">${escapeHtml(detail.value)}</strong></p>`).join("")}</td></tr></table>` : "";
+  const text = `${title}\n\n${body}${code ? `\n\n${code}` : ""}${detailText ? `\n\n${detailText}` : ""}${actionUrl ? `\n\n${actionUrl}` : ""}\n\n${copy.expiry}`;
+  return { text, html: `<!doctype html><html lang="${escapeHtml(language)}"><body style="margin:0;padding:0;background:#050816;color:#eef2ff"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#050816"><tr><td style="padding:32px 14px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;border:1px solid #283452;border-radius:20px;overflow:hidden;background:#10172d"><tr><td style="padding:20px 24px;border-bottom:1px solid #283452"><img src="https://astranote.nxlabtw.com/asset/logo.png" width="30" height="30" alt="" style="vertical-align:middle;margin-right:10px;border-radius:8px"><span style="vertical-align:middle;color:#fff;font:700 18px Arial,sans-serif">AstraNote</span></td></tr><tr><td style="padding:32px 24px"><h1 style="margin:0 0 14px;color:#fff;font:700 27px/1.2 Arial,sans-serif">${safeTitle}</h1><p style="margin:0;color:#c7d0e9;font:15px/1.7 Arial,sans-serif">${safeBody}</p>${codeBlock}${detailBlock}${action}${fallback}<p style="margin:26px 0 0;padding-top:16px;border-top:1px solid #283452;color:#98a6c8;font:12px/1.6 Arial,sans-serif">${copy.expiry}</p></td></tr></table></td></tr></table></body></html>` };
+}
+function emailAuditDetails(language, metadata, { ip = null, country = null, plan = null, days = null } = {}) {
+  const labels = language === "zh-Hant"
+    ? { username: "使用者名稱", email: "Email", time: "時間（UTC）", ip: "IP", location: "位置", plan: "方案", days: "有效天數" }
+    : language === "ja"
+      ? { username: "ユーザー名", email: "メール", time: "時刻（UTC）", ip: "IP", location: "場所", plan: "プラン", days: "有効日数" }
+      : { username: "Username", email: "Email", time: "Time (UTC)", ip: "IP", location: "Location", plan: "Plan", days: "Active days" };
+  const details = [
+    { label: labels.username, value: metadata.username },
+    { label: labels.email, value: metadata.email },
+    { label: labels.time, value: utcNow() },
+  ];
+  if (ip) details.push({ label: labels.ip, value: ip });
+  if (country) details.push({ label: labels.location, value: country });
+  if (plan) details.push({ label: labels.plan, value: String(plan).toUpperCase() });
+  if (days) details.push({ label: labels.days, value: String(days) });
+  return details;
 }
 function emailCopy(language, key, values = {}) {
   const copies = {
@@ -2052,8 +2072,8 @@ const registrationLimiter = rateLimit({
   handler: rateLimitHandler,
 });
 const passwordResetIpLimiter = rateLimit({
-  windowMs: 60 * 60_000,
-  limit: 2,
+  windowMs: 10 * 60_000,
+  limit: 1,
   standardHeaders: "draft-8",
   legacyHeaders: false,
   handler: rateLimitHandler,
@@ -2384,7 +2404,7 @@ app.post(
           if (current.emailVerified && recent.length >= 5 && (!Number.isFinite(lastAlert) || now - lastAlert >= 24 * 60 * 60_000)) {
             const location = await sessionLocation(req);
             const copy = emailCopy(current.settings?.language || "en", "security", { count: recent.length, ip: requestIp(req), country: location.country ? ` · ${location.country}` : "" });
-            const template = emailTemplate({ ...copy, language: current.settings?.language || "en" });
+            const template = emailTemplate({ ...copy, details: emailAuditDetails(current.settings?.language || "en", current, { ip: requestIp(req), country: location.country }), language: current.settings?.language || "en" });
             await sendMail({ to: current.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template }).catch(() => {});
             current.emailAuth.failedSignInAlertAt = new Date(now).toISOString();
           }
@@ -2412,7 +2432,8 @@ app.post(
           const code = makeEmailCode();
           current.emailAuth.login = { digest: codeDigest(code), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
           const copy = emailCopy(current.settings?.language || "en", "login", { ip: requestIp(req) });
-          const template = emailTemplate({ ...copy, code, language: current.settings?.language || "en" });
+          const location = await sessionLocation(req);
+          const template = emailTemplate({ ...copy, code, details: emailAuditDetails(current.settings?.language || "en", current, { ip: requestIp(req), country: location.country }), language: current.settings?.language || "en" });
           await sendMail({ to: current.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
           recordActionSent(current, "login");
           await saveMetadata(current.username, current);
@@ -2458,13 +2479,14 @@ app.post("/api/email/verification/send", requireAuth, accountMutationLimiter, re
     await withLock(`user:${userKey(username)}`, async () => {
       const metadata = await loadMetadata(username);
       if (metadata.emailVerified) return;
-      if (actionRecentlySent(metadata, "verify", 2, 60 * 60_000))
-        throw Object.assign(new Error("Email rate limit reached."), { status: 429, code: "email_rate_limited" });
+      if (actionRecentlySent(metadata, "verify", 1, 10 * 60_000))
+        throw Object.assign(new Error("Please wait 10 minutes before requesting another email."), { status: 429, code: "email_rate_limited" });
       const token = makeEmailToken();
       metadata.emailAuth.verify = { digest: tokenDigest(token), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
       const url = `https://astranote.nxlabtw.com/verify-email#u=${encodeURIComponent(metadata.username)}&token=${encodeURIComponent(token)}`;
       const copy = emailCopy(metadata.settings?.language || "en", "verify");
-      const template = emailTemplate({ ...copy, actionUrl: url, language: metadata.settings?.language || "en" });
+      const location = await sessionLocation(req);
+      const template = emailTemplate({ ...copy, actionUrl: url, details: emailAuditDetails(metadata.settings?.language || "en", metadata, { ip: requestIp(req), country: location.country }), language: metadata.settings?.language || "en" });
       await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
       recordActionSent(metadata, "verify");
       await saveMetadata(username, metadata);
@@ -2494,12 +2516,15 @@ app.post("/api/password/reset/request", passwordResetIpLimiter, async (req, res,
     // Deliberately indistinguishable responses prevent account enumeration.
     if (metadata?.emailVerified) await withLock(`user:${userKey(metadata.username)}`, async () => {
       const current = await loadMetadata(metadata.username);
+      if (actionRecentlySent(current, "reset", 1, 10 * 60_000)) return;
       const token = makeEmailToken();
       current.emailAuth.reset = { digest: tokenDigest(token), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
       const url = `https://astranote.nxlabtw.com/reset-password#u=${encodeURIComponent(current.username)}&token=${encodeURIComponent(token)}`;
       const copy = emailCopy(current.settings?.language || "en", "reset");
-      const template = emailTemplate({ ...copy, actionUrl: url, language: current.settings?.language || "en" });
+      const location = await sessionLocation(req);
+      const template = emailTemplate({ ...copy, actionUrl: url, details: emailAuditDetails(current.settings?.language || "en", current, { ip: requestIp(req), country: location.country }), language: current.settings?.language || "en" });
       await sendMail({ to: current.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template, bypassDaily: true });
+      recordActionSent(current, "reset");
       await saveMetadata(current.username, current);
     });
     res.json({ ok: true });
@@ -3018,7 +3043,8 @@ app.get(
             metadata.emailAuth.planReceipts ||= [];
             if (metadata.emailVerified && !metadata.emailAuth.planReceipts.includes(order.orderId)) {
               const copy = emailCopy(metadata.settings?.language || "en", "payment", { plan: order.plan, days: order.months * 30 });
-              const template = emailTemplate({ ...copy, language: metadata.settings?.language || "en" });
+              const location = await sessionLocation(req);
+              const template = emailTemplate({ ...copy, details: emailAuditDetails(metadata.settings?.language || "en", metadata, { ip: requestIp(req), country: location.country, plan: order.plan, days: order.months * 30 }), language: metadata.settings?.language || "en" });
               await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
               metadata.emailAuth.planReceipts = [...metadata.emailAuth.planReceipts.slice(-19), order.orderId];
             }
@@ -3947,7 +3973,6 @@ app.post(
   requireAuth,
   accountMutationLimiter,
   requireCsrf,
-  verifyCaptcha,
   async (req, res, next) => {
     const username = req.auth.session.username;
     const password =
@@ -3986,7 +4011,8 @@ app.post(
         const code = makeEmailCode();
         metadata.emailAuth.delete = { digest: codeDigest(code), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
         const copy = emailCopy(metadata.settings?.language || "en", "delete");
-        const template = emailTemplate({ ...copy, code, language: metadata.settings?.language || "en" });
+        const location = await sessionLocation(req);
+        const template = emailTemplate({ ...copy, code, details: emailAuditDetails(metadata.settings?.language || "en", metadata, { ip: requestIp(req), country: location.country }), language: metadata.settings?.language || "en" });
         await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
         await saveMetadata(username, metadata);
       });

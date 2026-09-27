@@ -1577,13 +1577,13 @@ Object.assign(I18N.ja, {
   understood: "確認しました",
 });
 Object.assign(I18N.en, {
-  usernameOrEmail: "Username or Email", forgotPassword: "Forgot password?", emailSecurity: "Email security", passwordSecurity: "Password", passwordSecurityHelp: "Change your password without changing the separate protection factors used by existing encrypted notes.", emailVerified: "Email verified", emailUnverified: "Email not verified", verifyNow: "Verify now", resend: "Resend", emailTwoFactor: "Email two-step verification", emailTwoFactorHelp: "After your password is correct, AstraNote will email a six-digit sign-in code.", currentPassword: "Current password", newPassword: "New password", verificationCode: "Verification code", confirmSignIn: "Confirm your sign-in", codeSentTo: "A six-digit code was sent to {email}.", emailBanner: "Verify your Email to unlock the full 128 KB and email security features.", resetPassword: "Reset password", resetPasswordBody: "Enter your Email and we will send a reset link if it is available.", resetRequested: "If this Email is available, a reset link has been sent.", emailSentTitle: "Email sent", emailSentBody: "Check your inbox and Spam or Junk folder for the AstraNote email.", verifyEmailTitle: "Verify your Email", verifyEmailBody: "Verifying your Email unlocks the full 128 KB Free allowance.", verifiedSuccess: "Your Email has been verified.", deleteCodeTitle: "Confirm account deletion", deleteCodeBody: "Enter the six-digit code sent to your Email to permanently delete this account.", sendError: "Sending failed. Please try again later.", passwordRecoveryAvailable: "Verified Email accounts can reset a forgotten password securely."
+  usernameOrEmail: "Username or Email", forgotPassword: "Forgot password?", emailSecurity: "Email security", passwordSecurity: "Password", passwordSecurityHelp: "Change your password without changing the separate protection factors used by existing encrypted notes.", emailVerified: "Email verified", emailUnverified: "Email not verified", verifyNow: "Verify now", resend: "Resend", emailTwoFactor: "Email two-step verification", emailTwoFactorHelp: "After your password is correct, AstraNote will email a six-digit sign-in code.", currentPassword: "Current password", newPassword: "New password", verificationCode: "Verification code", confirmSignIn: "Confirm your sign-in", codeSentTo: "A six-digit code was sent to {email}.", emailBanner: "Verify your Email to unlock the full 128 KB and email security features.", resetPassword: "Reset password", resetPasswordBody: "Enter your Email and we will send a reset link if it is available.", resetRequested: "If this Email is available, a reset link has been sent.", emailSentTitle: "Email sent", emailSentBody: "Check your inbox and Spam or Junk folder for the AstraNote email.", emailCooldown: "Try again in {minutes} min", verifyEmailTitle: "Verify your Email", verifyEmailBody: "Verifying your Email unlocks the full 128 KB Free allowance.", verifiedTitle: "Email verified", verifiedBody: "Your Email has been verified. Your full Free storage allowance and Email security features are now available.", verifiedSuccess: "Your Email has been verified.", deleteCodeTitle: "Confirm account deletion", deleteCodeBody: "Enter the six-digit code sent to your Email to permanently delete this account.", sendError: "Sending failed. Please try again later.", passwordRecoveryAvailable: "Verified Email accounts can reset a forgotten password securely."
 });
 Object.assign(I18N["zh-Hant"], {
-  usernameOrEmail: "使用者名稱或 Email", forgotPassword: "忘記密碼？", emailSecurity: "Email 安全", passwordSecurity: "密碼", passwordSecurityHelp: "變更登入密碼不會變更既有加密筆記使用的獨立保護資料。", emailVerified: "Email 已驗證", emailUnverified: "Email 尚未驗證", verifyNow: "立即驗證", resend: "重新寄送", emailTwoFactor: "Email 兩步驟驗證", emailTwoFactorHelp: "帳密正確後，AstraNote 會寄送六位數登入碼。", currentPassword: "目前密碼", newPassword: "新密碼", verificationCode: "驗證碼", confirmSignIn: "確認這次登入", codeSentTo: "六位數驗證碼已寄至 {email}。", emailBanner: "驗證你的 Email，即可啟用完整 128 KB 空間與帳號安全功能。", resetPassword: "重設密碼", resetPasswordBody: "輸入 Email；若此帳號可用，系統會寄送重設連結。", resetRequested: "如果此 Email 可用，重設連結已寄出。", emailSentTitle: "信件已寄出", emailSentBody: "請檢查收件匣，以及垃圾郵件或促銷內容資料夾中的 AstraNote 信件。", verifyEmailTitle: "驗證你的 Email", verifyEmailBody: "完成驗證後，即可啟用完整的 128 KB Free 空間。", verifiedSuccess: "你的 Email 已完成驗證。", deleteCodeTitle: "確認刪除帳號", deleteCodeBody: "請輸入寄至 Email 的六位數字，永久刪除帳號。", sendError: "發送錯誤，請稍後再試。", passwordRecoveryAvailable: "已驗證 Email 的帳號可安全重設忘記的密碼。"
+  usernameOrEmail: "使用者名稱或 Email", forgotPassword: "忘記密碼？", emailSecurity: "Email 安全", passwordSecurity: "密碼", passwordSecurityHelp: "變更登入密碼不會變更既有加密筆記使用的獨立保護資料。", emailVerified: "Email 已驗證", emailUnverified: "Email 尚未驗證", verifyNow: "立即驗證", resend: "重新寄送", emailTwoFactor: "Email 兩步驟驗證", emailTwoFactorHelp: "帳密正確後，AstraNote 會寄送六位數登入碼。", currentPassword: "目前密碼", newPassword: "新密碼", verificationCode: "驗證碼", confirmSignIn: "確認這次登入", codeSentTo: "六位數驗證碼已寄至 {email}。", emailBanner: "驗證你的 Email，即可啟用完整 128 KB 空間與帳號安全功能。", resetPassword: "重設密碼", resetPasswordBody: "輸入 Email；若此帳號可用，系統會寄送重設連結。", resetRequested: "如果此 Email 可用，重設連結已寄出。", emailSentTitle: "信件已寄出", emailSentBody: "請檢查收件匣，以及垃圾郵件或促銷內容資料夾中的 AstraNote 信件。", emailCooldown: "請於 {minutes} 分鐘後再試", verifyEmailTitle: "驗證你的 Email", verifyEmailBody: "完成驗證後，即可啟用完整的 128 KB Free 空間。", verifiedTitle: "Email 已完成驗證", verifiedBody: "你的 Email 已完成驗證，完整 Free 空間與 Email 安全功能現已啟用。", verifiedSuccess: "你的 Email 已完成驗證。", deleteCodeTitle: "確認刪除帳號", deleteCodeBody: "請輸入寄至 Email 的六位數字，永久刪除帳號。", sendError: "發送錯誤，請稍後再試。", passwordRecoveryAvailable: "已驗證 Email 的帳號可安全重設忘記的密碼。"
 });
 Object.assign(I18N.ja, {
-  usernameOrEmail: "ユーザー名またはメールアドレス", forgotPassword: "パスワードをお忘れですか？", emailSecurity: "メールのセキュリティ", passwordSecurity: "パスワード", passwordSecurityHelp: "ログインパスワードを変更しても、既存の暗号化ノートで使う独立した保護情報は変更されません。", emailVerified: "メール認証済み", emailUnverified: "メール未認証", verifyNow: "今すぐ認証", resend: "再送", emailTwoFactor: "メール二段階認証", emailTwoFactorHelp: "パスワードが正しい場合、AstraNote から6桁のコードを送信します。", currentPassword: "現在のパスワード", newPassword: "新しいパスワード", verificationCode: "認証コード", confirmSignIn: "サインインを確認", codeSentTo: "6桁のコードを {email} に送信しました。", emailBanner: "メールを認証すると、完全な128 KBとアカウント保護を利用できます。", resetPassword: "パスワードを再設定", resetPasswordBody: "メールアドレスを入力してください。利用可能な場合は再設定リンクを送信します。", resetRequested: "このメールアドレスが利用可能な場合、再設定リンクを送信しました。", emailSentTitle: "メールを送信しました", emailSentBody: "受信トレイと迷惑メールフォルダーで AstraNote からのメールを確認してください。", verifyEmailTitle: "メールを認証", verifyEmailBody: "認証すると、Free の完全な128 KBを利用できます。", verifiedSuccess: "メール認証が完了しました。", deleteCodeTitle: "アカウント削除の確認", deleteCodeBody: "メールに送信した6桁のコードを入力すると、アカウントを完全に削除します。", sendError: "送信に失敗しました。しばらくしてからもう一度お試しください。", passwordRecoveryAvailable: "認証済みメールのアカウントは、忘れたパスワードを安全に再設定できます。"
+  usernameOrEmail: "ユーザー名またはメールアドレス", forgotPassword: "パスワードをお忘れですか？", emailSecurity: "メールのセキュリティ", passwordSecurity: "パスワード", passwordSecurityHelp: "ログインパスワードを変更しても、既存の暗号化ノートで使う独立した保護情報は変更されません。", emailVerified: "メール認証済み", emailUnverified: "メール未認証", verifyNow: "今すぐ認証", resend: "再送", emailTwoFactor: "メール二段階認証", emailTwoFactorHelp: "パスワードが正しい場合、AstraNote から6桁のコードを送信します。", currentPassword: "現在のパスワード", newPassword: "新しいパスワード", verificationCode: "認証コード", confirmSignIn: "サインインを確認", codeSentTo: "6桁のコードを {email} に送信しました。", emailBanner: "メールを認証すると、完全な128 KBとアカウント保護を利用できます。", resetPassword: "パスワードを再設定", resetPasswordBody: "メールアドレスを入力してください。利用可能な場合は再設定リンクを送信します。", resetRequested: "このメールアドレスが利用可能な場合、再設定リンクを送信しました。", emailSentTitle: "メールを送信しました", emailSentBody: "受信トレイと迷惑メールフォルダーで AstraNote からのメールを確認してください。", emailCooldown: "{minutes} 分後にもう一度お試しください", verifyEmailTitle: "メールを認証", verifyEmailBody: "認証すると、Free の完全な128 KBを利用できます。", verifiedTitle: "メール認証が完了しました", verifiedBody: "メール認証が完了しました。Free の完全な容量とメール保護機能を利用できます。", verifiedSuccess: "メール認証が完了しました。", deleteCodeTitle: "アカウント削除の確認", deleteCodeBody: "メールに送信した6桁のコードを入力すると、アカウントを完全に削除します。", sendError: "送信に失敗しました。しばらくしてからもう一度お試しください。", passwordRecoveryAvailable: "認証済みメールのアカウントは、忘れたパスワードを安全に再設定できます。"
 });
 
 const state = {
@@ -2375,11 +2375,15 @@ function buildNav() {
     banner.innerHTML = `<div class="shell"><span class="email-banner-copy"><i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i> ${t("emailBanner")}</span><button type="button" class="btn email-banner-action"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>${t("verifyNow")}</span></button></div>`;
     nav.after(banner);
     document.body.classList.add("has-email-verification-banner");
-    $("button", banner).onclick = async (event) => {
+    const verificationButton = $("button", banner);
+    refreshEmailCooldown("verify", verificationButton);
+    verificationButton.onclick = async (event) => {
+      if (refreshEmailCooldown("verify", event.currentTarget)) return;
       event.currentTarget.disabled = true;
-      try { await api("/api/email/verification/send", { method: "POST", body: {} }); showMailSentModal(); }
-      catch (error) { showError(error); }
-      finally { event.currentTarget.disabled = false; }
+      let sent = false;
+      try { await api("/api/email/verification/send", { method: "POST", body: {} }); sent = true; startEmailCooldown("verify", event.currentTarget); showMailSentModal(); }
+      catch (error) { if (error.code === "email_rate_limited") startEmailCooldown("verify", event.currentTarget); showError(error); }
+      finally { if (!sent) event.currentTarget.disabled = false; }
     };
   }
   const mobileToggle = $(".mobile-toggle", nav);
@@ -2602,6 +2606,35 @@ function showMailSentModal() {
     confirmIcon: "fa-envelope-open-text",
     onConfirm: async (close) => close(),
   });
+}
+
+const EMAIL_REQUEST_COOLDOWN_MS = 10 * 60_000;
+function emailCooldownKey(kind) {
+  return `astranote_email_cooldown_${kind}`;
+}
+function refreshEmailCooldown(kind, button) {
+  if (!button) return false;
+  const label = $("span", button);
+  if (label && !button.dataset.originalLabel)
+    button.dataset.originalLabel = label.textContent;
+  const until = Number(getStoredPreference(emailCooldownKey(kind)) || 0);
+  const remaining = until - Date.now();
+  if (remaining <= 0) {
+    if (until) localStorage.removeItem(emailCooldownKey(kind));
+    button.disabled = false;
+    if (label && button.dataset.originalLabel)
+      label.textContent = button.dataset.originalLabel;
+    return false;
+  }
+  button.disabled = true;
+  if (label)
+    label.textContent = t("emailCooldown").replace("{minutes}", String(Math.ceil(remaining / 60_000)));
+  window.setTimeout(() => refreshEmailCooldown(kind, button), remaining + 100);
+  return true;
+}
+function startEmailCooldown(kind, button) {
+  setStoredPreference(emailCooldownKey(kind), String(Date.now() + EMAIL_REQUEST_COOLDOWN_MS));
+  refreshEmailCooldown(kind, button);
 }
 
 function setupOtpInputs(form) {
@@ -3179,12 +3212,21 @@ async function initAuthForm(kind) {
 }
 
 async function initVerifyEmail() {
-  const message = $(".form-message");
+  const pending = $("#verification-pending");
+  const success = $("#verification-success");
+  const message = $(".form-message", pending);
   const link = new URLSearchParams(location.hash.slice(1));
   const token = link.get("token");
   const username = link.get("u");
   if (!token) { message.textContent = t("error"); return; }
-  try { await api("/api/email/verification/confirm", { method: "POST", body: { token, username } }); message.style.color = "var(--success)"; message.textContent = t("verifiedSuccess"); history.replaceState(null, "", "/verify-email"); }
+  try {
+    await api("/api/email/verification/confirm", { method: "POST", body: { token, username } });
+    pending.hidden = true;
+    success.hidden = false;
+    const siteNav = $(".site-nav");
+    if (siteNav) $$("a[href='/login'], a[href='/register']", siteNav).forEach((link) => link.remove());
+    history.replaceState(null, "", "/verify-email");
+  }
   catch (error) { message.textContent = error.message; }
 }
 
@@ -3203,14 +3245,20 @@ async function initResetPassword() {
   emailInput.required = !hasToken;
   passwordInput.required = hasToken;
   confirmationInput.required = hasToken;
+  const submitButton = $("button[type='submit']", form);
+  if (!hasToken) refreshEmailCooldown("reset", submitButton);
   form.addEventListener("submit", async (event) => {
     event.preventDefault(); const message = $(".form-message", form); message.textContent = "";
     try {
-      if (!hasToken) { await api("/api/password/reset/request", { method: "POST", body: { email: emailInput.value } }); showMailSentModal(); return; }
+      if (!hasToken) { await api("/api/password/reset/request", { method: "POST", body: { email: emailInput.value } }); startEmailCooldown("reset", submitButton); showMailSentModal(); return; }
       if (passwordInput.value !== confirmationInput.value) throw new Error(t("passwordConfirmationRules"));
       const result = await api("/api/password/reset/confirm", { method: "POST", body: { token, username, password: passwordInput.value } });
       history.replaceState(null, "", "/reset-password"); location.href = result.redirect;
-    } catch (error) { message.style.color = ""; message.textContent = error.message; }
+    } catch (error) {
+      if (!hasToken && error.code === "email_rate_limited") startEmailCooldown("reset", submitButton);
+      message.style.color = "";
+      message.textContent = error.message;
+    }
   });
 }
 
@@ -4102,11 +4150,14 @@ async function initSettings() {
   if (emailStatus) emailStatus.textContent = `${account.email} · ${t(account.emailSecurity?.verified ? "emailVerified" : "emailUnverified")}`;
   if (verifyButton) {
     verifyButton.hidden = account.emailSecurity?.verified === true;
+    refreshEmailCooldown("verify", verifyButton);
     verifyButton.onclick = async () => {
+      if (refreshEmailCooldown("verify", verifyButton)) return;
       verifyButton.disabled = true;
-      try { await api("/api/email/verification/send", { method: "POST", body: {} }); toast(t("saved")); }
-      catch (error) { showError(error); }
-      finally { verifyButton.disabled = false; }
+      let sent = false;
+      try { await api("/api/email/verification/send", { method: "POST", body: {} }); sent = true; startEmailCooldown("verify", verifyButton); showMailSentModal(); }
+      catch (error) { if (error.code === "email_rate_limited") startEmailCooldown("verify", verifyButton); showError(error); }
+      finally { if (!sent) verifyButton.disabled = false; }
     };
   }
   if (form.emailTwoFactor) {
@@ -4245,13 +4296,13 @@ async function initSettings() {
     confirm: t("requestDeletion"),
     extra,
     dialogClass: "account-delete-modal",
+    requiresCaptcha: false,
     run: () =>
         api("/api/account/delete", {
           method: "POST",
           body: {
             username: usernameInput.value,
             password: passwordInput.value,
-            captcha: state.actionCaptcha,
           },
         }),
     });
