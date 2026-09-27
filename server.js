@@ -52,6 +52,9 @@ const TRASH_DAYS = Object.freeze([1, 3, 7, 14, 30]);
 const ADMIN_EMAIL = "neuralnexuslab@hotmail.com";
 const SUPPORT_EMAIL = "astranote@nxlabtw.com";
 const EMAIL_API_URL = "https://api.zeabur.com/api/v1/zsend/emails";
+// A valid Argon2id hash used only to equalize unknown-account password checks.
+// It is deliberately not a credential and never authorizes a request.
+const DUMMY_PASSWORD_HASH = "$argon2id$v=19$m=19456,t=2,p=1$7zph+VOvRFzb/evwnIE+dQ$V+yY2NG0/eSae61Ntl0NVxWGMlem2lmE8pu4N+UaKc0";
 const PLAN_MONTH_MS = 30 * 864e5;
 const PLAN_LOCK_DELETE_MS = 30 * 864e5;
 const AI_WINDOW_MS = 30 * 864e5;
@@ -1708,6 +1711,13 @@ async function findAccountByIdentifier(value) {
   const identifier = normalizeText(value, 254);
   return USERNAME_RE.test(identifier) ? loadMetadata(identifier) : findAccountByEmail(identifier);
 }
+async function verifyPasswordForAccount(metadata, password) {
+  // Always run Argon2id, including for a missing or malformed account. This
+  // prevents an account lookup from turning into an inexpensive timing oracle.
+  return argon2
+    .verify(typeof metadata?.passwordHash === "string" ? metadata.passwordHash : DUMMY_PASSWORD_HASH, password)
+    .catch(() => false);
+}
 function escapeHtml(value) {
   return String(value || "").replace(/[&<>\"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
 }
@@ -2440,11 +2450,8 @@ app.post(
       typeof req.body.password === "string" ? req.body.password : "";
     try {
       const metadata = await findAccountByIdentifier(username);
-      const valid =
-        metadata &&
-        (await argon2
-          .verify(metadata.passwordHash, password)
-          .catch(() => false));
+      const passwordValid = await verifyPasswordForAccount(metadata, password);
+      const valid = Boolean(metadata) && passwordValid;
       if (!valid) {
         if (metadata) await withLock(`user:${userKey(metadata.username)}`, async () => {
           const current = await loadMetadata(metadata.username);
@@ -2580,6 +2587,9 @@ app.post("/api/password/reset/request", passwordResetIpLimiter, async (req, res,
   try {
     const email = normalizeText(req.body?.email, 254).toLowerCase();
     const metadata = await findAccountByEmail(email);
+    // Keep the account-exists and account-missing paths similarly expensive.
+    // The reset endpoint is separately limited to one request per IP / 10 min.
+    await verifyPasswordForAccount(metadata, "astranote-reset-timing-check");
     // Deliberately indistinguishable responses prevent account enumeration.
     if (metadata?.emailVerified) await withLock(`user:${userKey(metadata.username)}`, async () => {
       const current = await loadMetadata(metadata.username);
@@ -2635,12 +2645,8 @@ app.post(
     try {
       const metadata = await loadMetadata(username);
       const deletion = await findDeletion(username);
-      const valid =
-        metadata &&
-        deletion?.status === "cooling_off" &&
-        (await argon2
-          .verify(metadata.passwordHash, password)
-          .catch(() => false));
+      const passwordValid = await verifyPasswordForAccount(metadata, password);
+      const valid = Boolean(metadata) && deletion?.status === "cooling_off" && passwordValid;
       if (!valid)
         return jsonError(
           res,
