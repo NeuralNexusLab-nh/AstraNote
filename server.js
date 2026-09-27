@@ -2516,7 +2516,8 @@ app.post("/api/password/reset/request", passwordResetIpLimiter, async (req, res,
     // Deliberately indistinguishable responses prevent account enumeration.
     if (metadata?.emailVerified) await withLock(`user:${userKey(metadata.username)}`, async () => {
       const current = await loadMetadata(metadata.username);
-      if (actionRecentlySent(current, "reset", 1, 10 * 60_000)) return;
+      if (actionRecentlySent(current, "reset", 1, 10 * 60_000))
+        throw Object.assign(new Error("Please wait 10 minutes before requesting another email."), { status: 429, code: "email_rate_limited" });
       const token = makeEmailToken();
       current.emailAuth.reset = { digest: tokenDigest(token), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
       const url = `https://astranote.nxlabtw.com/reset-password#u=${encodeURIComponent(current.username)}&token=${encodeURIComponent(token)}`;

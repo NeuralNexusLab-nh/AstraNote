@@ -2383,7 +2383,7 @@ function buildNav() {
       let sent = false;
       try { await api("/api/email/verification/send", { method: "POST", body: {} }); sent = true; startEmailCooldown("verify", event.currentTarget); showMailSentModal(); }
       catch (error) { if (error.code === "email_rate_limited") startEmailCooldown("verify", event.currentTarget); showError(error); }
-      finally { if (!sent) event.currentTarget.disabled = false; }
+      finally { if (!sent && !refreshEmailCooldown("verify", event.currentTarget)) event.currentTarget.disabled = false; }
     };
   }
   const mobileToggle = $(".mobile-toggle", nav);
@@ -3137,12 +3137,17 @@ async function initAuthForm(kind) {
     event.preventDefault();
     const button = form.querySelector("[type=submit]");
     const message = $(".form-message", form);
+    const reportAuthError = (error) => {
+      const text = typeof error === "string" ? error : error?.message || t("error");
+      message.textContent = text;
+      showError(error);
+    };
     message.textContent = "";
     if (kind === "register") {
       const username = String(form.username.value || "").trim();
       const password = String(form.password.value || "");
       if (!/^[A-Za-z0-9_]{3,24}$/.test(username)) {
-        message.textContent = t("usernameRules");
+        reportAuthError(t("usernameRules"));
         return;
       }
       if (
@@ -3150,17 +3155,17 @@ async function initAuthForm(kind) {
         password.length > 256 ||
         password.toLowerCase().includes(username.toLowerCase())
       ) {
-        message.textContent = t("passwordRules");
+        reportAuthError(t("passwordRules"));
         return;
       }
       if (form.passwordConfirmation.value !== password) {
-        message.textContent = t("passwordConfirmationRules");
+        reportAuthError(t("passwordConfirmationRules"));
         return;
       }
     }
     const needsCaptcha = kind === "register" || cancellation;
     if (needsCaptcha && !state.captcha) {
-      message.textContent = t("captchaNeeded");
+      reportAuthError(t("captchaNeeded"));
       return;
     }
     button.disabled = true;
@@ -3204,6 +3209,8 @@ async function initAuthForm(kind) {
           danger: true,
           onConfirm: async (close) => close(),
         });
+      } else {
+        showError(error);
       }
       message.textContent = error.message;
       button.disabled = false;
@@ -3258,6 +3265,7 @@ async function initResetPassword() {
       if (!hasToken && error.code === "email_rate_limited") startEmailCooldown("reset", submitButton);
       message.style.color = "";
       message.textContent = error.message;
+      showError(error);
     }
   });
 }
@@ -4157,7 +4165,7 @@ async function initSettings() {
       let sent = false;
       try { await api("/api/email/verification/send", { method: "POST", body: {} }); sent = true; startEmailCooldown("verify", verifyButton); showMailSentModal(); }
       catch (error) { if (error.code === "email_rate_limited") startEmailCooldown("verify", verifyButton); showError(error); }
-      finally { if (!sent) verifyButton.disabled = false; }
+      finally { if (!sent && !refreshEmailCooldown("verify", verifyButton)) verifyButton.disabled = false; }
     };
   }
   if (form.emailTwoFactor) {
