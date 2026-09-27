@@ -2471,6 +2471,8 @@ function modal({
   danger = false,
   confirmIcon = danger ? "fa-trash-can" : "fa-check",
   showCancel = true,
+  closeOnBackdrop = true,
+  closeOnEscape = true,
   onConfirm,
   onCancel,
 }) {
@@ -2529,7 +2531,7 @@ function modal({
     onCancel?.();
   };
   dialog.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !confirmButton.disabled) {
+    if (closeOnEscape && event.key === "Escape" && !confirmButton.disabled) {
       event.preventDefault();
       cancelDialog();
     }
@@ -2564,7 +2566,7 @@ function modal({
   );
   cancelButton.onclick = cancelDialog;
   backdrop.addEventListener("click", (e) => {
-    if (e.target === backdrop && backdrop.dataset.busy !== "true") cancelDialog();
+    if (closeOnBackdrop && e.target === backdrop && backdrop.dataset.busy !== "true") cancelDialog();
   });
   confirmButton.onclick = async () => {
     confirmButton.disabled = true;
@@ -2768,6 +2770,8 @@ function actionModal({
     dialogClass,
     confirm,
     danger,
+    closeOnBackdrop: false,
+    closeOnEscape: false,
     onConfirm: async (close) => {
       if (requiresCaptcha && !state.actionCaptcha) throw new Error(t("captchaNeeded"));
       try {
@@ -2807,7 +2811,7 @@ function showDeleteCodeModal() {
   inputs.innerHTML = Array.from({ length: 6 }, (_, index) => `<input data-otp inputmode="numeric" autocomplete="${index === 0 ? "one-time-code" : "off"}" maxlength="1" pattern="[0-9]" aria-label="${t("verificationCode")} ${index + 1}"${index === 0 ? " autofocus" : ""}>`).join("");
   group.append(label, inputs);
   setupOtpInputs(group);
-  modal({ title: t("deleteCodeTitle"), body: t("deleteCodeBody"), content: group, confirm: t("delete"), danger: true, onConfirm: async (close) => {
+  modal({ title: t("deleteCodeTitle"), body: t("deleteCodeBody"), content: group, confirm: t("delete"), danger: true, closeOnBackdrop: false, closeOnEscape: false, onConfirm: async (close) => {
     const result = await api("/api/account/delete/confirm", { method: "POST", body: { code: otpCode(group) } });
     close(); location.href = result.redirect;
   }});
