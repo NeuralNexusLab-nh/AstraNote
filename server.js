@@ -39,7 +39,6 @@ const MAX_ACCOUNT_BYTES = 128 * 1000;
 const UNVERIFIED_FREE_BYTES = 32 * 1000;
 const EMAIL_TOKEN_MS = 10 * 60_000;
 const EMAIL_DAILY_LIMIT = 100;
-const EMAIL_RECIPIENT_DAILY_LIMIT = 10;
 const MAX_NOTE_BYTES = 2 * 1024 * 1000;
 const MAX_NOTE_NAME = 80;
 const MAX_DISPLAY_NAME = 40;
@@ -146,7 +145,6 @@ function safeEqual(a, b) {
 function userKey(username) {
   return username.toLowerCase();
 }
-function emailHash(email) { return sha256(String(email || "").trim().toLowerCase()); }
 function freeStorageAllowance(metadata) {
   return metadata?.emailQuotaRestricted === true && metadata?.emailVerified !== true
     ? UNVERIFIED_FREE_BYTES
@@ -1787,17 +1785,13 @@ async function sendMail({ to, from, subject, template, bypassDaily = false }) {
   if (!bypassDaily) {
     await withLock("email-limits", async () => {
       const day = utcDay();
-      const record = await readJson(EMAIL_LIMITS_FILE, { day, total: 0, recipients: {} });
-      const current = record.day === day ? record : { day, total: 0, recipients: {} };
-      const key = emailHash(to);
+      const record = await readJson(EMAIL_LIMITS_FILE, { day, total: 0 });
+      const current = record.day === day ? { day, total: Number(record.total) || 0 } : { day, total: 0 };
       if (current.total >= EMAIL_DAILY_LIMIT)
         throw Object.assign(new Error("AstraNote has reached today's email sending limit. Please try again after 00:00 UTC."), { status: 429, code: "email_daily_limit" });
-      if ((current.recipients[key] || 0) >= EMAIL_RECIPIENT_DAILY_LIMIT)
-        throw Object.assign(new Error("This email address has reached its 10-message limit for today. Please try again after 00:00 UTC."), { status: 429, code: "email_recipient_daily_limit" });
       const response = await fetch(EMAIL_API_URL, { method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${process.env.ZSKEY}` }, signal: AbortSignal.timeout(12_000), body: JSON.stringify({ from, to: [to], reply_to: [SUPPORT_EMAIL], subject, html: template.html, text: template.text }) });
       if (!response.ok) throw Object.assign(new Error("Email delivery failed."), { status: response.status >= 500 ? 503 : response.status, code: "email_delivery_failed" });
       current.total += 1;
-      current.recipients[key] = (current.recipients[key] || 0) + 1;
       await writeJson(EMAIL_LIMITS_FILE, current);
     });
   } else {
@@ -2429,8 +2423,8 @@ app.post(
       if (metadata.emailTwoFactor === true && metadata.emailVerified === true) {
         await withLock(`user:${userKey(metadata.username)}`, async () => {
           const current = await loadMetadata(metadata.username);
-          if (actionRecentlySent(current, "login", 3, 60 * 60_000))
-            throw Object.assign(new Error("Email rate limit reached."), { status: 429, code: "email_rate_limited" });
+          if (actionRecentlySent(current, "login", 1, 3 * 60_000))
+            throw Object.assign(new Error("Please wait 3 minutes before requesting another email."), { status: 429, code: "email_rate_limited" });
           const code = makeEmailCode();
           current.emailAuth.login = { digest: codeDigest(code), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
           const copy = emailCopy(current.settings?.language || "en", "login", { ip: requestIp(req) });
@@ -4011,12 +4005,15 @@ app.post(
         return jsonError(res, 403, "email_unverified", "Verify your email before deleting this account.");
       await withLock(`user:${username}`, async () => {
         const metadata = await loadMetadata(username);
+        if (actionRecentlySent(metadata, "delete", 1, 3 * 60_000))
+          throw Object.assign(new Error("Please wait 3 minutes before requesting another email."), { status: 429, code: "email_rate_limited" });
         const code = makeEmailCode();
         metadata.emailAuth.delete = { digest: codeDigest(code), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
         const copy = emailCopy(metadata.settings?.language || "en", "delete");
         const location = await sessionLocation(req);
         const template = emailTemplate({ ...copy, code, details: emailAuditDetails(metadata.settings?.language || "en", metadata, { ip: requestIp(req), country: location.country }), language: metadata.settings?.language || "en" });
         await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
+        recordActionSent(metadata, "delete");
         await saveMetadata(username, metadata);
       });
       res.json({ ok: true, emailVerificationRequired: true });
