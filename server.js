@@ -1776,14 +1776,14 @@ function emailTemplate({ title, body, actionLabel, actionUrl, code, details = []
 }
 function emailAuditDetails(language, metadata, { ip = null, country = null, plan = null, days = null, activatedAt = null, expiresAt = null, status = null } = {}) {
   const labels = language === "zh-Hant"
-    ? { username: "帳號", email: "Email", time: "時間（UTC）", ip: "IP", location: "位置", plan: "方案", days: "有效天數", activated: "啟用日期", expires: "到期日期", status: "交易狀態" }
+    ? { username: "帳號", email: "Email", time: "時間", ip: "IP", location: "位置", plan: "方案", days: "有效天數", activated: "啟用日期", expires: "到期日期", status: "交易狀態" }
     : language === "ja"
-      ? { username: "アカウント", email: "メール", time: "時刻（UTC）", ip: "IP", location: "場所", plan: "プラン", days: "有効日数", activated: "有効開始日", expires: "有効期限", status: "取引状況" }
-      : { username: "Account", email: "Email", time: "Time (UTC)", ip: "IP", location: "Location", plan: "Plan", days: "Active days", activated: "Activated on", expires: "Expires on", status: "Transaction status" };
+      ? { username: "アカウント", email: "メール", time: "時刻", ip: "IP", location: "場所", plan: "プラン", days: "有効日数", activated: "有効開始日", expires: "有効期限", status: "取引状況" }
+      : { username: "Account", email: "Email", time: "Time", ip: "IP", location: "Location", plan: "Plan", days: "Active days", activated: "Activated on", expires: "Expires on", status: "Transaction status" };
   const details = [
     { label: labels.username, value: metadata.username },
     { label: labels.email, value: metadata.email },
-    { label: labels.time, value: new Date().toISOString().slice(0, 16).replace("T", " ").replaceAll("-", "/") },
+    { label: labels.time, value: `${new Date().toISOString().slice(0, 16).replace("T", " ").replaceAll("-", "/")} UTC` },
   ];
   if (ip) details.push({ label: labels.ip, value: ip });
   if (country) details.push({ label: labels.location, value: country });

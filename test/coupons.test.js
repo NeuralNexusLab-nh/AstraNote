@@ -209,10 +209,10 @@ test("sign-in mail leads with the sign-in title, then shows a secondary warning 
   });
   assert.ok(mail.html.indexOf("確認這次登入") < mail.html.indexOf("123456"));
   assert.ok(mail.html.indexOf("123456") < mail.html.indexOf("不是你本人？"));
-  assert.ok(mail.html.indexOf("不是你本人？") < mail.html.indexOf("時間（UTC）"));
+  assert.ok(mail.html.indexOf("不是你本人？") < mail.html.indexOf("時間"));
   assert.match(mail.text, /^確認這次登入\n/u);
-  assert.match(mail.text, /時間（UTC）: \d{4}\/\d{2}\/\d{2} \d{2}:\d{2}/u);
-  assert.doesNotMatch(mail.text, /時間（UTC）: [^\n]* UTC/u);
+  assert.match(mail.text, /時間: \d{4}\/\d{2}\/\d{2} \d{2}:\d{2} UTC/u);
+  assert.doesNotMatch(mail.text, /時間（UTC）/u);
   assert.doesNotMatch(mail.text, /\.\d{3}Z/u);
 });
 test("one coupon per account, replay-safe; different codes and different accounts still work", async () => {
