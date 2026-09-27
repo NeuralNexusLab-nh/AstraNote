@@ -2798,15 +2798,17 @@ function showDeleteCodeModal() {
   const group = document.createElement("div");
   group.className = "form-group";
   const label = document.createElement("label");
+  label.id = `delete-code-label-${randomHex(4)}`;
   label.textContent = t("verificationCode");
-  const input = document.createElement("input");
-  input.inputMode = "numeric";
-  input.autocomplete = "one-time-code";
-  input.maxLength = 6;
-  input.pattern = "[0-9]{6}";
-  group.append(label, input);
+  const inputs = document.createElement("div");
+  inputs.className = "otp-inputs";
+  inputs.setAttribute("role", "group");
+  inputs.setAttribute("aria-labelledby", label.id);
+  inputs.innerHTML = Array.from({ length: 6 }, (_, index) => `<input data-otp inputmode="numeric" autocomplete="${index === 0 ? "one-time-code" : "off"}" maxlength="1" pattern="[0-9]" aria-label="${t("verificationCode")} ${index + 1}"${index === 0 ? " autofocus" : ""}>`).join("");
+  group.append(label, inputs);
+  setupOtpInputs(group);
   modal({ title: t("deleteCodeTitle"), body: t("deleteCodeBody"), content: group, confirm: t("delete"), danger: true, onConfirm: async (close) => {
-    const result = await api("/api/account/delete/confirm", { method: "POST", body: { code: input.value } });
+    const result = await api("/api/account/delete/confirm", { method: "POST", body: { code: otpCode(group) } });
     close(); location.href = result.redirect;
   }});
 }
