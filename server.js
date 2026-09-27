@@ -134,6 +134,10 @@ function utcNow() {
 function utcDay() {
   return new Date().toISOString().slice(0, 10);
 }
+function utcDate(value = Date.now()) {
+  const date = new Date(value);
+  return Number.isFinite(date.getTime()) ? date.toISOString().slice(0, 10).replaceAll("-", "/") : "—";
+}
 function sha256(value) {
   return crypto.createHash("sha256").update(value).digest("hex");
 }
@@ -1707,7 +1711,7 @@ async function findAccountByIdentifier(value) {
 function escapeHtml(value) {
   return String(value || "").replace(/[&<>\"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
 }
-function emailTemplate({ title, body, actionLabel, actionUrl, code, details = [], language = "en" }) {
+function emailTemplate({ title, body, actionLabel, actionUrl, code, details = [], noticeTitle, noticeBody, danger = false, language = "en" }) {
   const safeTitle = escapeHtml(title);
   const safeBody = escapeHtml(body);
   const copy = language === "zh-Hant"
@@ -1717,19 +1721,21 @@ function emailTemplate({ title, body, actionLabel, actionUrl, code, details = []
       : { fallback: "If the button does not open, copy this link:", expiry: "This link or code expires in 10 minutes. If you did not request it, you can safely ignore this email." };
   const action = actionUrl ? `<table role="presentation" cellspacing="0" cellpadding="0" style="margin:24px 0 0"><tr><td style="border-radius:12px;background:#7180ff"><a href="${escapeHtml(actionUrl)}" style="display:inline-block;padding:14px 20px;border-radius:12px;color:#fff;text-decoration:none;font:700 15px Arial,sans-serif">${escapeHtml(actionLabel)}</a></td></tr></table>` : "";
   const fallback = actionUrl ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:22px 0 0;border:1px solid #263354;border-radius:12px;background:#0b1125"><tr><td style="padding:14px 16px"><p style="margin:0 0 7px;color:#aeb9d8;font:13px/1.55 Arial,sans-serif">${copy.fallback}</p><p style="margin:0;overflow-wrap:anywhere;color:#d7deff;font:12px/1.6 ui-monospace,monospace">${escapeHtml(actionUrl)}</p></td></tr></table>` : "";
-  const codeBlock = code ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:24px 0 0;border:1px solid #4959a8;border-radius:14px;background:#0b1129"><tr><td style="padding:18px;color:#fff;text-align:center;letter-spacing:.16em;font:700 30px ui-monospace,monospace">${escapeHtml(code)}</td></tr></table>` : "";
+  const codeBlock = code ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:24px 0 0;border:1px solid ${danger ? "#bc4960" : "#4959a8"};border-radius:14px;background:${danger ? "#2b1018" : "#0b1129"}"><tr><td style="padding:18px;color:#fff;text-align:center;letter-spacing:.16em;font:700 30px ui-monospace,monospace">${escapeHtml(code)}</td></tr></table>` : "";
   const safeDetails = Array.isArray(details) ? details.filter((detail) => detail?.label && detail?.value !== undefined && detail?.value !== null).slice(0, 8) : [];
   const detailText = safeDetails.map((detail) => `${detail.label}: ${detail.value}`).join("\n");
-  const detailBlock = safeDetails.length ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:22px 0 0;border:1px solid #263354;border-radius:12px;background:#0b1125"><tr><td style="padding:14px 16px">${safeDetails.map((detail) => `<p style="margin:0 0 8px;color:#aeb9d8;font:12px/1.45 Arial,sans-serif"><span style="display:inline-block;min-width:112px;color:#8492b9">${escapeHtml(detail.label)}</span><strong style="color:#e9edff;font:600 12px/1.45 ui-monospace,monospace;overflow-wrap:anywhere">${escapeHtml(detail.value)}</strong></p>`).join("")}</td></tr></table>` : "";
-  const text = `${title}\n\n${body}${code ? `\n\n${code}` : ""}${detailText ? `\n\n${detailText}` : ""}${actionUrl ? `\n\n${actionUrl}` : ""}\n\n${copy.expiry}`;
-  return { text, html: `<!doctype html><html lang="${escapeHtml(language)}"><body style="margin:0;padding:0;background:#050816;color:#eef2ff"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#050816"><tr><td style="padding:32px 14px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;border:1px solid #283452;border-radius:20px;overflow:hidden;background:#10172d"><tr><td style="padding:20px 24px;border-bottom:1px solid #283452"><img src="https://astranote.nxlabtw.com/asset/logo.png" width="30" height="30" alt="" style="vertical-align:middle;margin-right:10px;border-radius:8px"><span style="vertical-align:middle;color:#fff;font:700 18px Arial,sans-serif">AstraNote</span></td></tr><tr><td style="padding:32px 24px"><h1 style="margin:0 0 14px;color:#fff;font:700 27px/1.2 Arial,sans-serif">${safeTitle}</h1><p style="margin:0;color:#c7d0e9;font:15px/1.7 Arial,sans-serif">${safeBody}</p>${codeBlock}${detailBlock}${action}${fallback}<p style="margin:26px 0 0;padding-top:16px;border-top:1px solid #283452;color:#98a6c8;font:12px/1.6 Arial,sans-serif">${copy.expiry}</p></td></tr></table></td></tr></table></body></html>` };
+  const detailBlock = safeDetails.length ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:22px 0 0;border:1px solid #263354;border-radius:12px;background:#0b1125"><tr><td style="padding:6px 16px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0">${safeDetails.map((detail, index) => `<tr><td style="padding:9px 0;${index ? "border-top:1px solid #202d4a;" : ""}color:#8492b9;font:600 12px/1.4 Arial,sans-serif">${escapeHtml(detail.label)}</td><td style="padding:9px 0 9px 16px;${index ? "border-top:1px solid #202d4a;" : ""}color:#e9edff;text-align:right;font:600 12px/1.4 ui-monospace,monospace;overflow-wrap:anywhere">${escapeHtml(detail.value)}</td></tr>`).join("")}</table></td></tr></table>` : "";
+  const notice = noticeTitle && noticeBody ? `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:22px 0 0;border:1px solid ${danger ? "#8c3548" : "#384a83"};border-radius:12px;background:${danger ? "#251017" : "#101a38"}"><tr><td style="padding:15px 16px"><p style="margin:0 0 7px;color:${danger ? "#ffb6c2" : "#c7d4ff"};font:700 14px/1.4 Arial,sans-serif">${escapeHtml(noticeTitle)}</p><p style="margin:0;color:#d3dbf0;font:13px/1.65 Arial,sans-serif">${escapeHtml(noticeBody).replace(/\n/g, "<br>")}</p></td></tr></table>` : "";
+  const expires = code || actionUrl ? `\n\n${copy.expiry}` : "";
+  const text = `${title}\n\n${body}${code ? `\n\n${code}` : ""}${detailText ? `\n\n${detailText}` : ""}${noticeTitle && noticeBody ? `\n\n${noticeTitle}\n${noticeBody}` : ""}${actionUrl ? `\n\n${actionUrl}` : ""}${expires}`;
+  return { text, html: `<!doctype html><html lang="${escapeHtml(language)}"><body style="margin:0;padding:0;background:#050816;color:#eef2ff"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#050816"><tr><td style="padding:32px 14px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;border:1px solid #283452;border-radius:20px;overflow:hidden;background:#10172d"><tr><td style="padding:20px 24px;border-bottom:1px solid #283452"><img src="https://astranote.nxlabtw.com/asset/logo.png" width="30" height="30" alt="" style="vertical-align:middle;margin-right:10px;border-radius:8px"><span style="vertical-align:middle;color:#fff;font:700 18px Arial,sans-serif">AstraNote</span></td></tr><tr><td style="padding:32px 24px"><h1 style="margin:0 0 14px;color:#fff;font:700 27px/1.2 Arial,sans-serif">${safeTitle}</h1><p style="margin:0;color:#c7d0e9;font:15px/1.7 Arial,sans-serif">${safeBody}</p>${codeBlock}${detailBlock}${notice}${action}${fallback}${code || actionUrl ? `<p style="margin:26px 0 0;padding-top:16px;border-top:1px solid #283452;color:#98a6c8;font:12px/1.6 Arial,sans-serif">${copy.expiry}</p>` : ""}</td></tr></table></td></tr></table></body></html>` };
 }
-function emailAuditDetails(language, metadata, { ip = null, country = null, plan = null, days = null } = {}) {
+function emailAuditDetails(language, metadata, { ip = null, country = null, plan = null, days = null, activatedAt = null, expiresAt = null, status = null } = {}) {
   const labels = language === "zh-Hant"
-    ? { username: "使用者名稱", email: "Email", time: "時間（UTC）", ip: "IP", location: "位置", plan: "方案", days: "有效天數" }
+    ? { username: "帳號", email: "Email", time: "時間（UTC）", ip: "IP", location: "位置", plan: "方案", days: "有效天數", activated: "啟用日期", expires: "到期日期", status: "交易狀態" }
     : language === "ja"
-      ? { username: "ユーザー名", email: "メール", time: "時刻（UTC）", ip: "IP", location: "場所", plan: "プラン", days: "有効日数" }
-      : { username: "Username", email: "Email", time: "Time (UTC)", ip: "IP", location: "Location", plan: "Plan", days: "Active days" };
+      ? { username: "アカウント", email: "メール", time: "時刻（UTC）", ip: "IP", location: "場所", plan: "プラン", days: "有効日数", activated: "有効開始日", expires: "有効期限", status: "取引状況" }
+      : { username: "Account", email: "Email", time: "Time (UTC)", ip: "IP", location: "Location", plan: "Plan", days: "Active days", activated: "Activated on", expires: "Expires on", status: "Transaction status" };
   const details = [
     { label: labels.username, value: metadata.username },
     { label: labels.email, value: metadata.email },
@@ -1739,6 +1745,9 @@ function emailAuditDetails(language, metadata, { ip = null, country = null, plan
   if (country) details.push({ label: labels.location, value: country });
   if (plan) details.push({ label: labels.plan, value: String(plan).toUpperCase() });
   if (days) details.push({ label: labels.days, value: String(days) });
+  if (activatedAt) details.push({ label: labels.activated, value: utcDate(activatedAt) });
+  if (expiresAt) details.push({ label: labels.expires, value: utcDate(expiresAt) });
+  if (status) details.push({ label: labels.status, value: String(status) });
   return details;
 }
 function emailCopy(language, key, values = {}) {
@@ -1779,6 +1788,26 @@ function emailCopy(language, key, values = {}) {
   };
   const selected = copies[language]?.[key] || copies.en[key];
   return Object.fromEntries(Object.entries(selected).map(([name, text]) => [name, String(text).replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "")]));
+}
+function emailSecurityNotice(language, type) {
+  const notices = {
+    en: {
+      login: { title: "Wasn't you?", body: "Do not share this code. Change your password immediately and review your signed-in devices." },
+      delete: { title: "Permanent action", body: "This code permanently deletes your notes, settings, and account. Do not share it. If this was not you, change your password immediately and review your signed-in devices." },
+    },
+    "zh-Hant": {
+      login: { title: "不是你本人？", body: "請勿分享此驗證碼。建議立即變更密碼，並檢查已登入的裝置。" },
+      delete: { title: "永久刪除警告", body: "此驗證碼會永久刪除你的筆記、設定與帳號。請勿分享；若不是你本人操作，請立即變更密碼並檢查已登入的裝置。" },
+    },
+    ja: {
+      login: { title: "心当たりがありませんか？", body: "このコードを共有しないでください。すぐにパスワードを変更し、サインイン中の端末を確認してください。" },
+      delete: { title: "完全削除に関する警告", body: "このコードを使うとノート、設定、アカウントが完全に削除されます。共有せず、心当たりがない場合は直ちにパスワードを変更し、サインイン中の端末を確認してください。" },
+    },
+  };
+  return notices[language]?.[type] || notices.en[type] || null;
+}
+function paymentConfirmedLabel(language) {
+  return language === "zh-Hant" ? "已確認" : language === "ja" ? "確認済み" : "Confirmed";
 }
 async function sendMail({ to, from, subject, template }) {
   if (!process.env.ZSKEY) throw Object.assign(new Error("Email delivery is unavailable."), { status: 503, code: "email_unavailable" });
@@ -2454,7 +2483,8 @@ app.post(
           current.emailAuth.login = { digest: codeDigest(code), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
           const copy = emailCopy(current.settings?.language || "en", "login", { ip: requestIp(req) });
           const location = await sessionLocation(req);
-          const template = emailTemplate({ ...copy, code, details: emailAuditDetails(current.settings?.language || "en", current, { ip: requestIp(req), country: location.country }), language: current.settings?.language || "en" });
+          const language = current.settings?.language || "en";
+          const template = emailTemplate({ ...copy, code, ...emailSecurityNotice(language, "login"), details: emailAuditDetails(language, current, { ip: requestIp(req), country: location.country }), language });
           await sendMail({ to: current.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
           recordActionSent(current, "login");
           await saveMetadata(current.username, current);
@@ -3081,9 +3111,13 @@ app.get(
             metadata.emailAuth ||= {};
             metadata.emailAuth.planReceipts ||= [];
             if (metadata.emailVerified && !metadata.emailAuth.planReceipts.includes(order.orderId)) {
-              const copy = emailCopy(metadata.settings?.language || "en", "payment", { plan: order.plan, days: order.months * 30 });
+              const language = metadata.settings?.language || "en";
+              const activeDays = order.months * 30;
+              const activatedAt = order.paidAt || utcNow();
+              const expiresAt = new Date(Date.parse(activatedAt) + activeDays * 864e5).toISOString();
+              const copy = emailCopy(language, "payment", { plan: order.plan, days: activeDays });
               const location = await sessionLocation(req);
-              const template = emailTemplate({ ...copy, details: emailAuditDetails(metadata.settings?.language || "en", metadata, { ip: requestIp(req), country: location.country, plan: order.plan, days: order.months * 30 }), language: metadata.settings?.language || "en" });
+              const template = emailTemplate({ ...copy, details: emailAuditDetails(language, metadata, { ip: requestIp(req), country: location.country, plan: order.plan, days: activeDays, activatedAt, expiresAt, status: paymentConfirmedLabel(language) }), language });
               await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
               metadata.emailAuth.planReceipts = [...metadata.emailAuth.planReceipts.slice(-19), order.orderId];
             }
@@ -4053,7 +4087,8 @@ app.post(
         metadata.emailAuth.delete = { digest: codeDigest(code), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
         const copy = emailCopy(metadata.settings?.language || "en", "delete");
         const location = await sessionLocation(req);
-        const template = emailTemplate({ ...copy, code, details: emailAuditDetails(metadata.settings?.language || "en", metadata, { ip: requestIp(req), country: location.country }), language: metadata.settings?.language || "en" });
+        const language = metadata.settings?.language || "en";
+        const template = emailTemplate({ ...copy, code, ...emailSecurityNotice(language, "delete"), danger: true, details: emailAuditDetails(language, metadata, { ip: requestIp(req), country: location.country }), language });
         await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
         recordActionSent(metadata, "delete");
         await saveMetadata(username, metadata);
