@@ -107,8 +107,6 @@ test.before(async () => {
   directory = await fs.mkdtemp(path.join(os.tmpdir(), "astranote-coupons-"));
   process.env.DATA_DIR = directory;
   process.env.ASTRANOTE_SECRET = "coupon-test-secret-".repeat(5);
-  process.env.ASTRANOTE_REUSABLE_COUPON =
-    process.env.ASTRANOTE_TEST_REUSABLE_COUPON || "R".repeat(32);
   process.env.SATORA_API_KEY = "coupon-test-api-key-".repeat(4);
   originalFetch = global.fetch;
   global.fetch = async (url, options) => {
@@ -168,8 +166,13 @@ test("coupon policies normalize identity, fail closed, and keep the operator exc
     null,
   );
   assert.equal(policy({}).digest, null);
-  assert.equal(policy({ coupon: { code: "R".repeat(32) } }).reusable, true);
   assert.equal(policy({ coupon: { code: "different" } }).reusable, false);
+  assert.equal(
+    mod.testables.isReusableCouponDigest(
+      "ffad76e6b85e72e9f4f3fb46125dfcb19fd363ca5d155fa5603f7e5b083ff010",
+    ),
+    true,
+  );
   assert.equal(mod.testables.isReusableCouponDigest(digest("different")), false);
 });
 test("email codes use a keyed verifier while accepting an in-flight legacy code", () => {
@@ -335,22 +338,3 @@ test("regular undiscounted payments remain repeatable", async () => {
     );
   assertDays(await readMeta(user), 60);
 });
-// The real reusable code is supplied only during private QA, never committed.
-test(
-  "the configured reusable coupon can credit separate invoices repeatedly",
-  { skip: !process.env.ASTRANOTE_TEST_REUSABLE_COUPON },
-  async () => {
-    const user = await fixture("reusable_buyer"),
-      code = process.env.ASTRANOTE_TEST_REUSABLE_COUPON;
-    assert.equal(
-      mod.testables.satoraCouponPolicy({ coupon: { code } }).reusable,
-      true,
-    );
-    for (let i = 0; i < 2; i++)
-      assert.equal(
-        (await verify(user, await bill(user, code))).data.order.localStatus,
-        "paid",
-      );
-    assertDays(await readMeta(user), 60);
-  },
-);

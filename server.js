@@ -72,11 +72,11 @@ const AI_BUDGETS_MICRO_USD = Object.freeze({
 const BILLING_MONTH_OPTIONS = Object.freeze([1, 3, 6, 9, 12, 24, 36]);
 const ORDER_CREATION_WINDOW_MS = 60 * 60_000;
 const MAX_NEW_ORDERS_PER_ACCOUNT_WINDOW = 6;
-// The reusable coupon itself is supplied only through the server environment.
-// Its verifier is derived after the application secret is available, so neither
-// a source checkout nor a data-directory leak exposes a value that can be
-// brute-forced offline.
-let reusableCouponVerifier = null;
+// This is a SHA-256 digest of a random 256-bit operator coupon. The coupon is
+// configured only in Satora; publishing its digest is safe because the source
+// value has enough entropy to make offline guessing infeasible.
+const REUSABLE_COUPON_DIGEST =
+  "ffad76e6b85e72e9f4f3fb46125dfcb19fd363ca5d155fa5603f7e5b083ff010";
 const SATORA_BASE_URL = "https://satora.nxlabtw.com";
 const SATORA_RETURN_URL = "https://astranote.nxlabtw.com/plans/return";
 const PLAN_DEFINITIONS = Object.freeze({
@@ -676,17 +676,6 @@ async function ensureData() {
     appSecret = crypto.randomBytes(48).toString("base64url");
     await atomicWrite(SECRET_FILE, `${appSecret}\n`);
   }
-  const configuredReusableCoupon = String(
-    process.env.ASTRANOTE_REUSABLE_COUPON || "",
-  )
-    .trim()
-    .toUpperCase();
-  // A reusable code is an operator capability, not a human-memorable coupon.
-  // Fail closed unless it has at least 192 bits of printable entropy.
-  reusableCouponVerifier =
-    /^[\x21-\x7e]{32,128}$/.test(configuredReusableCoupon)
-      ? keyedDigest("satora-reusable-coupon", configuredReusableCoupon)
-      : null;
   vaultSecret =
     typeof process.env.ASTRANOTE_VAULT_SECRET === "string" &&
     process.env.ASTRANOTE_VAULT_SECRET.length >= 64
@@ -1203,7 +1192,7 @@ function satoraPaidAmountMatchesOrder(status, order) {
   );
 }
 function isReusableCouponDigest(digest) {
-  return Boolean(reusableCouponVerifier) && safeEqual(digest, reusableCouponVerifier);
+  return safeEqual(digest, REUSABLE_COUPON_DIGEST);
 }
 function satoraCouponPolicy(status) {
   const coupon = status?.coupon;
@@ -1219,8 +1208,7 @@ function satoraCouponPolicy(status) {
   const code = coupon.code.trim().toUpperCase();
   if (!/^[\x21-\x7e]{1,128}$/.test(code)) return { valid: false };
   const digest = sha256(code);
-  const verifier = keyedDigest("satora-reusable-coupon", code);
-  return { valid: true, digest, reusable: isReusableCouponDigest(verifier) };
+  return { valid: true, digest, reusable: isReusableCouponDigest(digest) };
 }
 async function satoraRequest(endpoint, options = {}) {
   const apiKey = process.env.SATORA_API_KEY;
