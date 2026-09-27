@@ -1893,7 +1893,10 @@ function validateBroadcastContent({ subject, html, text }) {
     throw Object.assign(new Error("Enter both HTML and plain-text content within the allowed length."), { status: 400, code: "invalid_broadcast_content" });
   // Broadcast HTML is operator-authored but must still never turn the mail API
   // into a tracker or an active-content delivery channel if an admin session is stolen.
-  if (/<\s*\/?\s*(script|iframe|object|embed|form|base|link|meta)\b|\bon[a-z]+\s*=|javascript\s*:|\bsrc\s*=\s*["']?\s*(?:https?:|data:)|\burl\s*\(/iu.test(cleanHtml))
+  // Keep the same official logo used by transactional email, while rejecting
+  // every other remote resource and all active/tracking content.
+  const htmlWithoutOfficialLogo = cleanHtml.replaceAll("https://astranote.nxlabtw.com/asset/logo.png", "");
+  if (/<\s*\/?\s*(script|iframe|object|embed|form|base|link|meta)\b|\bon[a-z]+\s*=|javascript\s*:|\bsrc\s*=\s*["']?\s*(?:https?:|data:)|\burl\s*\(/iu.test(htmlWithoutOfficialLogo))
     throw Object.assign(new Error("Broadcast HTML cannot contain active content, remote resources, or tracking URLs."), { status: 400, code: "unsafe_broadcast_html" });
   return { subject: cleanSubject, html: cleanHtml, text: cleanText };
 }
