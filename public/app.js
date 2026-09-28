@@ -3211,7 +3211,26 @@ async function initAuthForm(kind) {
   let loginStage = "identifier";
   const params = new URLSearchParams(location.search);
   const cancellation = kind === "login" && params.get("cancel") === "1";
-  const magicLink = kind === "login" && new URLSearchParams(location.hash.slice(1));
+  const magicLink = kind === "login" ? new URLSearchParams(location.hash.slice(1)) : null;
+  // CAPTCHA retries must never make someone re-enter a registration form.
+  // Keep this only in memory, and only long enough to restore the current UI.
+  const captureRegisterDraft = () => kind === "register" ? {
+    username: form.username?.value || "",
+    email: form.email?.value || "",
+    password: form.password?.value || "",
+    passwordConfirmation: form.passwordConfirmation?.value || "",
+    acceptTerms: Boolean(form.acceptTerms?.checked),
+    legalCapacity: Boolean(form.legalCapacity?.checked),
+  } : null;
+  const restoreRegisterDraft = (draft) => {
+    if (!draft || !form.isConnected) return;
+    for (const [name, value] of Object.entries(draft)) {
+      const input = form.elements.namedItem(name);
+      if (!input) continue;
+      if (input.type === "checkbox") input.checked = value;
+      else input.value = value;
+    }
+  };
   const showPasswordStep = () => {
     loginStage = "password";
     $("#login-password-group", form).hidden = false;
@@ -3369,7 +3388,14 @@ async function initAuthForm(kind) {
           ? next
           : result.redirect;
     } catch (error) {
-      if (needsCaptcha) resetCaptcha();
+      const registerDraft = captureRegisterDraft();
+      if (needsCaptcha) {
+        resetCaptcha();
+        // Some CAPTCHA renderers update their mount asynchronously. Restore
+        // again on the next frame so that update cannot clear form controls.
+        restoreRegisterDraft(registerDraft);
+        requestAnimationFrame(() => restoreRegisterDraft(registerDraft));
+      }
       if (error.code === "deletion_pending") {
         location.href = `/login?cancel=1&username=${encodeURIComponent(form.username.value)}`;
         return;

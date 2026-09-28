@@ -246,6 +246,12 @@ test("paid plan layout, settings support placement and legal locales are complet
   assert.ok(plans.includes("1024 KB"));
   assert.ok(!plans.includes("2 MB"));
 });
+
+test("registration does not execute the Magic Link login initializer", () => {
+  const app = fs.readFileSync(path.join(__dirname, "../public/app.js"), "utf8");
+  assert.match(app, /const magicLink = kind === "login" \? new URLSearchParams/u);
+  assert.doesNotMatch(app, /const magicLink = kind === "login" && new URLSearchParams/u);
+});
 test("Zero and legacy PIN lengths stay separate", () => {
   const context = browserContext();
   assert.equal(
