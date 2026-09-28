@@ -24,6 +24,14 @@ function browserContext() {
   vm.runInContext(source.slice(0, source.lastIndexOf("boot().catch")), context);
   return context;
 }
+test("forgot-password recovery is available before the password sign-in step", () => {
+  const login = fs.readFileSync(path.join(__dirname, "../public/login.html"), "utf8");
+  const recoveryLink = login.indexOf('href="/reset-password"');
+  const passwordGroup = login.indexOf('id="login-password-group"');
+  assert.ok(recoveryLink > -1);
+  assert.ok(passwordGroup > -1);
+  assert.ok(recoveryLink < passwordGroup);
+});
 test("a notice modal closes when its confirmation has no custom action", async () => {
   const context = browserContext();
   const classes = new Set();
