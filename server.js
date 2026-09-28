@@ -79,6 +79,10 @@ const REUSABLE_COUPON_DIGEST =
   "cfac7fb4d85dc8c216061ee731a56b9169decda34575fc568f3ff34143d6ade0";
 const SATORA_BASE_URL = "https://satora.nxlabtw.com";
 const SATORA_RETURN_URL = "https://astranote.nxlabtw.com/plans/return";
+const ONION_SERVICE_ID = "nxlabtwhcegzi5f65qb6ri4iv72rtdp5q7s4w457pahcohtmegjregqd";
+const ASTRANOTE_ONION_HOST = `astranote.${ONION_SERVICE_ID}.onion`;
+const ASTRANOTE_ONION_ORIGIN = `http://${ASTRANOTE_ONION_HOST}`;
+const NEXACAPTCHA_ONION_ORIGIN = `http://nexacaptcha.${ONION_SERVICE_ID}.onion`;
 const PLAN_DEFINITIONS = Object.freeze({
   free: { maxBytes: 128 * 1000, maxNotes: 20, monthlySats: 0 },
   plus: { maxBytes: 256 * 1000, maxNotes: 50, monthlySats: 2500 },
@@ -105,6 +109,8 @@ const CLIENT_ENCRYPTED_MODES = new Set([
 const ALLOWED_ORIGINS = new Set([
   "https://astranote.nxlabtw.com",
   "https://astranote.zeabur.app",
+  ASTRANOTE_ONION_ORIGIN,
+  ASTRANOTE_ONION_ORIGIN.replace("http:", "https:"),
 ]);
 const USERNAME_RE = /^[A-Za-z0-9_]{3,24}$/;
 const CREATABLE_ENCRYPTION_TYPES = new Set([
@@ -2261,6 +2267,14 @@ async function accountPayload(username) {
 
 app.set("trust proxy", 1);
 app.disable("x-powered-by");
+app.use((req, res, next) => {
+  // Advertise the Tor counterpart only from the primary HTTPS clearnet host.
+  // The onion route stays HTTP because Tor already authenticates and encrypts
+  // the end-to-end connection; it also avoids a misleading public-Web TLS hop.
+  if (req.hostname === "astranote.nxlabtw.com" && req.secure)
+    res.setHeader("Onion-Location", `${ASTRANOTE_ONION_ORIGIN}${req.originalUrl}`);
+  next();
+});
 app.use(
   helmet({
     // CSP frame-ancestors covers modern browsers; retain the legacy header so
@@ -2278,11 +2292,14 @@ app.use(
           "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
           "https://nexacaptcha.nxlabtw.com",
+          ASTRANOTE_ONION_ORIGIN,
+          NEXACAPTCHA_ONION_ORIGIN,
         ],
         styleSrc: [
           "'self'",
           "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
+          ASTRANOTE_ONION_ORIGIN,
         ],
         imgSrc: [
           "'self'",
@@ -2291,38 +2308,49 @@ app.use(
           "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
           "https://nexacaptcha.nxlabtw.com",
+          ASTRANOTE_ONION_ORIGIN,
+          NEXACAPTCHA_ONION_ORIGIN,
         ],
         fontSrc: [
           "'self'",
           "data:",
           "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
+          ASTRANOTE_ONION_ORIGIN,
         ],
         connectSrc: [
           "'self'",
           "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
           "https://nexacaptcha.nxlabtw.com",
+          ASTRANOTE_ONION_ORIGIN,
+          NEXACAPTCHA_ONION_ORIGIN,
         ],
         frameSrc: [
           "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
           "https://nexacaptcha.nxlabtw.com",
+          ASTRANOTE_ONION_ORIGIN,
+          NEXACAPTCHA_ONION_ORIGIN,
         ],
         frameAncestors: [
           "'self'",
           "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
+          ASTRANOTE_ONION_ORIGIN,
         ],
         formAction: [
           "'self'",
           "https://astranote.nxlabtw.com",
           "https://astranote.zeabur.app",
+          ASTRANOTE_ONION_ORIGIN,
         ],
         manifestSrc: ["'self'"],
         workerSrc: ["'self'", "blob:"],
-        upgradeInsecureRequests:
-          process.env.NODE_ENV === "production" ? [] : null,
+        // Onion services are intentionally served over HTTP: Tor supplies the
+        // authenticated encrypted transport. Do not rewrite their CAPTCHA
+        // asset URL to HTTPS, which would require a separate onion TLS setup.
+        upgradeInsecureRequests: null,
       },
     },
     referrerPolicy: { policy: "no-referrer" },

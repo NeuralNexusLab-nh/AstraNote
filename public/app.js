@@ -1,5 +1,11 @@
 "use strict";
 
+const ASTRA_ONION_HOST = "astranote.nxlabtwhcegzi5f65qb6ri4iv72rtdp5q7s4w457pahcohtmegjregqd.onion";
+const ASTRA_ONION_ORIGIN = `http://${ASTRA_ONION_HOST}`;
+function isOnionSite() {
+  return typeof location !== "undefined" && location.hostname.toLowerCase() === ASTRA_ONION_HOST;
+}
+
 const I18N = {
   en: {
     home: "Home",
@@ -788,6 +794,7 @@ Object.assign(I18N.en, {
   paymentChecking: "Checking payment status…",
   paymentActivated: "Your payment is confirmed",
   paymentActivatedBody: "Your {plan} plan is now active for {days} days. Thank you for supporting AstraNote.",
+  torSatoraWarning: "Satora is currently available only on the public web. Continuing will leave the Tor network.",
 });
 
 Object.assign(I18N["zh-Hant"], {
@@ -868,6 +875,7 @@ Object.assign(I18N["zh-Hant"], {
   paymentChecking: "正在確認付款狀態…",
   paymentActivated: "你的付款已確認",
   paymentActivatedBody: "你的 {plan} 方案現已啟用 {days} 天。感謝你支持 AstraNote。",
+  torSatoraWarning: "Satora 目前僅提供一般網路版本；繼續後將離開 Tor 網路。",
 });
 
 Object.assign(I18N.ja, {
@@ -966,6 +974,7 @@ Object.assign(I18N.ja, {
   paymentChecking: "支払い状態を確認中…",
   paymentActivated: "お支払いを確認しました",
   paymentActivatedBody: "{plan} プランが {days} 日間有効になりました。AstraNote をご支援いただきありがとうございます。",
+  torSatoraWarning: "Satora は現在通常のウェブでのみ利用できます。続行すると Tor ネットワークを離れます。",
 });
 
 Object.assign(I18N["en"], {
@@ -2432,7 +2441,10 @@ function buildNav() {
     authenticated && planName
       ? `<small class="brand-plan brand-plan--${planName}">${planName}</small>`
       : "";
-  nav.innerHTML = `<a class="brand" href="/"><img src="/asset/logo.png" alt=""><span>AstraNote</span>${planSuffix}</a>
+  const darkWebSuffix = isOnionSite()
+    ? '<small class="brand-dark-web">Dark Web</small>'
+    : "";
+  nav.innerHTML = `<a class="brand" href="/"><img src="/asset/logo.png" alt=""><span>AstraNote</span>${darkWebSuffix}${planSuffix}</a>
     <button class="mobile-toggle" type="button" data-i18n-aria-label="menu" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>
     <div class="nav-links"><a class="nav-link" href="/"><i class="fa-solid fa-house" aria-hidden="true"></i> <span data-i18n="home"></span></a>${protectedLinks}${publicPlansLink}</div>
     <div class="nav-actions"><i class="fa-solid fa-language" aria-hidden="true"></i><select class="lang-select" id="language-select" data-i18n-aria-label="languageSelector"><option value="en">EN</option><option value="zh-Hant">繁中</option><option value="ja">日本語</option></select>
@@ -2517,7 +2529,10 @@ function buildNav() {
 function buildFooter() {
   const footer = document.createElement("footer");
   footer.className = "site-footer";
-  footer.innerHTML = `<div class="shell footer-inner"><div class="footer-links"><a href="mailto:astranote@nxlabtw.com"><i class="fa-regular fa-envelope"></i> astranote@nxlabtw.com</a><a href="/terms"><i class="fa-solid fa-scale-balanced"></i> <span data-i18n="terms"></span></a><a href="/privacy"><i class="fa-solid fa-shield-halved"></i> <span data-i18n="privacy"></span></a><a href="https://github.com/NeuralNexusLab-nh/AstraNote" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> <span data-i18n="source"></span></a><a href="https://nxlabtw.com" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i> NXLabTW</a></div><span data-i18n="copyright"></span></div>`;
+  const onionLink = isOnionSite()
+    ? ""
+    : `<a href="${ASTRA_ONION_ORIGIN}"><i class="fa-solid fa-user-secret" aria-hidden="true"></i> AstraNote Dark Web</a>`;
+  footer.innerHTML = `<div class="shell footer-inner"><div class="footer-links"><a href="mailto:astranote@nxlabtw.com"><i class="fa-regular fa-envelope"></i> astranote@nxlabtw.com</a><a href="/terms"><i class="fa-solid fa-scale-balanced"></i> <span data-i18n="terms"></span></a><a href="/privacy"><i class="fa-solid fa-shield-halved"></i> <span data-i18n="privacy"></span></a><a href="https://github.com/NeuralNexusLab-nh/AstraNote" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> <span data-i18n="source"></span></a>${onionLink}<a href="https://nxlabtw.com" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i> NXLabTW</a></div><span data-i18n="copyright"></span></div>`;
   document.body.append(footer);
 }
 
@@ -3116,6 +3131,12 @@ function deleteNote(note) {
 async function initHome() {
   const heroTitle = $(".hero-brand-title");
   const heroMark = $(".hero-brand-mark", heroTitle);
+  if (heroTitle && isOnionSite()) {
+    const darkWeb = document.createElement("small");
+    darkWeb.className = "hero-dark-web";
+    darkWeb.textContent = "Dark Web";
+    heroTitle.append(darkWeb);
+  }
   if (heroTitle && heroMark && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
     heroTitle.classList.add("brand-assembling");
     setTimeout(() => {
@@ -4835,7 +4856,7 @@ async function initPlans() {
     if (!selectedPlan) return;
     actionModal({
       title: t("checkoutVerificationTitle"),
-      body: t("checkoutVerificationBody"),
+      body: `${t("checkoutVerificationBody")}${isOnionSite() ? ` ${t("torSatoraWarning")}` : ""}`,
       confirm: t("continueToSatora"),
       danger: false,
       run: async () => {
