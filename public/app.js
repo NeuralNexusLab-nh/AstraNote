@@ -3131,12 +3131,6 @@ function deleteNote(note) {
 async function initHome() {
   const heroTitle = $(".hero-brand-title");
   const heroMark = $(".hero-brand-mark", heroTitle);
-  if (heroTitle && isOnionSite()) {
-    const darkWeb = document.createElement("span");
-    darkWeb.className = "hero-dark-web";
-    darkWeb.textContent = "Dark Web";
-    heroTitle.append(darkWeb);
-  }
   if (heroTitle && heroMark && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
     heroTitle.classList.add("brand-assembling");
     setTimeout(() => {

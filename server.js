@@ -2271,7 +2271,11 @@ app.use((req, res, next) => {
   // Advertise the Tor counterpart only from the primary HTTPS clearnet host.
   // The onion route stays HTTP because Tor already authenticates and encrypts
   // the end-to-end connection; it also avoids a misleading public-Web TLS hop.
-  if (req.hostname === "astranote.nxlabtw.com" && req.secure)
+  // The canonical public hostname is HTTPS-only at the edge. Do not rely on
+  // req.secure here: proxy hop counts differ between local and hosted routes,
+  // while an absent Onion-Location header prevents Tor Browser from offering
+  // the private counterpart at all.
+  if (req.hostname === "astranote.nxlabtw.com")
     res.setHeader("Onion-Location", `${ASTRANOTE_ONION_ORIGIN}${req.originalUrl}`);
   next();
 });

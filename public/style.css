@@ -2626,15 +2626,12 @@ html[lang="ja"] [data-lang="en"] {
   display: inline-flex;
   align-items: center;
   margin-left: 4px;
-  padding: 2px 4px;
-  border: 1px solid #7659c9;
-  border-radius: 3px;
   color: #6044ab;
   font: 650 0.8em/1 var(--body);
   letter-spacing: 0.055em;
   white-space: nowrap;
 }
-html[data-theme="dark"] .brand-dark-web { border-color: #9e88ed; color: #c4b7ff; }
+html[data-theme="dark"] .brand-dark-web { color: #c4b7ff; }
 .brand-plan--free {
   border-color: var(--line);
   background: color-mix(in srgb, var(--button) 72%, transparent);
