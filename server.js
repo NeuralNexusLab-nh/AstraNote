@@ -1506,7 +1506,27 @@ function parseSessionCookie(req) {
     return { username: null, token: value, legacy: true };
   return null;
 }
+function requestHost(req) {
+  return String(req.get("x-forwarded-host") || req.get("host") || "")
+    .split(",", 1)[0]
+    .trim()
+    .toLowerCase()
+    .replace(/:\d+$/, "");
+}
+function isAstraNoteOnionRequest(req) {
+  return requestHost(req) === ASTRANOTE_ONION_HOST;
+}
+function isLoopbackRequest(req) {
+  const ip = String(requestIp(req) || "").replace(/^::ffff:/i, "").trim();
+  return ip === "127.0.0.1" || ip === "::1";
+}
+function isTorGatewayRequest(req) {
+  // The Tor gateway connects to AstraNote locally. Treat loopback as Tor only
+  // when the original HTTP Host is the verified AstraNote onion hostname.
+  return isAstraNoteOnionRequest(req) && isLoopbackRequest(req);
+}
 function sessionDevice(req) {
+  if (isTorGatewayRequest(req)) return "Tor Browser";
   const ua = String(req.get("user-agent") || "");
   if (/DuckDuckGo/i.test(ua)) return "DuckDuckGo";
   if (/TorBrowser|Tor Browser/i.test(ua)) return "Tor Browser";
@@ -1525,6 +1545,7 @@ function publicIpForLookup(value) {
   return net.isIP(ip) ? ip : null;
 }
 async function sessionLocation(req) {
+  if (isTorGatewayRequest(req)) return { country: "Dark Web" };
   const ip = publicIpForLookup(requestIp(req));
   if (!ip) return { country: null };
   const controller = new AbortController();
@@ -4804,5 +4825,8 @@ module.exports = {
     auditStatusText,
     auditTimestamp,
     cleanAuditValue,
+    isTorGatewayRequest,
+    sessionDevice,
+    sessionLocation,
   },
 };

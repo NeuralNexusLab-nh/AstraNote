@@ -64,6 +64,34 @@ test("admin announcements include unverified email and honor account, plan, and 
   assert.deepEqual(testables.broadcastRecipients(users, { excludedAccounts: ["missing"] }).unmatched, ["missing"]);
 });
 
+test("only an onion request from the local Tor gateway is labelled as Tor", async () => {
+  const torRequest = {
+    ip: "127.0.0.1",
+    get(name) {
+      const header = name.toLowerCase();
+      if (header === "host")
+        return "astranote.nxlabtwhcegzi5f65qb6ri4iv72rtdp5q7s4w457pahcohtmegjregqd.onion";
+      if (header === "user-agent") return "Mozilla/5.0";
+      return "";
+    },
+  };
+  assert.equal(testables.isTorGatewayRequest(torRequest), true);
+  assert.equal(testables.sessionDevice(torRequest), "Tor Browser");
+  assert.deepEqual(await testables.sessionLocation(torRequest), { country: "Dark Web" });
+
+  const ordinaryLoopbackRequest = {
+    ...torRequest,
+    get(name) {
+      const header = name.toLowerCase();
+      if (header === "host") return "astranote.nxlabtw.com";
+      if (header === "user-agent") return "Edg/137";
+      return "";
+    },
+  };
+  assert.equal(testables.isTorGatewayRequest(ordinaryLoopbackRequest), false);
+  assert.equal(testables.sessionDevice(ordinaryLoopbackRequest), "Edge");
+});
+
 test.after(async () => {
   await new Promise((resolve) => server.close(resolve));
   testables.closeOrderStore();
