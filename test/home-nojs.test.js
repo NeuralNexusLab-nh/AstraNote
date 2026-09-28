@@ -22,7 +22,7 @@ test("no-JS homepage renders current marketing copy in all supported languages",
   assert.match(traditionalChinese, /隨手記下，隨時找到。/u);
   assert.match(
     traditionalChinese,
-    /從日常筆記、隨手要記的資訊，到需要妥善保護的私密文字；AstraNote 讓它們在你需要的時候，立刻就在手邊。/u,
+    /從日常筆記、隨手要記的資訊，到需要妥善保護的私密文字；<br>AstraNote 讓它們在你需要的時候，立刻就在手邊。/u,
   );
   assert.match(traditionalChinese, /了解方案/u);
   assert.doesNotMatch(traditionalChinese, /小抄/u);
