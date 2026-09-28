@@ -52,11 +52,11 @@
                 name="password"
                 type="password"
                 autocomplete="new-password"
-                minlength="10"
-                maxlength="256"
+                minlength="8"
+                maxlength="24"
                 required
               />
-              <p class="field-help" data-i18n="passwordRules">10–256 characters. Do not use a common password or include your username.</p>
+              <p class="field-help" data-i18n="passwordRules">8–24 characters. Do not use a common password or include your username.</p>
             </div>
             <div class="form-group">
               <label
@@ -68,8 +68,8 @@
                 name="passwordConfirmation"
                 type="password"
                 autocomplete="new-password"
-                minlength="10"
-                maxlength="256"
+                minlength="8"
+                maxlength="24"
                 required
               />
             </div>
@@ -112,12 +112,8 @@
             </div>
           </form>
         </section>
-        <aside class="card reveal">
-          <p class="eyebrow">
-            <i class="fa-solid fa-gauge-high"></i><span data-i18n="accountLimitsEyebrow"></span>
-          </p>
-          <h2>128 KB</h2>
-          <p class="muted" data-i18n="limitBody"></p>
+        <aside class="auth-visual reveal" aria-hidden="true">
+          <div class="auth-visual-orbit"></div><img src="/asset/logo.png" alt="">
         </aside>
       </div>
     </main>

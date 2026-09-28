@@ -80,6 +80,7 @@
                 <option value="light" data-i18n="light"></option>
               </select>
             </div>
+            <button class="btn btn-primary settings-section-save" type="submit" data-settings-save="theme" hidden><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span data-i18n="saveSettings"></span></button>
           </section>
           <section class="card reveal settings-language">
             <h2 class="feature-heading">
@@ -95,6 +96,7 @@
                 <option value="ja">日本語</option>
               </select>
             </div>
+            <button class="btn btn-primary settings-section-save" type="submit" data-settings-save="language" hidden><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span data-i18n="saveSettings"></span></button>
           </section>
           <section class="card reveal settings-identity">
             <h2 class="feature-heading">
@@ -111,19 +113,27 @@
                 required
               />
             </div>
+            <button class="btn btn-primary settings-section-save" type="submit" data-settings-save="displayName" hidden><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span data-i18n="saveSettings"></span></button>
           </section>
           <section class="card reveal settings-email-security">
-            <h2 class="feature-heading"><span class="feature-icon"><i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i></span><span data-i18n="emailSecurity"></span></h2>
+            <h2 class="feature-heading"><span class="feature-icon"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i></span><span data-i18n="signInMethod"></span></h2>
             <p class="field-help" id="email-security-status"></p>
             <button class="btn btn-outline" type="button" id="verify-email"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span data-i18n="verifyNow"></span></button>
-            <label class="check-row email-two-factor-toggle"><input type="checkbox" id="email-two-factor" name="emailTwoFactor"><span><strong data-i18n="emailTwoFactor"></strong><small data-i18n="emailTwoFactorHelp"></small></span><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></label>
+            <fieldset class="login-method-options" id="login-method-options">
+              <legend data-i18n="signInMethod"></legend>
+              <label class="login-method-option"><input type="radio" name="loginMethod" value="password"><span><i class="fa-solid fa-key" aria-hidden="true"></i><strong data-i18n="passwordSignIn"></strong><small data-i18n="passwordSignInHelp"></small></span></label>
+              <label class="login-method-option"><input type="radio" name="loginMethod" value="two_factor"><span><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><strong data-i18n="twoFactorSignIn"></strong><small data-i18n="twoFactorSignInHelp"></small></span></label>
+              <label class="login-method-option"><input type="radio" name="loginMethod" value="magic"><span><i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i><strong data-i18n="magicLinkSignIn"></strong><small data-i18n="magicLinkSignInHelp"></small></span></label>
+            </fieldset>
+            <button class="btn btn-primary settings-section-save" type="submit" data-settings-save="loginMethod" hidden><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span data-i18n="saveSignInMethod"></span></button>
           </section>
           <section class="card reveal settings-password-security">
             <h2 class="feature-heading"><span class="feature-icon"><i class="fa-solid fa-key" aria-hidden="true"></i></span><span data-i18n="passwordSecurity"></span></h2>
             <p class="field-help" data-i18n="passwordSecurityHelp"></p>
-            <div class="form-group"><label for="current-password" data-i18n="currentPassword"></label><input id="current-password" name="currentPassword" type="password" autocomplete="current-password" maxlength="256"></div>
-            <div class="form-group"><label for="new-password" data-i18n="newPassword"></label><input id="new-password" name="newPassword" type="password" autocomplete="new-password" maxlength="256"></div>
-            <div class="form-group"><label for="new-password-confirmation" data-i18n="confirmPassword"></label><input id="new-password-confirmation" name="passwordConfirmation" type="password" autocomplete="new-password" maxlength="256"></div>
+            <div class="form-group"><label for="current-password" data-i18n="currentPassword"></label><input id="current-password" name="currentPassword" type="password" autocomplete="current-password" maxlength="24"></div>
+            <div class="form-group"><label for="new-password" data-i18n="newPassword"></label><input id="new-password" name="newPassword" type="password" autocomplete="new-password" minlength="8" maxlength="24"><p class="field-help" data-i18n="passwordRules"></p></div>
+            <div class="form-group"><label for="new-password-confirmation" data-i18n="confirmPassword"></label><input id="new-password-confirmation" name="passwordConfirmation" type="password" autocomplete="new-password" minlength="8" maxlength="24"><p class="field-help" data-i18n="passwordConfirmationRules"></p></div>
+            <button class="btn btn-primary settings-section-save" type="submit" data-settings-save="password" hidden><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span data-i18n="savePassword"></span></button>
           </section>
           <section class="card reveal" id="trash-settings" hidden>
             <h2 class="feature-heading">
@@ -146,13 +156,8 @@
             </div>
             <p class="field-help" data-i18n="trashSettingsHelp"></p>
             <p class="field-help" data-i18n="previousHelp"></p>
+            <button class="btn btn-primary settings-section-save" type="submit" data-settings-save="trashDays" hidden><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span data-i18n="saveSettings"></span></button>
           </section>
-          <div class="settings-save-bar">
-            <button class="btn btn-primary" type="submit" id="save-settings">
-              <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i
-              ><span data-i18n="saveSettings"></span>
-            </button>
-          </div>
           <section class="card reveal signed-in-devices" aria-labelledby="signed-in-devices-title">
             <h2 class="feature-heading" id="signed-in-devices-title">
               <span class="feature-icon"><i class="fa-solid fa-laptop-shield" aria-hidden="true"></i></span><span data-i18n="signedInDevices"></span>

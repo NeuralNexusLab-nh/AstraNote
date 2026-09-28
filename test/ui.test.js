@@ -202,15 +202,10 @@ test("paid plan layout, settings support placement and legal locales are complet
   assert.match(plans, /class="[^"]*plan-card-featured[^"]*"\s+data-plan="pro"/);
   assert.equal((plans.match(/data-i18n="expiryLockNotice"/g) || []).length, 2);
   const settings = read("settings.html");
-  assert.equal((settings.match(/type="submit"/g) || []).length, 1);
-  assert.ok(
-    settings.indexOf('class="settings-save-bar"') >
-      settings.indexOf('id="trash-settings"'),
-  );
-  assert.ok(
-    settings.indexOf('class="settings-save-bar"') <
-      settings.indexOf('class="card danger-zone'),
-  );
+  assert.equal((settings.match(/type="submit"/g) || []).length, 6);
+  assert.equal(settings.includes('class="settings-save-bar"'), false);
+  for (const field of ["theme", "language", "displayName", "loginMethod", "password", "trashDays"])
+    assert.match(settings, new RegExp(`data-settings-save="${field}"`));
   const planCard = settings.slice(
     settings.indexOf("plan-settings-card"),
     settings.indexOf("settings-appearance"),

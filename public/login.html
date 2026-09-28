@@ -20,7 +20,7 @@
           <h1 data-auth-title data-i18n="signInTitle"></h1>
           <p class="muted" data-auth-body data-i18n="signInBody"></p>
           <form id="auth-form" novalidate>
-            <div class="form-group">
+            <div class="form-group" id="login-identifier-group">
               <label for="username" data-i18n="usernameOrEmail"></label
               ><input
                 id="username"
@@ -30,15 +30,14 @@
                 required
               />
             </div>
-            <div class="form-group">
+            <div class="form-group" id="login-password-group" hidden>
               <label for="password" data-i18n="password"></label
               ><input
                 id="password"
                 name="password"
                 type="password"
                 autocomplete="current-password"
-                maxlength="256"
-                required
+                maxlength="24"
               />
               <a class="field-help auth-forgot" href="/reset-password" data-i18n="forgotPassword"></a>
             </div>
@@ -55,13 +54,8 @@
             </div>
           </form>
         </section>
-        <aside class="card reveal">
-          <p class="eyebrow">
-            <i class="fa-solid fa-lock"></i> PRIVATE BY DEFAULT
-          </p>
-          <h2 data-i18n="tagline"></h2>
-          <p class="muted" data-i18n="passwordRecoveryAvailable"></p>
-          <p class="muted" data-i18n="emailSecurityOverview"></p>
+        <aside class="auth-visual reveal" aria-hidden="true">
+          <div class="auth-visual-orbit"></div><img src="/asset/logo.png" alt="">
         </aside>
       </div>
     </main>

@@ -240,6 +240,14 @@ function newId(bytes = 16) {
 function jsonError(res, status, code, message) {
   return res.status(status).json({ error: code, message });
 }
+function passwordValidationError(username, password) {
+  if (password.length < 8) return "password_too_short";
+  if (password.length > 24) return "password_too_long";
+  if (COMMON_PASSWORDS.has(password.toLowerCase())) return "password_common";
+  if (username && password.toLowerCase().includes(String(username).toLowerCase()))
+    return "password_contains_username";
+  return null;
+}
 // Operation audit records deliberately contain no request body, cookie, token,
 // note content, note ID, shared-link token, or payment identifier. Logs are
 // useful for operating the service, but must not become another data store.
@@ -273,8 +281,10 @@ function auditDescriptor(method, route, status = 0) {
   const key = `${method.toUpperCase()} ${route}`;
   const actions = {
     "POST /api/register": ["CREATE ACCOUNT", "MEDIUM"],
+    "POST /api/login/continue": ["CHOOSE SIGN-IN METHOD", "MEDIUM", "SIGN-IN METHOD FAILED"],
     "POST /api/login": ["SIGN IN", "MEDIUM", "SIGN IN FAILED"],
     "POST /api/login/verify": ["VERIFY SIGN-IN CODE", "MEDIUM", "VERIFY SIGN-IN CODE FAILED"],
+    "POST /api/login/magic/confirm": ["COMPLETE MAGIC LINK SIGN-IN", "MEDIUM", "MAGIC LINK SIGN-IN FAILED"],
     "POST /api/email/verification/send": ["SEND EMAIL VERIFICATION", "MEDIUM"],
     "POST /api/email/verification/confirm": ["CONFIRM EMAIL VERIFICATION", "MEDIUM", "EMAIL VERIFICATION FAILED"],
     "POST /api/password/reset/request": ["REQUEST PASSWORD RESET", "MEDIUM"],
@@ -342,7 +352,7 @@ function operationAuditLogger(req, res, next) {
       ? `SIGNED IN · ${cleanAuditValue(req.auditUser.username, 80)} <${cleanAuditValue(req.auditUser.email, 254)}>`
       : "ANONYMOUS";
     console.log(
-      `${auditTimestamp()}  ${levelLabel}\n${entry.action}\nUSER: ${user}\nIP: ${cleanAuditValue(requestIp(req), 80)} · ${req.method.toUpperCase()} ${route.toUpperCase()} → ${res.statusCode} ${auditStatusText(res.statusCode)}`,
+      `${auditTimestamp()}  ${levelLabel}\n${entry.action}\nUSER: ${user}\nIP: ${cleanAuditValue(requestIp(req), 80)}\nRESULT: ${res.statusCode} ${auditStatusText(res.statusCode)}`,
     );
   });
   next();
@@ -515,9 +525,14 @@ async function loadMetadata(username) {
     metadata.cryptoFactor = metadata.passwordHash;
   metadata.emailVerified = metadata.emailVerified === true;
   metadata.emailQuotaRestricted = metadata.emailQuotaRestricted === true;
-  metadata.emailTwoFactor = metadata.emailVerified && metadata.emailTwoFactor === true;
+  metadata.loginMethod = ["password", "two_factor", "magic"].includes(metadata.loginMethod)
+    ? metadata.loginMethod
+    : metadata.emailTwoFactor === true ? "two_factor" : "password";
+  if (!metadata.emailVerified && metadata.loginMethod !== "password")
+    metadata.loginMethod = "password";
+  metadata.emailTwoFactor = metadata.loginMethod === "two_factor";
   metadata.emailAuth ||= {};
-  for (const key of ["verify", "reset", "login", "delete"])
+  for (const key of ["verify", "reset", "login", "magic", "delete"])
     if (Date.parse(metadata.emailAuth[key]?.expiresAt || 0) < Date.now()) delete metadata.emailAuth[key];
   for (const key of ["verifySentAt", "loginSentAt"])
     if (Array.isArray(metadata.emailAuth[key])) metadata.emailAuth[key] = metadata.emailAuth[key].filter((time) => Date.now() - Date.parse(time) < 24 * 60 * 60_000);
@@ -1907,6 +1922,7 @@ function emailCopy(language, key, values = {}) {
     en: {
       verify: { subject: "Verify your AstraNote email", title: "Verify your email", body: "Verify your email to unlock the full 128 KB Free allowance and email security features.", actionLabel: "Verify email" },
       login: { subject: "Your AstraNote sign-in code", title: "Confirm this sign-in", body: "Enter this code in AstraNote to complete your sign-in." },
+      magic: { subject: "Sign in to AstraNote", title: "Confirm this sign-in", body: "Use this secure sign-in link to access your AstraNote account.", actionLabel: "Sign in to AstraNote" },
       reset: { subject: "Reset your AstraNote password", title: "Reset your password", body: "We received a request to reset your AstraNote password. If this was not you, you can safely ignore this email.", actionLabel: "Reset password" },
       delete: { subject: "Confirm AstraNote account deletion", title: "Confirm account deletion", body: "Enter this code in AstraNote to permanently delete your account. This cannot be undone." },
       payment: { subject: "AstraNote payment confirmed", title: "Your plan is active", body: "Your AstraNote {plan} plan is active for {days} days." },
@@ -1918,6 +1934,7 @@ function emailCopy(language, key, values = {}) {
     "zh-Hant": {
       verify: { subject: "驗證你的 AstraNote Email", title: "驗證你的 Email", body: "完成 Email 驗證，即可啟用完整的 128 KB Free 空間與 Email 安全功能。", actionLabel: "驗證 Email" },
       login: { subject: "你的 AstraNote 登入驗證碼", title: "確認這次登入", body: "請在 AstraNote 輸入下方驗證碼，完成這次登入。" },
+      magic: { subject: "登入 AstraNote", title: "確認這次登入", body: "請使用此安全登入連結，存取你的 AstraNote 帳號。", actionLabel: "登入 AstraNote" },
       reset: { subject: "重設你的 AstraNote 密碼", title: "重設密碼", body: "我們收到重設 AstraNote 密碼的要求。如果不是你本人操作，請直接忽略此信。", actionLabel: "重設密碼" },
       delete: { subject: "確認刪除 AstraNote 帳號", title: "確認刪除帳號", body: "請在 AstraNote 輸入此驗證碼，永久刪除帳號。此操作無法復原。" },
       payment: { subject: "AstraNote 付款已確認", title: "你的方案已啟用", body: "你的 AstraNote {plan} 方案已啟用 {days} 天。" },
@@ -1929,6 +1946,7 @@ function emailCopy(language, key, values = {}) {
     ja: {
       verify: { subject: "AstraNote メール認証", title: "メールを認証", body: "メールを認証すると、Free の完全な 128 KB とメール保護機能を利用できます。", actionLabel: "メールを認証" },
       login: { subject: "AstraNote のサインインコード", title: "サインインを確認", body: "以下のコードを AstraNote に入力してサインインを完了してください。" },
+      magic: { subject: "AstraNote にサインイン", title: "サインインを確認", body: "この安全なサインインリンクを使用して、AstraNote アカウントにアクセスしてください。", actionLabel: "AstraNote にサインイン" },
       reset: { subject: "AstraNote パスワードの再設定", title: "パスワードを再設定", body: "AstraNote のパスワード再設定を受け付けました。心当たりがない場合は、このメールを無視してください。", actionLabel: "パスワードを再設定" },
       delete: { subject: "AstraNote アカウント削除の確認", title: "アカウント削除の確認", body: "このコードを AstraNote に入力すると、アカウントを完全に削除します。この操作は元に戻せません。" },
       payment: { subject: "AstraNote の支払いを確認しました", title: "プランが有効になりました", body: "AstraNote {plan} プランを {days} 日間ご利用いただけます。" },
@@ -2201,7 +2219,7 @@ async function accountPayload(username) {
       },
       emailSecurity: {
         verified: metadata.emailVerified === true,
-        twoFactorEnabled: metadata.emailVerified === true && metadata.emailTwoFactor === true,
+        loginMethod: metadata.loginMethod || "password",
         // Every unverified account should see the security reminder. Free is
         // the only tier where verification also increases the storage quota.
         showVerificationBanner: metadata.emailVerified !== true,
@@ -2614,22 +2632,13 @@ app.post(
         "invalid_email",
         "Enter a valid email address.",
       );
-    if (password.length < 10 || password.length > 256)
+    const passwordError = passwordValidationError(username, password);
+    if (passwordError)
       return jsonError(
         res,
         400,
-        "weak_password",
-        "Password must contain 10–256 characters.",
-      );
-    if (
-      COMMON_PASSWORDS.has(password.toLowerCase()) ||
-      password.toLowerCase().includes(username.toLowerCase())
-    )
-      return jsonError(
-        res,
-        400,
-        "weak_password",
-        "Choose a less common password that does not contain your username.",
+        passwordError,
+        "Choose a password that meets the listed requirements.",
       );
     if (String(req.body.passwordConfirmation) !== password)
       return jsonError(
@@ -2678,6 +2687,7 @@ app.post(
           emailVerified: false,
           emailQuotaRestricted: true,
           emailTwoFactor: false,
+          loginMethod: "password",
           emailAuth: {},
           createdAt,
           registrationIp: requestIp(req),
@@ -2735,6 +2745,49 @@ app.post(
 );
 
 app.post(
+  "/api/login/continue",
+  loginIpLimiter,
+  loginUsernameLimiter,
+  async (req, res, next) => {
+    const identifier = normalizeText(req.body?.username, 254);
+    try {
+      const metadata = await findAccountByIdentifier(identifier);
+      // A password field is also shown for an unknown account. This keeps the
+      // first step from becoming a reliable account-existence oracle.
+      if (!metadata || metadata.loginMethod !== "magic" || !metadata.emailVerified)
+        return res.json({ next: "password" });
+      if (accountIsBanned(metadata))
+        return jsonError(res, 401, "invalid_credentials", "Username or password is incorrect.");
+      const deletion = await findDeletion(metadata.username);
+      if (deletion)
+        return jsonError(res, 401, "invalid_credentials", "Username or password is incorrect.");
+      setAuditUser(req, metadata);
+      await withLock(`user:${userKey(metadata.username)}`, async () => {
+        const current = await loadMetadata(metadata.username);
+        if (actionRecentlySent(current, "magic", 1, 3 * 60_000))
+          throw Object.assign(new Error("Please wait 3 minutes before requesting another email."), { status: 429, code: "email_rate_limited" });
+        const token = makeEmailToken();
+        current.emailAuth.magic = {
+          digest: tokenDigest(token),
+          expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString(),
+        };
+        const url = `https://astranote.nxlabtw.com/login#magic=1&u=${encodeURIComponent(current.username)}&token=${encodeURIComponent(token)}`;
+        const language = current.settings?.language || "en";
+        const copy = emailCopy(language, "magic");
+        const location = await sessionLocation(req);
+        const template = emailTemplate({ ...copy, actionUrl: url, ...emailSecurityNotice(language, "login"), details: emailAuditDetails(language, current, { ip: requestIp(req), country: location.country }), language });
+        await sendMail({ to: current.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
+        recordActionSent(current, "magic");
+        await saveMetadata(current.username, current);
+      });
+      return res.json({ next: "magic", magicLinkSent: true });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.post(
   "/api/login",
   loginIpLimiter,
   loginUsernameLimiter,
@@ -2772,6 +2825,8 @@ app.post(
         );
       }
       setAuditUser(req, metadata);
+      if (metadata.loginMethod === "magic")
+        return jsonError(res, 401, "invalid_credentials", "Username or password is incorrect.");
       if (accountIsBanned(metadata))
         return res.status(403).json({ error: "account_banned", message: metadata.bannedMessage || "This account is currently unavailable.", bannedUntil: metadata.banned });
       const deletion = await findDeletion(metadata.username);
@@ -2779,7 +2834,7 @@ app.post(
         if (deletion.status === "cooling_off") return res.status(409).json({ error: "deletion_pending", message: "This account is pending deletion.", reversibleUntil: deletion.reversibleUntil });
         return jsonError(res, 401, "invalid_credentials", "Username or password is incorrect.");
       }
-      if (metadata.emailTwoFactor === true && metadata.emailVerified === true) {
+      if (metadata.loginMethod === "two_factor" && metadata.emailVerified === true) {
         await withLock(`user:${userKey(metadata.username)}`, async () => {
           const current = await loadMetadata(metadata.username);
           if (actionRecentlySent(current, "login", 1, 3 * 60_000))
@@ -2810,6 +2865,31 @@ app.post(
     }
   },
 );
+
+app.post("/api/login/magic/confirm", loginIpLimiter, emailLinkIpLimiter, async (req, res, next) => {
+  try {
+    const token = String(req.body?.token || "");
+    const username = normalizeText(req.body?.username, 24);
+    const metadata = USERNAME_RE.test(username) && /^[A-Za-z0-9_-]{32,}$/.test(token)
+      ? await withLock(`user:${userKey(username)}`, async () => {
+          const current = await loadMetadata(username);
+          const challenge = current?.emailAuth?.magic;
+          if (!current || current.loginMethod !== "magic" || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !safeEqual(challenge.digest, tokenDigest(token))) return null;
+          delete current.emailAuth.magic;
+          current.lastLoginAt = utcNow();
+          current.lastLoginIp = requestIp(req);
+          await saveMetadata(current.username, current);
+          return current;
+        })
+      : null;
+    if (!metadata)
+      return jsonError(res, 401, "invalid_magic_link", "This sign-in link is invalid or has expired.");
+    setAuditUser(req, metadata);
+    const session = await createSession(metadata.username, req, res);
+    await updateOnlineUser(metadata.username);
+    res.json({ ok: true, csrf: session.csrf, redirect: "/dashboard" });
+  } catch (error) { next(error); }
+});
 
 app.post("/api/login/verify", loginIpLimiter, emailCodeIpLimiter, emailCodeAccountLimiter, async (req, res, next) => {
   try {
@@ -2910,13 +2990,16 @@ app.post("/api/password/reset/confirm", emailLinkIpLimiter, async (req, res, nex
     const token = String(req.body?.token || "");
     const username = normalizeText(req.body?.username, 24);
     const password = typeof req.body?.password === "string" ? req.body.password : "";
-    if (!/^[A-Za-z0-9_-]{32,}$/.test(token) || password.length < 10 || password.length > 256)
-      return jsonError(res, 400, "invalid_reset", "This reset link is invalid, expired, or the password does not meet requirements.");
+    if (!/^[A-Za-z0-9_-]{32,}$/.test(token))
+      return jsonError(res, 400, "invalid_reset", "This reset link is invalid or expired.");
     const resetUsername = USERNAME_RE.test(username)
       ? await withLock(`user:${userKey(username)}`, async () => {
           const metadata = await loadMetadata(username);
           const challenge = metadata?.emailAuth?.reset;
           if (!metadata || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !safeEqual(challenge.digest, tokenDigest(token))) return null;
+          const passwordError = passwordValidationError(metadata.username, password);
+          if (passwordError)
+            throw Object.assign(new Error("Choose a password that meets the listed requirements."), { status: 400, code: passwordError });
           metadata.passwordHash = await argon2.hash(password, { type: argon2.argon2id, memoryCost: 19456, timeCost: 2, parallelism: 1 });
           delete metadata.emailAuth.reset;
           await saveMetadata(metadata.username, metadata);
@@ -3142,16 +3225,22 @@ app.patch(
             });
           metadata.displayName = displayName;
         }
-        if (req.body.emailTwoFactor !== undefined) {
-          if (req.body.emailTwoFactor === true && !metadata.emailVerified)
-            throw Object.assign(new Error("Verify your email before enabling two-step verification."), { status: 400, code: "email_unverified" });
-          metadata.emailTwoFactor = req.body.emailTwoFactor === true;
+        if (req.body.loginMethod !== undefined) {
+          if (!["password", "two_factor", "magic"].includes(req.body.loginMethod))
+            throw Object.assign(new Error("Choose an available sign-in method."), { status: 400, code: "invalid_login_method" });
+          if (req.body.loginMethod !== "password" && !metadata.emailVerified)
+            throw Object.assign(new Error("Verify your email before enabling this sign-in method."), { status: 400, code: "email_unverified" });
+          metadata.loginMethod = req.body.loginMethod;
+          metadata.emailTwoFactor = metadata.loginMethod === "two_factor";
         }
         if (req.body.newPassword !== undefined) {
           const oldPassword = typeof req.body.currentPassword === "string" ? req.body.currentPassword : "";
           const nextPassword = typeof req.body.newPassword === "string" ? req.body.newPassword : "";
-          if (nextPassword.length < 10 || nextPassword.length > 256 || String(req.body.passwordConfirmation || "") !== nextPassword)
-            throw Object.assign(new Error("Enter a matching password between 10 and 256 characters."), { status: 400, code: "weak_password" });
+          const passwordError = passwordValidationError(metadata.username, nextPassword);
+          if (passwordError)
+            throw Object.assign(new Error("Choose a password that meets the listed requirements."), { status: 400, code: passwordError });
+          if (String(req.body.passwordConfirmation || "") !== nextPassword)
+            throw Object.assign(new Error("The two passwords do not match."), { status: 400, code: "password_mismatch" });
           if (!(await argon2.verify(metadata.passwordHash, oldPassword).catch(() => false)))
             throw Object.assign(new Error("Current password is incorrect."), { status: 401, code: "invalid_credentials" });
           metadata.passwordHash = await argon2.hash(nextPassword, { type: argon2.argon2id, memoryCost: 19456, timeCost: 2, parallelism: 1 });

@@ -1607,6 +1607,15 @@ Object.assign(I18N["zh-Hant"], {
 Object.assign(I18N.ja, {
   verifiedCloseHint: "このページは閉じても大丈夫です。",
 });
+Object.assign(I18N.en, {
+  passwordRules: "8–24 characters. Do not use a common password or include your username.", passwordConfirmationRules: "Enter the same password again.", passwordTooShort: "Your password needs at least 8 characters.", passwordTooLong: "Your password can use up to 24 characters.", passwordCommon: "This password is too common. Choose a more unique password.", passwordContainsUsername: "Your password cannot include your username.", invalidResetLink: "This password reset link is invalid or has expired.", invalidMagicLink: "This sign-in link is invalid or has expired.", invalidEmail: "Enter a valid Email address.", accountUnavailable: "This username or Email is already in use.", agreementRequired: "Accept the Terms and Privacy Policy before creating your account.", invalidCredentials: "Username or Email, or password, is incorrect.", signInMethod: "Sign-in method", passwordSignIn: "Username or Email + password", passwordSignInHelp: "Sign in with your usual password.", twoFactorSignIn: "Username or Email + password + two-step verification", twoFactorSignInHelp: "After your password is correct, we send a six-digit sign-in code.", magicLinkSignIn: "Magic Link", magicLinkSignInHelp: "We send a secure, one-time sign-in link to your verified Email.", saveSignInMethod: "Save sign-in method", emailUnverifiedSignInMethod: "Verify your Email before choosing this sign-in method.", magicLinkSentTitle: "Check your Email", magicLinkSentBody: "A secure sign-in link has been sent if this account is available. Check your inbox and Spam or Junk folder.", savePassword: "Save password", settingsSavedBody: "Your change has been saved.",
+});
+Object.assign(I18N["zh-Hant"], {
+  passwordRules: "8～24 個字元；不可使用常見密碼，也不可包含使用者名稱。", passwordConfirmationRules: "請再次輸入相同密碼。", passwordTooShort: "密碼至少需要 8 個字元。", passwordTooLong: "密碼最多可使用 24 個字元。", passwordCommon: "這個密碼過於常見，請使用更不容易被猜到的密碼。", passwordContainsUsername: "密碼不可包含你的使用者名稱。", invalidResetLink: "這個重設密碼連結無效或已失效。", invalidMagicLink: "這個登入連結無效或已失效。", invalidEmail: "請輸入有效的 Email 地址。", accountUnavailable: "這個使用者名稱或 Email 已有人使用。", agreementRequired: "建立帳號前，請同意使用者協議與隱私政策。", invalidCredentials: "使用者名稱、Email 或密碼不正確。", signInMethod: "登入方式", passwordSignIn: "使用者名稱或 Email＋密碼", passwordSignInHelp: "使用平常的密碼登入。", twoFactorSignIn: "使用者名稱或 Email＋密碼＋兩步驟驗證", twoFactorSignInHelp: "密碼正確後，我們會寄送六位數登入碼。", magicLinkSignIn: "登入連結", magicLinkSignInHelp: "我們會把安全、一次性的登入連結寄到已驗證的 Email。", saveSignInMethod: "儲存登入方式", emailUnverifiedSignInMethod: "請先驗證 Email，才能選擇此登入方式。", magicLinkSentTitle: "請檢查你的 Email", magicLinkSentBody: "若此帳號可用，安全登入連結已寄出。請檢查收件匣，以及垃圾郵件或促銷內容資料夾。", savePassword: "儲存密碼", settingsSavedBody: "你的變更已儲存。",
+});
+Object.assign(I18N.ja, {
+  passwordRules: "8～24文字。よくあるパスワードやユーザー名を含むものは使用できません。", passwordConfirmationRules: "同じパスワードをもう一度入力してください。", passwordTooShort: "パスワードは8文字以上必要です。", passwordTooLong: "パスワードは24文字までです。", passwordCommon: "このパスワードはよく使われています。より固有のものを選んでください。", passwordContainsUsername: "パスワードにユーザー名を含めることはできません。", invalidResetLink: "このパスワード再設定リンクは無効または期限切れです。", invalidMagicLink: "このサインインリンクは無効または期限切れです。", invalidEmail: "有効なメールアドレスを入力してください。", accountUnavailable: "このユーザー名またはメールアドレスは既に使われています。", agreementRequired: "アカウントを作成する前に、利用規約とプライバシーポリシーに同意してください。", invalidCredentials: "ユーザー名、メールアドレス、またはパスワードが正しくありません。", signInMethod: "サインイン方法", passwordSignIn: "ユーザー名またはメールアドレス＋パスワード", passwordSignInHelp: "通常のパスワードでサインインします。", twoFactorSignIn: "ユーザー名またはメールアドレス＋パスワード＋二段階認証", twoFactorSignInHelp: "パスワードが正しい場合、6桁のコードを送信します。", magicLinkSignIn: "マジックリンク", magicLinkSignInHelp: "認証済みメールアドレスに、安全な一度限りのサインインリンクを送信します。", saveSignInMethod: "サインイン方法を保存", emailUnverifiedSignInMethod: "このサインイン方法を選ぶには、先にメールを認証してください。", magicLinkSentTitle: "メールを確認してください", magicLinkSentBody: "アカウントが利用可能な場合、安全なサインインリンクを送信しました。受信トレイと迷惑メールフォルダーを確認してください。", savePassword: "パスワードを保存", settingsSavedBody: "変更を保存しました。",
+});
 
 const state = {
   session: null,
@@ -2189,6 +2198,19 @@ async function api(url, options = {}) {
           note_locked: t("noteLocked"),
           order_not_found: t("billingRetention"),
           email_daily_limit: t("emailDailyLimit"),
+          password_too_short: t("passwordTooShort"),
+          password_too_long: t("passwordTooLong"),
+          password_common: t("passwordCommon"),
+          password_contains_username: t("passwordContainsUsername"),
+          password_mismatch: t("passwordConfirmationRules"),
+          invalid_reset: t("invalidResetLink"),
+          invalid_magic_link: t("invalidMagicLink"),
+          email_unverified: t("emailUnverifiedSignInMethod"),
+          invalid_username: t("usernameRules"),
+          invalid_email: t("invalidEmail"),
+          account_unavailable: t("accountUnavailable"),
+          agreement_required: t("agreementRequired"),
+          invalid_credentials: t("invalidCredentials"),
         }[data.error] ||
           data.message ||
           t("error"),
@@ -2384,14 +2406,14 @@ function buildNav() {
     <a class="nav-link" href="/dashboard"><i class="fa-solid fa-chart-line"></i> <span data-i18n="dashboard"></span></a>
     <a class="nav-link" href="/notes"><i class="fa-solid fa-book"></i> <span data-i18n="notes"></span></a>
     ${trashLink}
-    <a class="nav-link" href="/docs"><i class="fa-solid fa-book-open" aria-hidden="true"></i> <span data-i18n="docs"></span></a>
     <a class="nav-link plans-nav-link" href="/plans"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> <span data-i18n="plans"></span></a>
+    <a class="nav-link" href="/docs"><i class="fa-solid fa-book-open" aria-hidden="true"></i> <span data-i18n="docs"></span></a>
     ${state.account?.isAdmin ? '<a class="nav-link" href="/admin"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> <span data-i18n="admin"></span></a>' : ""}
     <a class="nav-link" href="/settings"><i class="fa-solid fa-gear"></i> <span data-i18n="settings"></span></a>`
     : "";
   const publicPlansLink = authenticated
     ? ""
-    : '<a class="nav-link" href="/docs"><i class="fa-solid fa-book-open" aria-hidden="true"></i> <span data-i18n="docs"></span></a><a class="nav-link plans-nav-link" href="/plans"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> <span data-i18n="plans"></span></a>';
+    : '<a class="nav-link plans-nav-link" href="/plans"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> <span data-i18n="plans"></span></a><a class="nav-link" href="/docs"><i class="fa-solid fa-book-open" aria-hidden="true"></i> <span data-i18n="docs"></span></a>';
   const nav = document.createElement("nav");
   nav.className = `site-nav ${page === "home" ? "" : "solid"}`;
   nav.dataset.i18nAriaLabel = "primaryNavigation";
@@ -3089,6 +3111,32 @@ function deleteNote(note) {
 }
 
 async function initHome() {
+  const heroTitle = $(".hero-brand-title");
+  const heroMark = $(".hero-brand-mark", heroTitle);
+  if (heroTitle && heroMark && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    heroTitle.classList.add("brand-assembling");
+    const rect = heroMark.getBoundingClientRect();
+    const intro = document.createElement("div");
+    intro.className = "hero-brand-intro";
+    intro.setAttribute("aria-hidden", "true");
+    intro.style.setProperty("--intro-x", `${rect.left + rect.width / 2}px`);
+    intro.style.setProperty("--intro-y", `${rect.top + rect.height / 2}px`);
+    intro.style.setProperty("--intro-size", `${rect.width}px`);
+    for (let index = 0; index < 4; index += 1) {
+      const fragment = document.createElement("img");
+      fragment.src = "/asset/logo.png";
+      fragment.alt = "";
+      fragment.className = `hero-brand-fragment fragment-${index}`;
+      intro.append(fragment);
+    }
+    document.body.append(intro);
+    requestAnimationFrame(() => intro.classList.add("is-expanded"));
+    setTimeout(() => {
+      intro.remove();
+      heroTitle.classList.remove("brand-assembling");
+      heroTitle.classList.add("brand-intro-complete");
+    }, 850);
+  }
   if (state.session?.authenticated) {
     const primary = $("#hero-primary");
     if (primary) {
@@ -3177,13 +3225,37 @@ async function initAuthForm(kind) {
   const form = $("#auth-form");
   if (!form) return;
   let twoFactorUsername = null;
+  let loginStage = "identifier";
   const params = new URLSearchParams(location.search);
   const cancellation = kind === "login" && params.get("cancel") === "1";
+  const magicLink = kind === "login" && new URLSearchParams(location.hash.slice(1));
+  const showPasswordStep = () => {
+    loginStage = "password";
+    $("#login-password-group", form).hidden = false;
+    form.password.required = true;
+    form.password.focus();
+  };
+  if (magicLink?.get("magic") === "1") {
+    try {
+      const result = await api("/api/login/magic/confirm", {
+        method: "POST",
+        body: { username: magicLink.get("u"), token: magicLink.get("token") },
+      });
+      history.replaceState(null, "", "/login");
+      location.replace(result.redirect);
+      return;
+    } catch (error) {
+      history.replaceState(null, "", "/login");
+      showError(error);
+    }
+  }
   if (cancellation) {
     $("[data-auth-title]").textContent = t("cancellationMode");
     $("[data-auth-body]").textContent = t("cancellationBody");
     form.username.value = params.get("username") || "";
     form.querySelector("[type=submit]").textContent = t("cancellationMode");
+    loginStage = "password";
+    showPasswordStep();
   }
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -3203,8 +3275,8 @@ async function initAuthForm(kind) {
         return;
       }
       if (
-        password.length < 10 ||
-        password.length > 256 ||
+        password.length < 8 ||
+        password.length > 24 ||
         password.toLowerCase().includes(username.toLowerCase())
       ) {
         reportAuthError(t("passwordRules"));
@@ -3220,19 +3292,37 @@ async function initAuthForm(kind) {
       reportAuthError(t("captchaNeeded"));
       return;
     }
-    button.disabled = true;
-    const data = twoFactorUsername
-      ? { username: twoFactorUsername, code: otpCode(form) }
-      : Object.fromEntries(new FormData(form));
-    if (needsCaptcha) data.captcha = state.captcha;
-    const storedLanguage = getStoredPreference("astranote_language");
-    if (storedLanguage || kind === "register")
-      data.language = storedLanguage || state.language;
-    if (kind === "register") {
-      data.acceptTerms = form.acceptTerms.checked;
-      data.legalCapacity = form.legalCapacity.checked;
-    }
     try {
+      button.disabled = true;
+      if (kind === "login" && !cancellation && !twoFactorUsername && loginStage === "identifier") {
+        const result = await api("/api/login/continue", { method: "POST", body: { username: form.username.value } });
+        if (result.next === "magic") {
+          form.replaceChildren();
+          const message = document.createElement("p");
+          message.className = "auth-method-message";
+          message.innerHTML = `<i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i><strong>${t("magicLinkSentTitle")}</strong><span>${t("magicLinkSentBody")}</span>`;
+          const back = document.createElement("a");
+          back.className = "btn btn-outline";
+          back.href = "/login";
+          back.innerHTML = `<i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>${t("backHome")}</span>`;
+          form.append(message, back);
+          return;
+        }
+        showPasswordStep();
+        button.disabled = false;
+        return;
+      }
+      const data = twoFactorUsername
+        ? { username: twoFactorUsername, code: otpCode(form) }
+        : Object.fromEntries(new FormData(form));
+      if (needsCaptcha) data.captcha = state.captcha;
+      const storedLanguage = getStoredPreference("astranote_language");
+      if (storedLanguage || kind === "register")
+        data.language = storedLanguage || state.language;
+      if (kind === "register") {
+        data.acceptTerms = form.acceptTerms.checked;
+        data.legalCapacity = form.legalCapacity.checked;
+      }
       const endpoint = twoFactorUsername ? "/api/login/verify" : cancellation ? "/api/deletion/cancel" : `/api/${kind}`;
       const result = await api(endpoint, { method: "POST", body: data });
       if (result.twoFactorRequired) {
@@ -3358,6 +3448,8 @@ async function initResetPassword() {
     event.preventDefault(); const message = $(".form-message", form); message.textContent = "";
     try {
       if (!hasToken) { await api("/api/password/reset/request", { method: "POST", body: { email: emailInput.value } }); startEmailCooldown("reset", submitButton); showMailSentModal(); return; }
+      if (passwordInput.value.length < 8) throw new Error(t("passwordTooShort"));
+      if (passwordInput.value.length > 24) throw new Error(t("passwordTooLong"));
       if (passwordInput.value !== confirmationInput.value) throw new Error(t("passwordConfirmationRules"));
       const result = await api("/api/password/reset/confirm", { method: "POST", body: { token, username, password: passwordInput.value } });
       history.replaceState(null, "", "/reset-password"); location.href = result.redirect;
@@ -4268,10 +4360,12 @@ async function initSettings() {
       finally { if (!sent && !refreshEmailCooldown("verify", verifyButton)) verifyButton.disabled = false; }
     };
   }
-  if (form.emailTwoFactor) {
-    form.emailTwoFactor.checked = account.emailSecurity?.twoFactorEnabled === true;
-    form.emailTwoFactor.disabled = account.emailSecurity?.verified !== true;
-  }
+  const loginMethod = account.emailSecurity?.loginMethod || "password";
+  const loginMethodInputs = $$('input[name="loginMethod"]', form);
+  loginMethodInputs.forEach((input) => {
+    input.checked = input.value === loginMethod;
+    input.disabled = input.value !== "password" && account.emailSecurity?.verified !== true;
+  });
   $("#settings-plan").textContent = planDisplayName(account.plan.type);
   $("#priority-support").hidden = !account.plan.canRecover;
   $("#settings-ultra-days").textContent =
@@ -4332,31 +4426,57 @@ async function initSettings() {
   };
   const sessions = await api("/api/sessions");
   renderSessions(sessions.sessions);
+  const initialSettings = {
+    theme: form.theme.value,
+    language: form.language.value,
+    displayName: form.displayName.value,
+    loginMethod,
+    trashDays: form.trashDays?.value,
+  };
+  const updateSectionSave = (field) => {
+    const button = $(`[data-settings-save="${field}"]`, form);
+    if (!button) return;
+    const current = field === "loginMethod"
+      ? $('input[name="loginMethod"]:checked', form)?.value
+      : field === "password"
+        ? Boolean(form.currentPassword.value || form.newPassword.value || form.passwordConfirmation.value)
+        : form[field]?.value;
+    const original = initialSettings[field];
+    button.hidden = field === "password" ? !current : current === original;
+  };
+  ["theme", "language", "displayName", "trashDays"].forEach((field) =>
+    form[field]?.addEventListener("input", () => updateSectionSave(field)),
+  );
+  loginMethodInputs.forEach((input) => input.addEventListener("change", () => updateSectionSave("loginMethod")));
+  ["currentPassword", "newPassword", "passwordConfirmation"].forEach((field) =>
+    form[field]?.addEventListener("input", () => updateSectionSave("password")),
+  );
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const saveButton = $("#save-settings");
+    const saveButton = event.submitter;
+    if (!saveButton?.dataset.settingsSave) return;
     if (saveButton.disabled) return;
+    const field = saveButton.dataset.settingsSave;
     saveButton.disabled = true;
     try {
+      const body = field === "theme" ? { theme: form.theme.value }
+        : field === "language" ? { language: form.language.value }
+        : field === "displayName" ? { displayName: form.displayName.value }
+        : field === "loginMethod" ? { loginMethod: $('input[name="loginMethod"]:checked', form)?.value }
+        : field === "trashDays" ? { trashDays: Number(form.trashDays.value) }
+        : { currentPassword: form.currentPassword.value, newPassword: form.newPassword.value, passwordConfirmation: form.passwordConfirmation.value };
       await api("/api/settings", {
         method: "PATCH",
-        body: {
-          displayName: form.displayName.value,
-          theme: form.theme.value,
-          language: form.language.value,
-          ...(account.plan.canRecover
-            ? { trashDays: Number(form.trashDays.value) }
-            : {}),
-          emailTwoFactor: Boolean(form.emailTwoFactor?.checked),
-          ...(form.newPassword?.value ? { currentPassword: form.currentPassword.value, newPassword: form.newPassword.value, passwordConfirmation: form.passwordConfirmation.value } : {}),
-        },
+        body,
       });
-      state.theme = form.theme.value;
-      state.language = form.language.value;
-      setStoredPreference("astranote_theme", state.theme);
-      setStoredPreference("astranote_language", state.language);
-      applyLocale();
-      toast(t("saved"));
+      if (field === "theme") { state.theme = form.theme.value; setStoredPreference("astranote_theme", state.theme); applyLocale(); }
+      if (field === "language") { state.language = form.language.value; setStoredPreference("astranote_language", state.language); applyLocale(); }
+      if (field === "password") {
+        form.currentPassword.value = ""; form.newPassword.value = ""; form.passwordConfirmation.value = "";
+      }
+      initialSettings[field] = field === "loginMethod" ? body.loginMethod : field === "password" ? false : form[field]?.value;
+      updateSectionSave(field);
+      modal({ title: t("saved"), body: t("settingsSavedBody"), confirm: t("understood"), showCancel: false, onConfirm: (close) => close() });
     } catch (error) {
       showError(error);
     } finally {

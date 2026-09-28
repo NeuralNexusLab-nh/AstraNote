@@ -866,6 +866,30 @@ body[data-page="home"] .site-nav:not(.scrolled) .nav-link.active {
   padding: 40px;
   border-radius: 20px;
 }
+.auth-visual {
+  position: relative;
+  display: grid;
+  min-height: 540px;
+  overflow: hidden;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--primary) 19%, transparent), transparent 32%), linear-gradient(145deg, color-mix(in srgb, var(--card) 92%, var(--primary) 8%), var(--canvas));
+}
+.auth-visual::before, .auth-visual::after { position: absolute; width: 42%; aspect-ratio: 1; content: ""; border: 1px solid color-mix(in srgb, var(--primary) 28%, transparent); border-radius: 50%; }
+.auth-visual::before { transform: translate(-30%, -26%); }
+.auth-visual::after { transform: translate(32%, 30%); }
+.auth-visual img { position: relative; z-index: 1; width: min(148px, 34%); height: auto; filter: drop-shadow(0 18px 34px color-mix(in srgb, var(--primary) 26%, transparent)); animation: authMarkFloat 5.5s ease-in-out infinite; }
+.auth-visual-orbit { position: absolute; width: 64%; aspect-ratio: 1; border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent); border-radius: 50%; animation: authOrbit 17s linear infinite; }
+@keyframes authMarkFloat { 50% { transform: translateY(-10px) scale(1.025); } }
+@keyframes authOrbit { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .auth-visual img, .auth-visual-orbit { animation: none; }
+}
+.auth-method-message { display: grid; gap: 12px; padding: 24px 0; text-align: center; }
+.auth-method-message i { color: var(--primary); font-size: 1.75rem; }
+.auth-method-message strong { font: 600 1.2rem/1.4 var(--display); }
+.auth-method-message span { color: var(--muted); line-height: 1.7; }
 .verification-page .shell {
   max-width: 760px;
 }
@@ -1037,6 +1061,20 @@ textarea {
 .email-banner-action:hover, .email-banner-action:focus-visible { background: #fff6f7; color: #5c0c1d; }
 body.has-email-verification-banner .page { padding-top: 186px; }
 .settings-email-security, .settings-password-security { display: flex; flex-direction: column; gap: 11px; }
+.settings-section-save { align-self: flex-start; margin-top: 6px; }
+.login-method-options { display: grid; gap: 10px; padding: 0; margin: 4px 0 0; border: 0; }
+.login-method-options legend { margin-bottom: 9px; color: var(--muted); font-size: 14px; }
+.login-method-option { display: block; margin: 0; cursor: pointer; }
+.login-method-option > input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.login-method-option > span { display: grid; grid-template-columns: 30px 1fr; gap: 4px 10px; min-height: 76px; padding: 14px 15px; border: 1px solid var(--line); border-radius: 15px; background: color-mix(in srgb, var(--card) 88%, var(--accent) 12%); transition: border-color .2s ease, background .2s ease, transform .2s ease, box-shadow .2s ease; }
+.login-method-option > span > i { grid-row: span 2; align-self: center; color: var(--muted); font-size: 1.1rem; text-align: center; }
+.login-method-option strong { align-self: end; color: var(--text); font-size: .93rem; }
+.login-method-option small { color: var(--muted); font-size: .78rem; line-height: 1.45; }
+.login-method-option:hover > span { transform: translateY(-1px); border-color: var(--accent); }
+.login-method-option > input:checked + span { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 14%, var(--card)); box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 34%, transparent); }
+.login-method-option > input:checked + span > i { color: var(--primary); }
+.login-method-option > input:focus-visible + span { outline: 3px solid color-mix(in srgb, var(--primary) 42%, transparent); outline-offset: 3px; }
+.login-method-option > input:disabled + span { cursor: not-allowed; opacity: .5; }
 .settings-email-security .check-row small { display: block; margin-top: 4px; color: var(--muted); font-weight: 400; }
 .email-two-factor-toggle {
   min-height: 76px;
