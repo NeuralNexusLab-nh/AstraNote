@@ -100,15 +100,10 @@ body[data-page="home"] .site-nav.open:not(.scrolled),
 body[data-page="home"] .site-nav.open:not(.scrolled) :is(.brand, .nav-link, .mobile-toggle) { color: var(--text); }
 body[data-page="home"] .site-nav.open:not(.scrolled) .nav-link:is(:hover, .active),
 body[data-page="home"] .site-nav.open:not(.scrolled) .mobile-toggle { background: var(--button); }
-.hero-brand-title.brand-assembling :is(.hero-brand-mark, span) { opacity: 0; }
+.hero-brand-title.brand-assembling > span { opacity: 0; }
+.hero-brand-title.brand-assembling .hero-brand-mark { animation: heroBrandSpin .72s cubic-bezier(.28,.72,.32,1) both; }
 .hero-brand-title.brand-intro-complete > span { animation: heroBrandTextArrive .32s ease-out both; }
-.hero-brand-intro { position: fixed; z-index: 1002; left: var(--intro-x); top: var(--intro-y); width: var(--intro-size); height: var(--intro-size); pointer-events: none; transform: translate(-50%, -50%); }
-.hero-brand-fragment { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: transform .65s cubic-bezier(.2,.8,.2,1), opacity .45s ease; }
-.fragment-0 { clip-path: inset(0 50% 50% 0); transform: rotate(0deg) scale(.38); transform-origin: 50% 50%; }
-.fragment-1 { clip-path: inset(0 0 50% 50%); transform: rotate(90deg) scale(.38); transform-origin: 50% 50%; }
-.fragment-2 { clip-path: inset(50% 0 0 50%); transform: rotate(180deg) scale(.38); transform-origin: 50% 50%; }
-.fragment-3 { clip-path: inset(50% 50% 0 0); transform: rotate(-90deg) scale(.38); transform-origin: 50% 50%; }
-.hero-brand-intro.is-expanded .hero-brand-fragment { transform: rotate(0deg) scale(1); }
+@keyframes heroBrandSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes heroBrandTextArrive { from { opacity: 0; clip-path: inset(0 100% 0 0); transform: translateX(-10px); } to { opacity: 1; clip-path: inset(0 0 0 0); transform: translateX(0); } }
 .home-nojs-languages { padding: 24px; display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; }
 .home-nojs-languages a { display: inline-flex; align-items: center; min-height: 44px; }

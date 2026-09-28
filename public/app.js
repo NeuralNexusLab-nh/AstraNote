@@ -3115,27 +3115,10 @@ async function initHome() {
   const heroMark = $(".hero-brand-mark", heroTitle);
   if (heroTitle && heroMark && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
     heroTitle.classList.add("brand-assembling");
-    const rect = heroMark.getBoundingClientRect();
-    const intro = document.createElement("div");
-    intro.className = "hero-brand-intro";
-    intro.setAttribute("aria-hidden", "true");
-    intro.style.setProperty("--intro-x", `${rect.left + rect.width / 2}px`);
-    intro.style.setProperty("--intro-y", `${rect.top + rect.height / 2}px`);
-    intro.style.setProperty("--intro-size", `${rect.width}px`);
-    for (let index = 0; index < 4; index += 1) {
-      const fragment = document.createElement("img");
-      fragment.src = "/asset/logo.png";
-      fragment.alt = "";
-      fragment.className = `hero-brand-fragment fragment-${index}`;
-      intro.append(fragment);
-    }
-    document.body.append(intro);
-    requestAnimationFrame(() => intro.classList.add("is-expanded"));
     setTimeout(() => {
-      intro.remove();
       heroTitle.classList.remove("brand-assembling");
       heroTitle.classList.add("brand-intro-complete");
-    }, 850);
+    }, 760);
   }
   if (state.session?.authenticated) {
     const primary = $("#hero-primary");
