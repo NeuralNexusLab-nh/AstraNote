@@ -3236,7 +3236,11 @@ async function initAuthForm(kind) {
   };
   const showPasswordStep = () => {
     loginStage = "password";
-    $("#login-password-group", form).hidden = false;
+    const passwordGroup = $("#login-password-group", form);
+    passwordGroup.hidden = false;
+    // Recovery belongs directly below whichever credential is currently being
+    // requested: the identifier at first, then the password once it appears.
+    passwordGroup.append($(".auth-forgot", form));
     form.password.required = true;
     form.password.focus();
   };

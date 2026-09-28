@@ -32,6 +32,10 @@ test("forgot-password recovery is available before the password sign-in step", (
   assert.ok(passwordGroup > -1);
   assert.ok(recoveryLink < passwordGroup);
 });
+test("forgot-password recovery moves below the password field when it is requested", () => {
+  const app = fs.readFileSync(path.join(__dirname, "../public/app.js"), "utf8");
+  assert.match(app, /passwordGroup\.append\(\$\("\.auth-forgot", form\)\)/);
+});
 test("a notice modal closes when its confirmation has no custom action", async () => {
   const context = browserContext();
   const classes = new Set();
