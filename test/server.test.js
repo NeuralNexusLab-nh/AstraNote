@@ -102,6 +102,8 @@ test("onion-triggered email links and branding remain on the onion service", () 
   };
   const origin = testables.appOriginForRequest(onionRequest);
   assert.equal(origin, "http://astranote.nxlabtwhcegzi5f65qb6ri4iv72rtdp5q7s4w457pahcohtmegjregqd.onion");
+  assert.equal(testables.emailIpForRequest(onionRequest, "zh-Hant"), "Tor 網路");
+  assert.equal(testables.emailIpForRequest(onionRequest, "en"), "Tor Network");
   const template = testables.emailTemplate({
     title: "Test",
     body: "Test",

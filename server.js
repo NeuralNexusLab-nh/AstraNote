@@ -1530,6 +1530,12 @@ function appOriginForRequest(req) {
     ? ASTRANOTE_ONION_ORIGIN
     : "https://astranote.nxlabtw.com";
 }
+function emailIpForRequest(req, language = "en") {
+  if (!isAstraNoteOnionRequest(req)) return requestIp(req);
+  if (language === "zh-Hant") return "Tor 網路";
+  if (language === "ja") return "Tor ネットワーク";
+  return "Tor Network";
+}
 function sessionDevice(req) {
   if (isTorGatewayRequest(req)) return "Tor Browser";
   const ua = String(req.get("user-agent") || "");
@@ -2845,7 +2851,7 @@ app.post(
         const language = current.settings?.language || "en";
         const copy = emailCopy(language, "magic");
         const location = await sessionLocation(req);
-        const template = emailTemplate({ ...copy, actionUrl: url, ...emailSecurityNotice(language, "login"), details: emailAuditDetails(language, current, { ip: requestIp(req), country: location.country }), language, darkWeb: isAstraNoteOnionRequest(req) });
+        const template = emailTemplate({ ...copy, actionUrl: url, ...emailSecurityNotice(language, "login"), details: emailAuditDetails(language, current, { ip: emailIpForRequest(req, language), country: location.country }), language, darkWeb: isAstraNoteOnionRequest(req) });
         await sendMail({ to: current.email, from: EMAIL_FROM, subject: copy.subject, template });
         recordActionSent(current, "magic");
         await saveMetadata(current.username, current);
@@ -2880,8 +2886,10 @@ app.post(
           const lastAlert = Date.parse(current.emailAuth.failedSignInAlertAt || 0);
           if (current.emailVerified && recent.length >= 5 && (!Number.isFinite(lastAlert) || now - lastAlert >= 24 * 60 * 60_000)) {
             const location = await sessionLocation(req);
-            const copy = emailCopy(current.settings?.language || "en", "security", { count: recent.length, ip: requestIp(req), country: location.country ? ` · ${location.country}` : "" });
-            const template = emailTemplate({ ...copy, details: emailAuditDetails(current.settings?.language || "en", current, { ip: requestIp(req), country: location.country }), language: current.settings?.language || "en" });
+            const language = current.settings?.language || "en";
+            const emailIp = emailIpForRequest(req, language);
+            const copy = emailCopy(language, "security", { count: recent.length, ip: emailIp, country: location.country ? ` · ${location.country}` : "" });
+            const template = emailTemplate({ ...copy, details: emailAuditDetails(language, current, { ip: emailIp, country: location.country }), language, darkWeb: isAstraNoteOnionRequest(req) });
             await sendMail({ to: current.email, from: EMAIL_FROM, subject: copy.subject, template }).catch(() => {});
             current.emailAuth.failedSignInAlertAt = new Date(now).toISOString();
           }
@@ -2911,10 +2919,10 @@ app.post(
             throw Object.assign(new Error("Please wait 3 minutes before requesting another email."), { status: 429, code: "email_rate_limited" });
           const code = makeEmailCode();
           current.emailAuth.login = { digest: codeDigest(code), expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString() };
-          const copy = emailCopy(current.settings?.language || "en", "login", { ip: requestIp(req) });
           const location = await sessionLocation(req);
           const language = current.settings?.language || "en";
-          const template = emailTemplate({ ...copy, code, ...emailSecurityNotice(language, "login"), details: emailAuditDetails(language, current, { ip: requestIp(req), country: location.country }), language });
+          const copy = emailCopy(language, "login", { ip: emailIpForRequest(req, language) });
+          const template = emailTemplate({ ...copy, code, ...emailSecurityNotice(language, "login"), details: emailAuditDetails(language, current, { ip: emailIpForRequest(req, language), country: location.country }), language, darkWeb: isAstraNoteOnionRequest(req) });
           await sendMail({ to: current.email, from: EMAIL_FROM, subject: copy.subject, template });
           recordActionSent(current, "login");
           await saveMetadata(current.username, current);
@@ -3001,7 +3009,7 @@ app.post("/api/email/verification/send", requireAuth, accountMutationLimiter, re
       const url = `${appOrigin}/verify-email#u=${encodeURIComponent(metadata.username)}&token=${encodeURIComponent(token)}`;
       const copy = emailCopy(metadata.settings?.language || "en", "verify");
       const location = await sessionLocation(req);
-      const template = emailTemplate({ ...copy, actionUrl: url, details: emailAuditDetails(metadata.settings?.language || "en", metadata, { ip: requestIp(req), country: location.country }), language: metadata.settings?.language || "en", darkWeb: isAstraNoteOnionRequest(req) });
+      const template = emailTemplate({ ...copy, actionUrl: url, details: emailAuditDetails(metadata.settings?.language || "en", metadata, { ip: emailIpForRequest(req, metadata.settings?.language || "en"), country: location.country }), language: metadata.settings?.language || "en", darkWeb: isAstraNoteOnionRequest(req) });
       await sendMail({ to: metadata.email, from: EMAIL_FROM, subject: copy.subject, template });
       recordActionSent(metadata, "verify");
       await saveMetadata(username, metadata);
@@ -3048,7 +3056,7 @@ app.post("/api/password/reset/request", passwordResetIpLimiter, async (req, res,
       const url = `${appOrigin}/reset-password#u=${encodeURIComponent(current.username)}&token=${encodeURIComponent(token)}`;
       const copy = emailCopy(current.settings?.language || "en", "reset");
       const location = await sessionLocation(req);
-      const template = emailTemplate({ ...copy, actionUrl: url, details: emailAuditDetails(current.settings?.language || "en", current, { ip: requestIp(req), country: location.country }), language: current.settings?.language || "en", darkWeb: isAstraNoteOnionRequest(req) });
+      const template = emailTemplate({ ...copy, actionUrl: url, details: emailAuditDetails(current.settings?.language || "en", current, { ip: emailIpForRequest(req, current.settings?.language || "en"), country: location.country }), language: current.settings?.language || "en", darkWeb: isAstraNoteOnionRequest(req) });
       await sendMail({ to: current.email, from: EMAIL_FROM, subject: copy.subject, template });
       recordActionSent(current, "reset");
       await saveMetadata(current.username, current);
@@ -3638,7 +3646,7 @@ app.get(
               const expiresAt = new Date(Date.parse(activatedAt) + activeDays * 864e5).toISOString();
               const copy = emailCopy(language, "payment", { plan: order.plan, days: activeDays });
               const location = await sessionLocation(req);
-              const template = emailTemplate({ ...copy, details: emailAuditDetails(language, metadata, { ip: requestIp(req), country: location.country, plan: order.plan, days: activeDays, activatedAt, expiresAt, status: paymentConfirmedLabel(language) }), expires: false, language });
+              const template = emailTemplate({ ...copy, details: emailAuditDetails(language, metadata, { ip: emailIpForRequest(req, language), country: location.country, plan: order.plan, days: activeDays, activatedAt, expiresAt, status: paymentConfirmedLabel(language) }), expires: false, language, darkWeb: isAstraNoteOnionRequest(req) });
               await sendMail({ to: metadata.email, from: EMAIL_FROM, subject: copy.subject, template });
               metadata.emailAuth.planReceipts = [...metadata.emailAuth.planReceipts.slice(-19), order.orderId];
             }
@@ -4609,7 +4617,7 @@ app.post(
         const copy = emailCopy(metadata.settings?.language || "en", "delete");
         const location = await sessionLocation(req);
         const language = metadata.settings?.language || "en";
-        const template = emailTemplate({ ...copy, code, ...emailSecurityNotice(language, "delete"), danger: true, details: emailAuditDetails(language, metadata, { ip: requestIp(req), country: location.country }), language });
+        const template = emailTemplate({ ...copy, code, ...emailSecurityNotice(language, "delete"), danger: true, details: emailAuditDetails(language, metadata, { ip: emailIpForRequest(req, language), country: location.country }), language, darkWeb: isAstraNoteOnionRequest(req) });
         await sendMail({ to: metadata.email, from: EMAIL_FROM, subject: copy.subject, template });
         recordActionSent(metadata, "delete");
         await saveMetadata(username, metadata);
@@ -4840,6 +4848,7 @@ module.exports = {
     cleanAuditValue,
     isTorGatewayRequest,
     appOriginForRequest,
+    emailIpForRequest,
     sessionDevice,
     sessionLocation,
   },
