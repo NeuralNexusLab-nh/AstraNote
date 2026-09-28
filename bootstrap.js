@@ -13,6 +13,9 @@ const APP_JS_FILE = path.join(ROOT, "public", "app.js");
 const HOME_MARKETING_FILE = path.join(ROOT, "public", "home-marketing.js");
 const LANGUAGE_COOKIE = "astranote_language";
 const LANGUAGE_COOKIE_MAX_AGE = 365 * 24 * 60 * 60 * 1000;
+const ONION_SERVICE_ID = "nxlabtwhcegzi5f65qb6ri4iv72rtdp5q7s4w457pahcohtmegjregqd";
+const ASTRANOTE_ONION_ORIGIN = `http://astranote.${ONION_SERVICE_ID}.onion`;
+const NEXACAPTCHA_ONION_ORIGIN = `http://nexacaptcha.${ONION_SERVICE_ID}.onion`;
 
 function extractObjectLiteral(source, constantName) {
   const marker = `const ${constantName} =`;
@@ -285,11 +288,14 @@ const homeHelmet = helmet({
         "https://astranote.nxlabtw.com",
         "https://astranote.zeabur.app",
         "https://nexacaptcha.nxlabtw.com",
+        ASTRANOTE_ONION_ORIGIN,
+        NEXACAPTCHA_ONION_ORIGIN,
       ],
       styleSrc: [
         "'self'",
         "https://astranote.nxlabtw.com",
         "https://astranote.zeabur.app",
+        ASTRANOTE_ONION_ORIGIN,
       ],
       imgSrc: [
         "'self'",
@@ -298,38 +304,48 @@ const homeHelmet = helmet({
         "https://astranote.nxlabtw.com",
         "https://astranote.zeabur.app",
         "https://nexacaptcha.nxlabtw.com",
+        ASTRANOTE_ONION_ORIGIN,
+        NEXACAPTCHA_ONION_ORIGIN,
       ],
       fontSrc: [
         "'self'",
         "data:",
         "https://astranote.nxlabtw.com",
         "https://astranote.zeabur.app",
+        ASTRANOTE_ONION_ORIGIN,
       ],
       connectSrc: [
         "'self'",
         "https://astranote.nxlabtw.com",
         "https://astranote.zeabur.app",
         "https://nexacaptcha.nxlabtw.com",
+        ASTRANOTE_ONION_ORIGIN,
+        NEXACAPTCHA_ONION_ORIGIN,
       ],
       frameSrc: [
         "https://astranote.nxlabtw.com",
         "https://astranote.zeabur.app",
         "https://nexacaptcha.nxlabtw.com",
+        ASTRANOTE_ONION_ORIGIN,
+        NEXACAPTCHA_ONION_ORIGIN,
       ],
       frameAncestors: [
         "'self'",
         "https://astranote.nxlabtw.com",
         "https://astranote.zeabur.app",
+        ASTRANOTE_ONION_ORIGIN,
       ],
       formAction: [
         "'self'",
         "https://astranote.nxlabtw.com",
         "https://astranote.zeabur.app",
+        ASTRANOTE_ONION_ORIGIN,
       ],
       manifestSrc: ["'self'"],
       workerSrc: ["'self'", "blob:"],
-      upgradeInsecureRequests:
-        process.env.NODE_ENV === "production" ? [] : null,
+      // Onion services use HTTP because Tor itself provides authenticated,
+      // encrypted transport. Do not rewrite their local resources to HTTPS.
+      upgradeInsecureRequests: null,
     },
   },
   referrerPolicy: { policy: "no-referrer" },
@@ -341,6 +357,10 @@ function createOuterApp() {
   const outer = express();
   outer.set("trust proxy", 1);
   outer.disable("x-powered-by");
+  outer.use((req, res, next) => {
+    res.setHeader("Onion-Location", `${ASTRANOTE_ONION_ORIGIN}${req.originalUrl}`);
+    next();
+  });
   outer.get("/", homeHelmet, (req, res) => {
     const selected = requestLanguage(req);
     if (selected.explicit) {
