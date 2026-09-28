@@ -2275,7 +2275,12 @@ app.use((req, res, next) => {
   // req.secure here: proxy hop counts differ between local and hosted routes,
   // while an absent Onion-Location header prevents Tor Browser from offering
   // the private counterpart at all.
-  if (req.hostname === "astranote.nxlabtw.com")
+  const originalHost = String(req.get("x-forwarded-host") || req.get("host") || "")
+    .split(",", 1)[0]
+    .trim()
+    .toLowerCase()
+    .replace(/:\d+$/, "");
+  if (originalHost === "astranote.nxlabtw.com")
     res.setHeader("Onion-Location", `${ASTRANOTE_ONION_ORIGIN}${req.originalUrl}`);
   next();
 });
