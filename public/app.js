@@ -786,7 +786,8 @@ Object.assign(I18N.en, {
   continuePayment: "Continue payment",
   refreshStatus: "Refresh status",
   paymentChecking: "Checking payment status…",
-  paymentActivated: "Payment verified. Your plan is active.",
+  paymentActivated: "Thank you for supporting AstraNote",
+  paymentActivatedBody: "Your {plan} plan is now active for {days} days. Your support helps AstraNote keep getting better.",
 });
 
 Object.assign(I18N["zh-Hant"], {
@@ -865,7 +866,8 @@ Object.assign(I18N["zh-Hant"], {
   continuePayment: "繼續付款",
   refreshStatus: "重新檢查",
   paymentChecking: "正在確認付款狀態…",
-  paymentActivated: "付款已驗證，方案已啟用。",
+  paymentActivated: "感謝你支持 AstraNote",
+  paymentActivatedBody: "你的 {plan} 方案現已啟用 {days} 天。你的支持讓 AstraNote 能持續變得更好。",
 });
 
 Object.assign(I18N.ja, {
@@ -962,7 +964,8 @@ Object.assign(I18N.ja, {
   continuePayment: "支払いを続ける",
   refreshStatus: "状態を更新",
   paymentChecking: "支払い状態を確認中…",
-  paymentActivated: "支払いを確認し、プランを有効化しました。",
+  paymentActivated: "AstraNote をご支援いただきありがとうございます",
+  paymentActivatedBody: "{plan} プランが {days} 日間有効になりました。皆さまのご支援が AstraNote をより良くしていきます。",
 });
 
 Object.assign(I18N["en"], {
@@ -4719,6 +4722,14 @@ async function renderBillingReturn(orderId, returnedPaymentId = "") {
       const detail = document.createElement("p");
       detail.className = "muted";
       detail.textContent = `${formatBitcoin(order.expectedSats)} · ${order.days} ${t("days")}`;
+      if (paid) {
+        const thanks = document.createElement("p");
+        thanks.className = "billing-return-thanks";
+        thanks.textContent = t("paymentActivatedBody")
+          .replace("{plan}", planDisplayName(order.plan))
+          .replace("{days}", String(order.days));
+        content.append(heading, thanks, detail);
+      }
       if (["expired", "failed"].includes(order.localStatus)) {
         detail.dataset.i18n = order.localStatus === "expired" ? "billingExpiredHelp" : "billingFailedHelp";
         detail.textContent = t(detail.dataset.i18n);
@@ -4727,7 +4738,7 @@ async function renderBillingReturn(orderId, returnedPaymentId = "") {
         detail.dataset.i18n = "couponRejectedBody";
         detail.textContent = t("couponRejectedBody");
       }
-      content.append(heading, detail);
+      if (!paid) content.append(heading, detail);
       if (needsHelp || order.localStatus === "expired") {
         const reference = document.createElement("p");
         const label = document.createElement("span");
