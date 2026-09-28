@@ -2625,13 +2625,12 @@ html[lang="ja"] [data-lang="en"] {
 .brand-dark-web {
   display: inline-flex;
   align-items: center;
-  min-height: 28px;
   margin-left: 4px;
-  padding: 0 10px;
+  padding: 2px 4px;
   border: 1px solid #7659c9;
-  border-radius: 7px;
+  border-radius: 3px;
   color: #6044ab;
-  font: 650 0.76em/1 var(--body);
+  font: 650 0.8em/1 var(--body);
   letter-spacing: 0.055em;
   white-space: nowrap;
 }
