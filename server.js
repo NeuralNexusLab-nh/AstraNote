@@ -1585,6 +1585,16 @@ async function destroyUserSessions(username) {
     await writeUserSessions(username, {});
   });
 }
+async function destroyOtherUserSessions(username, currentToken) {
+  const currentId = sha256(currentToken);
+  await withLock(`sessions:${userKey(username)}`, async () => {
+    const sessions = await pruneUserSessions(username);
+    for (const id of Object.keys(sessions)) {
+      if (id !== currentId) delete sessions[id];
+    }
+    await writeUserSessions(username, sessions);
+  });
+}
 async function requireAuth(req, res, next) {
   try {
     const supplied = parseSessionCookie(req);
@@ -3189,6 +3199,7 @@ app.patch(
   async (req, res, next) => {
     try {
       const username = req.auth.session.username;
+      let passwordChanged = false;
       await withLock(`user:${username}`, async () => {
         const metadata = await loadMetadata(username);
         metadata.settings ||= { theme: "dark" };
@@ -3244,10 +3255,15 @@ app.patch(
           if (!(await argon2.verify(metadata.passwordHash, oldPassword).catch(() => false)))
             throw Object.assign(new Error("Current password is incorrect."), { status: 401, code: "invalid_credentials" });
           metadata.passwordHash = await argon2.hash(nextPassword, { type: argon2.argon2id, memoryCost: 19456, timeCost: 2, parallelism: 1 });
+          passwordChanged = true;
         }
         await saveMetadataWithinQuota(username, metadata);
       });
-      res.json({ ok: true });
+      // The browser that proved the old password remains signed in. Every
+      // other device must authenticate again with the new password.
+      if (passwordChanged)
+        await destroyOtherUserSessions(username, req.auth.token);
+      res.json({ ok: true, otherSessionsSignedOut: passwordChanged });
     } catch (error) {
       next(error);
     }
@@ -4736,6 +4752,7 @@ module.exports = {
     emailCopy,
     emailSecurityNotice,
     emailAuditDetails,
+    destroyOtherUserSessions,
     closeOrderStore: () => {
       orderStore?.close();
       orderStore = null;

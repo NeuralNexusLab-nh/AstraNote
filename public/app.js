@@ -3403,6 +3403,10 @@ async function initVerifyEmail() {
     await api("/api/email/verification/confirm", { method: "POST", body: { token, username } });
     pending.hidden = true;
     success.hidden = false;
+    // Let every already-open AstraNote tab refresh its account payload. This
+    // removes the verification banner without relying on the email link to
+    // remain in the same browser tab as the signed-in account.
+    try { localStorage.setItem("astranote_email_verified", String(Date.now())); } catch {}
     const siteNav = $(".site-nav");
     if (siteNav) $$("a[href='/login'], a[href='/register']", siteNav).forEach((link) => link.remove());
     history.replaceState(null, "", "/verify-email");
@@ -4968,6 +4972,10 @@ async function boot() {
       state.session.preferredLanguage ||
       "en";
   }
+  window.addEventListener("storage", (event) => {
+    if (event.key === "astranote_email_verified" && state.session?.authenticated)
+      location.reload();
+  });
   buildNav();
   buildFooter();
   applyLocale();

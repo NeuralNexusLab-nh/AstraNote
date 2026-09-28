@@ -148,6 +148,24 @@ test("operation audit records safe route templates and clear security levels", (
   assert.equal(testables.auditTimestamp(new Date("2026-09-27T12:54:18.123Z")), "2026-09-27 12:54:18 UTC");
 });
 
+test("a password change keeps only the current signed-in device", async () => {
+  const username = "password_session_revoke";
+  const currentToken = crypto.randomBytes(32).toString("base64url");
+  const otherToken = crypto.randomBytes(32).toString("base64url");
+  const now = Date.now();
+  await fs.mkdir(path.join(temporaryData, username), { recursive: true });
+  await fs.writeFile(
+    path.join(temporaryData, username, "sessions.json"),
+    `${JSON.stringify({
+      [crypto.createHash("sha256").update(currentToken).digest("hex")]: { username, expiresAt: new Date(now + 60_000).toISOString(), maxExpiresAt: new Date(now + 60_000).toISOString() },
+      [crypto.createHash("sha256").update(otherToken).digest("hex")]: { username, expiresAt: new Date(now + 60_000).toISOString(), maxExpiresAt: new Date(now + 60_000).toISOString() },
+    })}\n`,
+  );
+  await testables.destroyOtherUserSessions(username, currentToken);
+  const sessions = JSON.parse(await fs.readFile(path.join(temporaryData, username, "sessions.json"), "utf8"));
+  assert.deepEqual(Object.keys(sessions), [crypto.createHash("sha256").update(currentToken).digest("hex")]);
+});
+
 test("IP lookup accepts only real literal addresses and session cookies require HTTPS", () => {
   assert.equal(testables.publicIpForLookup("203.0.113.8"), "203.0.113.8");
   assert.equal(testables.publicIpForLookup("2001:db8::8"), "2001:db8::8");
