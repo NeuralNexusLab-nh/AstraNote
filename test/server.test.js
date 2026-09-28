@@ -107,11 +107,10 @@ test("onion-triggered email links and branding remain on the onion service", () 
     body: "Test",
     actionLabel: "Open",
     actionUrl: `${origin}/verify-email#token=test`,
-    brandOrigin: origin,
     darkWeb: true,
   });
   assert.match(template.html, /Dark Web/);
-  assert.match(template.html, new RegExp(`${origin.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/asset/logo\\.png`));
+  assert.match(template.html, /https:\/\/astranote\.nxlabtw\.com\/asset\/logo\.png/);
   assert.match(template.html, new RegExp(`${origin.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/verify-email`));
 });
 

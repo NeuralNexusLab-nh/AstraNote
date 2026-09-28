@@ -1920,7 +1920,7 @@ async function verifyPasswordForAccount(metadata, password) {
 function escapeHtml(value) {
   return String(value || "").replace(/[&<>\"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
 }
-function emailTemplate({ title, body, actionLabel, actionUrl, code, details = [], noticeTitle, noticeBody, danger = false, expires = Boolean(code || actionUrl), language = "en", brandOrigin = "https://astranote.nxlabtw.com", darkWeb = false }) {
+function emailTemplate({ title, body, actionLabel, actionUrl, code, details = [], noticeTitle, noticeBody, danger = false, expires = Boolean(code || actionUrl), language = "en", darkWeb = false }) {
   const safeTitle = escapeHtml(title);
   const safeBody = escapeHtml(body);
   const copy = language === "zh-Hant"
@@ -1938,7 +1938,10 @@ function emailTemplate({ title, body, actionLabel, actionUrl, code, details = []
   const expiryText = expires ? `\n\n${copy.expiry}` : "";
   const expiryBlock = expires ? `<p style="margin:26px 0 0;padding-top:16px;border-top:1px solid #283452;color:#98a6c8;font:12px/1.6 Arial,sans-serif">${copy.expiry}</p>` : "";
   const text = `${title}\n\n${body}${code ? `\n\n${code}` : ""}${noticeTitle && noticeBody ? `\n\n${noticeTitle}\n${noticeBody}` : ""}${detailText ? `\n\n${detailText}` : ""}${actionUrl ? `\n\n${actionUrl}` : ""}${expiryText}`;
-  const safeBrandOrigin = brandOrigin === ASTRANOTE_ONION_ORIGIN ? ASTRANOTE_ONION_ORIGIN : "https://astranote.nxlabtw.com";
+  // Mail clients normally cannot fetch an onion image unless their own network
+  // stack is Tor-enabled. The logo is a public, static asset; keep actionable
+  // links on Onion while using the reliable HTTPS logo endpoint in all mail.
+  const safeBrandOrigin = "https://astranote.nxlabtw.com";
   const darkWebMark = darkWeb ? '<span style="margin-left:7px;color:#c4b7ff;font:650 14px Arial,sans-serif;letter-spacing:.05em">Dark Web</span>' : "";
   return { text, html: `<!doctype html><html lang="${escapeHtml(language)}"><body style="margin:0;padding:0;background:#050816;color:#eef2ff"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#050816"><tr><td style="padding:32px 14px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;border:1px solid #283452;border-radius:20px;overflow:hidden;background:#10172d"><tr><td style="padding:20px 24px;border-bottom:1px solid #283452"><img src="${escapeHtml(safeBrandOrigin)}/asset/logo.png" width="30" height="30" alt="" style="vertical-align:middle;margin-right:10px;border-radius:8px"><span style="vertical-align:middle;color:#fff;font:700 18px Arial,sans-serif">AstraNote</span>${darkWebMark}</td></tr><tr><td style="padding:32px 24px"><h1 style="margin:0 0 14px;color:#fff;font:700 27px/1.2 Arial,sans-serif">${safeTitle}</h1><p style="margin:0;color:#c7d0e9;font:15px/1.7 Arial,sans-serif">${safeBody}</p>${codeBlock}${notice}${detailBlock}${action}${fallback}${expiryBlock}</td></tr></table></td></tr></table></body></html>` };
 }
@@ -2842,7 +2845,7 @@ app.post(
         const language = current.settings?.language || "en";
         const copy = emailCopy(language, "magic");
         const location = await sessionLocation(req);
-        const template = emailTemplate({ ...copy, actionUrl: url, ...emailSecurityNotice(language, "login"), details: emailAuditDetails(language, current, { ip: requestIp(req), country: location.country }), language, brandOrigin: appOrigin, darkWeb: isAstraNoteOnionRequest(req) });
+        const template = emailTemplate({ ...copy, actionUrl: url, ...emailSecurityNotice(language, "login"), details: emailAuditDetails(language, current, { ip: requestIp(req), country: location.country }), language, darkWeb: isAstraNoteOnionRequest(req) });
         await sendMail({ to: current.email, from: EMAIL_FROM, subject: copy.subject, template });
         recordActionSent(current, "magic");
         await saveMetadata(current.username, current);
@@ -2998,7 +3001,7 @@ app.post("/api/email/verification/send", requireAuth, accountMutationLimiter, re
       const url = `${appOrigin}/verify-email#u=${encodeURIComponent(metadata.username)}&token=${encodeURIComponent(token)}`;
       const copy = emailCopy(metadata.settings?.language || "en", "verify");
       const location = await sessionLocation(req);
-      const template = emailTemplate({ ...copy, actionUrl: url, details: emailAuditDetails(metadata.settings?.language || "en", metadata, { ip: requestIp(req), country: location.country }), language: metadata.settings?.language || "en", brandOrigin: appOrigin, darkWeb: isAstraNoteOnionRequest(req) });
+      const template = emailTemplate({ ...copy, actionUrl: url, details: emailAuditDetails(metadata.settings?.language || "en", metadata, { ip: requestIp(req), country: location.country }), language: metadata.settings?.language || "en", darkWeb: isAstraNoteOnionRequest(req) });
       await sendMail({ to: metadata.email, from: EMAIL_FROM, subject: copy.subject, template });
       recordActionSent(metadata, "verify");
       await saveMetadata(username, metadata);
@@ -3045,7 +3048,7 @@ app.post("/api/password/reset/request", passwordResetIpLimiter, async (req, res,
       const url = `${appOrigin}/reset-password#u=${encodeURIComponent(current.username)}&token=${encodeURIComponent(token)}`;
       const copy = emailCopy(current.settings?.language || "en", "reset");
       const location = await sessionLocation(req);
-      const template = emailTemplate({ ...copy, actionUrl: url, details: emailAuditDetails(current.settings?.language || "en", current, { ip: requestIp(req), country: location.country }), language: current.settings?.language || "en", brandOrigin: appOrigin, darkWeb: isAstraNoteOnionRequest(req) });
+      const template = emailTemplate({ ...copy, actionUrl: url, details: emailAuditDetails(current.settings?.language || "en", current, { ip: requestIp(req), country: location.country }), language: current.settings?.language || "en", darkWeb: isAstraNoteOnionRequest(req) });
       await sendMail({ to: current.email, from: EMAIL_FROM, subject: copy.subject, template });
       recordActionSent(current, "reset");
       await saveMetadata(current.username, current);
