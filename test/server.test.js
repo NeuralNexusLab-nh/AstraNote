@@ -92,6 +92,29 @@ test("only an onion request from the local Tor gateway is labelled as Tor", asyn
   assert.equal(testables.sessionDevice(ordinaryLoopbackRequest), "Edge");
 });
 
+test("onion-triggered email links and branding remain on the onion service", () => {
+  const onionRequest = {
+    get(name) {
+      return name.toLowerCase() === "host"
+        ? "astranote.nxlabtwhcegzi5f65qb6ri4iv72rtdp5q7s4w457pahcohtmegjregqd.onion"
+        : "";
+    },
+  };
+  const origin = testables.appOriginForRequest(onionRequest);
+  assert.equal(origin, "http://astranote.nxlabtwhcegzi5f65qb6ri4iv72rtdp5q7s4w457pahcohtmegjregqd.onion");
+  const template = testables.emailTemplate({
+    title: "Test",
+    body: "Test",
+    actionLabel: "Open",
+    actionUrl: `${origin}/verify-email#token=test`,
+    brandOrigin: origin,
+    darkWeb: true,
+  });
+  assert.match(template.html, /Dark Web/);
+  assert.match(template.html, new RegExp(`${origin.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/asset/logo\\.png`));
+  assert.match(template.html, new RegExp(`${origin.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/verify-email`));
+});
+
 test.after(async () => {
   await new Promise((resolve) => server.close(resolve));
   testables.closeOrderStore();
