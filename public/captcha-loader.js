@@ -9,4 +9,4 @@ const CAPTCHA_ORIGIN =
     ? "http://nexacaptcha.nxlabtwhcegzi5f65qb6ri4iv72rtdp5q7s4w457pahcohtmegjregqd.onion"
     : "https://nexacaptcha.nxlabtw.com";
 
-document.write(`<script src="${CAPTCHA_ORIGIN}/captcha/gravity.js" defer><\\/script>`);
+document.write(`<script src="${CAPTCHA_ORIGIN}/captcha/gravity.js" defer></script>`);
