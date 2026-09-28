@@ -2442,7 +2442,7 @@ function buildNav() {
       ? `<small class="brand-plan brand-plan--${planName}">${planName}</small>`
       : "";
   const darkWebSuffix = isOnionSite()
-    ? '<small class="brand-dark-web">Dark Web</small>'
+    ? '<span class="brand-dark-web">Dark Web</span>'
     : "";
   nav.innerHTML = `<a class="brand" href="/"><img src="/asset/logo.png" alt=""><span>AstraNote</span>${darkWebSuffix}${planSuffix}</a>
     <button class="mobile-toggle" type="button" data-i18n-aria-label="menu" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>
@@ -3132,7 +3132,7 @@ async function initHome() {
   const heroTitle = $(".hero-brand-title");
   const heroMark = $(".hero-brand-mark", heroTitle);
   if (heroTitle && isOnionSite()) {
-    const darkWeb = document.createElement("small");
+    const darkWeb = document.createElement("span");
     darkWeb.className = "hero-dark-web";
     darkWeb.textContent = "Dark Web";
     heroTitle.append(darkWeb);
