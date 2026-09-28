@@ -786,8 +786,8 @@ Object.assign(I18N.en, {
   continuePayment: "Continue payment",
   refreshStatus: "Refresh status",
   paymentChecking: "Checking payment status…",
-  paymentActivated: "Thank you for supporting AstraNote",
-  paymentActivatedBody: "Your {plan} plan is now active for {days} days. Your support helps AstraNote keep getting better.",
+  paymentActivated: "Your payment is confirmed",
+  paymentActivatedBody: "Your {plan} plan is now active for {days} days. Thank you for supporting AstraNote.",
 });
 
 Object.assign(I18N["zh-Hant"], {
@@ -866,8 +866,8 @@ Object.assign(I18N["zh-Hant"], {
   continuePayment: "繼續付款",
   refreshStatus: "重新檢查",
   paymentChecking: "正在確認付款狀態…",
-  paymentActivated: "感謝你支持 AstraNote",
-  paymentActivatedBody: "你的 {plan} 方案現已啟用 {days} 天。你的支持讓 AstraNote 能持續變得更好。",
+  paymentActivated: "你的付款已確認",
+  paymentActivatedBody: "你的 {plan} 方案現已啟用 {days} 天。感謝你支持 AstraNote。",
 });
 
 Object.assign(I18N.ja, {
@@ -964,8 +964,8 @@ Object.assign(I18N.ja, {
   continuePayment: "支払いを続ける",
   refreshStatus: "状態を更新",
   paymentChecking: "支払い状態を確認中…",
-  paymentActivated: "AstraNote をご支援いただきありがとうございます",
-  paymentActivatedBody: "{plan} プランが {days} 日間有効になりました。皆さまのご支援が AstraNote をより良くしていきます。",
+  paymentActivated: "お支払いを確認しました",
+  paymentActivatedBody: "{plan} プランが {days} 日間有効になりました。AstraNote をご支援いただきありがとうございます。",
 });
 
 Object.assign(I18N["en"], {

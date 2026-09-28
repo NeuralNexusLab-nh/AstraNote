@@ -52,6 +52,7 @@ const TERMS_VERSION = "2026-09-05";
 const TRASH_DAYS = Object.freeze([1, 3, 7, 14, 30]);
 const ADMIN_EMAIL = "neuralnexuslab@hotmail.com";
 const SUPPORT_EMAIL = "astranote@nxlabtw.com";
+const EMAIL_FROM = "AstraNote <no-reply@mail.nxlabtw.com>";
 const EMAIL_API_URL = "https://api.zeabur.com/api/v1/zsend/emails";
 // A valid Argon2id hash used only to equalize unknown-account password checks.
 // It is deliberately not a credential and never authorizes a request.
@@ -1433,7 +1434,7 @@ async function cleanupPlanLocks() {
         const language = metadata.settings?.language || "en";
         const copy = emailCopy(language, notice.copyKey, notice.values);
         const template = emailTemplate({ ...copy, actionLabel: language === "zh-Hant" ? "查看方案" : language === "ja" ? "プランを見る" : "View plans", actionUrl: "https://astranote.nxlabtw.com/plans", details: emailAuditDetails(language, metadata), expires: false, language });
-        await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template }).catch(() => null);
+        await sendMail({ to: metadata.email, from: EMAIL_FROM, subject: copy.subject, template }).catch(() => null);
         metadata.emailAuth.planNotices[notice.key] = utcNow();
       }
       await saveMetadata(entry.name, metadata);
@@ -1935,7 +1936,7 @@ function emailCopy(language, key, values = {}) {
       magic: { subject: "Sign in to AstraNote", title: "Confirm this sign-in", body: "Use this secure sign-in link to access your AstraNote account.", actionLabel: "Sign in to AstraNote" },
       reset: { subject: "Reset your AstraNote password", title: "Reset your password", body: "We received a request to reset your AstraNote password. If this was not you, you can safely ignore this email.", actionLabel: "Reset password" },
       delete: { subject: "Confirm AstraNote account deletion", title: "Confirm account deletion", body: "Enter this code in AstraNote to permanently delete your account. This cannot be undone." },
-      payment: { subject: "Thank you for supporting AstraNote", title: "Your {plan} plan is ready", body: "Thank you for choosing AstraNote. Your payment has been confirmed and your {plan} plan is active for {days} days. Your support helps us keep AstraNote fast, focused, and improving." },
+      payment: { subject: "Your AstraNote payment is confirmed", title: "Your {plan} plan is active", body: "Your payment has been confirmed. Your {plan} plan is active for {days} days. Thank you for supporting AstraNote." },
       security: { subject: "AstraNote sign-in security notice", title: "Unsuccessful sign-in attempts", body: "{count} unsuccessful password attempts were made from {ip}{country}." },
       planSeven: { subject: "Your AstraNote plan expires in 7 days", title: "Your AstraNote plan expires in 7 days", body: "Your plan is close to expiry. Renew to keep your current allowance and features." },
       planOne: { subject: "Your AstraNote plan expires in 1 day", title: "Your AstraNote plan expires in 1 day", body: "Renew now to avoid notes being locked above the Free allowance." },
@@ -1947,7 +1948,7 @@ function emailCopy(language, key, values = {}) {
       magic: { subject: "登入 AstraNote", title: "確認這次登入", body: "請使用此安全登入連結，存取你的 AstraNote 帳號。", actionLabel: "登入 AstraNote" },
       reset: { subject: "重設你的 AstraNote 密碼", title: "重設密碼", body: "我們收到重設 AstraNote 密碼的要求。如果不是你本人操作，請直接忽略此信。", actionLabel: "重設密碼" },
       delete: { subject: "確認刪除 AstraNote 帳號", title: "確認刪除帳號", body: "請在 AstraNote 輸入此驗證碼，永久刪除帳號。此操作無法復原。" },
-      payment: { subject: "感謝你支持 AstraNote", title: "你的 {plan} 方案已啟用", body: "感謝你選擇 AstraNote。你的付款已確認，{plan} 方案現已啟用 {days} 天。你的支持讓我們能持續把 AstraNote 做得更快速、更專注、更好用。" },
+      payment: { subject: "你的 AstraNote 付款已確認", title: "你的 {plan} 方案已啟用", body: "你的付款已確認，{plan} 方案現已啟用 {days} 天。感謝你支持 AstraNote。" },
       security: { subject: "AstraNote 登入安全通知", title: "偵測到登入失敗", body: "來自 {ip}{country} 的密碼登入失敗已達 {count} 次。" },
       planSeven: { subject: "你的 AstraNote 方案將在 7 天後到期", title: "你的 AstraNote 方案將在 7 天後到期", body: "你的方案即將到期。請續訂以保留目前的空間額度與功能。" },
       planOne: { subject: "你的 AstraNote 方案將在 1 天後到期", title: "你的 AstraNote 方案將在 1 天後到期", body: "請立即續訂，避免超出 Free 額度的筆記被鎖定。" },
@@ -1959,7 +1960,7 @@ function emailCopy(language, key, values = {}) {
       magic: { subject: "AstraNote にサインイン", title: "サインインを確認", body: "この安全なサインインリンクを使用して、AstraNote アカウントにアクセスしてください。", actionLabel: "AstraNote にサインイン" },
       reset: { subject: "AstraNote パスワードの再設定", title: "パスワードを再設定", body: "AstraNote のパスワード再設定を受け付けました。心当たりがない場合は、このメールを無視してください。", actionLabel: "パスワードを再設定" },
       delete: { subject: "AstraNote アカウント削除の確認", title: "アカウント削除の確認", body: "このコードを AstraNote に入力すると、アカウントを完全に削除します。この操作は元に戻せません。" },
-      payment: { subject: "AstraNote をご支援いただきありがとうございます", title: "{plan} プランが有効になりました", body: "AstraNote をお選びいただきありがとうございます。お支払いを確認し、{plan} プランを {days} 日間ご利用いただけます。皆さまのご支援が、より速く使いやすい AstraNote につながります。" },
+      payment: { subject: "AstraNote のお支払いを確認しました", title: "{plan} プランが有効になりました", body: "お支払いを確認しました。{plan} プランを {days} 日間ご利用いただけます。AstraNote をご支援いただきありがとうございます。" },
       security: { subject: "AstraNote サインインセキュリティ通知", title: "サインイン失敗を検知しました", body: "{ip}{country} からのパスワードによるサインイン失敗が {count} 回ありました。" },
       planSeven: { subject: "AstraNote プランは7日後に終了します", title: "AstraNote プランは7日後に終了します", body: "プランの期限が近づいています。現在の容量と機能を維持するには更新してください。" },
       planOne: { subject: "AstraNote プランは1日後に終了します", title: "AstraNote プランは1日後に終了します", body: "Free 上限を超えるノートのロックを避けるには、今すぐ更新してください。" },
@@ -2118,7 +2119,7 @@ async function sendAdminBroadcast({ recipients, subject, html, text, adminUserna
       method: "POST",
       headers: { "content-type": "application/json", authorization: `Bearer ${process.env.ZSKEY}` },
       signal: AbortSignal.timeout(20_000),
-      body: JSON.stringify({ emails: recipients.map((to) => ({ from: "no-reply@mail.nxlabtw.com", to: [to], reply_to: [SUPPORT_EMAIL], subject, html, text })) }),
+      body: JSON.stringify({ emails: recipients.map((to) => ({ from: EMAIL_FROM, to: [to], reply_to: [SUPPORT_EMAIL], subject, html, text })) }),
     });
     const result = await response.json().catch(() => ({}));
     if (!response.ok || Number(result.total_count) !== recipients.length)
@@ -2786,7 +2787,7 @@ app.post(
         const copy = emailCopy(language, "magic");
         const location = await sessionLocation(req);
         const template = emailTemplate({ ...copy, actionUrl: url, ...emailSecurityNotice(language, "login"), details: emailAuditDetails(language, current, { ip: requestIp(req), country: location.country }), language });
-        await sendMail({ to: current.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
+        await sendMail({ to: current.email, from: EMAIL_FROM, subject: copy.subject, template });
         recordActionSent(current, "magic");
         await saveMetadata(current.username, current);
       });
@@ -2822,7 +2823,7 @@ app.post(
             const location = await sessionLocation(req);
             const copy = emailCopy(current.settings?.language || "en", "security", { count: recent.length, ip: requestIp(req), country: location.country ? ` · ${location.country}` : "" });
             const template = emailTemplate({ ...copy, details: emailAuditDetails(current.settings?.language || "en", current, { ip: requestIp(req), country: location.country }), language: current.settings?.language || "en" });
-            await sendMail({ to: current.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template }).catch(() => {});
+            await sendMail({ to: current.email, from: EMAIL_FROM, subject: copy.subject, template }).catch(() => {});
             current.emailAuth.failedSignInAlertAt = new Date(now).toISOString();
           }
           await saveMetadata(current.username, current);
@@ -2855,7 +2856,7 @@ app.post(
           const location = await sessionLocation(req);
           const language = current.settings?.language || "en";
           const template = emailTemplate({ ...copy, code, ...emailSecurityNotice(language, "login"), details: emailAuditDetails(language, current, { ip: requestIp(req), country: location.country }), language });
-          await sendMail({ to: current.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
+          await sendMail({ to: current.email, from: EMAIL_FROM, subject: copy.subject, template });
           recordActionSent(current, "login");
           await saveMetadata(current.username, current);
         });
@@ -2941,7 +2942,7 @@ app.post("/api/email/verification/send", requireAuth, accountMutationLimiter, re
       const copy = emailCopy(metadata.settings?.language || "en", "verify");
       const location = await sessionLocation(req);
       const template = emailTemplate({ ...copy, actionUrl: url, details: emailAuditDetails(metadata.settings?.language || "en", metadata, { ip: requestIp(req), country: location.country }), language: metadata.settings?.language || "en" });
-      await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
+      await sendMail({ to: metadata.email, from: EMAIL_FROM, subject: copy.subject, template });
       recordActionSent(metadata, "verify");
       await saveMetadata(username, metadata);
     });
@@ -2987,7 +2988,7 @@ app.post("/api/password/reset/request", passwordResetIpLimiter, async (req, res,
       const copy = emailCopy(current.settings?.language || "en", "reset");
       const location = await sessionLocation(req);
       const template = emailTemplate({ ...copy, actionUrl: url, details: emailAuditDetails(current.settings?.language || "en", current, { ip: requestIp(req), country: location.country }), language: current.settings?.language || "en" });
-      await sendMail({ to: current.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
+      await sendMail({ to: current.email, from: EMAIL_FROM, subject: copy.subject, template });
       recordActionSent(current, "reset");
       await saveMetadata(current.username, current);
     });
@@ -3577,7 +3578,7 @@ app.get(
               const copy = emailCopy(language, "payment", { plan: order.plan, days: activeDays });
               const location = await sessionLocation(req);
               const template = emailTemplate({ ...copy, details: emailAuditDetails(language, metadata, { ip: requestIp(req), country: location.country, plan: order.plan, days: activeDays, activatedAt, expiresAt, status: paymentConfirmedLabel(language) }), expires: false, language });
-              await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
+              await sendMail({ to: metadata.email, from: EMAIL_FROM, subject: copy.subject, template });
               metadata.emailAuth.planReceipts = [...metadata.emailAuth.planReceipts.slice(-19), order.orderId];
             }
             await saveMetadata(username, metadata);
@@ -4548,7 +4549,7 @@ app.post(
         const location = await sessionLocation(req);
         const language = metadata.settings?.language || "en";
         const template = emailTemplate({ ...copy, code, ...emailSecurityNotice(language, "delete"), danger: true, details: emailAuditDetails(language, metadata, { ip: requestIp(req), country: location.country }), language });
-        await sendMail({ to: metadata.email, from: "no-reply@mail.nxlabtw.com", subject: copy.subject, template });
+        await sendMail({ to: metadata.email, from: EMAIL_FROM, subject: copy.subject, template });
         recordActionSent(metadata, "delete");
         await saveMetadata(username, metadata);
       });
