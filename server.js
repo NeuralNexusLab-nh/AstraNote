@@ -2268,20 +2268,10 @@ async function accountPayload(username) {
 app.set("trust proxy", 1);
 app.disable("x-powered-by");
 app.use((req, res, next) => {
-  // Advertise the Tor counterpart only from the primary HTTPS clearnet host.
-  // The onion route stays HTTP because Tor already authenticates and encrypts
-  // the end-to-end connection; it also avoids a misleading public-Web TLS hop.
-  // The canonical public hostname is HTTPS-only at the edge. Do not rely on
-  // req.secure here: proxy hop counts differ between local and hosted routes,
-  // while an absent Onion-Location header prevents Tor Browser from offering
-  // the private counterpart at all.
-  const originalHost = String(req.get("x-forwarded-host") || req.get("host") || "")
-    .split(",", 1)[0]
-    .trim()
-    .toLowerCase()
-    .replace(/:\d+$/, "");
-  if (originalHost === "astranote.nxlabtw.com")
-    res.setHeader("Onion-Location", `${ASTRANOTE_ONION_ORIGIN}${req.originalUrl}`);
+  // Zeabur may replace both Host and X-Forwarded-Host before the request reaches
+  // this service. Advertising the same verified AstraNote onion endpoint from
+  // every public entry point is safe and keeps Tor Browser discovery reliable.
+  res.setHeader("Onion-Location", `${ASTRANOTE_ONION_ORIGIN}${req.originalUrl}`);
   next();
 });
 app.use(
