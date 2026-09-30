@@ -32,6 +32,7 @@ const SHARES_FILE = path.join(DATA_DIR, "shares.json");
 const ORDERS_FILE = path.join(DATA_DIR, "orders.json");
 const SECRET_FILE = path.join(DATA_DIR, ".server-secret");
 const EMAIL_LIMITS_FILE = path.join(DATA_DIR, "email-limits.json");
+const ADMIN_BROADCAST_LIMITS_FILE = path.join(DATA_DIR, "admin-broadcast-limits.json");
 const ADMIN_BROADCAST_AUDIT_FILE = path.join(DATA_DIR, "admin-broadcasts.json");
 
 const MAX_ACCOUNTS = 70_000;
@@ -40,6 +41,7 @@ const MAX_ACCOUNT_BYTES = 128 * 1000;
 const UNVERIFIED_FREE_BYTES = 32 * 1000;
 const EMAIL_TOKEN_MS = 10 * 60_000;
 const EMAIL_DAILY_LIMIT = 100;
+const ADMIN_BROADCAST_DAILY_LIMIT = 50;
 const MAX_NOTE_BYTES = 2 * 1024 * 1000;
 const MAX_NOTE_NAME = 80;
 const MAX_DISPLAY_NAME = 40;
@@ -2064,6 +2066,15 @@ async function emailDeliveryStatus() {
   };
 }
 
+async function adminBroadcastDeliveryStatus() {
+  const record = emailLimitRecord(await readJson(ADMIN_BROADCAST_LIMITS_FILE, {}));
+  return {
+    dailyLimit: ADMIN_BROADCAST_DAILY_LIMIT,
+    sentToday: record.total,
+    remaining: Math.max(0, ADMIN_BROADCAST_DAILY_LIMIT - record.total),
+  };
+}
+
 function validateBroadcastContent({ subject, html, text }) {
   const cleanSubject = normalizeText(subject, 180);
   const cleanHtml = typeof html === "string" ? html.trim() : "";
@@ -2151,10 +2162,10 @@ async function listAdminUsers(filters = {}) {
 async function sendAdminBroadcast({ recipients, subject, html, text, adminUsername }) {
   if (!process.env.ZSKEY) throw Object.assign(new Error("Email delivery is unavailable."), { status: 503, code: "email_unavailable" });
   if (!recipients.length) throw Object.assign(new Error("No email recipients match these filters."), { status: 400, code: "no_recipients" });
-  await withLock("email-limits", async () => {
-    const current = emailLimitRecord(await readJson(EMAIL_LIMITS_FILE, {}));
-    if (current.total + recipients.length > EMAIL_DAILY_LIMIT)
-      throw Object.assign(new Error("There are not enough emails remaining in today's shared sending limit."), { status: 429, code: "email_daily_limit" });
+  await withLock("admin-broadcast-limits", async () => {
+    const current = emailLimitRecord(await readJson(ADMIN_BROADCAST_LIMITS_FILE, {}));
+    if (current.total + recipients.length > ADMIN_BROADCAST_DAILY_LIMIT)
+      throw Object.assign(new Error("There are not enough emails remaining in today's administrator announcement limit."), { status: 429, code: "admin_broadcast_daily_limit" });
     // Zeabur's batch endpoint accepts at most 100 distinct messages. Each
     // recipient is its own message, so the local daily counter intentionally
     // debits recipients.length, never merely one batch request.
@@ -2168,7 +2179,7 @@ async function sendAdminBroadcast({ recipients, subject, html, text, adminUserna
     if (!response.ok || Number(result.total_count) !== recipients.length)
       throw Object.assign(new Error("Email delivery failed before the broadcast was queued."), { status: response.status >= 500 ? 503 : response.status || 502, code: "email_delivery_failed" });
     current.total += recipients.length;
-    await writeJson(EMAIL_LIMITS_FILE, current);
+    await writeJson(ADMIN_BROADCAST_LIMITS_FILE, current);
     return result.job_id || null;
   });
   await withLock("admin-broadcasts", async () => {
@@ -3179,7 +3190,7 @@ app.get("/api/admin/users", requireAuth, requireAdmin, adminReadLimiter, async (
       page: safePage,
       pages,
       filters: normalizeAdminFilters(filters),
-      email: await emailDeliveryStatus(),
+      email: await adminBroadcastDeliveryStatus(),
     });
   } catch (error) { next(error); }
 });
