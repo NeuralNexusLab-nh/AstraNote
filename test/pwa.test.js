@@ -17,6 +17,10 @@ test("PWA install entry points stay available without caching private applicatio
   assert.equal(manifest.start_url, "/");
   assert.equal(manifest.scope, "/");
   assert.equal(manifest.display, "standalone");
+  assert.deepEqual(manifest.icons.map((icon) => [icon.src, icon.sizes]), [
+    ["/asset/icon-192.png", "192x192"],
+    ["/asset/icon-512.png", "512x512"],
+  ]);
   assert.match(read("public/index.html"), /data-pwa-install/u);
   assert.match(read("public/dashboard.html"), /data-pwa-install/u);
   assert.match(app, /beforeinstallprompt/u);
