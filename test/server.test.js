@@ -178,6 +178,57 @@ test("malformed cookies fail closed without causing a server error", async () =>
   assert.deepEqual(Object.keys(testables.parseCookies("broken=%E0%A4%A")), []);
 });
 
+test("Magic Link approval signs in only the tab holding the original request secret", async () => {
+  const username = "magic_tab_owner";
+  const token = crypto.randomBytes(32).toString("base64url");
+  const requestId = crypto.randomBytes(32).toString("base64url");
+  const requestSecret = crypto.randomBytes(32).toString("base64url");
+  const digest = (value) => crypto.createHash("sha256").update(`email-token\0${value}`).digest("hex");
+  await fs.mkdir(path.join(temporaryData, username, "notes"), { recursive: true });
+  await fs.writeFile(path.join(temporaryData, username, "metadata.json"), JSON.stringify({
+    username,
+    email: "magic@example.test",
+    passwordHash: "fixture",
+    loginMethod: "magic",
+    emailVerified: true,
+    notes: [],
+    emailAuth: {
+      magic: {
+        digest: digest(token),
+        requestIdDigest: digest(requestId),
+        requestSecretDigest: digest(requestSecret),
+        expiresAt: new Date(Date.now() + 60_000).toISOString(),
+      },
+    },
+  }));
+  const post = async (route, body) => {
+    const response = await fetch(`${baseUrl}${route}`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    return { response, data: await response.json() };
+  };
+  const before = await post("/api/login/magic/status", { username, requestId, requestSecret });
+  assert.deepEqual(before.data, { approved: false, expired: false });
+  const confirmation = await post("/api/login/magic/confirm", { username, token });
+  assert.equal(confirmation.response.status, 200);
+  assert.equal(confirmation.response.headers.get("set-cookie"), null);
+  assert.equal(confirmation.data.confirmed, true);
+  const wrongTab = await post("/api/login/magic/status", { username, requestId, requestSecret: crypto.randomBytes(32).toString("base64url") });
+  assert.deepEqual(wrongTab.data, { approved: false, expired: true });
+  const approved = await post("/api/login/magic/status", { username, requestId, requestSecret });
+  assert.equal(approved.response.status, 200);
+  assert.equal(approved.data.approved, true);
+  assert.equal(approved.data.redirect, "/dashboard");
+  assert.match(approved.response.headers.get("set-cookie") || "", /astranote_session=/);
+  const replay = await post("/api/login/magic/status", { username, requestId, requestSecret });
+  assert.deepEqual(replay.data, { approved: false, expired: true });
+  // The following activity-count test starts from a deliberately empty day.
+  await fs.writeFile(path.join(temporaryData, "onlineTodayUsers.json"), JSON.stringify({ date: new Date().toISOString().slice(0, 10), users: [] }));
+  await fs.writeFile(path.join(temporaryData, "onlineToday.txt"), "0\n");
+});
+
 test("operation audit records safe route templates and clear security levels", () => {
   assert.deepEqual(
     testables.auditDescriptor("POST", "/api/notes", 201),

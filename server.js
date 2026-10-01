@@ -293,7 +293,8 @@ function auditDescriptor(method, route, status = 0) {
     "POST /api/login/continue": ["CHOOSE SIGN-IN METHOD", "MEDIUM", "SIGN-IN METHOD FAILED"],
     "POST /api/login": ["SIGN IN", "MEDIUM", "SIGN IN FAILED"],
     "POST /api/login/verify": ["VERIFY SIGN-IN CODE", "MEDIUM", "VERIFY SIGN-IN CODE FAILED"],
-    "POST /api/login/magic/confirm": ["COMPLETE MAGIC LINK SIGN-IN", "MEDIUM", "MAGIC LINK SIGN-IN FAILED"],
+    "POST /api/login/magic/confirm": ["CONFIRM MAGIC LINK SIGN-IN", "MEDIUM", "MAGIC LINK CONFIRMATION FAILED"],
+    "POST /api/login/magic/status": ["COMPLETE MAGIC LINK SIGN-IN", "MEDIUM", "MAGIC LINK SIGN-IN FAILED"],
     "POST /api/email/verification/send": ["SEND EMAIL VERIFICATION", "MEDIUM"],
     "POST /api/email/verification/confirm": ["CONFIRM EMAIL VERIFICATION", "MEDIUM", "EMAIL VERIFICATION FAILED"],
     "POST /api/password/reset/request": ["REQUEST PASSWORD RESET", "MEDIUM"],
@@ -1978,7 +1979,7 @@ function emailCopy(language, key, values = {}) {
     en: {
       verify: { subject: "Verify your AstraNote email", title: "Verify your email", body: "Verify your email to unlock the full 128 KB Free allowance and email security features.", actionLabel: "Verify email" },
       login: { subject: "Your AstraNote sign-in code", title: "Confirm this sign-in", body: "Enter this code in AstraNote to complete your sign-in." },
-      magic: { subject: "Sign in to AstraNote", title: "Confirm this sign-in", body: "Use this secure sign-in link to access your AstraNote account.", actionLabel: "Sign in to AstraNote" },
+      magic: { subject: "Confirm your AstraNote sign-in", title: "Confirm this sign-in", body: "Confirm this request, then return to the AstraNote tab where you started signing in.", actionLabel: "Confirm sign-in" },
       reset: { subject: "Reset your AstraNote password", title: "Reset your password", body: "We received a request to reset your AstraNote password. If this was not you, you can safely ignore this email.", actionLabel: "Reset password" },
       delete: { subject: "Confirm AstraNote account deletion", title: "Confirm account deletion", body: "Enter this code in AstraNote to permanently delete your account. This cannot be undone." },
       payment: { subject: "Your AstraNote payment is confirmed", title: "Your {plan} plan is active", body: "Your payment has been confirmed. Your {plan} plan is active for {days} days. Thank you for supporting AstraNote." },
@@ -1990,7 +1991,7 @@ function emailCopy(language, key, values = {}) {
     "zh-Hant": {
       verify: { subject: "驗證你的 AstraNote Email", title: "驗證你的 Email", body: "完成 Email 驗證，即可啟用完整的 128 KB Free 空間與 Email 安全功能。", actionLabel: "驗證 Email" },
       login: { subject: "你的 AstraNote 登入驗證碼", title: "確認這次登入", body: "請在 AstraNote 輸入下方驗證碼，完成這次登入。" },
-      magic: { subject: "登入 AstraNote", title: "確認這次登入", body: "請使用此安全登入連結，存取你的 AstraNote 帳號。", actionLabel: "登入 AstraNote" },
+      magic: { subject: "確認你的 AstraNote 登入", title: "確認這次登入", body: "確認此要求後，請回到最初開始登入的 AstraNote 分頁。", actionLabel: "確認登入" },
       reset: { subject: "重設你的 AstraNote 密碼", title: "重設密碼", body: "我們收到重設 AstraNote 密碼的要求。如果不是你本人操作，請直接忽略此信。", actionLabel: "重設密碼" },
       delete: { subject: "確認刪除 AstraNote 帳號", title: "確認刪除帳號", body: "請在 AstraNote 輸入此驗證碼，永久刪除帳號。此操作無法復原。" },
       payment: { subject: "你的 AstraNote 付款已確認", title: "你的 {plan} 方案已啟用", body: "你的付款已確認，{plan} 方案現已啟用 {days} 天。感謝你支持 AstraNote。" },
@@ -2002,7 +2003,7 @@ function emailCopy(language, key, values = {}) {
     ja: {
       verify: { subject: "AstraNote メール認証", title: "メールを認証", body: "メールを認証すると、Free の完全な 128 KB とメール保護機能を利用できます。", actionLabel: "メールを認証" },
       login: { subject: "AstraNote のサインインコード", title: "サインインを確認", body: "以下のコードを AstraNote に入力してサインインを完了してください。" },
-      magic: { subject: "AstraNote にサインイン", title: "サインインを確認", body: "この安全なサインインリンクを使用して、AstraNote アカウントにアクセスしてください。", actionLabel: "AstraNote にサインイン" },
+      magic: { subject: "AstraNote のサインインを確認", title: "サインインを確認", body: "このリクエストを確認した後、サインインを開始した AstraNote のタブに戻ってください。", actionLabel: "サインインを確認" },
       reset: { subject: "AstraNote パスワードの再設定", title: "パスワードを再設定", body: "AstraNote のパスワード再設定を受け付けました。心当たりがない場合は、このメールを無視してください。", actionLabel: "パスワードを再設定" },
       delete: { subject: "AstraNote アカウント削除の確認", title: "アカウント削除の確認", body: "このコードを AstraNote に入力すると、アカウントを完全に削除します。この操作は元に戻せません。" },
       payment: { subject: "AstraNote のお支払いを確認しました", title: "{plan} プランが有効になりました", body: "お支払いを確認しました。{plan} プランを {days} 日間ご利用いただけます。AstraNote をご支援いただきありがとうございます。" },
@@ -2522,6 +2523,17 @@ const emailLinkIpLimiter = rateLimit({
   legacyHeaders: false,
   handler: rateLimitHandler,
 });
+// A Magic Link waiting page polls from the tab that initiated the sign-in.
+// Its unguessable request secret is required as well, but retain a modest
+// network limit so a malicious page cannot turn that wait state into load.
+const magicStatusIpLimiter = rateLimit({
+  windowMs: 10 * 60_000,
+  limit: 320,
+  keyGenerator: (req) => `magic-status-ip:${ipKeyGenerator(req.ip)}`,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
 function accountRateKey(req) {
   const username = req.auth?.session?.username;
   return username
@@ -2848,13 +2860,22 @@ app.post(
       if (deletion)
         return jsonError(res, 401, "invalid_credentials", "Username or password is incorrect.");
       setAuditUser(req, metadata);
+      let magicRequest;
       await withLock(`user:${userKey(metadata.username)}`, async () => {
         const current = await loadMetadata(metadata.username);
         if (actionRecentlySent(current, "magic", 1, 3 * 60_000))
           throw Object.assign(new Error("Please wait 3 minutes before requesting another email."), { status: 429, code: "email_rate_limited" });
         const token = makeEmailToken();
+        // These two values bind approval to the tab which started the
+        // request. The email receives only `token`; it can approve the
+        // request but can never receive the signed-in browser session.
+        const requestId = makeEmailToken();
+        const requestSecret = makeEmailToken();
+        magicRequest = { username: current.username, requestId, requestSecret };
         current.emailAuth.magic = {
           digest: tokenDigest(token),
+          requestIdDigest: tokenDigest(requestId),
+          requestSecretDigest: tokenDigest(requestSecret),
           expiresAt: new Date(Date.now() + EMAIL_TOKEN_MS).toISOString(),
         };
         const appOrigin = appOriginForRequest(req);
@@ -2867,7 +2888,11 @@ app.post(
         recordActionSent(current, "magic");
         await saveMetadata(current.username, current);
       });
-      return res.json({ next: "magic", magicLinkSent: true });
+      return res.json({
+        next: "magic",
+        magicLinkSent: true,
+        ...magicRequest,
+      });
     } catch (error) {
       next(error);
     }
@@ -2955,28 +2980,76 @@ app.post(
   },
 );
 
-app.post("/api/login/magic/confirm", loginIpLimiter, emailLinkIpLimiter, async (req, res, next) => {
+app.post("/api/login/magic/confirm", emailLinkIpLimiter, async (req, res, next) => {
   try {
     const token = String(req.body?.token || "");
     const username = normalizeText(req.body?.username, 24);
-    const metadata = USERNAME_RE.test(username) && /^[A-Za-z0-9_-]{32,}$/.test(token)
+    const result = USERNAME_RE.test(username) && /^[A-Za-z0-9_-]{32,}$/.test(token)
       ? await withLock(`user:${userKey(username)}`, async () => {
           const current = await loadMetadata(username);
           const challenge = current?.emailAuth?.magic;
           if (!current || current.loginMethod !== "magic" || !challenge || Date.parse(challenge.expiresAt) < Date.now() || !safeEqual(challenge.digest, tokenDigest(token))) return null;
-          delete current.emailAuth.magic;
-          current.lastLoginAt = utcNow();
-          current.lastLoginIp = requestIp(req);
+          // Allow a link issued immediately before this change to finish its
+          // old flow. Newly issued links always have the tab-bound fields.
+          if (!challenge.requestIdDigest || !challenge.requestSecretDigest) {
+            delete current.emailAuth.magic;
+            current.lastLoginAt = utcNow();
+            current.lastLoginIp = requestIp(req);
+            await saveMetadata(current.username, current);
+            return { account: current, legacy: true };
+          }
+          // Do not issue a session in this email-opening browser. Mark the
+          // original request approved; only its separate request secret can
+          // later consume the approval in the initiating tab.
+          delete current.emailAuth.magic.digest;
+          current.emailAuth.magic.approvedAt = utcNow();
           await saveMetadata(current.username, current);
-          return current;
+          return { account: current, legacy: false };
         })
       : null;
-    if (!metadata)
+    if (!result)
       return jsonError(res, 401, "invalid_magic_link", "This sign-in link is invalid or has expired.");
-    setAuditUser(req, metadata);
-    const session = await createSession(metadata.username, req, res);
-    await updateOnlineUser(metadata.username);
-    res.json({ ok: true, csrf: session.csrf, redirect: "/dashboard" });
+    setAuditUser(req, result.account);
+    if (result.legacy) {
+      const session = await createSession(result.account.username, req, res);
+      await updateOnlineUser(result.account.username);
+      return res.json({ ok: true, legacy: true, csrf: session.csrf, redirect: "/dashboard" });
+    }
+    res.json({ ok: true, confirmed: true });
+  } catch (error) { next(error); }
+});
+
+app.post("/api/login/magic/status", magicStatusIpLimiter, async (req, res, next) => {
+  try {
+    const username = normalizeText(req.body?.username, 24);
+    const requestId = String(req.body?.requestId || "");
+    const requestSecret = String(req.body?.requestSecret || "");
+    if (!USERNAME_RE.test(username) || !/^[A-Za-z0-9_-]{43}$/.test(requestId) || !/^[A-Za-z0-9_-]{43}$/.test(requestSecret))
+      return res.json({ approved: false, expired: true });
+    const metadata = await withLock(`user:${userKey(username)}`, async () => {
+      const current = await loadMetadata(username);
+      const challenge = current?.emailAuth?.magic;
+      const validRequest = current && challenge &&
+        safeEqual(challenge.requestIdDigest, tokenDigest(requestId)) &&
+        safeEqual(challenge.requestSecretDigest, tokenDigest(requestSecret));
+      if (!validRequest) return { account: null, expired: true };
+      if (Date.parse(challenge.expiresAt) < Date.now()) {
+        delete current.emailAuth.magic;
+        await saveMetadata(current.username, current);
+        return { account: null, expired: true };
+      }
+      if (!challenge.approvedAt) return { account: null, expired: false };
+      delete current.emailAuth.magic;
+      current.lastLoginAt = utcNow();
+      current.lastLoginIp = requestIp(req);
+      await saveMetadata(current.username, current);
+      return { account: current, expired: false };
+    });
+    if (!metadata.account) return res.json({ approved: false, expired: metadata.expired });
+    setAuditUser(req, metadata.account);
+    const session = await createSession(metadata.account.username, req, res);
+    await updateOnlineUser(metadata.account.username);
+    res.json({ ok: true, approved: true, csrf: session.csrf, redirect: "/dashboard" });
   } catch (error) { next(error); }
 });
 

@@ -1620,13 +1620,37 @@ Object.assign(I18N.ja, {
   verifiedCloseHint: "このページは閉じても大丈夫です。",
 });
 Object.assign(I18N.en, {
-  passwordRules: "8–24 characters. Do not use a common password or include your username.", passwordConfirmationRules: "Enter the same password again.", passwordTooShort: "Your password needs at least 8 characters.", passwordTooLong: "Your password can use up to 24 characters.", passwordCommon: "This password is too common. Choose a more unique password.", passwordContainsUsername: "Your password cannot include your username.", invalidResetLink: "This password reset link is invalid or has expired.", invalidMagicLink: "This sign-in link is invalid or has expired.", invalidEmail: "Enter a valid Email address.", accountUnavailable: "This username or Email is already in use.", agreementRequired: "Accept the Terms and Privacy Policy before creating your account.", invalidCredentials: "Username or Email, or password, is incorrect.", signInMethod: "Sign-in method", passwordSignIn: "Username or Email + password", passwordSignInHelp: "Sign in with your usual password.", twoFactorSignIn: "Username or Email + password + two-step verification", twoFactorSignInHelp: "After your password is correct, we send a six-digit sign-in code.", magicLinkSignIn: "Magic Link", magicLinkSignInHelp: "We send a secure, one-time sign-in link to your verified Email.", saveSignInMethod: "Save sign-in method", emailUnverifiedSignInMethod: "Verify your Email before choosing this sign-in method.", magicLinkSentTitle: "Check your Email", magicLinkSentBody: "A secure sign-in link has been sent if this account is available. Check your inbox and Spam or Junk folder.", savePassword: "Save password", settingsSavedBody: "Your change has been saved.",
+  passwordRules: "8–24 characters. Do not use a common password or include your username.", passwordConfirmationRules: "Enter the same password again.", passwordTooShort: "Your password needs at least 8 characters.", passwordTooLong: "Your password can use up to 24 characters.", passwordCommon: "This password is too common. Choose a more unique password.", passwordContainsUsername: "Your password cannot include your username.", invalidResetLink: "This password reset link is invalid or has expired.", invalidMagicLink: "This sign-in link is invalid or has expired.", invalidEmail: "Enter a valid Email address.", accountUnavailable: "This username or Email is already in use.", agreementRequired: "Accept the Terms and Privacy Policy before creating your account.", invalidCredentials: "Username or Email, or password, is incorrect.", signInMethod: "Sign-in method", passwordSignIn: "Username or Email + password", passwordSignInHelp: "Sign in with your usual password.", twoFactorSignIn: "Username or Email + password + two-step verification", twoFactorSignInHelp: "After your password is correct, we send a six-digit sign-in code.", magicLinkSignIn: "Magic Link", magicLinkSignInHelp: "Confirm a secure, one-time Email link; the tab where you started signing in finishes the sign-in.", saveSignInMethod: "Save sign-in method", emailUnverifiedSignInMethod: "Verify your Email before choosing this sign-in method.", magicLinkSentTitle: "Check your Email", magicLinkSentBody: "A secure sign-in link has been sent if this account is available. Check your inbox and Spam or Junk folder.", savePassword: "Save password", settingsSavedBody: "Your change has been saved.",
 });
 Object.assign(I18N["zh-Hant"], {
-  passwordRules: "8～24 個字元；不可使用常見密碼，也不可包含使用者名稱。", passwordConfirmationRules: "請再次輸入相同密碼。", passwordTooShort: "密碼至少需要 8 個字元。", passwordTooLong: "密碼最多可使用 24 個字元。", passwordCommon: "這個密碼過於常見，請使用更不容易被猜到的密碼。", passwordContainsUsername: "密碼不可包含你的使用者名稱。", invalidResetLink: "這個重設密碼連結無效或已失效。", invalidMagicLink: "這個登入連結無效或已失效。", invalidEmail: "請輸入有效的 Email 地址。", accountUnavailable: "這個使用者名稱或 Email 已有人使用。", agreementRequired: "建立帳號前，請同意使用者協議與隱私政策。", invalidCredentials: "使用者名稱、Email 或密碼不正確。", signInMethod: "登入方式", passwordSignIn: "使用者名稱或 Email＋密碼", passwordSignInHelp: "使用平常的密碼登入。", twoFactorSignIn: "使用者名稱或 Email＋密碼＋兩步驟驗證", twoFactorSignInHelp: "密碼正確後，我們會寄送六位數登入碼。", magicLinkSignIn: "登入連結", magicLinkSignInHelp: "我們會把安全、一次性的登入連結寄到已驗證的 Email。", saveSignInMethod: "儲存登入方式", emailUnverifiedSignInMethod: "請先驗證 Email，才能選擇此登入方式。", magicLinkSentTitle: "請檢查你的 Email", magicLinkSentBody: "若此帳號可用，安全登入連結已寄出。請檢查收件匣，以及垃圾郵件或促銷內容資料夾。", savePassword: "儲存密碼", settingsSavedBody: "你的變更已儲存。",
+  passwordRules: "8～24 個字元；不可使用常見密碼，也不可包含使用者名稱。", passwordConfirmationRules: "請再次輸入相同密碼。", passwordTooShort: "密碼至少需要 8 個字元。", passwordTooLong: "密碼最多可使用 24 個字元。", passwordCommon: "這個密碼過於常見，請使用更不容易被猜到的密碼。", passwordContainsUsername: "密碼不可包含你的使用者名稱。", invalidResetLink: "這個重設密碼連結無效或已失效。", invalidMagicLink: "這個登入連結無效或已失效。", invalidEmail: "請輸入有效的 Email 地址。", accountUnavailable: "這個使用者名稱或 Email 已有人使用。", agreementRequired: "建立帳號前，請同意使用者協議與隱私政策。", invalidCredentials: "使用者名稱、Email 或密碼不正確。", signInMethod: "登入方式", passwordSignIn: "使用者名稱或 Email＋密碼", passwordSignInHelp: "使用平常的密碼登入。", twoFactorSignIn: "使用者名稱或 Email＋密碼＋兩步驟驗證", twoFactorSignInHelp: "密碼正確後，我們會寄送六位數登入碼。", magicLinkSignIn: "登入連結", magicLinkSignInHelp: "確認寄到已驗證 Email 的一次性連結；最初開始登入的分頁會完成登入。", saveSignInMethod: "儲存登入方式", emailUnverifiedSignInMethod: "請先驗證 Email，才能選擇此登入方式。", magicLinkSentTitle: "請檢查你的 Email", magicLinkSentBody: "若此帳號可用，安全登入連結已寄出。請檢查收件匣，以及垃圾郵件或促銷內容資料夾。", savePassword: "儲存密碼", settingsSavedBody: "你的變更已儲存。",
 });
 Object.assign(I18N.ja, {
-  passwordRules: "8～24文字。よくあるパスワードやユーザー名を含むものは使用できません。", passwordConfirmationRules: "同じパスワードをもう一度入力してください。", passwordTooShort: "パスワードは8文字以上必要です。", passwordTooLong: "パスワードは24文字までです。", passwordCommon: "このパスワードはよく使われています。より固有のものを選んでください。", passwordContainsUsername: "パスワードにユーザー名を含めることはできません。", invalidResetLink: "このパスワード再設定リンクは無効または期限切れです。", invalidMagicLink: "このサインインリンクは無効または期限切れです。", invalidEmail: "有効なメールアドレスを入力してください。", accountUnavailable: "このユーザー名またはメールアドレスは既に使われています。", agreementRequired: "アカウントを作成する前に、利用規約とプライバシーポリシーに同意してください。", invalidCredentials: "ユーザー名、メールアドレス、またはパスワードが正しくありません。", signInMethod: "サインイン方法", passwordSignIn: "ユーザー名またはメールアドレス＋パスワード", passwordSignInHelp: "通常のパスワードでサインインします。", twoFactorSignIn: "ユーザー名またはメールアドレス＋パスワード＋二段階認証", twoFactorSignInHelp: "パスワードが正しい場合、6桁のコードを送信します。", magicLinkSignIn: "マジックリンク", magicLinkSignInHelp: "認証済みメールアドレスに、安全な一度限りのサインインリンクを送信します。", saveSignInMethod: "サインイン方法を保存", emailUnverifiedSignInMethod: "このサインイン方法を選ぶには、先にメールを認証してください。", magicLinkSentTitle: "メールを確認してください", magicLinkSentBody: "アカウントが利用可能な場合、安全なサインインリンクを送信しました。受信トレイと迷惑メールフォルダーを確認してください。", savePassword: "パスワードを保存", settingsSavedBody: "変更を保存しました。",
+  passwordRules: "8～24文字。よくあるパスワードやユーザー名を含むものは使用できません。", passwordConfirmationRules: "同じパスワードをもう一度入力してください。", passwordTooShort: "パスワードは8文字以上必要です。", passwordTooLong: "パスワードは24文字までです。", passwordCommon: "このパスワードはよく使われています。より固有のものを選んでください。", passwordContainsUsername: "パスワードにユーザー名を含めることはできません。", invalidResetLink: "このパスワード再設定リンクは無効または期限切れです。", invalidMagicLink: "このサインインリンクは無効または期限切れです。", invalidEmail: "有効なメールアドレスを入力してください。", accountUnavailable: "このユーザー名またはメールアドレスは既に使われています。", agreementRequired: "アカウントを作成する前に、利用規約とプライバシーポリシーに同意してください。", invalidCredentials: "ユーザー名、メールアドレス、またはパスワードが正しくありません。", signInMethod: "サインイン方法", passwordSignIn: "ユーザー名またはメールアドレス＋パスワード", passwordSignInHelp: "通常のパスワードでサインインします。", twoFactorSignIn: "ユーザー名またはメールアドレス＋パスワード＋二段階認証", twoFactorSignInHelp: "パスワードが正しい場合、6桁のコードを送信します。", magicLinkSignIn: "マジックリンク", magicLinkSignInHelp: "認証済みメールの一度限りのリンクを確認すると、サインインを開始したタブでサインインが完了します。", saveSignInMethod: "サインイン方法を保存", emailUnverifiedSignInMethod: "このサインイン方法を選ぶには、先にメールを認証してください。", magicLinkSentTitle: "メールを確認してください", magicLinkSentBody: "アカウントが利用可能な場合、安全なサインインリンクを送信しました。受信トレイと迷惑メールフォルダーを確認してください。", savePassword: "パスワードを保存", settingsSavedBody: "変更を保存しました。",
+});
+Object.assign(I18N.en, {
+  magicLinkWaitingTitle: "Confirm your sign-in",
+  magicLinkWaitingBody: "Open the confirmation link we sent to your Email, then return to this tab. Do not close this tab while AstraNote waits for confirmation.",
+  magicLinkWaitingStatus: "Waiting for confirmation…",
+  magicLinkConfirmedTitle: "Sign-in confirmed",
+  magicLinkConfirmedBody: "This page only confirmed the request. Return to the original AstraNote tab to finish signing in.",
+  magicLinkExpired: "This sign-in request has expired. Start again to receive a new link.",
+});
+Object.assign(I18N["zh-Hant"], {
+  magicLinkWaitingTitle: "確認這次登入",
+  magicLinkWaitingBody: "請開啟寄到 Email 的確認連結，再回到此分頁。AstraNote 正在等待確認，請勿關閉此分頁。",
+  magicLinkWaitingStatus: "正在等待確認…",
+  magicLinkConfirmedTitle: "登入已確認",
+  magicLinkConfirmedBody: "此頁面只會確認登入要求。請回到原本開始登入的 AstraNote 分頁完成登入。",
+  magicLinkExpired: "這次登入要求已失效。請重新開始以取得新的連結。",
+});
+Object.assign(I18N.ja, {
+  magicLinkWaitingTitle: "サインインを確認",
+  magicLinkWaitingBody: "メールで送信した確認リンクを開き、このタブに戻ってください。AstraNote が確認を待機している間、このタブを閉じないでください。",
+  magicLinkWaitingStatus: "確認を待機中…",
+  magicLinkConfirmedTitle: "サインインを確認しました",
+  magicLinkConfirmedBody: "このページではリクエストの確認のみを行いました。サインインを開始した元の AstraNote タブに戻ってください。",
+  magicLinkExpired: "このサインインリクエストは期限切れです。新しいリンクを受け取るには、もう一度開始してください。",
 });
 
 const state = {
@@ -3343,6 +3367,71 @@ async function initAuthForm(kind) {
   const params = new URLSearchParams(location.search);
   const cancellation = kind === "login" && params.get("cancel") === "1";
   const magicLink = kind === "login" ? new URLSearchParams(location.hash.slice(1)) : null;
+  const magicRequestStorageKey = "astranote_magic_signin_request";
+  const validMagicRequest = (value) =>
+    value && /^[A-Za-z0-9_]{3,24}$/.test(value.username || "") &&
+    /^[A-Za-z0-9_-]{43}$/.test(value.requestId || "") &&
+    /^[A-Za-z0-9_-]{43}$/.test(value.requestSecret || "");
+  const readMagicRequest = () => {
+    try {
+      const request = JSON.parse(sessionStorage.getItem(magicRequestStorageKey) || "null");
+      return validMagicRequest(request) ? request : null;
+    } catch {
+      return null;
+    }
+  };
+  const clearMagicRequest = () => {
+    try { sessionStorage.removeItem(magicRequestStorageKey); } catch {}
+  };
+  const writeMagicRequest = (request) => {
+    try { sessionStorage.setItem(magicRequestStorageKey, JSON.stringify(request)); } catch {}
+  };
+  const renderMagicWait = (request) => {
+    form.replaceChildren();
+    const message = document.createElement("div");
+    message.className = "auth-method-message";
+    const icon = document.createElement("i");
+    icon.className = "fa-solid fa-spinner fa-spin";
+    icon.setAttribute("aria-hidden", "true");
+    const title = document.createElement("strong");
+    title.textContent = t("magicLinkWaitingTitle");
+    const body = document.createElement("span");
+    body.textContent = t("magicLinkWaitingBody");
+    const status = document.createElement("span");
+    status.className = "field-help";
+    status.setAttribute("role", "status");
+    status.textContent = t("magicLinkWaitingStatus");
+    message.append(icon, title, body, status);
+    const back = document.createElement("a");
+    back.className = "btn btn-outline";
+    back.href = "/login";
+    back.innerHTML = `<i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>${t("backHome")}</span>`;
+    back.addEventListener("click", clearMagicRequest);
+    form.append(message, back);
+    const poll = async () => {
+      try {
+        const result = await api("/api/login/magic/status", { method: "POST", body: request });
+        if (result.approved) {
+          clearMagicRequest();
+          location.replace(result.redirect || "/dashboard");
+          return;
+        }
+        if (result.expired) {
+          clearMagicRequest();
+          icon.className = "fa-solid fa-clock";
+          title.textContent = t("error");
+          body.textContent = t("magicLinkExpired");
+          status.remove();
+          return;
+        }
+      } catch {
+        // A short network interruption should not discard an otherwise valid
+        // request. The next poll safely resumes the same wait state.
+      }
+      window.setTimeout(poll, 2000);
+    };
+    window.setTimeout(poll, 1000);
+  };
   // CAPTCHA retries must never make someone re-enter a registration form.
   // Keep this only in memory, and only long enough to restore the current UI.
   const captureRegisterDraft = () => kind === "register" ? {
@@ -3379,12 +3468,27 @@ async function initAuthForm(kind) {
         body: { username: magicLink.get("u"), token: magicLink.get("token") },
       });
       history.replaceState(null, "", "/login");
-      location.replace(result.redirect);
+      if (result.legacy) {
+        location.replace(result.redirect);
+        return;
+      }
+      form.replaceChildren();
+      const message = document.createElement("div");
+      message.className = "auth-method-message";
+      message.innerHTML = `<i class="fa-solid fa-circle-check" aria-hidden="true"></i><strong></strong><span></span>`;
+      message.querySelector("strong").textContent = t("magicLinkConfirmedTitle");
+      message.querySelector("span").textContent = t("magicLinkConfirmedBody");
+      form.append(message);
       return;
     } catch (error) {
       history.replaceState(null, "", "/login");
       showError(error);
     }
+  }
+  const pendingMagicRequest = readMagicRequest();
+  if (pendingMagicRequest) {
+    renderMagicWait(pendingMagicRequest);
+    return;
   }
   if (cancellation) {
     $("[data-auth-title]").textContent = t("cancellationMode");
@@ -3434,15 +3538,14 @@ async function initAuthForm(kind) {
       if (kind === "login" && !cancellation && !twoFactorUsername && loginStage === "identifier") {
         const result = await api("/api/login/continue", { method: "POST", body: { username: form.username.value } });
         if (result.next === "magic") {
-          form.replaceChildren();
-          const message = document.createElement("p");
-          message.className = "auth-method-message";
-          message.innerHTML = `<i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i><strong>${t("magicLinkSentTitle")}</strong><span>${t("magicLinkSentBody")}</span>`;
-          const back = document.createElement("a");
-          back.className = "btn btn-outline";
-          back.href = "/login";
-          back.innerHTML = `<i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>${t("backHome")}</span>`;
-          form.append(message, back);
+          const request = {
+            username: result.username,
+            requestId: result.requestId,
+            requestSecret: result.requestSecret,
+          };
+          if (!validMagicRequest(request)) throw new Error(t("error"));
+          writeMagicRequest(request);
+          renderMagicWait(request);
           return;
         }
         showPasswordStep();
