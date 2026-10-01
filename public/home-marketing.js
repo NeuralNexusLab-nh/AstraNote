@@ -242,11 +242,6 @@
     });
   };
 
-  const applyHomepageLinks = () => {
-    const plansLink = document.querySelector(".hero-actions .btn-outline");
-    if (plansLink) plansLink.setAttribute("href", "/plans");
-  };
-
   const applySeo = () => {
     const copy = getCopy();
     document.title = copy.seoTitle;
@@ -265,7 +260,6 @@
 
   const applyAll = () => {
     applyMarketingCopy();
-    applyHomepageLinks();
     applySeo();
   };
 

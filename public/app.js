@@ -2768,7 +2768,7 @@ function showPwaInstallGuide() {
     content: guide,
     confirm: t("understood"),
     showCancel: false,
-    confirmIcon: "fa-arrow-down-to-bracket",
+    confirmIcon: "fa-download",
   });
 }
 
