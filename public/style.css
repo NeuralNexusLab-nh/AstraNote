@@ -267,6 +267,42 @@ img {
   gap: 24px;
   margin-bottom: 40px;
 }
+.page-head-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.pwa-install-button {
+  white-space: nowrap;
+}
+.pwa-install-guide {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--button);
+}
+.pwa-install-guide > i {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--primary) 16%, transparent);
+  color: var(--primary-hover);
+}
+.pwa-install-guide > p {
+  margin: 4px 0 0;
+  color: var(--text);
+  font-size: .92rem;
+  line-height: 1.65;
+}
 .eyebrow {
   display: flex;
   gap: 8px;
@@ -2489,6 +2525,10 @@ html[lang="ja"] [data-lang="en"] {
   .page-head {
     align-items: flex-start;
     flex-direction: column;
+  }
+  .page-head-actions {
+    width: 100%;
+    justify-content: space-between;
   }
   .docs-section {
     padding: 30px 0;

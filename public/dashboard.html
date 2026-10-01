@@ -3,9 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="AstraNote" />
     <meta name="robots" content="noindex,nofollow" />
     <title>AstraNote - Dashboard</title>
     <link rel="icon" href="/favicon.ico?v=20260915-2" sizes="any" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="/asset/logo.png?v=20260915" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="stylesheet" href="/style.css" />
     <script src="/app.js" defer></script>
@@ -22,9 +26,15 @@
             <h1 data-i18n="welcome"></h1>
             <p class="muted" data-i18n="welcomeBody"></p>
           </div>
-          <a class="btn btn-primary btn-lg" href="/notes/new"
-            ><i class="fa-solid fa-plus"></i><span data-i18n="createNote"></span
-          ></a>
+          <div class="page-head-actions">
+            <button class="btn pwa-install-button" type="button" data-pwa-install hidden>
+              <i class="fa-solid fa-arrow-down-to-bracket" aria-hidden="true"></i>
+              <span data-i18n="installApp">Install AstraNote</span>
+            </button>
+            <a class="btn btn-primary btn-lg" href="/notes/new"
+              ><i class="fa-solid fa-plus"></i><span data-i18n="createNote"></span
+            ></a>
+          </div>
         </header>
         <section class="summary-grid">
           <article class="card summary-card reveal">

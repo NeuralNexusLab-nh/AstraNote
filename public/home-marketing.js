@@ -12,7 +12,7 @@
       purposeEyebrow: "SMALL NOTES. EVERYDAY SHORTCUTS.",
       purposeTitle: "Keep the text. Skip the hunt.",
       purposeIntroOne:
-        "AstraNote is your free, pocket-sized online notebook. Save a useful bit of text without organizing your whole life. On another device, sign in, search a title, and put it to use. No app to install.",
+        "AstraNote is your free, pocket-sized online notebook. Save a useful bit of text without organizing your whole life. On another device, sign in, search a title, and put it to use. Install it when you want it one click away.",
       purposeIntroTwo:
         "AstraNote uses its own lightweight account, so grabbing one note does not have to begin with opening the main email or cloud account that controls the rest of your digital life.",
       purposeIntroThree:
@@ -77,7 +77,7 @@
       purposeEyebrow: "小筆記，派上大用場",
       purposeTitle: "下次要用，不必再翻一次。",
       purposeIntroOne:
-        "AstraNote 是免費的隨身線上小筆記。留下一段文字，不必先整理整個世界；換個裝置，登入、搜尋標題，就能拿來用。不必另外安裝應用程式。",
+        "AstraNote 是免費的隨身線上小筆記。留下一段文字，不必先整理整個世界；換個裝置，登入、搜尋標題，就能拿來用。想一鍵開啟時，也能安裝成應用程式。",
       purposeIntroTwo:
         "AstraNote 使用獨立的輕量登入。臨時只想拿一段文字時，不必先打開掌管郵件、雲端與帳號復原的主要帳號。",
       purposeIntroThree:
@@ -142,7 +142,7 @@
       purposeEyebrow: "小さなメモが、毎日の近道に",
       purposeTitle: "次に使うときは、探し回らない。",
       purposeIntroOne:
-        "AstraNote は、無料で使える持ち歩き感覚のオンラインメモです。短い文章を残すのに、生活すべてを整理する必要はありません。別の端末でもログインしてタイトルを検索すれば、すぐに使えます。アプリのインストールは不要です。",
+        "AstraNote は、無料で使える持ち歩き感覚のオンラインメモです。短い文章を残すのに、生活すべてを整理する必要はありません。別の端末でもログインしてタイトルを検索すれば、すぐに使えます。ワンクリックで開きたいときは、アプリとしてインストールできます。",
       purposeIntroTwo:
         "AstraNote は独立した軽量アカウントなので、短いメモ一つのためにメールやクラウド、復旧手段を持つ主要アカウントまで開く必要を減らせます。",
       purposeIntroThree:

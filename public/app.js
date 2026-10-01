@@ -1823,6 +1823,30 @@ Object.assign(I18N.en, { adminExcludeAccounts: "Exclude accounts", adminExcludeA
 Object.assign(I18N["zh-Hant"], { adminExcludeAccounts: "排除指定帳號", adminExcludeAccountsPlaceholder: "每行一個使用者名稱或 Email", adminExcludeAccountsHelp: "請填寫完整使用者名稱或 Email；找不到的項目會阻止寄送。", adminExcludePlans: "排除方案", adminExcludeBanned: "排除被封鎖的帳號", adminUnmatchedExclusions: "找不到排除對象：{accounts}", adminNoRecipients: "目前篩選條件下沒有收件者。", adminOverDailyLimit: "此公告超過管理員今日剩餘寄送額度。" });
 Object.assign(I18N.ja, { adminExcludeAccounts: "アカウントを除外", adminExcludeAccountsPlaceholder: "1 行に 1 つのユーザー名またはメールアドレス", adminExcludeAccountsHelp: "正確なユーザー名またはメールアドレスを入力してください。不明な項目があると送信できません。", adminExcludePlans: "プランを除外", adminExcludeBanned: "凍結済みアカウントを除外", adminUnmatchedExclusions: "見つからない除外対象：{accounts}", adminNoRecipients: "現在の絞り込みに一致する受信者はいません。", adminOverDailyLimit: "このお知らせは、本日の管理者送信枠の残りを超えています。" });
 Object.assign(I18N.ja, { adminExcludeAccounts: "アカウントを除外", adminExcludeAccountsPlaceholder: "ユーザー名またはメールアドレスを1行に1件", adminExcludeAccountsHelp: "完全なユーザー名またはメールアドレスを入力してください。不明な項目がある場合は送信できません。", adminExcludePlans: "プランを除外", adminExcludeBanned: "停止中のアカウントを除外", adminUnmatchedExclusions: "見つからない除外対象：{accounts}", adminNoRecipients: "現在の条件に一致する受信者はいません。", adminOverDailyLimit: "本日のメール送信枠を超えています。" });
+Object.assign(I18N.en, {
+  installApp: "Install AstraNote",
+  installAppTitle: "Install AstraNote",
+  installAppBody: "Keep AstraNote one click away in its own window.",
+  installIosGuide: "In Safari, tap Share, choose Add to Home Screen, turn on Open as Web App, then tap Add.",
+  installMacGuide: "In Safari, choose File or Share, then Add to Dock. Name the app and select Add.",
+  installBrowserGuide: "This browser does not offer a direct install prompt. In Chrome or Edge, use Install AstraNote from the address bar or browser menu.",
+});
+Object.assign(I18N["zh-Hant"], {
+  installApp: "安裝 AstraNote",
+  installAppTitle: "安裝 AstraNote",
+  installAppBody: "把 AstraNote 放到獨立視窗，隨時一鍵開啟。",
+  installIosGuide: "請在 Safari 點選分享，選擇「加入主畫面」，開啟「開啟為 Web App」，再點選「加入」。",
+  installMacGuide: "請在 Safari 的「檔案」或分享選單中選擇「加入 Dock」，命名後點選「加入」。",
+  installBrowserGuide: "此瀏覽器沒有提供直接安裝視窗。請在 Chrome 或 Edge 的網址列或瀏覽器選單中選擇「安裝 AstraNote」。",
+});
+Object.assign(I18N.ja, {
+  installApp: "AstraNote をインストール",
+  installAppTitle: "AstraNote をインストール",
+  installAppBody: "独立したウィンドウから、ワンクリックで AstraNote を開けます。",
+  installIosGuide: "Safari で共有をタップし、「ホーム画面に追加」を選択します。「Web アプリとして開く」をオンにしてから「追加」をタップしてください。",
+  installMacGuide: "Safari の「ファイル」または共有メニューから「Dock に追加」を選び、名前を付けて「追加」を選択してください。",
+  installBrowserGuide: "このブラウザでは直接のインストール画面を表示できません。Chrome または Edge のアドレスバーかメニューから「AstraNote をインストール」を選んでください。",
+});
 
 const t = (key) => I18N[state.language]?.[key] || I18N.en[key] || key;
 const formatBytes = (bytes) =>
@@ -2692,6 +2716,94 @@ function showMailSentModal() {
     showCancel: false,
     confirmIcon: "fa-envelope-open-text",
     onConfirm: async (close) => close(),
+  });
+}
+
+let pwaInstallPrompt = null;
+let pwaInstalled = false;
+
+function pwaRunsStandalone() {
+  return Boolean(
+    window.matchMedia?.("(display-mode: standalone)").matches ||
+      window.navigator?.standalone,
+  );
+}
+
+function isAppleMobile() {
+  const agent = navigator.userAgent || "";
+  return /iPhone|iPad|iPod/u.test(agent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+function isSafariOnMac() {
+  const agent = navigator.userAgent || "";
+  return /Macintosh/u.test(agent) && /Safari/u.test(agent) &&
+    !/Chrome|Chromium|Edg|OPR/u.test(agent);
+}
+
+function refreshPwaInstallButtons() {
+  const hidden = pwaInstalled || pwaRunsStandalone() || isOnionSite();
+  $$('[data-pwa-install]').forEach((button) => {
+    button.hidden = hidden;
+    button.setAttribute("aria-hidden", String(hidden));
+  });
+}
+
+function showPwaInstallGuide() {
+  const guide = document.createElement("div");
+  guide.className = "pwa-install-guide";
+  const icon = document.createElement("i");
+  icon.className = "fa-solid fa-mobile-screen-button";
+  icon.setAttribute("aria-hidden", "true");
+  const text = document.createElement("p");
+  text.textContent = isAppleMobile()
+    ? t("installIosGuide")
+    : isSafariOnMac()
+      ? t("installMacGuide")
+      : t("installBrowserGuide");
+  guide.append(icon, text);
+  modal({
+    title: t("installAppTitle"),
+    body: t("installAppBody"),
+    content: guide,
+    confirm: t("understood"),
+    showCancel: false,
+    confirmIcon: "fa-arrow-down-to-bracket",
+  });
+}
+
+async function requestPwaInstall() {
+  if (pwaRunsStandalone()) return refreshPwaInstallButtons();
+  if (!pwaInstallPrompt) return showPwaInstallGuide();
+  const prompt = pwaInstallPrompt;
+  pwaInstallPrompt = null;
+  await prompt.prompt();
+  await prompt.userChoice.catch(() => null);
+  refreshPwaInstallButtons();
+}
+
+function initPwaInstall() {
+  if (!isOnionSite() && "serviceWorker" in navigator && window.isSecureContext)
+    navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {
+      // PWA installation remains optional; a registration failure must never
+      // affect notes, sessions, CAPTCHA, or payment flows.
+    });
+  $$('[data-pwa-install]').forEach((button) => {
+    button.addEventListener("click", requestPwaInstall);
+  });
+  refreshPwaInstallButtons();
+}
+
+if (typeof window !== "undefined" && typeof window.addEventListener === "function") {
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    pwaInstallPrompt = event;
+    refreshPwaInstallButtons();
+  });
+  window.addEventListener("appinstalled", () => {
+    pwaInstalled = true;
+    pwaInstallPrompt = null;
+    refreshPwaInstallButtons();
   });
 }
 
@@ -5036,6 +5148,7 @@ async function boot() {
   buildNav();
   buildFooter();
   applyLocale();
+  initPwaInstall();
   if (state.account) showPlanWarning(state.account);
   cookieBanner();
   initReveal();
