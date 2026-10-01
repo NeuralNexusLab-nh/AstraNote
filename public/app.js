@@ -1853,6 +1853,7 @@ Object.assign(I18N.en, {
   installAppBody: "Keep AstraNote one click away in its own window.",
   installIosGuide: "In Safari, tap Share, choose Add to Home Screen, turn on Open as Web App, then tap Add.",
   installMacGuide: "In Safari, choose File or Share, then Add to Dock. Name the app and select Add.",
+  installFirefoxGuide: "Firefox on desktop does not support installing web apps. You can keep AstraNote as a browser shortcut; Firefox on Android offers Add to Home Screen from its menu.",
   installBrowserGuide: "This browser does not offer a direct install prompt. In Chrome or Edge, use Install AstraNote from the address bar or browser menu.",
 });
 Object.assign(I18N["zh-Hant"], {
@@ -1861,6 +1862,7 @@ Object.assign(I18N["zh-Hant"], {
   installAppBody: "把 AstraNote 放到獨立視窗，隨時一鍵開啟。",
   installIosGuide: "請在 Safari 點選分享，選擇「加入主畫面」，開啟「開啟為 Web App」，再點選「加入」。",
   installMacGuide: "請在 Safari 的「檔案」或分享選單中選擇「加入 Dock」，命名後點選「加入」。",
+  installFirefoxGuide: "桌面版 Firefox 目前不支援安裝 Web App。你可以將 AstraNote 保留為瀏覽器捷徑；Android 版 Firefox 可從選單選擇「加入主畫面」。",
   installBrowserGuide: "此瀏覽器沒有提供直接安裝視窗。請在 Chrome 或 Edge 的網址列或瀏覽器選單中選擇「安裝 AstraNote」。",
 });
 Object.assign(I18N.ja, {
@@ -1869,6 +1871,7 @@ Object.assign(I18N.ja, {
   installAppBody: "独立したウィンドウから、ワンクリックで AstraNote を開けます。",
   installIosGuide: "Safari で共有をタップし、「ホーム画面に追加」を選択します。「Web アプリとして開く」をオンにしてから「追加」をタップしてください。",
   installMacGuide: "Safari の「ファイル」または共有メニューから「Dock に追加」を選び、名前を付けて「追加」を選択してください。",
+  installFirefoxGuide: "デスクトップ版 Firefox は Web アプリのインストールに対応していません。AstraNote はブラウザーのショートカットとして利用でき、Android 版 Firefox ではメニューから「ホーム画面に追加」を選べます。",
   installBrowserGuide: "このブラウザでは直接のインストール画面を表示できません。Chrome または Edge のアドレスバーかメニューから「AstraNote をインストール」を選んでください。",
 });
 
@@ -2765,6 +2768,10 @@ function isSafariOnMac() {
     !/Chrome|Chromium|Edg|OPR/u.test(agent);
 }
 
+function isFirefox() {
+  return /Firefox\/\d+/u.test(navigator.userAgent || "");
+}
+
 function refreshPwaInstallButtons() {
   const hidden = pwaInstalled || pwaRunsStandalone() || isOnionSite();
   $$('[data-pwa-install]').forEach((button) => {
@@ -2784,6 +2791,8 @@ function showPwaInstallGuide() {
     ? t("installIosGuide")
     : isSafariOnMac()
       ? t("installMacGuide")
+      : isFirefox()
+        ? t("installFirefoxGuide")
       : t("installBrowserGuide");
   guide.append(icon, text);
   modal({

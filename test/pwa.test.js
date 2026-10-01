@@ -28,6 +28,8 @@ test("PWA install entry points stay available without caching private applicatio
   assert.match(app, /installApp: "Install AstraNote"/u);
   assert.match(app, /installApp: "安裝 AstraNote"/u);
   assert.match(app, /installApp: "AstraNote をインストール"/u);
+  assert.match(app, /installFirefoxGuide/u);
+  assert.match(app, /function isFirefox\(\)/u);
   assert.doesNotMatch(worker, /"\/api\//u);
   assert.match(worker, /Navigation and every API call stay network-only/u);
 });
