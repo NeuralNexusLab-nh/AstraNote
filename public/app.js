@@ -1860,9 +1860,10 @@ Object.assign(I18N.en, {
   installApp: "Install AstraNote",
   installAppTitle: "Install AstraNote",
   installAppBody: "Keep AstraNote one click away in its own window.",
-  installGuideIntro: "Follow the illustrated path for your browser. AstraNote stays open while your browser creates the app locally.",
+  installGuideIntro: "If your browser does not show its install window, use this menu path instead.",
   installEdgeMenu: "Open the Edge menu",
   installEdgeTools: "Choose More tools, then Apps",
+  installEdgeToolsVisual: "More tools",
   installEdgeConfirm: "Select Install this site as an app",
   installChromeMenu: "Open the Chrome menu",
   installChromeTools: "Choose Cast, save, and share",
@@ -1881,9 +1882,10 @@ Object.assign(I18N["zh-Hant"], {
   installApp: "安裝 AstraNote",
   installAppTitle: "安裝 AstraNote",
   installAppBody: "把 AstraNote 放到獨立視窗，隨時一鍵開啟。",
-  installGuideIntro: "依照你的瀏覽器跟著圖解操作。整個過程都會留在 AstraNote 與你的裝置上完成。",
+  installGuideIntro: "如果瀏覽器沒有跳出安裝視窗，請直接使用下方的選單路徑。",
   installEdgeMenu: "開啟 Edge 的「⋯」選單",
   installEdgeTools: "選擇「更多工具」，再選「應用程式」",
+  installEdgeToolsVisual: "更多工具",
   installEdgeConfirm: "選擇「將此網站安裝為應用程式」",
   installChromeMenu: "開啟 Chrome 的「⋮」選單",
   installChromeTools: "選擇「投放、儲存及分享」",
@@ -1902,9 +1904,10 @@ Object.assign(I18N.ja, {
   installApp: "AstraNote をインストール",
   installAppTitle: "AstraNote をインストール",
   installAppBody: "独立したウィンドウから、ワンクリックで AstraNote を開けます。",
-  installGuideIntro: "お使いのブラウザーに合う図解に沿って操作してください。AstraNote を開いたまま、端末上でアプリを作成できます。",
+  installGuideIntro: "ブラウザーのインストール画面が表示されない場合は、次のメニュー経路を使ってください。",
   installEdgeMenu: "Edge の「…」メニューを開く",
   installEdgeTools: "「その他のツール」から「アプリ」を選ぶ",
+  installEdgeToolsVisual: "その他のツール",
   installEdgeConfirm: "「このサイトをアプリとしてインストール」を選ぶ",
   installChromeMenu: "Chrome の「⋮」メニューを開く",
   installChromeTools: "「キャスト、保存、共有」を選ぶ",
@@ -2850,9 +2853,9 @@ function showPwaInstallGuide() {
         name: "Microsoft Edge",
         icon: "fa-brands fa-edge",
         steps: [
-          ["fa-ellipsis", t("installEdgeMenu")],
-          ["fa-wand-magic-sparkles", t("installEdgeTools")],
-          ["fa-download", t("installEdgeConfirm")],
+          { iconClass: "fa-ellipsis", label: t("installEdgeMenu") },
+          { label: t("installEdgeTools"), visualLabel: t("installEdgeToolsVisual") },
+          { iconClass: "fa-download", label: t("installEdgeConfirm") },
         ],
       }
     : isGoogleChrome()
@@ -2860,9 +2863,9 @@ function showPwaInstallGuide() {
           name: "Google Chrome",
           icon: "fa-brands fa-chrome",
           steps: [
-            ["fa-ellipsis-vertical", t("installChromeMenu")],
-            ["fa-share-nodes", t("installChromeTools")],
-            ["fa-download", t("installChromeConfirm")],
+            { iconClass: "fa-ellipsis-vertical", label: t("installChromeMenu") },
+            { iconClass: "fa-share-nodes", label: t("installChromeTools") },
+            { iconClass: "fa-download", label: t("installChromeConfirm") },
           ],
         }
       : isAppleMobile()
@@ -2870,9 +2873,9 @@ function showPwaInstallGuide() {
             name: "Safari",
             icon: "fa-brands fa-safari",
             steps: [
-              ["fa-arrow-up-from-bracket", t("installSafariShare")],
-              ["fa-mobile-screen-button", t("installSafariHome")],
-              ["fa-square-check", t("installSafariConfirm")],
+              { iconClass: "fa-arrow-up-from-bracket", label: t("installSafariShare") },
+              { iconClass: "fa-mobile-screen-button", label: t("installSafariHome") },
+              { iconClass: "fa-square-check", label: t("installSafariConfirm") },
             ],
           }
         : isSafariOnMac()
@@ -2880,8 +2883,8 @@ function showPwaInstallGuide() {
               name: "Safari",
               icon: "fa-brands fa-safari",
               steps: [
-                ["fa-file", t("installSafariDock")],
-                ["fa-hard-drive", t("installSafariDockConfirm")],
+                { iconClass: "fa-file", label: t("installSafariDock") },
+                { iconClass: "fa-hard-drive", label: t("installSafariDockConfirm") },
               ],
             }
           : null;
@@ -2897,13 +2900,19 @@ function showPwaInstallGuide() {
     heading.querySelector("span").textContent = browser.name;
     const steps = document.createElement("ol");
     steps.className = "pwa-install-steps";
-    browser.steps.forEach(([iconClass, label], index) => {
+    browser.steps.forEach(({ iconClass, label, visualLabel }, index) => {
       const step = document.createElement("li");
       step.className = "pwa-install-step";
       const visual = document.createElement("div");
       visual.className = "pwa-step-visual";
       visual.setAttribute("aria-hidden", "true");
-      visual.innerHTML = `<span class="pwa-step-number">${index + 1}</span><div class="pwa-mini-browser"><span></span><span></span><span></span><div class="pwa-mini-address">astranote</div><div class="pwa-mini-target"><i class="fa-solid ${iconClass}"></i></div></div>`;
+      visual.innerHTML = `<span class="pwa-step-number">${index + 1}</span><div class="pwa-mini-browser"><span></span><span></span><span></span><div class="pwa-mini-address">astranote</div><div class="pwa-mini-target"></div></div>`;
+      const target = visual.querySelector(".pwa-mini-target");
+      if (iconClass) target.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+      else {
+        target.classList.add("pwa-mini-target-text");
+        target.textContent = visualLabel;
+      }
       const text = document.createElement("span");
       text.className = "pwa-step-text";
       text.textContent = label;
@@ -2918,6 +2927,8 @@ function showPwaInstallGuide() {
     content: guide,
     confirm: t("understood"),
     showCancel: false,
+    closeOnBackdrop: false,
+    closeOnEscape: false,
     confirmIcon: "fa-download",
   });
 }
