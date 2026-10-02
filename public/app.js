@@ -2778,6 +2778,10 @@ function refreshPwaInstallButtons() {
     button.hidden = hidden;
     button.setAttribute("aria-hidden", String(hidden));
   });
+  $$('[data-pwa-plans]').forEach((link) => {
+    link.hidden = !hidden;
+    link.setAttribute("aria-hidden", String(!hidden));
+  });
 }
 
 function showPwaInstallGuide() {

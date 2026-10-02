@@ -22,6 +22,7 @@ test("PWA install entry points stay available without caching private applicatio
     ["/asset/icon-512.png", "512x512"],
   ]);
   assert.match(read("public/index.html"), /data-pwa-install/u);
+  assert.match(read("public/index.html"), /data-pwa-plans/u);
   assert.match(read("public/dashboard.html"), /data-pwa-install/u);
   assert.match(app, /beforeinstallprompt/u);
   assert.match(app, /navigator\.serviceWorker\.register\("\/sw\.js"/u);
@@ -30,6 +31,7 @@ test("PWA install entry points stay available without caching private applicatio
   assert.match(app, /installApp: "AstraNote をインストール"/u);
   assert.match(app, /installFirefoxGuide/u);
   assert.match(app, /function isFirefox\(\)/u);
+  assert.match(app, /\$\$\('\[data-pwa-plans\]'\)/u);
   assert.doesNotMatch(worker, /"\/api\//u);
   assert.match(worker, /Navigation and every API call stay network-only/u);
 });
