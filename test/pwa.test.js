@@ -36,6 +36,9 @@ test("PWA install entry points stay available without caching private applicatio
   assert.match(app, /pwa-install-steps/u);
   assert.match(app, /installEdgeConfirm/u);
   assert.match(app, /installEdgeToolsVisual/u);
+  assert.match(app, /installGuideAddressBar/u);
+  assert.match(app, /installAddressBar/u);
+  assert.match(app, /function pwaGuideForBrowser\(\)/u);
   assert.match(app, /closeOnBackdrop: false/u);
   assert.match(read("public/style.css"), /height: 74px/u);
   assert.doesNotMatch(worker, /"\/api\//u);

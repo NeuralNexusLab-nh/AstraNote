@@ -1861,18 +1861,30 @@ Object.assign(I18N.en, {
   installAppTitle: "Install AstraNote",
   installAppBody: "Keep AstraNote one click away in its own window.",
   installGuideIntro: "If your browser does not show its install window, use this menu path instead.",
+  installGuideAddressBar: "First, look for the install icon at the right edge of the address bar. If it is not there, use this menu path instead.",
+  installAddressBar: "Select the install icon at the right of the address bar",
   installEdgeMenu: "Open the Edge menu",
-  installEdgeTools: "Choose More tools, then Apps",
+  installEdgeTools: "Choose More tools",
   installEdgeToolsVisual: "More tools",
+  installEdgeAppsVisual: "Apps",
+  installEdgeApps: "Choose Apps",
   installEdgeConfirm: "Select Install this site as an app",
   installChromeMenu: "Open the Chrome menu",
   installChromeTools: "Choose Cast, save, and share",
+  installChromeToolsVisual: "Save & share",
   installChromeConfirm: "Select Install page as app",
+  installFirefoxMenu: "Open the Firefox menu",
+  installFirefoxConfirm: "Select Add to Home screen",
+  installFirefoxHomeVisual: "Add to Home",
   installSafariShare: "Open the Share menu",
   installSafariHome: "Choose Add to Home Screen",
   installSafariConfirm: "Turn on Open as Web App, then Add",
+  installSafariHomeVisual: "Add to Home",
+  installSafariAddVisual: "Add",
   installSafariDock: "Choose File or Share",
   installSafariDockConfirm: "Select Add to Dock, then Add",
+  installSafariFileVisual: "File",
+  installSafariDockVisual: "Add to Dock",
   installIosGuide: "In Safari, tap Share, choose Add to Home Screen, turn on Open as Web App, then tap Add.",
   installMacGuide: "In Safari, choose File or Share, then Add to Dock. Name the app and select Add.",
   installFirefoxGuide: "Firefox on desktop does not support installing web apps. You can keep AstraNote as a browser shortcut; Firefox on Android offers Add to Home Screen from its menu.",
@@ -1883,18 +1895,30 @@ Object.assign(I18N["zh-Hant"], {
   installAppTitle: "安裝 AstraNote",
   installAppBody: "把 AstraNote 放到獨立視窗，隨時一鍵開啟。",
   installGuideIntro: "如果瀏覽器沒有跳出安裝視窗，請直接使用下方的選單路徑。",
+  installGuideAddressBar: "先查看網址列最右側是否有安裝圖示；若沒有，再使用下方的選單路徑。",
+  installAddressBar: "點選網址列右側的安裝圖示",
   installEdgeMenu: "開啟 Edge 的「⋯」選單",
-  installEdgeTools: "選擇「更多工具」，再選「應用程式」",
+  installEdgeTools: "選擇「更多工具」",
   installEdgeToolsVisual: "更多工具",
+  installEdgeAppsVisual: "應用程式",
+  installEdgeApps: "選擇「應用程式」",
   installEdgeConfirm: "選擇「將此網站安裝為應用程式」",
   installChromeMenu: "開啟 Chrome 的「⋮」選單",
   installChromeTools: "選擇「投放、儲存及分享」",
+  installChromeToolsVisual: "儲存及分享",
   installChromeConfirm: "選擇「將頁面安裝為應用程式」",
+  installFirefoxMenu: "開啟 Firefox 的「⋮」選單",
+  installFirefoxConfirm: "選擇「加入主畫面」",
+  installFirefoxHomeVisual: "加入主畫面",
   installSafariShare: "開啟「分享」選單",
   installSafariHome: "選擇「加入主畫面」",
   installSafariConfirm: "開啟「開啟為 Web App」，再點選「加入」",
+  installSafariHomeVisual: "加入主畫面",
+  installSafariAddVisual: "加入",
   installSafariDock: "選擇「檔案」或「分享」",
   installSafariDockConfirm: "選擇「加入 Dock」，再點選「加入」",
+  installSafariFileVisual: "檔案",
+  installSafariDockVisual: "加入 Dock",
   installIosGuide: "請在 Safari 點選分享，選擇「加入主畫面」，開啟「開啟為 Web App」，再點選「加入」。",
   installMacGuide: "請在 Safari 的「檔案」或分享選單中選擇「加入 Dock」，命名後點選「加入」。",
   installFirefoxGuide: "桌面版 Firefox 目前不支援安裝 Web App。你可以將 AstraNote 保留為瀏覽器捷徑；Android 版 Firefox 可從選單選擇「加入主畫面」。",
@@ -1905,18 +1929,30 @@ Object.assign(I18N.ja, {
   installAppTitle: "AstraNote をインストール",
   installAppBody: "独立したウィンドウから、ワンクリックで AstraNote を開けます。",
   installGuideIntro: "ブラウザーのインストール画面が表示されない場合は、次のメニュー経路を使ってください。",
+  installGuideAddressBar: "まずアドレスバーの右端にあるインストールアイコンを確認してください。表示されない場合は、次のメニュー経路を使います。",
+  installAddressBar: "アドレスバー右側のインストールアイコンを選ぶ",
   installEdgeMenu: "Edge の「…」メニューを開く",
-  installEdgeTools: "「その他のツール」から「アプリ」を選ぶ",
+  installEdgeTools: "「その他のツール」を選ぶ",
   installEdgeToolsVisual: "その他のツール",
+  installEdgeAppsVisual: "アプリ",
+  installEdgeApps: "「アプリ」を選ぶ",
   installEdgeConfirm: "「このサイトをアプリとしてインストール」を選ぶ",
   installChromeMenu: "Chrome の「⋮」メニューを開く",
   installChromeTools: "「キャスト、保存、共有」を選ぶ",
+  installChromeToolsVisual: "保存と共有",
   installChromeConfirm: "「ページをアプリとしてインストール」を選ぶ",
+  installFirefoxMenu: "Firefox の「⋮」メニューを開く",
+  installFirefoxConfirm: "「ホーム画面に追加」を選ぶ",
+  installFirefoxHomeVisual: "ホームに追加",
   installSafariShare: "共有メニューを開く",
   installSafariHome: "「ホーム画面に追加」を選ぶ",
   installSafariConfirm: "「Web アプリとして開く」をオンにして「追加」を選ぶ",
+  installSafariHomeVisual: "ホームに追加",
+  installSafariAddVisual: "追加",
   installSafariDock: "「ファイル」または共有を選ぶ",
   installSafariDockConfirm: "「Dock に追加」を選び「追加」を選択する",
+  installSafariFileVisual: "ファイル",
+  installSafariDockVisual: "Dock に追加",
   installIosGuide: "Safari で共有をタップし、「ホーム画面に追加」を選択します。「Web アプリとして開く」をオンにしてから「追加」をタップしてください。",
   installMacGuide: "Safari の「ファイル」または共有メニューから「Dock に追加」を選び、名前を付けて「追加」を選択してください。",
   installFirefoxGuide: "デスクトップ版 Firefox は Web アプリのインストールに対応していません。AstraNote はブラウザーのショートカットとして利用でき、Android 版 Firefox ではメニューから「ホーム画面に追加」を選べます。",
@@ -2820,6 +2856,11 @@ function isFirefox() {
   return /Firefox\/\d+/u.test(navigator.userAgent || "");
 }
 
+function isFirefoxOnAndroid() {
+  const agent = navigator.userAgent || "";
+  return /Android/u.test(agent) && /Firefox\/\d+/u.test(agent);
+}
+
 function isMicrosoftEdge() {
   return /Edg\//u.test(navigator.userAgent || "");
 }
@@ -2827,6 +2868,56 @@ function isMicrosoftEdge() {
 function isGoogleChrome() {
   const agent = navigator.userAgent || "";
   return /Chrome\//u.test(agent) && !/Edg|OPR|SamsungBrowser/u.test(agent);
+}
+
+function pwaGuideForBrowser() {
+  if (isMicrosoftEdge()) return {
+    name: "Microsoft Edge",
+    icon: "fa-brands fa-edge",
+    addressBar: true,
+    steps: [
+      { iconClass: "fa-ellipsis", label: t("installEdgeMenu") },
+      { label: t("installEdgeTools"), visualLabel: t("installEdgeToolsVisual") },
+      { label: t("installEdgeApps"), visualLabel: t("installEdgeAppsVisual") },
+      { installIcon: true, label: t("installEdgeConfirm") },
+    ],
+  };
+  if (isGoogleChrome()) return {
+    name: "Google Chrome",
+    icon: "fa-brands fa-chrome",
+    addressBar: true,
+    steps: [
+      { iconClass: "fa-ellipsis-vertical", label: t("installChromeMenu") },
+      { label: t("installChromeTools"), visualLabel: t("installChromeToolsVisual") },
+      { installIcon: true, label: t("installChromeConfirm") },
+    ],
+  };
+  if (isFirefoxOnAndroid()) return {
+    name: "Firefox",
+    icon: "fa-brands fa-firefox-browser",
+    steps: [
+      { iconClass: "fa-ellipsis-vertical", label: t("installFirefoxMenu") },
+      { label: t("installFirefoxConfirm"), visualLabel: t("installFirefoxHomeVisual") },
+    ],
+  };
+  if (isAppleMobile()) return {
+    name: "Safari",
+    icon: "fa-brands fa-safari",
+    steps: [
+      { iconClass: "fa-arrow-up-from-bracket", label: t("installSafariShare") },
+      { label: t("installSafariHome"), visualLabel: t("installSafariHomeVisual") },
+      { label: t("installSafariConfirm"), visualLabel: t("installSafariAddVisual") },
+    ],
+  };
+  if (isSafariOnMac()) return {
+    name: "Safari",
+    icon: "fa-brands fa-safari",
+    steps: [
+      { label: t("installSafariDock"), visualLabel: t("installSafariFileVisual") },
+      { label: t("installSafariDockConfirm"), visualLabel: t("installSafariDockVisual") },
+    ],
+  };
+  return null;
 }
 
 function refreshPwaInstallButtons() {
@@ -2841,53 +2932,18 @@ function refreshPwaInstallButtons() {
   });
 }
 
+function installDesktopIcon() {
+  return '<svg class="pwa-install-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20V4h16v16H4Zm2-2h12V6H6v12Zm5-9h2v4h2l-3 3-3-3h2V9Z"></path></svg>';
+}
+
 function showPwaInstallGuide() {
+  const browser = pwaGuideForBrowser();
   const guide = document.createElement("div");
   guide.className = "pwa-install-guide";
   const intro = document.createElement("p");
   intro.className = "pwa-install-intro";
-  intro.textContent = t("installGuideIntro");
+  intro.textContent = t(browser?.addressBar ? "installGuideAddressBar" : "installGuideIntro");
   guide.append(intro);
-  const browser = isMicrosoftEdge()
-    ? {
-        name: "Microsoft Edge",
-        icon: "fa-brands fa-edge",
-        steps: [
-          { iconClass: "fa-ellipsis", label: t("installEdgeMenu") },
-          { label: t("installEdgeTools"), visualLabel: t("installEdgeToolsVisual") },
-          { iconClass: "fa-download", label: t("installEdgeConfirm") },
-        ],
-      }
-    : isGoogleChrome()
-      ? {
-          name: "Google Chrome",
-          icon: "fa-brands fa-chrome",
-          steps: [
-            { iconClass: "fa-ellipsis-vertical", label: t("installChromeMenu") },
-            { iconClass: "fa-share-nodes", label: t("installChromeTools") },
-            { iconClass: "fa-download", label: t("installChromeConfirm") },
-          ],
-        }
-      : isAppleMobile()
-        ? {
-            name: "Safari",
-            icon: "fa-brands fa-safari",
-            steps: [
-              { iconClass: "fa-arrow-up-from-bracket", label: t("installSafariShare") },
-              { iconClass: "fa-mobile-screen-button", label: t("installSafariHome") },
-              { iconClass: "fa-square-check", label: t("installSafariConfirm") },
-            ],
-          }
-        : isSafariOnMac()
-          ? {
-              name: "Safari",
-              icon: "fa-brands fa-safari",
-              steps: [
-                { iconClass: "fa-file", label: t("installSafariDock") },
-                { iconClass: "fa-hard-drive", label: t("installSafariDockConfirm") },
-              ],
-            }
-          : null;
   if (!browser) {
     const text = document.createElement("p");
     text.className = "pwa-install-fallback";
@@ -2898,9 +2954,16 @@ function showPwaInstallGuide() {
     heading.className = "pwa-install-browser";
     heading.innerHTML = `<i class="${browser.icon}" aria-hidden="true"></i><span></span>`;
     heading.querySelector("span").textContent = browser.name;
+    if (browser.addressBar) {
+      const shortcut = document.createElement("p");
+      shortcut.className = "pwa-install-shortcut";
+      shortcut.innerHTML = `${installDesktopIcon()}<span></span>`;
+      shortcut.querySelector("span").textContent = t("installAddressBar");
+      guide.append(heading, shortcut);
+    } else guide.append(heading);
     const steps = document.createElement("ol");
     steps.className = "pwa-install-steps";
-    browser.steps.forEach(({ iconClass, label, visualLabel }, index) => {
+    browser.steps.forEach(({ iconClass, installIcon, label, visualLabel }, index) => {
       const step = document.createElement("li");
       step.className = "pwa-install-step";
       const visual = document.createElement("div");
@@ -2909,6 +2972,7 @@ function showPwaInstallGuide() {
       visual.innerHTML = `<span class="pwa-step-number">${index + 1}</span><div class="pwa-mini-browser"><span></span><span></span><span></span><div class="pwa-mini-address">astranote</div><div class="pwa-mini-target"></div></div>`;
       const target = visual.querySelector(".pwa-mini-target");
       if (iconClass) target.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+      else if (installIcon) target.innerHTML = installDesktopIcon();
       else {
         target.classList.add("pwa-mini-target-text");
         target.textContent = visualLabel;
@@ -2919,7 +2983,7 @@ function showPwaInstallGuide() {
       step.append(visual, text);
       steps.append(step);
     });
-    guide.append(heading, steps);
+    guide.append(steps);
   }
   modal({
     title: t("installAppTitle"),

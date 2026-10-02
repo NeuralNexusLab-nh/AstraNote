@@ -133,6 +133,18 @@ test("every newly introduced feature has all three translations", () => {
     "adminUnmatchedExclusions",
     "adminNoRecipients",
     "adminOverDailyLimit",
+    "installFirefoxMenu",
+    "installFirefoxConfirm",
+    "installGuideAddressBar",
+    "installAddressBar",
+    "installEdgeAppsVisual",
+    "installEdgeApps",
+    "installChromeToolsVisual",
+    "installFirefoxHomeVisual",
+    "installSafariHomeVisual",
+    "installSafariAddVisual",
+    "installSafariFileVisual",
+    "installSafariDockVisual",
   ];
   for (const language of ["en", "zh-Hant", "ja"])
     for (const key of required)
@@ -147,6 +159,42 @@ test("every newly introduced feature has all three translations", () => {
   assert.equal(vm.runInContext('I18N["zh-Hant"].unlimited', context), "無限");
   assert.equal(vm.runInContext("I18N.ja.unlimited", context), "無限");
   assert.equal(vm.runInContext("I18N.en.unlimited", context), "Infinity");
+});
+
+test("install guidance selects an accurate, readable path for supported browsers", () => {
+  const context = browserContext();
+  const guideFor = (userAgent, platform = "", maxTouchPoints = 0) => {
+    context.navigator = { userAgent, platform, maxTouchPoints };
+    return JSON.parse(vm.runInContext("JSON.stringify(pwaGuideForBrowser())", context));
+  };
+
+  const edge = guideFor("Mozilla/5.0 Windows NT 10.0 Win64 x64 AppleWebKit/537.36 Chrome/140.0 Safari/537.36 Edg/140.0");
+  assert.equal(edge.name, "Microsoft Edge");
+  assert.equal(edge.addressBar, true);
+  assert.equal(edge.steps.length, 4);
+  assert.ok(edge.steps.every((step) => step.label));
+
+  const chrome = guideFor("Mozilla/5.0 Windows NT 10.0 Win64 x64 AppleWebKit/537.36 Chrome/140.0 Safari/537.36");
+  assert.equal(chrome.name, "Google Chrome");
+  assert.equal(chrome.addressBar, true);
+  assert.equal(chrome.steps.length, 3);
+  assert.ok(chrome.steps.every((step) => step.label));
+
+  const iphone = guideFor("Mozilla/5.0 iPhone CPU iPhone OS 18_6 like Mac OS X AppleWebKit/605.1.15 Version/18.6 Mobile/15E148 Safari/604.1");
+  assert.equal(iphone.name, "Safari");
+  assert.equal(iphone.steps.length, 3);
+
+  const safariMac = guideFor("Mozilla/5.0 Macintosh Intel Mac OS X 15_6 AppleWebKit/605.1.15 Version/18.6 Safari/605.1.15", "MacIntel");
+  assert.equal(safariMac.name, "Safari");
+  assert.equal(safariMac.steps.length, 2);
+
+  const firefoxAndroid = guideFor("Mozilla/5.0 Android 15 Mobile rv:142.0 Gecko/142.0 Firefox/142.0");
+  assert.equal(firefoxAndroid.name, "Firefox");
+  assert.equal(firefoxAndroid.steps.length, 2);
+  assert.ok(firefoxAndroid.steps.every((step) => step.label));
+
+  const firefoxDesktop = guideFor("Mozilla/5.0 Windows NT 10.0 Win64 x64 rv:142.0 Gecko/20100101 Firefox/142.0");
+  assert.equal(firefoxDesktop, null, "desktop Firefox correctly avoids an invented install path");
 });
 
 test("title search and simple filters keep pins first without exposing content", () => {
