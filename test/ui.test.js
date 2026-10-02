@@ -263,6 +263,7 @@ test("registration does not execute the Magic Link login initializer", () => {
   const app = fs.readFileSync(path.join(__dirname, "../public/app.js"), "utf8");
   assert.match(app, /const magicLink = kind === "login" \? new URLSearchParams/u);
   assert.doesNotMatch(app, /const magicLink = kind === "login" && new URLSearchParams/u);
+  assert.match(app, /location\.replace\(result\.redirect \|\| "\/dashboard"\)/u);
 });
 test("Zero and legacy PIN lengths stay separate", () => {
   const context = browserContext();

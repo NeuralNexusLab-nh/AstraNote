@@ -1630,26 +1630,26 @@ Object.assign(I18N.ja, {
 });
 Object.assign(I18N.en, {
   magicLinkWaitingTitle: "Confirm your sign-in",
-  magicLinkWaitingBody: "Open the confirmation link we sent to your Email, then return to this tab. Do not close this tab while AstraNote waits for confirmation.",
+  magicLinkWaitingBody: "Open the confirmation link we sent to your Email, then return to this tab. Keep this tab open: it will finish signing you in automatically.",
   magicLinkWaitingStatus: "Waiting for confirmation…",
   magicLinkConfirmedTitle: "Sign-in confirmed",
-  magicLinkConfirmedBody: "This page only confirmed the request. Return to the original AstraNote tab to finish signing in.",
+  magicLinkConfirmedBody: "The original AstraNote tab will finish signing you in automatically. You can now close this page.",
   magicLinkExpired: "This sign-in request has expired. Start again to receive a new link.",
 });
 Object.assign(I18N["zh-Hant"], {
   magicLinkWaitingTitle: "確認這次登入",
-  magicLinkWaitingBody: "請開啟寄到 Email 的確認連結，再回到此分頁。AstraNote 正在等待確認，請勿關閉此分頁。",
+  magicLinkWaitingBody: "請開啟寄到 Email 的確認連結，再回到此分頁。請保持此分頁開啟；它會自動完成登入。",
   magicLinkWaitingStatus: "正在等待確認…",
   magicLinkConfirmedTitle: "登入已確認",
-  magicLinkConfirmedBody: "此頁面只會確認登入要求。請回到原本開始登入的 AstraNote 分頁完成登入。",
+  magicLinkConfirmedBody: "原本開始登入的 AstraNote 分頁會自動完成登入。你現在可以關閉此頁面。",
   magicLinkExpired: "這次登入要求已失效。請重新開始以取得新的連結。",
 });
 Object.assign(I18N.ja, {
   magicLinkWaitingTitle: "サインインを確認",
-  magicLinkWaitingBody: "メールで送信した確認リンクを開き、このタブに戻ってください。AstraNote が確認を待機している間、このタブを閉じないでください。",
+  magicLinkWaitingBody: "メールで送信した確認リンクを開き、このタブに戻ってください。このタブは閉じずに、サインインが自動で完了するまで待ってください。",
   magicLinkWaitingStatus: "確認を待機中…",
   magicLinkConfirmedTitle: "サインインを確認しました",
-  magicLinkConfirmedBody: "このページではリクエストの確認のみを行いました。サインインを開始した元の AstraNote タブに戻ってください。",
+  magicLinkConfirmedBody: "サインインを開始した AstraNote タブで自動的に完了します。このページは閉じても大丈夫です。",
   magicLinkExpired: "このサインインリクエストは期限切れです。新しいリンクを受け取るには、もう一度開始してください。",
 });
 
@@ -1851,6 +1851,18 @@ Object.assign(I18N.en, {
   installApp: "Install AstraNote",
   installAppTitle: "Install AstraNote",
   installAppBody: "Keep AstraNote one click away in its own window.",
+  installGuideIntro: "Follow the illustrated path for your browser. AstraNote stays open while your browser creates the app locally.",
+  installEdgeMenu: "Open the Edge menu",
+  installEdgeTools: "Choose More tools, then Apps",
+  installEdgeConfirm: "Select Install this site as an app",
+  installChromeMenu: "Open the Chrome menu",
+  installChromeTools: "Choose Cast, save, and share",
+  installChromeConfirm: "Select Install page as app",
+  installSafariShare: "Open the Share menu",
+  installSafariHome: "Choose Add to Home Screen",
+  installSafariConfirm: "Turn on Open as Web App, then Add",
+  installSafariDock: "Choose File or Share",
+  installSafariDockConfirm: "Select Add to Dock, then Add",
   installIosGuide: "In Safari, tap Share, choose Add to Home Screen, turn on Open as Web App, then tap Add.",
   installMacGuide: "In Safari, choose File or Share, then Add to Dock. Name the app and select Add.",
   installFirefoxGuide: "Firefox on desktop does not support installing web apps. You can keep AstraNote as a browser shortcut; Firefox on Android offers Add to Home Screen from its menu.",
@@ -1860,6 +1872,18 @@ Object.assign(I18N["zh-Hant"], {
   installApp: "安裝 AstraNote",
   installAppTitle: "安裝 AstraNote",
   installAppBody: "把 AstraNote 放到獨立視窗，隨時一鍵開啟。",
+  installGuideIntro: "依照你的瀏覽器跟著圖解操作。整個過程都會留在 AstraNote 與你的裝置上完成。",
+  installEdgeMenu: "開啟 Edge 的「⋯」選單",
+  installEdgeTools: "選擇「更多工具」，再選「應用程式」",
+  installEdgeConfirm: "選擇「將此網站安裝為應用程式」",
+  installChromeMenu: "開啟 Chrome 的「⋮」選單",
+  installChromeTools: "選擇「投放、儲存及分享」",
+  installChromeConfirm: "選擇「將頁面安裝為應用程式」",
+  installSafariShare: "開啟「分享」選單",
+  installSafariHome: "選擇「加入主畫面」",
+  installSafariConfirm: "開啟「開啟為 Web App」，再點選「加入」",
+  installSafariDock: "選擇「檔案」或「分享」",
+  installSafariDockConfirm: "選擇「加入 Dock」，再點選「加入」",
   installIosGuide: "請在 Safari 點選分享，選擇「加入主畫面」，開啟「開啟為 Web App」，再點選「加入」。",
   installMacGuide: "請在 Safari 的「檔案」或分享選單中選擇「加入 Dock」，命名後點選「加入」。",
   installFirefoxGuide: "桌面版 Firefox 目前不支援安裝 Web App。你可以將 AstraNote 保留為瀏覽器捷徑；Android 版 Firefox 可從選單選擇「加入主畫面」。",
@@ -1869,6 +1893,18 @@ Object.assign(I18N.ja, {
   installApp: "AstraNote をインストール",
   installAppTitle: "AstraNote をインストール",
   installAppBody: "独立したウィンドウから、ワンクリックで AstraNote を開けます。",
+  installGuideIntro: "お使いのブラウザーに合う図解に沿って操作してください。AstraNote を開いたまま、端末上でアプリを作成できます。",
+  installEdgeMenu: "Edge の「…」メニューを開く",
+  installEdgeTools: "「その他のツール」から「アプリ」を選ぶ",
+  installEdgeConfirm: "「このサイトをアプリとしてインストール」を選ぶ",
+  installChromeMenu: "Chrome の「⋮」メニューを開く",
+  installChromeTools: "「キャスト、保存、共有」を選ぶ",
+  installChromeConfirm: "「ページをアプリとしてインストール」を選ぶ",
+  installSafariShare: "共有メニューを開く",
+  installSafariHome: "「ホーム画面に追加」を選ぶ",
+  installSafariConfirm: "「Web アプリとして開く」をオンにして「追加」を選ぶ",
+  installSafariDock: "「ファイル」または共有を選ぶ",
+  installSafariDockConfirm: "「Dock に追加」を選び「追加」を選択する",
   installIosGuide: "Safari で共有をタップし、「ホーム画面に追加」を選択します。「Web アプリとして開く」をオンにしてから「追加」をタップしてください。",
   installMacGuide: "Safari の「ファイル」または共有メニューから「Dock に追加」を選び、名前を付けて「追加」を選択してください。",
   installFirefoxGuide: "デスクトップ版 Firefox は Web アプリのインストールに対応していません。AstraNote はブラウザーのショートカットとして利用でき、Android 版 Firefox ではメニューから「ホーム画面に追加」を選べます。",
@@ -2772,6 +2808,15 @@ function isFirefox() {
   return /Firefox\/\d+/u.test(navigator.userAgent || "");
 }
 
+function isMicrosoftEdge() {
+  return /Edg\//u.test(navigator.userAgent || "");
+}
+
+function isGoogleChrome() {
+  const agent = navigator.userAgent || "";
+  return /Chrome\//u.test(agent) && !/Edg|OPR|SamsungBrowser/u.test(agent);
+}
+
 function refreshPwaInstallButtons() {
   const hidden = pwaInstalled || pwaRunsStandalone() || isOnionSite();
   $$('[data-pwa-install]').forEach((button) => {
@@ -2787,18 +2832,77 @@ function refreshPwaInstallButtons() {
 function showPwaInstallGuide() {
   const guide = document.createElement("div");
   guide.className = "pwa-install-guide";
-  const icon = document.createElement("i");
-  icon.className = "fa-solid fa-mobile-screen-button";
-  icon.setAttribute("aria-hidden", "true");
-  const text = document.createElement("p");
-  text.textContent = isAppleMobile()
-    ? t("installIosGuide")
-    : isSafariOnMac()
-      ? t("installMacGuide")
-      : isFirefox()
-        ? t("installFirefoxGuide")
-      : t("installBrowserGuide");
-  guide.append(icon, text);
+  const intro = document.createElement("p");
+  intro.className = "pwa-install-intro";
+  intro.textContent = t("installGuideIntro");
+  guide.append(intro);
+  const browser = isMicrosoftEdge()
+    ? {
+        name: "Microsoft Edge",
+        icon: "fa-brands fa-edge",
+        steps: [
+          ["fa-ellipsis", t("installEdgeMenu")],
+          ["fa-wand-magic-sparkles", t("installEdgeTools")],
+          ["fa-download", t("installEdgeConfirm")],
+        ],
+      }
+    : isGoogleChrome()
+      ? {
+          name: "Google Chrome",
+          icon: "fa-brands fa-chrome",
+          steps: [
+            ["fa-ellipsis-vertical", t("installChromeMenu")],
+            ["fa-share-nodes", t("installChromeTools")],
+            ["fa-download", t("installChromeConfirm")],
+          ],
+        }
+      : isAppleMobile()
+        ? {
+            name: "Safari",
+            icon: "fa-brands fa-safari",
+            steps: [
+              ["fa-arrow-up-from-bracket", t("installSafariShare")],
+              ["fa-mobile-screen-button", t("installSafariHome")],
+              ["fa-square-check", t("installSafariConfirm")],
+            ],
+          }
+        : isSafariOnMac()
+          ? {
+              name: "Safari",
+              icon: "fa-brands fa-safari",
+              steps: [
+                ["fa-file", t("installSafariDock")],
+                ["fa-hard-drive", t("installSafariDockConfirm")],
+              ],
+            }
+          : null;
+  if (!browser) {
+    const text = document.createElement("p");
+    text.className = "pwa-install-fallback";
+    text.textContent = isFirefox() ? t("installFirefoxGuide") : t("installBrowserGuide");
+    guide.append(text);
+  } else {
+    const heading = document.createElement("p");
+    heading.className = "pwa-install-browser";
+    heading.innerHTML = `<i class="${browser.icon}" aria-hidden="true"></i><span></span>`;
+    heading.querySelector("span").textContent = browser.name;
+    const steps = document.createElement("ol");
+    steps.className = "pwa-install-steps";
+    browser.steps.forEach(([iconClass, label], index) => {
+      const step = document.createElement("li");
+      step.className = "pwa-install-step";
+      const visual = document.createElement("div");
+      visual.className = "pwa-step-visual";
+      visual.setAttribute("aria-hidden", "true");
+      visual.innerHTML = `<span class="pwa-step-number">${index + 1}</span><div class="pwa-mini-browser"><span></span><span></span><span></span><div class="pwa-mini-address">astranote</div><div class="pwa-mini-target"><i class="fa-solid ${iconClass}"></i></div></div>`;
+      const text = document.createElement("span");
+      text.className = "pwa-step-text";
+      text.textContent = label;
+      step.append(visual, text);
+      steps.append(step);
+    });
+    guide.append(heading, steps);
+  }
   modal({
     title: t("installAppTitle"),
     body: t("installAppBody"),
@@ -2815,8 +2919,9 @@ async function requestPwaInstall() {
   const prompt = pwaInstallPrompt;
   pwaInstallPrompt = null;
   await prompt.prompt();
-  await prompt.userChoice.catch(() => null);
+  const choice = await prompt.userChoice.catch(() => null);
   refreshPwaInstallButtons();
+  if (!choice || choice.outcome !== "accepted") showPwaInstallGuide();
 }
 
 function initPwaInstall() {
@@ -3482,7 +3587,10 @@ async function initAuthForm(kind) {
       });
       history.replaceState(null, "", "/login");
       if (result.legacy) {
-        location.replace(result.redirect);
+        // A link issued by the pre-tab-bound flow may be completed after a
+        // deployment. It receives a session in this tab, so never navigate to
+        // the string "undefined" if an older response lacks a redirect.
+        location.replace(result.redirect || "/dashboard");
         return;
       }
       form.replaceChildren();

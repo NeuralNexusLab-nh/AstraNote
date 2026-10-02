@@ -279,29 +279,148 @@ img {
 }
 .pwa-install-guide {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: start;
-  gap: 12px;
+  gap: 14px;
   margin-top: 20px;
-  padding: 14px;
+  padding: 16px;
   border: 1px solid var(--line);
   border-radius: 14px;
   background: var(--button);
 }
-.pwa-install-guide > i {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--primary) 16%, transparent);
-  color: var(--primary-hover);
-}
-.pwa-install-guide > p {
-  margin: 4px 0 0;
+.pwa-install-intro,
+.pwa-install-fallback {
+  margin: 0;
   color: var(--text);
   font-size: .92rem;
   line-height: 1.65;
+}
+.pwa-install-browser {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 1px 0 0;
+  color: var(--heading);
+  font-weight: 750;
+  font-size: .9rem;
+}
+.pwa-install-browser > i {
+  color: var(--primary-hover);
+  font-size: 1.05rem;
+}
+.pwa-install-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pwa-install-step {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.pwa-install-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 37px;
+  right: -8px;
+  z-index: 1;
+  width: 8px;
+  height: 8px;
+  border-top: 1px solid var(--primary);
+  border-right: 1px solid var(--primary);
+  transform: rotate(45deg);
+}
+.pwa-step-visual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 74px;
+  padding: 13px 9px 9px;
+  border: 1px solid color-mix(in srgb, var(--primary) 34%, var(--line));
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--surface) 78%, var(--primary) 6%);
+}
+.pwa-step-number {
+  position: absolute;
+  top: -8px;
+  left: -7px;
+  display: grid;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: .7rem;
+  font-weight: 800;
+}
+.pwa-mini-browser {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: min(100%, 118px);
+  height: 32px;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface);
+}
+.pwa-mini-browser > span {
+  width: 4px;
+  height: 4px;
+  margin-right: 3px;
+  border-radius: 50%;
+  background: var(--muted);
+  opacity: .7;
+}
+.pwa-mini-address {
+  width: 48px;
+  margin-left: 4px;
+  overflow: hidden;
+  color: var(--muted);
+  font: 600 8px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pwa-mini-target {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin-left: auto;
+  border: 1px solid color-mix(in srgb, var(--primary) 55%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--primary) 16%, transparent);
+  color: var(--primary-hover);
+  font-size: .66rem;
+}
+.pwa-step-text {
+  color: var(--text);
+  font-size: .78rem;
+  font-weight: 650;
+  line-height: 1.45;
+  text-align: center;
+}
+@media (max-width: 520px) {
+  .pwa-install-steps {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .pwa-install-step {
+    grid-template-columns: 112px minmax(0, 1fr);
+    align-items: center;
+  }
+  .pwa-install-step:not(:last-child)::after {
+    top: auto;
+    right: auto;
+    bottom: -13px;
+    left: 52px;
+    transform: rotate(135deg);
+  }
+  .pwa-step-text { text-align: left; }
 }
 .eyebrow {
   display: flex;

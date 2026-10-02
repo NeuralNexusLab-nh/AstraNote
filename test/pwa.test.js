@@ -32,6 +32,9 @@ test("PWA install entry points stay available without caching private applicatio
   assert.match(app, /installFirefoxGuide/u);
   assert.match(app, /function isFirefox\(\)/u);
   assert.match(app, /\$\$\('\[data-pwa-plans\]'\)/u);
+  assert.match(app, /function isMicrosoftEdge\(\)/u);
+  assert.match(app, /pwa-install-steps/u);
+  assert.match(app, /installEdgeConfirm/u);
   assert.doesNotMatch(worker, /"\/api\//u);
   assert.match(worker, /Navigation and every API call stay network-only/u);
 });
