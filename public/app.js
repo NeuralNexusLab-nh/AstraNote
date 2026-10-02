@@ -1630,26 +1630,35 @@ Object.assign(I18N.ja, {
 });
 Object.assign(I18N.en, {
   magicLinkWaitingTitle: "Confirm your sign-in",
-  magicLinkWaitingBody: "Open the confirmation link we sent to your Email, then return to this tab. Keep this tab open: it will finish signing you in automatically.",
+  magicLinkWaitingBody: "Open the confirmation link we sent to your Email, then return to this tab.",
+  magicLinkStepOpen: "Open the confirmation link in your Email.",
+  magicLinkStepReturn: "Return here and keep this tab open. AstraNote will sign you in automatically.",
   magicLinkWaitingStatus: "Waiting for confirmation…",
   magicLinkConfirmedTitle: "Sign-in confirmed",
-  magicLinkConfirmedBody: "The original AstraNote tab will finish signing you in automatically. You can now close this page.",
+  magicLinkConfirmedBody: "The original AstraNote tab is finishing your sign-in automatically.",
+  magicLinkConfirmedClose: "You can now close this page.",
   magicLinkExpired: "This sign-in request has expired. Start again to receive a new link.",
 });
 Object.assign(I18N["zh-Hant"], {
   magicLinkWaitingTitle: "確認這次登入",
-  magicLinkWaitingBody: "請開啟寄到 Email 的確認連結，再回到此分頁。請保持此分頁開啟；它會自動完成登入。",
+  magicLinkWaitingBody: "請開啟寄到 Email 的確認連結，再回到此分頁。",
+  magicLinkStepOpen: "開啟 Email 裡的確認連結。",
+  magicLinkStepReturn: "回到這個分頁並保持開啟；AstraNote 會自動完成登入。",
   magicLinkWaitingStatus: "正在等待確認…",
   magicLinkConfirmedTitle: "登入已確認",
-  magicLinkConfirmedBody: "原本開始登入的 AstraNote 分頁會自動完成登入。你現在可以關閉此頁面。",
+  magicLinkConfirmedBody: "原本開始登入的 AstraNote 分頁正在自動完成登入。",
+  magicLinkConfirmedClose: "你現在可以關閉此頁面。",
   magicLinkExpired: "這次登入要求已失效。請重新開始以取得新的連結。",
 });
 Object.assign(I18N.ja, {
   magicLinkWaitingTitle: "サインインを確認",
-  magicLinkWaitingBody: "メールで送信した確認リンクを開き、このタブに戻ってください。このタブは閉じずに、サインインが自動で完了するまで待ってください。",
+  magicLinkWaitingBody: "メールで送信した確認リンクを開き、このタブに戻ってください。",
+  magicLinkStepOpen: "メール内の確認リンクを開きます。",
+  magicLinkStepReturn: "このタブに戻り、閉じずに待機してください。AstraNote が自動でサインインを完了します。",
   magicLinkWaitingStatus: "確認を待機中…",
   magicLinkConfirmedTitle: "サインインを確認しました",
-  magicLinkConfirmedBody: "サインインを開始した AstraNote タブで自動的に完了します。このページは閉じても大丈夫です。",
+  magicLinkConfirmedBody: "サインインを開始した AstraNote タブで自動的に完了します。",
+  magicLinkConfirmedClose: "このページは閉じても大丈夫です。",
   magicLinkExpired: "このサインインリクエストは期限切れです。新しいリンクを受け取るには、もう一度開始してください。",
 });
 
@@ -3507,19 +3516,29 @@ async function initAuthForm(kind) {
   const renderMagicWait = (request) => {
     form.replaceChildren();
     const message = document.createElement("div");
-    message.className = "auth-method-message";
+    message.className = "auth-method-message magic-link-wait";
     const icon = document.createElement("i");
     icon.className = "fa-solid fa-spinner fa-spin";
     icon.setAttribute("aria-hidden", "true");
     const title = document.createElement("strong");
     title.textContent = t("magicLinkWaitingTitle");
-    const body = document.createElement("span");
-    body.textContent = t("magicLinkWaitingBody");
+    const steps = document.createElement("div");
+    steps.className = "magic-link-steps";
+    [
+      ["fa-envelope-open-text", t("magicLinkStepOpen")],
+      ["fa-arrow-left", t("magicLinkStepReturn")],
+    ].forEach(([iconClass, text]) => {
+      const step = document.createElement("p");
+      step.className = "magic-link-step";
+      step.innerHTML = `<i class="fa-solid ${iconClass}" aria-hidden="true"></i><span></span>`;
+      step.querySelector("span").textContent = text;
+      steps.append(step);
+    });
     const status = document.createElement("span");
     status.className = "field-help";
     status.setAttribute("role", "status");
     status.textContent = t("magicLinkWaitingStatus");
-    message.append(icon, title, body, status);
+    message.append(icon, title, steps, status);
     const back = document.createElement("a");
     back.className = "btn btn-outline";
     back.href = "/login";
@@ -3538,7 +3557,11 @@ async function initAuthForm(kind) {
           clearMagicRequest();
           icon.className = "fa-solid fa-clock";
           title.textContent = t("error");
-          body.textContent = t("magicLinkExpired");
+          steps.replaceChildren();
+          const expired = document.createElement("p");
+          expired.className = "magic-link-expired";
+          expired.textContent = t("magicLinkExpired");
+          steps.append(expired);
           status.remove();
           return;
         }
@@ -3595,10 +3618,11 @@ async function initAuthForm(kind) {
       }
       form.replaceChildren();
       const message = document.createElement("div");
-      message.className = "auth-method-message";
-      message.innerHTML = `<i class="fa-solid fa-circle-check" aria-hidden="true"></i><strong></strong><span></span>`;
+      message.className = "auth-method-message magic-link-confirmed";
+      message.innerHTML = `<i class="fa-solid fa-circle-check" aria-hidden="true"></i><strong></strong><span></span><p><i class="fa-solid fa-xmark" aria-hidden="true"></i><span></span></p>`;
       message.querySelector("strong").textContent = t("magicLinkConfirmedTitle");
       message.querySelector("span").textContent = t("magicLinkConfirmedBody");
+      message.querySelector("p span").textContent = t("magicLinkConfirmedClose");
       form.append(message);
       return;
     } catch (error) {
