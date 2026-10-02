@@ -36,6 +36,13 @@ test("forgot-password recovery moves below the password field when it is request
   const app = fs.readFileSync(path.join(__dirname, "../public/app.js"), "utf8");
   assert.match(app, /passwordGroup\.append\(\$\("\.auth-forgot", form\)\)/);
 });
+test("registration legal links and plan allowance language localize cleanly", () => {
+  const register = fs.readFileSync(path.join(__dirname, "../public/register.html"), "utf8");
+  const app = fs.readFileSync(path.join(__dirname, "../public/app.js"), "utf8");
+  assert.match(register, /href="\/terms" target="_blank" data-i18n="terms"/);
+  assert.match(register, /href="\/privacy" target="_blank" data-i18n="privacy"/);
+  assert.doesNotMatch(app, /Free 的 \d+ 倍|Free の ?\d+倍|\d+× Free allowance/);
+});
 test("a notice modal closes when its confirmation has no custom action", async () => {
   const context = browserContext();
   const classes = new Set();

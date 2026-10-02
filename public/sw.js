@@ -2,7 +2,7 @@
 
 // AstraNote deliberately caches only public interface assets. It never caches
 // HTML documents, API responses, notes, sessions, PINs, or decrypted text.
-const CACHE_NAME = "astranote-interface-v2";
+const CACHE_NAME = "astranote-interface-v3";
 const INTERFACE_ASSETS = [
   "/style.css",
   "/home.css",
@@ -44,18 +44,17 @@ self.addEventListener("fetch", (event) => {
   // cache from becoming a second store of private account or note data.
   if (!["style", "script", "image", "font"].includes(request.destination)) return;
 
+  // Interface updates must be visible immediately after a normal refresh.
+  // Keep the cache solely as an offline fallback, never as the first response.
   event.respondWith(
-    caches.match(request).then((cached) => {
-      const network = fetch(request)
-        .then((response) => {
-          if (response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
-          }
-          return response;
-        })
-        .catch(() => cached);
-      return cached || network;
-    }),
+    fetch(request)
+      .then((response) => {
+        if (response.ok) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+        }
+        return response;
+      })
+      .catch(() => caches.match(request)),
   );
 });
