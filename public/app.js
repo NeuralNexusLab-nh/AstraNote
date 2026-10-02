@@ -1860,6 +1860,12 @@ Object.assign(I18N.en, {
   installApp: "Install AstraNote",
   installAppTitle: "Install AstraNote",
   installAppBody: "Keep AstraNote one click away in its own window.",
+  installQuickEyebrow: "QUICK INSTALL",
+  installQuickTitle: "Install from the address bar",
+  installManualEyebrow: "MANUAL INSTALL",
+  installManualTitle: "Can't find the install icon?",
+  installManualBody: "Use the browser menu instead.",
+  installNoPromptTitle: "Install with your browser menu",
   installGuideIntro: "If your browser does not show its install window, use this menu path instead.",
   installGuideAddressBar: "First, look for the install icon at the right edge of the address bar. If it is not there, use this menu path instead.",
   installAddressBar: "Select the install icon at the right of the address bar",
@@ -1894,6 +1900,12 @@ Object.assign(I18N["zh-Hant"], {
   installApp: "安裝 AstraNote",
   installAppTitle: "安裝 AstraNote",
   installAppBody: "把 AstraNote 放到獨立視窗，隨時一鍵開啟。",
+  installQuickEyebrow: "快速安裝",
+  installQuickTitle: "從網址列直接安裝",
+  installManualEyebrow: "手動安裝",
+  installManualTitle: "找不到安裝圖示？",
+  installManualBody: "改用瀏覽器選單完成安裝。",
+  installNoPromptTitle: "從瀏覽器選單安裝",
   installGuideIntro: "如果瀏覽器沒有跳出安裝視窗，請直接使用下方的選單路徑。",
   installGuideAddressBar: "先查看網址列最右側是否有安裝圖示；若沒有，再使用下方的選單路徑。",
   installAddressBar: "點選網址列右側的安裝圖示",
@@ -1928,6 +1940,12 @@ Object.assign(I18N.ja, {
   installApp: "AstraNote をインストール",
   installAppTitle: "AstraNote をインストール",
   installAppBody: "独立したウィンドウから、ワンクリックで AstraNote を開けます。",
+  installQuickEyebrow: "クイックインストール",
+  installQuickTitle: "アドレスバーからインストール",
+  installManualEyebrow: "手動インストール",
+  installManualTitle: "インストールアイコンが見つかりませんか？",
+  installManualBody: "ブラウザーのメニューからインストールします。",
+  installNoPromptTitle: "ブラウザーのメニューからインストール",
   installGuideIntro: "ブラウザーのインストール画面が表示されない場合は、次のメニュー経路を使ってください。",
   installGuideAddressBar: "まずアドレスバーの右端にあるインストールアイコンを確認してください。表示されない場合は、次のメニュー経路を使います。",
   installAddressBar: "アドレスバー右側のインストールアイコンを選ぶ",
@@ -2940,27 +2958,47 @@ function showPwaInstallGuide() {
   const browser = pwaGuideForBrowser();
   const guide = document.createElement("div");
   guide.className = "pwa-install-guide";
-  const intro = document.createElement("p");
-  intro.className = "pwa-install-intro";
-  intro.textContent = t(browser?.addressBar ? "installGuideAddressBar" : "installGuideIntro");
-  guide.append(intro);
   if (!browser) {
-    const text = document.createElement("p");
-    text.className = "pwa-install-fallback";
-    text.textContent = isFirefox() ? t("installFirefoxGuide") : t("installBrowserGuide");
-    guide.append(text);
+    const unavailable = document.createElement("section");
+    unavailable.className = "pwa-install-unavailable";
+    unavailable.innerHTML = '<i class="fa-solid fa-compass" aria-hidden="true"></i><div><p class="pwa-install-eyebrow"></p><h3></h3><p></p></div>';
+    unavailable.querySelector(".pwa-install-eyebrow").textContent = t("installManualEyebrow");
+    unavailable.querySelector("h3").textContent = t("installNoPromptTitle");
+    unavailable.querySelector("p:last-child").textContent = isFirefox() ? t("installFirefoxGuide") : t("installBrowserGuide");
+    guide.append(unavailable);
   } else {
-    const heading = document.createElement("p");
-    heading.className = "pwa-install-browser";
-    heading.innerHTML = `<i class="${browser.icon}" aria-hidden="true"></i><span></span>`;
-    heading.querySelector("span").textContent = browser.name;
+    const buildHeading = (eyebrow, title, body) => {
+      const heading = document.createElement("div");
+      heading.className = "pwa-install-heading";
+      heading.innerHTML = '<p class="pwa-install-eyebrow"></p><h3></h3><p></p>';
+      heading.querySelector(".pwa-install-eyebrow").textContent = eyebrow;
+      heading.querySelector("h3").textContent = title;
+      heading.querySelector("p:last-child").textContent = body;
+      return heading;
+    };
     if (browser.addressBar) {
-      const shortcut = document.createElement("p");
+      const quick = document.createElement("section");
+      quick.className = "pwa-install-quick";
+      quick.append(buildHeading(t("installQuickEyebrow"), t("installQuickTitle"), t("installGuideAddressBar")));
+      const shortcut = document.createElement("div");
       shortcut.className = "pwa-install-shortcut";
-      shortcut.innerHTML = `${installDesktopIcon()}<span></span>`;
-      shortcut.querySelector("span").textContent = t("installAddressBar");
-      guide.append(heading, shortcut);
-    } else guide.append(heading);
+      shortcut.innerHTML = `<i class="${browser.icon}" aria-hidden="true"></i><div class="pwa-quick-browser"><span></span><span></span><span></span><div class="pwa-mini-address">astranote</div><div class="pwa-mini-target">${installDesktopIcon()}</div></div><p></p>`;
+      shortcut.querySelector("p").textContent = t("installAddressBar");
+      quick.append(shortcut);
+      guide.append(quick);
+    }
+    const manual = document.createElement("section");
+    manual.className = "pwa-install-manual";
+    manual.append(buildHeading(
+      browser.addressBar ? t("installManualEyebrow") : t("installQuickEyebrow"),
+      browser.addressBar ? t("installManualTitle") : t("installNoPromptTitle"),
+      browser.addressBar ? t("installManualBody") : t("installGuideIntro"),
+    ));
+    const browserName = document.createElement("p");
+    browserName.className = "pwa-install-browser";
+    browserName.innerHTML = `<i class="${browser.icon}" aria-hidden="true"></i><span></span>`;
+    browserName.querySelector("span").textContent = browser.name;
+    manual.append(browserName);
     const steps = document.createElement("ol");
     steps.className = "pwa-install-steps";
     browser.steps.forEach(({ iconClass, installIcon, label, visualLabel }, index) => {
@@ -2983,7 +3021,8 @@ function showPwaInstallGuide() {
       step.append(visual, text);
       steps.append(step);
     });
-    guide.append(steps);
+    manual.append(steps);
+    guide.append(manual);
   }
   modal({
     title: t("installAppTitle"),
