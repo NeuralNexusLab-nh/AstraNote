@@ -325,9 +325,9 @@ Object.assign(I18N.en, {
   encryptionTitle: "Five protection levels, explained clearly.",
   encryptionIntro:
     "Choose readable storage, server-managed AES, convenient AstraSecret client encryption, or the stronger AstraConfidential protection available with Plus and Pro.",
-  encryptionTitleNoticeTitle: "Note titles are never encrypted",
+  encryptionTitleNoticeTitle: "Encrypted notes protect titles too",
   encryptionTitleNoticeBody:
-    "Titles remain readable so AstraNote can show them in your note list. Never put a secret in a title.",
+    "New encrypted notes protect their title separately with AES-256-GCM. Your signed-in lists can still show and search it; this title layer is separate from AstraZero's client-only content key.",
   encryptionTableLabel: "Comparison of AstraNote encryption modes",
   encryptionModeColumn: "Mode",
   encryptionEncryptedColumn: "Content encrypted",
@@ -411,7 +411,7 @@ Object.assign(I18N.en, {
   confirmVaultPin: "Confirm PIN",
   vaultTitle: "AstraConfidential",
   vaultExplanation:
-    "Your device combines your account details and PIN with a temporary factor protected by AstraNote's independent server secret. The note content is encrypted on this device before upload; the title remains visible so you can identify the note in your list.",
+    "Your device combines your account details and PIN with a temporary factor protected by AstraNote's independent server secret. The note content is encrypted on this device before upload; its title is separately protected with AES-256-GCM while remaining available in your signed-in lists.",
   vaultPinWarning:
     "AstraNote does not store or recover this case-sensitive PIN. Use 12–16 random ASCII letters, numbers, and symbols when possible, save it securely, and enter it only on a device you trust.",
   vaultNoSharing:
@@ -493,9 +493,9 @@ Object.assign(I18N["zh-Hant"], {
   encryptionTitle: "五種保護層級，一眼看懂差異。",
   encryptionIntro:
     "可選擇直接儲存、伺服器管理的 AES、方便的 AstraSecret 客戶端加密，或 Plus 與 Pro 提供的更強 AstraConfidential 保護。",
-  encryptionTitleNoticeTitle: "所有模式的筆記標題都不會加密",
+  encryptionTitleNoticeTitle: "加密筆記的標題也會受保護",
   encryptionTitleNoticeBody:
-    "標題會保持可讀，才能顯示在筆記清單中。請勿把機密資訊寫進標題。",
+    "新版加密筆記會以獨立 AES-256-GCM 保護標題；登入後仍可在清單中顯示與搜尋。此標題層獨立於 AstraZero 僅在客戶端產生的內容金鑰。",
   encryptionTableLabel: "AstraNote 加密方式比較",
   encryptionModeColumn: "方式",
   encryptionEncryptedColumn: "內容加密",
@@ -578,7 +578,7 @@ Object.assign(I18N["zh-Hant"], {
   confirmVaultPin: "再次輸入 PIN",
   vaultTitle: "AstraConfidential",
   vaultExplanation:
-    "你的裝置會將帳號資料與 PIN，結合由 AstraNote 獨立伺服器祕密保護的臨時因子。筆記內容會先在此裝置完成加密，再上傳至 AstraNote；標題保持可見，方便你在清單中辨認筆記。",
+    "你的裝置會將帳號資料與 PIN，結合由 AstraNote 獨立伺服器祕密保護的臨時因子。筆記內容會先在此裝置完成加密，再上傳至 AstraNote；標題另以 AES-256-GCM 保護，登入後仍能在清單中辨認。",
   vaultPinWarning:
     "AstraNote 不會儲存或協助找回這組區分大小寫的 PIN。建議使用隨機產生的12～16個 ASCII 英文字母、數字與符號，妥善保存，並只在信任的裝置輸入。",
   vaultNoSharing:
@@ -640,9 +640,9 @@ I18N.ja = {
   encryptionTitle: "4 つの保護レベルを明確に比較。",
   encryptionIntro:
     "暗号化なしは読める状態で保存されます。AES-128-GCM と AES-256-GCM は AstraNote サーバーが自動暗号化します。AstraConfidential はアップロード前にクライアントで暗号化し、利用者だけが知る PIN を追加します。",
-  encryptionTitleNoticeTitle: "どの方式でもノートのタイトルは暗号化されません",
+  encryptionTitleNoticeTitle: "暗号化ノートではタイトルも保護されます",
   encryptionTitleNoticeBody:
-    "一覧に表示するため、タイトルは読み取り可能な状態です。機密情報をタイトルに書かないでください。",
+    "新しい暗号化ノートのタイトルは別個に AES-256-GCM で保護されます。サインイン中の一覧では表示と検索を続けられます。このタイトル層は AstraZero のクライアントだけで生成される内容鍵とは別です。",
   encryptionTableLabel: "AstraNote の暗号化方式の比較",
   encryptionModeColumn: "方式",
   encryptionEncryptedColumn: "内容を暗号化",
@@ -683,7 +683,7 @@ I18N.ja = {
   confirmVaultPin: "PIN を再入力",
   vaultTitle: "AstraConfidential",
   vaultExplanation:
-    "端末はアカウント情報と PIN を AstraNote のサーバー側保護と組み合わせます。ノート内容はアップロード前にこの端末で暗号化され、タイトルは一覧表示のため読み取り可能なままです。",
+    "端末はアカウント情報と PIN を AstraNote のサーバー側保護と組み合わせます。ノート内容はアップロード前にこの端末で暗号化され、タイトルも別個に AES-256-GCM で保護されます。サインイン中の一覧では確認できます。",
   vaultPinWarning:
     "AstraNote は大文字と小文字を区別する PIN を保存・復元しません。可能であればランダムな12～16文字の英字、数字、記号を使い、安全に保管してください。",
   vaultNoSharing:
@@ -1105,7 +1105,7 @@ Object.assign(I18N["zh-Hant"], {
   zeroSummary: "加密金鑰 100% 由客戶端獨立產生，不向伺服器索取。",
   zeroPinFeature: "PIN 由你保管，金鑰經保護後才上傳",
   zeroShortCaution:
-    "請妥善保存高強度 PIN，並使用可信任裝置；弱 PIN 仍可能被猜中。標題不加密。",
+    "請妥善保存高強度 PIN，並使用可信任裝置；弱 PIN 仍可能被猜中。新版加密筆記的標題會以 AES-256-GCM 保護。",
   unlimited: "無限",
   unlimitedNotes: "無限篇筆記",
   purposeIntroThree:
@@ -1139,7 +1139,7 @@ Object.assign(I18N["zh-Hant"], {
   zeroExplanation:
     "客戶端為每篇筆記產生隨機金鑰、加密內容，再用你的 PIN 保護金鑰。AstraNote 只儲存加密內容與受保護的金鑰，不會收到 PIN 或未加密的金鑰。",
   zeroWarning:
-    "PIN 由你自行保管，遺失無法找回。建議使用隨機12～16個字元；取得加密檔案者仍可離線猜測短 PIN。請只在信任的裝置解鎖。筆記標題不加密。",
+    "PIN 由你自行保管，遺失無法找回。建議使用隨機12～16個字元；取得加密檔案者仍可離線猜測短 PIN。請只在信任的裝置解鎖。新版加密筆記的標題會以 AES-256-GCM 保護。",
   encryptionTitle: "選擇適合筆記的保護方式。",
   encryptionIntro:
     "從一般記錄，到客戶端加密的重要內容，依需求選擇；使用 PIN 的加密方式都需要足夠強的 PIN。",
@@ -1707,7 +1707,7 @@ Object.assign(I18N["en"], {
     "When a plan expires or usage exceeds its allowance, over-limit notes are locked immediately, largest first. A locked note remains readable and may be permanently deleted. The server refuses editing, sharing, pinning or unpinning, moving, archiving or unarchiving, and recovery actions until an adequate upgrade unlocks it. Existing pins and archive status do not bypass the lock. An upgrade clears a lock only when the new allowance permits it. Continuous over-limit locks expire after 30 days; trash retains its original expiry and may be deleted sooner. Neither pinning nor upgrading extends a trash deadline.",
   privacyNotebookTitle: "Notes, search and client encryption",
   privacyNotebookData:
-    "AstraNote keeps note titles, pin and archive status, encryption metadata, and—for eligible notes—one previous version and trash timestamps. Titles stay unencrypted. Title search runs on the note list already loaded by your client; search queries are not submitted to a search service, and content is not decrypted or indexed for search. Folders and tags are no longer supported; retired classification fields are removed when account metadata is saved, without deleting note content.",
+    "AstraNote keeps protected note titles, pin and archive status, encryption metadata, and—for eligible notes—one previous version and trash timestamps. New encrypted titles use separate AES-256-GCM protection at rest and are returned only to the authenticated owner for lists and title search. Title search runs on the note list already loaded by your client; search queries are not submitted to a search service, and content is not decrypted or indexed for search. Folders and tags are no longer supported; retired classification fields are removed when account metadata is saved, without deleting note content.",
   privacyRetention:
     "Ultra and Admin manual deletion normally moves an unlocked note into trash for the chosen 1, 3, 7, 14 or 30 days (default 7). Trash and the one previous version count toward storage. A permanent deletion, account deletion, or a 30-day over-limit deletion does not create a recoverable copy. Trash keeps its original deadline after downgrade, locking, or upgrade; an expired item cannot be restored even if scheduled file cleanup has not run yet. A remaining trash item keeps the navigation entry available after downgrade, but over-limit locked items cannot be restored until unlocked within an adequate allowance.",
   termsUpdated: "Effective and last updated: 17 September 2026",
@@ -1730,7 +1730,7 @@ Object.assign(I18N["zh-Hant"], {
   zeroExplanation:
     "每篇筆記都有由客戶端獨立產生的隨機金鑰。客戶端以 AES-256-GCM 加密內容，再用你的 PIN 保護金鑰，才將資料上傳。AstraNote 收到的是密文與受保護的金鑰，不是你的 PIN 或可直接解密的明文金鑰；也不依賴伺服器加密環境變數來產生或解鎖金鑰。",
   zeroWarning:
-    "PIN 由你自行保管，遺失無法找回。請使用隨機12～16個字元，並只在信任的裝置解鎖。取得加密檔案者仍能離線猜測弱 PIN。筆記標題不加密。",
+    "PIN 由你自行保管，遺失無法找回。請使用隨機12～16個字元，並只在信任的裝置解鎖。取得加密檔案者仍能離線猜測弱 PIN。新版加密筆記的標題會以 AES-256-GCM 保護。",
   zeroSecurity: "伺服器不持有明文金鑰",
   zeroClientFeature: "金鑰在客戶端產生",
   zeroNoteFeature: "每篇筆記使用獨立隨機金鑰",
@@ -1743,7 +1743,7 @@ Object.assign(I18N["zh-Hant"], {
     "方案到期或超出額度時，超額筆記會立即由大到小鎖定。鎖定筆記仍可閱讀與永久刪除；在升級到足夠額度前，後端會拒絕編輯、分享、釘選或取消釘選、移動、封存或取消封存與復原操作。既有釘選或封存狀態不能繞過鎖定。升級後仍須符合新額度才會解鎖。連續超額鎖定滿30天會永久刪除；垃圾桶維持原到期時間，可能更早清除。釘選或升級不會延長垃圾桶期限。",
   privacyNotebookTitle: "筆記整理、搜尋與客戶端加密",
   privacyNotebookData:
-    "AstraNote 保存筆記標題、釘選及封存狀態、加密中繼資料，以及符合資格筆記的上一版本與垃圾桶時間紀錄。標題不加密。標題搜尋僅在客戶端已載入的筆記清單中執行，不會將查詢字串傳至搜尋服務，也不會為搜尋解密或建立內容索引。資料夾與標籤功能已取消；舊分類欄位於帳號中繼資料儲存時清理，不刪除筆記內容。",
+    "AstraNote 保存受保護的筆記標題、釘選及封存狀態、加密中繼資料，以及符合資格筆記的上一版本與垃圾桶時間紀錄。新版加密標題以獨立 AES-256-GCM 保護，僅在已登入擁有者的清單與標題搜尋中解密回傳。標題搜尋僅在客戶端已載入的筆記清單中執行，不會將查詢字串傳至搜尋服務，也不會為搜尋解密或建立內容索引。資料夾與標籤功能已取消；舊分類欄位於帳號中繼資料儲存時清理，不刪除筆記內容。",
   privacyRetention:
     "Ultra 與 Admin 手動刪除未鎖定筆記時，原則上移至垃圾桶，依選擇保留1、3、7、14或30天，預設7天。垃圾桶與上一版本都計入空間。永久刪除、刪除帳號及超額鎖定滿30天的系統刪除，不會建立可復原副本。降級、鎖定或升級均不延長垃圾桶原到期時間；即使排程尚未實際清理檔案，已到期項目也不能還原。降級後只要仍有垃圾桶項目，就保留導覽入口；超額鎖定的項目須先取得足夠額度並解鎖才能還原。",
   termsUpdated: "生效及最後更新：2026 年 9 月 17 日",
@@ -2229,7 +2229,10 @@ async function decryptConfidentialPayload(note, pin) {
       combined,
     );
     const payload = JSON.parse(textDecoder.decode(decrypted));
-    const legacy = note.payloadVersion !== 2;
+    // Version 1 carried the title in the client payload. Versions 2 and 3
+    // keep content there, while version 3 adds a separately AES-256-GCM
+    // protected title returned only to the authenticated owner.
+    const legacy = (note.payloadVersion || 1) < 2;
     const name = legacy ? payload.name : note.name;
     if (
       typeof name !== "string" ||
@@ -3236,7 +3239,7 @@ function unlockConfidential(note) {
         if (!validVaultPin(input.value, note.encryption, true))
           throw new Error(vaultPinError(note.encryption));
         const decrypted = await decryptConfidentialPayload(note, input.value);
-        if (note.payloadVersion !== 2 && !note.isPrevious) {
+        if ((note.payloadVersion || 1) < 2 && !note.isPrevious) {
           try {
             const encrypted = await encryptConfidentialPayload(
               note.id,
@@ -3257,7 +3260,7 @@ function unlockConfidential(note) {
             });
             note.name = decrypted.payload.name;
             note.encrypted = encrypted;
-            note.payloadVersion = 2;
+            note.payloadVersion = 3;
           } catch (error) {
             console.warn(
               "Could not migrate the legacy encrypted title.",

@@ -140,6 +140,31 @@
       document[language].body = replacements.reduce((body, [from, to]) => body.replaceAll(from, to), document[language].body);
     });
   });
+  // New encrypted notes keep titles convenient in authenticated lists without
+  // leaving those titles readable in their note files.
+  const titleEncryptionCopy = {
+    en: [
+      ["The title remains visible in every mode;", "For new encrypted notes, the title is separately protected with AES-256-GCM while remaining visible to the signed-in owner;"],
+      ["All modes leave note titles visible so you can identify notes.", "New encrypted notes protect titles with AES-256-GCM at rest, while authenticated lists can still display them."],
+      ["<dd><b>A</b> No. Titles stay visible in every mode so you can identify and organize notes. Do not put sensitive details in a title.</dd>", "<dd><b>A</b> New encrypted notes protect titles separately with AES-256-GCM. Your signed-in lists can still display and search them; older encrypted notes may retain their existing title format until saved again.</dd>"],
+    ],
+    "zh-Hant": [
+      ["所有模式都會保留標題可見；", "新版加密筆記會以 AES-256-GCM 獨立保護標題，登入中的擁有者仍可看見；"],
+      ["所有模式都保留筆記標題可見，讓你辨識內容。", "新版加密筆記會在儲存時以 AES-256-GCM 保護標題，登入後的清單仍可顯示它。"],
+      ["<dd><b>答</b> 沒有。所有模式都保留標題可見，才能辨識與整理筆記。請不要把敏感資訊寫在標題。</dd>", "<dd><b>答</b> 新版加密筆記會以 AES-256-GCM 獨立保護標題。登入後仍可在清單中顯示與搜尋；既有加密筆記會保留原格式，直到下次儲存。</dd>"],
+    ],
+    ja: [
+      ["タイトルはすべての方式で表示され、", "新しい暗号化ノートのタイトルは AES-256-GCM で別個に保護され、サインイン中の所有者には表示され、"],
+      ["すべての方式でノートタイトルは識別のため表示されます。", "新しい暗号化ノートのタイトルは保存時に AES-256-GCM で保護され、サインイン中の一覧では表示されます。"],
+      ["<dd><b>A</b> されません。すべての方式で識別と整理のために表示されます。タイトルには機密情報を書かないでください。</dd>", "<dd><b>A</b> 新しい暗号化ノートのタイトルは AES-256-GCM で別個に保護されます。サインイン中の一覧では表示・検索でき、既存の暗号化ノートは次回保存まで従来形式のままです。</dd>"],
+    ],
+  };
+  Object.values(content).forEach((document) => {
+    Object.entries(titleEncryptionCopy).forEach(([language, replacements]) => {
+      if (!document?.[language]?.body) return;
+      document[language].body = replacements.reduce((body, [from, to]) => body.replaceAll(from, to), document[language].body);
+    });
+  });
   // AstraDrop is no longer part of AstraNote. Keep older documentation text
   // from accidentally advertising a removed feature when this file is edited.
   const retiredDropCopy = {
@@ -191,6 +216,15 @@
     const label = route === "home" ? (lang === "zh-Hant" ? "文件首頁" : lang === "ja" ? "ドキュメント" : "Documentation") : names[lang][sections.findIndex(([slug]) => slug === route)];
     let body = route === "encryption" ? encryptionGuide[lang] : page.body;
     if (route === "encryption") {
+      const titleNotice = lang === "zh-Hant"
+        ? "新版加密筆記的標題會以 AES-256-GCM 獨立保護；登入中的擁有者仍可在清單中顯示與搜尋。"
+        : lang === "ja"
+          ? "新しい暗号化ノートのタイトルは AES-256-GCM で別個に保護され、サインイン中の所有者は一覧で表示・検索できます。"
+          : "New encrypted notes protect titles separately with AES-256-GCM while authenticated owners can still display and search them in lists.";
+      body = body
+        .replaceAll("All modes leave note titles visible so you can identify notes.", titleNotice)
+        .replaceAll("所有方式都會保留筆記標題可見，讓你辨識筆記；受到保護的是內容。", titleNotice)
+        .replaceAll("すべての方式でノートタイトルは表示され、内容に保護が適用されます。", titleNotice);
       const normal = lang === "zh-Hant"
         ? "<p class=\"docs-callout\"><i class=\"fa-solid fa-lock\" aria-hidden=\"true\"></i><strong>普通加密（AES-256-GCM）</strong>適合不需要 PIN、但希望加密儲存的情況；舊 AES-128 筆記仍可讀取，但不能再新建。</p>"
         : lang === "ja"

@@ -901,6 +901,60 @@ function decryptContent(stored, username, id, mode) {
   ]).toString("utf8");
 }
 
+// Titles have their own AES-256-GCM envelope. This protects title text in the
+// note file without changing the content protection chosen by the user (in
+// particular, AstraZero's content remains client-only). Authenticated account
+// requests may decrypt this small envelope to keep lists and title search fast.
+function deriveTitleKey(username, noteId) {
+  if (!appSecret) throw new Error("The application encryption key is not configured.");
+  return Buffer.from(
+    crypto.hkdfSync(
+      "sha256",
+      Buffer.from(appSecret),
+      Buffer.from(userKey(username)),
+      Buffer.from(`AstraNote:title:v1:${noteId}`),
+      32,
+    ),
+  );
+}
+function isEncryptedTitle(value) {
+  return Boolean(
+    value &&
+      typeof value === "object" &&
+      Buffer.from(value.iv || "", "base64").length === 12 &&
+      Buffer.from(value.tag || "", "base64").length === 16 &&
+      typeof value.ciphertext === "string",
+  );
+}
+function encryptNoteTitle(title, username, noteId) {
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv("aes-256-gcm", deriveTitleKey(username, noteId), iv);
+  const ciphertext = Buffer.concat([cipher.update(title, "utf8"), cipher.final()]);
+  return {
+    ciphertext: ciphertext.toString("base64"),
+    iv: iv.toString("base64"),
+    tag: cipher.getAuthTag().toString("base64"),
+  };
+}
+function readNoteTitle(note, username) {
+  if (typeof note.name === "string") return normalizeText(note.name, MAX_NOTE_NAME);
+  if (!isEncryptedTitle(note.name)) throw new Error("Encrypted note title is invalid.");
+  const decipher = crypto.createDecipheriv(
+    "aes-256-gcm",
+    deriveTitleKey(username, note.id),
+    Buffer.from(note.name.iv, "base64"),
+    { authTagLength: 16 },
+  );
+  decipher.setAuthTag(Buffer.from(note.name.tag, "base64"));
+  return normalizeText(
+    Buffer.concat([
+      decipher.update(Buffer.from(note.name.ciphertext, "base64")),
+      decipher.final(),
+    ]).toString("utf8"),
+    MAX_NOTE_NAME,
+  );
+}
+
 function readServerNotePayload(note, username) {
   if (isClientEncryptedMode(note.encryption)) return null;
   if (note.encryption === "none") {
@@ -926,7 +980,7 @@ function readServerNotePayload(note, username) {
     };
   }
   return {
-    name: normalizeText(note.name, MAX_NOTE_NAME),
+    name: readNoteTitle(note, username),
     content: decrypted,
   };
 }
@@ -938,9 +992,11 @@ function writeServerNotePayload(note, username, name, content) {
     delete note.payloadVersion;
     return;
   }
-  note.name = name;
+  // Version 4 keeps the title in a distinct AES-256-GCM envelope and content
+  // in the selected encryption mode's envelope. Neither is readable in files.
+  note.name = encryptNoteTitle(name, username, note.id);
   note.content = encryptContent(content, username, note.id, note.encryption);
-  note.payloadVersion = 3;
+  note.payloadVersion = 4;
 }
 
 async function migrateLegacyEncryptedNotes() {
@@ -969,7 +1025,7 @@ async function migrateLegacyEncryptedNotes() {
         await writeJson(file, note);
       } catch (error) {
         console.error(
-          `[${utcNow()}] Could not expose the title of encrypted note ${reference.id}:`,
+          `[${utcNow()}] Could not migrate encrypted note ${reference.id}:`,
           error.message,
         );
       }
@@ -2209,7 +2265,10 @@ async function noteSummary(username, reference) {
   if (reference.planLockedAt)
     return {
       id: note.id,
-      name: normalizeText(note.name, MAX_NOTE_NAME) || "Encrypted note",
+      name: (() => {
+        try { return readNoteTitle(note, username) || "Encrypted note"; }
+        catch { return "Encrypted note"; }
+      })(),
       updatedAt: note.updatedAt,
       characters: null,
       bytes,
@@ -2232,7 +2291,10 @@ async function noteSummary(username, reference) {
     id: note.id,
     name:
       isClientEncryptedMode(note.encryption) || reference.trashedAt
-        ? normalizeText(note.name, MAX_NOTE_NAME) || null
+        ? (() => {
+            try { return readNoteTitle(note, username) || null; }
+            catch { return null; }
+          })()
         : payload?.name || "Encrypted note",
     encryption: note.encryption,
     updatedAt: note.updatedAt,
@@ -4088,7 +4150,9 @@ app.get("/api/notes/:id/previous", requireAuth, async (req, res, next) => {
         : readServerNotePayload(version, username);
       res.json({
         id: note.id,
-        name: version.name,
+        name: isClientEncryptedMode(note.encryption)
+          ? readNoteTitle(version, username)
+          : version.name,
         encryption: note.encryption,
         payloadVersion: version.payloadVersion || 1,
         ...payload,
@@ -4181,7 +4245,7 @@ app.get("/api/notes/:id", requireAuth, async (req, res, next) => {
       if (isClientEncryptedMode(note.encryption)) {
         return res.json({
           id: note.id,
-          name: normalizeText(note.name, MAX_NOTE_NAME) || null,
+          name: readNoteTitle(note, username) || null,
           encryption: note.encryption,
           payloadVersion: note.payloadVersion || 1,
           createdAt: note.createdAt,
@@ -4383,10 +4447,10 @@ app.post(
           revision: 1,
         };
         if (clientEncrypted) {
-          note.name = name;
+          note.name = encryptNoteTitle(name, username, id);
           note.clientSalt = clientSalt;
           note.content = req.body.encrypted;
-          note.payloadVersion = 2;
+          note.payloadVersion = 3;
         } else {
           writeServerNotePayload(note, username, name, "");
         }
@@ -4461,7 +4525,7 @@ app.put(
         const isMigration =
           req.body.migrationOnly === true &&
           isClientEncryptedMode(note.encryption) &&
-          note.payloadVersion !== 2;
+          note.payloadVersion !== 3;
         if (isClientEncryptedMode(note.encryption)) {
           const name = normalizeText(req.body.name, MAX_NOTE_NAME);
           if (!name)
@@ -4473,10 +4537,10 @@ app.put(
               status: 400,
             });
           const preserveTimestamp =
-            req.body.migrationOnly === true && note.payloadVersion !== 2;
-          note.name = name;
+            req.body.migrationOnly === true && note.payloadVersion !== 3;
+          note.name = encryptNoteTitle(name, username, note.id);
           note.content = req.body.encrypted;
-          note.payloadVersion = 2;
+          note.payloadVersion = 3;
           note.shareToken = null;
           if (!preserveTimestamp) note.updatedAt = utcNow();
         } else {
@@ -4884,6 +4948,8 @@ module.exports = {
   testables: {
     encryptContent,
     decryptContent,
+    encryptNoteTitle,
+    readNoteTitle,
     readServerNotePayload,
     writeServerNotePayload,
     validSchybridEnvelope,

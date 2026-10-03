@@ -105,9 +105,9 @@
             order to provide the service. Available protection is no encryption,
             AES-128-GCM, AES-256-GCM, AstraSecret, AstraConfidential, or
             AstraZero. Encryption is selected when a note is created and cannot
-            later be changed. In every encrypted mode, the title remains
-            plaintext so the note can be identified in lists; only the content
-            is encrypted. The AES modes are managed by the server and are not
+            later be changed. New encrypted notes protect their title separately
+            with AES-256-GCM while still returning it to the authenticated owner
+            for lists and title search. The AES modes are managed by the server and are not
             end-to-end or zero-knowledge encryption; the Operator may
             technically decrypt them. AstraSecret uses a 4–6 digit PIN for
             everyday protection. New AstraConfidential notes require an active

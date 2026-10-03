@@ -495,7 +495,7 @@ test("legacy and current AES-GCM modes authenticate and restore Unicode content"
   );
 });
 
-test("every AES version leaves the title visible and encrypts only content", () => {
+test("every AES version encrypts titles and content while returning both to the owner", () => {
   for (const mode of [
     "aes-256-gcm",
     "aes-128-gcm",
@@ -513,10 +513,10 @@ test("every AES version leaves the title visible and encrypts only content", () 
       "銀行與密碼",
       "Only this content belongs in ciphertext.",
     );
-    assert.equal(note.payloadVersion, 3);
-    assert.equal(note.name, "銀行與密碼");
+    assert.equal(note.payloadVersion, 4);
+    assert.notEqual(typeof note.name, "string");
     const serialized = JSON.stringify(note);
-    assert.match(serialized, /銀行與密碼/);
+    assert.doesNotMatch(serialized, /銀行與密碼/);
     assert.doesNotMatch(serialized, /Only this content belongs/);
     assert.deepEqual(testables.readServerNotePayload(note, "test_user"), {
       name: "銀行與密碼",
@@ -544,8 +544,8 @@ test("every AES version leaves the title visible and encrypts only content", () 
       oldPayload.name,
       oldPayload.content,
     );
-    assert.equal(oldEncryptedTitleNote.name, "舊版密文標題");
-    assert.equal(oldEncryptedTitleNote.payloadVersion, 3);
+    assert.doesNotMatch(JSON.stringify(oldEncryptedTitleNote), /舊版密文標題/);
+    assert.equal(oldEncryptedTitleNote.payloadVersion, 4);
   }
 });
 

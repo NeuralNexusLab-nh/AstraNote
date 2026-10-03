@@ -7,7 +7,7 @@ const path = require("node:path");
 
 const ROOT = path.join(__dirname, "..");
 
-test("home page compares every supported encryption mode and discloses visible titles", () => {
+test("home page compares every supported encryption mode and discloses protected titles", () => {
   const html = fs.readFileSync(path.join(ROOT, "public", "index.html"), "utf8");
   const app = fs.readFileSync(path.join(ROOT, "public", "app.js"), "utf8");
   const newNote = fs.readFileSync(
@@ -23,9 +23,9 @@ test("home page compares every supported encryption mode and discloses visible t
   assert.match(html, /data-i18n="zeroSummary"/u);
   assert.match(html, /class="zero-feature-list"/u);
   assert.doesNotMatch(html, /data-i18n="zeroExplanation"/u);
-  assert.match(app, /Note titles are never encrypted/u);
-  assert.match(app, /所有模式的筆記標題都不會加密/u);
-  assert.match(app, /どの方式でもノートのタイトルは暗号化されません/u);
+  assert.match(app, /Encrypted notes protect titles too/u);
+  assert.match(app, /加密筆記的標題也會受保護/u);
+  assert.match(app, /暗号化ノートではタイトルも保護されます/u);
   assert.match(app, /AstraNote never stores or recovers it/u);
   assert.equal((html.match(/class="matrix-value yes"/gu) || []).length, 14);
   assert.equal((html.match(/class="matrix-value no"/gu) || []).length, 10);
