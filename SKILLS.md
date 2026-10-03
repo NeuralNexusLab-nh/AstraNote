@@ -8,7 +8,7 @@ Use this guide whenever changing visual design, front-end copy, layout, or inter
 - **Fast before complicated.** Prioritize finding, writing, saving, and returning to short text. Advanced capability must stay discoverable but never dominate the main task.
 - **Four equal strengths.** Present the product as a capable notebook, strong optional encryption, fast cross-device access, and useful supporting tools. Do not let one of these erase the others.
 - **Plain language.** Use friendly, specific sentences. Avoid needless technical detail, mixed-language jargon, dramatic slogans, and claims that overstate security.
-- **Titles identify; content is protected.** Explain this distinction clearly wherever encryption is discussed. Never imply that a title is encrypted when it is not.
+- **Protected titles, familiar lists.** New encrypted notes protect their titles with a separate AES-256-GCM layer in storage, while an authenticated owner's lists can still display and search them. Explain that this title layer is separate from AstraZero's client-only content-key boundary; never overstate it as zero-knowledge title protection.
 
 ## Visual language
 

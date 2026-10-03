@@ -37,7 +37,7 @@ security-sensitive actions.
   through a fresh status check. Failed/expired invoices never offer a payment link;
   failed verification or a provider outage never grants subscription time.
 - No encryption, AES-128-GCM, AES-256-GCM, AstraSecret, AstraConfidential, or client-only AstraZero at note creation
-- Every encrypted mode protects note content; titles remain plaintext for identification
+- New encrypted notes protect both content and titles; title storage uses a separate AES-256-GCM envelope while authenticated owners can still list and search titles
 - Server-enforced overage locks and permanent deletion after 30 continuously locked days
 - Capacity for up to 70,000 registered accounts
 - Unguessable, revocable, `noindex` read-only sharing links
@@ -138,8 +138,9 @@ after no matching account directory remains.
 - AES-GCM note content is encrypted with server-managed keys. New notes use the
   versioned `*-new` formats and `ASTRA_CONFIDENTIAL_KEY`; legacy AES formats
   continue using `ASTRANOTE_SECRET`. The visible labels remain AES-128-GCM and
-  AES-256-GCM. Titles remain plaintext, and these modes are not end-to-end or
-  zero-knowledge.
+  AES-256-GCM. New encrypted-note titles are stored separately in an
+  AES-256-GCM envelope and returned only to authenticated account requests for
+  list display and title search; this is not zero-knowledge title protection.
 - AstraConfidential encrypts note content in the client with AES-256-GCM. Its
   current version uses a case-sensitive 4–16 character PIN of printable ASCII
   letters, numbers, and symbols and is available for new notes on Plus, Pro and Ultra.
