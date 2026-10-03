@@ -1862,6 +1862,8 @@ Object.assign(I18N.en, {
   installAppBody: "Keep AstraNote one click away in its own window.",
   installQuickEyebrow: "QUICK INSTALL",
   installQuickTitle: "Install from the address bar",
+  installViewQuick: "Quick install",
+  installViewManual: "Browser menu",
   installManualEyebrow: "MANUAL INSTALL",
   installManualTitle: "Can't find the install icon?",
   installManualBody: "Use the browser menu instead.",
@@ -1902,6 +1904,8 @@ Object.assign(I18N["zh-Hant"], {
   installAppBody: "把 AstraNote 放到獨立視窗，隨時一鍵開啟。",
   installQuickEyebrow: "快速安裝",
   installQuickTitle: "從網址列直接安裝",
+  installViewQuick: "快速安裝",
+  installViewManual: "瀏覽器選單",
   installManualEyebrow: "手動安裝",
   installManualTitle: "找不到安裝圖示？",
   installManualBody: "改用瀏覽器選單完成安裝。",
@@ -1942,6 +1946,8 @@ Object.assign(I18N.ja, {
   installAppBody: "独立したウィンドウから、ワンクリックで AstraNote を開けます。",
   installQuickEyebrow: "クイックインストール",
   installQuickTitle: "アドレスバーからインストール",
+  installViewQuick: "クイックインストール",
+  installViewManual: "ブラウザーメニュー",
   installManualEyebrow: "手動インストール",
   installManualTitle: "インストールアイコンが見つかりませんか？",
   installManualBody: "ブラウザーのメニューからインストールします。",
@@ -2958,6 +2964,7 @@ function showPwaInstallGuide() {
   const browser = pwaGuideForBrowser();
   const guide = document.createElement("div");
   guide.className = "pwa-install-guide";
+  guide.dataset.installView = browser?.addressBar ? "quick" : "manual";
   if (!browser) {
     const unavailable = document.createElement("section");
     unavailable.className = "pwa-install-unavailable";
@@ -2976,6 +2983,32 @@ function showPwaInstallGuide() {
       heading.querySelector("p:last-child").textContent = body;
       return heading;
     };
+    if (browser.addressBar) {
+      const switcher = document.createElement("div");
+      switcher.className = "pwa-install-view-switcher";
+      switcher.setAttribute("role", "group");
+      switcher.setAttribute("aria-label", t("installAppTitle"));
+      [
+        ["quick", "fa-bolt", t("installViewQuick")],
+        ["manual", "fa-list-ol", t("installViewManual")],
+      ].forEach(([view, icon, label]) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "pwa-install-view-button";
+        button.dataset.installView = view;
+        button.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i><span></span>`;
+        button.querySelector("span").textContent = label;
+        button.setAttribute("aria-pressed", String(view === guide.dataset.installView));
+        button.addEventListener("click", () => {
+          guide.dataset.installView = view;
+          $$(".pwa-install-view-button", switcher).forEach((item) => {
+            item.setAttribute("aria-pressed", String(item.dataset.installView === view));
+          });
+        });
+        switcher.append(button);
+      });
+      guide.append(switcher);
+    }
     if (browser.addressBar) {
       const quick = document.createElement("section");
       quick.className = "pwa-install-quick";

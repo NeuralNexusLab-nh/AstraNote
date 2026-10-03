@@ -41,10 +41,15 @@ test("PWA install entry points stay available without caching private applicatio
   assert.match(app, /function pwaGuideForBrowser\(\)/u);
   assert.match(app, /installQuickEyebrow/u);
   assert.match(app, /installManualEyebrow/u);
+  assert.match(app, /installViewQuick/u);
+  assert.match(app, /installViewManual/u);
   assert.match(app, /pwa-install-quick/u);
   assert.match(app, /pwa-install-manual/u);
+  assert.match(app, /pwa-install-view-switcher/u);
   assert.match(app, /closeOnBackdrop: false/u);
   assert.match(read("public/style.css"), /height: 74px/u);
+  assert.match(read("public/style.css"), /data-install-view="quick"/u);
+  assert.match(read("public/style.css"), /grid-template-columns: 1fr/u);
   assert.doesNotMatch(worker, /"\/api\//u);
   assert.match(worker, /Navigation and every API call stay network-only/u);
 });

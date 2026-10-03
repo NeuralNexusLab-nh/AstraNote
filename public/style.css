@@ -606,20 +606,76 @@ img {
   font-size: 1.25rem;
   padding-top: 3px;
 }
+.pwa-install-view-switcher {
+  display: none;
+}
 @media (max-width: 520px) {
+  .pwa-install-guide {
+    gap: 12px;
+  }
+  .pwa-install-view-switcher {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--button);
+  }
+  .pwa-install-view-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 42px;
+    gap: 7px;
+    padding: 8px 7px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: .76rem;
+    font-weight: 750;
+    line-height: 1.2;
+  }
+  .pwa-install-view-button[aria-pressed="true"] {
+    border-color: color-mix(in srgb, var(--primary) 38%, var(--line));
+    background: var(--surface);
+    color: var(--primary-hover);
+  }
+  .pwa-install-view-button:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+  .pwa-install-guide[data-install-view="quick"] .pwa-install-manual,
+  .pwa-install-guide[data-install-view="manual"] .pwa-install-quick {
+    display: none;
+  }
   .pwa-install-shortcut {
     grid-template-columns: 25px minmax(0, 1fr);
   }
   .pwa-install-shortcut > p { grid-column: 1 / -1; }
-  .pwa-install-steps { gap: 9px; }
-  .pwa-install-step {
-    grid-template-columns: 92px minmax(0, 1fr);
-    grid-template-rows: auto;
-    gap: 11px;
-    padding: 9px;
+  .pwa-install-manual {
+    padding-top: 0;
+    border-top: 0;
   }
-  .pwa-step-visual { height: 58px; }
-  .pwa-step-text { text-align: left; }
+  .pwa-install-steps {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .pwa-install-step {
+    grid-template-columns: 1fr;
+    grid-template-rows: 60px auto;
+    gap: 8px;
+    padding: 10px;
+  }
+  .pwa-step-visual { height: 60px; }
+  .pwa-step-text {
+    min-height: 0;
+    padding: 0 3px;
+    text-align: center;
+  }
 }
 .eyebrow {
   display: flex;
