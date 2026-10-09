@@ -78,6 +78,8 @@ const I18N = {
     sharingOff: "Sharing off",
     copied: "Link copied",
     copy: "Copy",
+    copyContent: "Copy content",
+    contentCopied: "Content copied",
     shareTitleModal: "Share this note?",
     shareEnableBody:
       "Anyone with the link can read this note and see your public display name and masked email. The link is unguessable and can be revoked.",
@@ -213,6 +215,8 @@ const I18N = {
     sharingOff: "分享未開啟",
     copied: "連結已複製",
     copy: "複製",
+    copyContent: "複製內容",
+    contentCopied: "內容已複製",
     shareTitleModal: "要分享這篇筆記嗎？",
     shareEnableBody:
       "持有連結者可閱讀筆記，並看到你的公開名稱與遮罩電子郵件。連結難以猜測且可隨時撤銷。",
@@ -1417,6 +1421,8 @@ Object.assign(I18N.ja, {
   sharingOff: "共有は無効",
   copied: "リンクをコピーしました",
   copy: "コピー",
+  copyContent: "内容をコピー",
+  contentCopied: "内容をコピーしました",
   shareTitleModal: "このノートを共有しますか？",
   shareEnableBody:
     "リンクを知っている人は内容、公開表示名、マスクされたメールアドレスを閲覧できます。いつでも無効にできます。",
@@ -4521,6 +4527,29 @@ async function initNewNote() {
 function currentNoteId() {
   return location.pathname.split("/").filter(Boolean)[1];
 }
+
+async function copyText(text) {
+  if (!text) return false;
+  try {
+    if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    const fallback = document.createElement("textarea");
+    fallback.value = text;
+    fallback.setAttribute("readonly", "");
+    fallback.style.position = "fixed";
+    fallback.style.opacity = "0";
+    document.body.append(fallback);
+    fallback.select();
+    try {
+      return Boolean(document.execCommand?.("copy"));
+    } finally {
+      fallback.remove();
+    }
+  }
+}
+
 function renderLockedNote(note) {
   const noteName = $("#note-name");
   noteName.removeAttribute("data-i18n");
@@ -4705,6 +4734,13 @@ async function initNote() {
     return;
   }
   $("#edit-note").href = `/notes/${note.id}/edit`;
+  $("#copy-note-content").onclick = async () => {
+    if (!(await copyText(note.content))) {
+      showError(t("error"));
+      return;
+    }
+    toast(t("contentCopied"));
+  };
   $("#astra-ai").onclick = () => openAstraAi(note, vaultPin);
   const reference =
     state.account.notes.find((item) => item.id === note.id) || {};
@@ -4752,18 +4788,9 @@ async function initNote() {
   shareToggle.setAttribute("aria-label", t("share"));
   showShareUrl(note.shareUrl);
   $("#copy-share-url").onclick = async () => {
-    try {
-      if (!navigator.clipboard?.writeText)
-        throw new Error("Clipboard unavailable");
-      await navigator.clipboard.writeText(shareInput.value);
-    } catch {
-      shareInput.focus();
-      shareInput.select();
-      if (!document.execCommand("copy")) {
-        showError(t("error"));
-        return;
-      }
-      shareInput.setSelectionRange(0, 0);
+    if (!(await copyText(shareInput.value))) {
+      showError(t("error"));
+      return;
     }
     toast(t("copied"));
   };
@@ -5097,6 +5124,13 @@ async function initShared() {
     $("#shared-updated").textContent = formatUtc(note.updatedAt);
     $("#shared-characters").textContent =
       `${note.characters.toLocaleString()} ${t("characters")}`;
+    $("#copy-shared-content").onclick = async () => {
+      if (!(await copyText(note.content))) {
+        showError(t("error"));
+        return;
+      }
+      toast(t("contentCopied"));
+    };
   } catch {
     location.replace("/404");
   }

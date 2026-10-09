@@ -1835,6 +1835,18 @@ body.has-email-verification-banner .page { padding-top: 186px; }
   flex-wrap: nowrap;
   justify-content: flex-end;
 }
+.shared-note-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+body[data-page="shared"] .shared-note-actions .btn {
+  min-height: 38px;
+  padding: 7px 11px;
+  font-size: 13px;
+}
 body[data-page="note"] .note-actions .btn,
 body[data-page="note"] .note-actions .share-toggle {
   min-height: 38px;
@@ -3022,6 +3034,9 @@ html[lang="ja"] [data-lang="en"] {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     justify-content: stretch;
     width: 100%;
+  }
+  .shared-note-actions {
+    justify-content: flex-start;
   }
   .note-actions .btn, .note-actions .share-toggle { min-width: 0; justify-content: center; }
   .note-actions .btn span, .note-actions .share-toggle > span { overflow: hidden; text-overflow: ellipsis; }
@@ -4282,7 +4297,7 @@ body[data-page="home"] .zero-feature-list {
   }
   body[data-page="note"] .note-actions {
     display: grid;
-    grid-template-columns: repeat(3, minmax(44px, 1fr));
+    grid-template-columns: repeat(2, minmax(44px, 1fr));
     gap: 6px;
     width: 100%;
   }
@@ -4294,6 +4309,14 @@ body[data-page="home"] .zero-feature-list {
   }
   body[data-page="note"] .note-actions .btn {
     width: auto;
+    min-height: 44px;
+    padding: 0;
+  }
+  body[data-page="shared"] .shared-note-actions .btn > span {
+    display: none;
+  }
+  body[data-page="shared"] .shared-note-actions .btn {
+    width: 44px;
     min-height: 44px;
     padding: 0;
   }

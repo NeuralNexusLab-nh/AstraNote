@@ -76,6 +76,8 @@ test("locale rendering tolerates pages without retention controls", () => {
 test("every newly introduced feature has all three translations", () => {
   const context = browserContext();
   const required = [
+    "copyContent",
+    "contentCopied",
     "zeroPin",
     "zeroExplanation",
     "zeroWarning",
@@ -166,6 +168,15 @@ test("every newly introduced feature has all three translations", () => {
   assert.equal(vm.runInContext('I18N["zh-Hant"].unlimited', context), "無限");
   assert.equal(vm.runInContext("I18N.ja.unlimited", context), "無限");
   assert.equal(vm.runInContext("I18N.en.unlimited", context), "Infinity");
+});
+test("note copy controls copy only note content and have localized feedback", () => {
+  const note = fs.readFileSync(path.join(__dirname, "../public/note.html"), "utf8");
+  const shared = fs.readFileSync(path.join(__dirname, "../public/shared.html"), "utf8");
+  const app = fs.readFileSync(path.join(__dirname, "../public/app.js"), "utf8");
+  assert.ok(note.indexOf('id="copy-note-content"') < note.indexOf('id="edit-note"'));
+  assert.match(shared, /id="copy-shared-content"/);
+  assert.match(app, /copyText\(note\.content\)/);
+  assert.match(app, /toast\(t\("contentCopied"\)\)/);
 });
 
 test("install guidance selects an accurate, readable path for supported browsers", () => {
