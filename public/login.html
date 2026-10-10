@@ -9,6 +9,7 @@
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="stylesheet" href="/style.css" />
     <script src="/app.js" defer></script>
+    <script src="/captcha-loader.js"></script>
   </head>
   <body data-page="login">
     <main class="page">
@@ -40,6 +41,17 @@
                 autocomplete="current-password"
                 maxlength="24"
               />
+            </div>
+            <p class="captcha-heading">
+              <i class="fa-solid fa-user-check" aria-hidden="true"></i
+              ><span data-i18n="humanVerification"></span>
+            </p>
+            <div class="captcha-box">
+              <div
+                class="nexa-captcha"
+                data-captcha-type="gravity"
+                data-callback="onCaptchaComplete"
+              ></div>
             </div>
             <p class="form-message" role="alert"></p>
             <div class="form-actions">

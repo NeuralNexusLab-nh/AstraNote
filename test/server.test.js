@@ -375,6 +375,14 @@ test("authentication, CAPTCHA, and Origin protections fail closed", async () => 
   assert.equal(noCaptcha.status, 403);
   assert.equal((await noCaptcha.json()).error, "captcha_required");
 
+  const loginWithoutCaptcha = await fetch(`${baseUrl}/api/login`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ username: "nobody", password: "not-a-password" }),
+  });
+  assert.equal(loginWithoutCaptcha.status, 403);
+  assert.equal((await loginWithoutCaptcha.json()).error, "captcha_required");
+
   const badOrigin = await fetch(`${baseUrl}/api/login`, {
     method: "POST",
     headers: {

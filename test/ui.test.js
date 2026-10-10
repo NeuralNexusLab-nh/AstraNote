@@ -32,6 +32,13 @@ test("forgot-password recovery is available before the password sign-in step", (
   assert.ok(passwordGroup > -1);
   assert.ok(recoveryLink < passwordGroup);
 });
+test("sign-in renders human verification before a session can be requested", () => {
+  const login = fs.readFileSync(path.join(__dirname, "../public/login.html"), "utf8");
+  const app = fs.readFileSync(path.join(__dirname, "../public/app.js"), "utf8");
+  assert.match(login, /captcha-loader\.js/);
+  assert.match(login, /data-callback="onCaptchaComplete"/);
+  assert.match(app, /kind === "login" && !twoFactorUsername/);
+});
 test("forgot-password recovery moves below the password field when it is requested", () => {
   const app = fs.readFileSync(path.join(__dirname, "../public/app.js"), "utf8");
   assert.match(app, /passwordGroup\.append\(\$\("\.auth-forgot", form\)\)/);

@@ -3829,7 +3829,10 @@ async function initAuthForm(kind) {
         return;
       }
     }
-    const needsCaptcha = kind === "register" || cancellation;
+    const needsCaptcha =
+      kind === "register" ||
+      cancellation ||
+      (kind === "login" && !twoFactorUsername);
     if (needsCaptcha && !state.captcha) {
       reportAuthError(t("captchaNeeded"));
       return;

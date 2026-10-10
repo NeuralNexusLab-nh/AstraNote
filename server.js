@@ -2916,6 +2916,11 @@ app.post(
       // first step from becoming a reliable account-existence oracle.
       if (!metadata || metadata.loginMethod !== "magic" || !metadata.emailVerified)
         return res.json({ next: "password" });
+      // Magic Link is itself a sign-in method, so it needs the same human
+      // verification as password sign-in before it can send a login link.
+      let captchaVerified = false;
+      await verifyCaptcha(req, res, () => { captchaVerified = true; });
+      if (!captchaVerified) return;
       if (accountIsBanned(metadata))
         return jsonError(res, 401, "invalid_credentials", "Username or password is incorrect.");
       const deletion = await findDeletion(metadata.username);
@@ -2965,6 +2970,7 @@ app.post(
   "/api/login",
   loginIpLimiter,
   loginUsernameLimiter,
+  verifyCaptcha,
   async (req, res, next) => {
     const username = normalizeText(req.body.username, 254);
     const password =
