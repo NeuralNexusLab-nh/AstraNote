@@ -980,6 +980,15 @@ Object.assign(I18N.ja, {
   paymentActivatedBody: "{plan} プランが {days} 日間有効になりました。AstraNote をご支援いただきありがとうございます。",
   torSatoraWarning: "Satora は現在通常のウェブでのみ利用できます。続行すると Tor ネットワークを離れます。",
 });
+Object.assign(I18N.en, {
+  limitedEdit: "Limited edit", limitedEditEyebrow: "LIMITED EDITING", limitedEditLoginTitle: "Open a shared editing session", limitedEditLoginBody: "Use the temporary account details that were shared with you.", limitedEditRules: "You can edit this one note only. You cannot view other notes, account settings, plans, or the recycle bin.", limitedEditExpires: "Editing access ends {time}.", limitedEditCreate: "Create limited editor", limitedEditCreateBody: "Give one trusted person time-limited access to edit this note. Only one temporary editor can be active at a time.", limitedEditUsername: "Temporary editor name", limitedEditDuration: "Access period", limitedEditAgent: "Allow Astra Agent", limitedEditCreated: "Limited editor created", limitedEditCreatedBody: "Share these sign-in details privately. They cannot view any other part of your account.", limitedEditLoginUrl: "Sign-in page", limitedEditWarningTitle: "Encrypted note: confirm access", limitedEditWarning: "This gives the chosen person the ability to unlock this note when they also know its PIN. Revoking access cannot take back content they have already read, copied, or saved.", limitedEditConfirm: "I understand, create", limitedEditActive: "Temporary editor: {username} · ends {time}", limitedEditRevoke: "Revoke access", limitedEditRevokeTitle: "Revoke limited editing?", limitedEditRevokeBody: "The temporary editor will lose access to this note immediately.", limitedEditRevoked: "Limited editing access revoked.", limitedEditorExists: "This note already has an active temporary editor. Revoke it before creating another one.", limitedUsernameTaken: "Choose a different temporary editor name.", limitedNoteUnavailable: "This note is no longer available for limited editing.", limitedAccessExpired: "This limited editing session has expired.", limitedUnlock: "Enter the note PIN to unlock it", limitedEditSave: "Save this note",
+});
+Object.assign(I18N["zh-Hant"], {
+  limitedEdit: "限時編輯", limitedEditEyebrow: "限時編輯", limitedEditLoginTitle: "開啟限時編輯工作階段", limitedEditLoginBody: "請輸入對方私下提供給你的暫時帳號資料。", limitedEditRules: "你只能編輯這一篇筆記；無法查看其他筆記、帳號設定、方案或垃圾桶。", limitedEditExpires: "編輯權限將於 {time} 結束。", limitedEditCreate: "建立限時編輯者", limitedEditCreateBody: "讓一位受信任的人在指定時間內協助編輯這篇筆記。同一時間只能有一位限時編輯者。", limitedEditUsername: "暫時編輯者名稱", limitedEditDuration: "可使用時間", limitedEditAgent: "允許使用 Astra Agent", limitedEditCreated: "已建立限時編輯者", limitedEditCreatedBody: "請以私密方式分享以下登入資料；對方無法看到你帳戶的其他部分。", limitedEditLoginUrl: "登入頁面", limitedEditWarningTitle: "加密筆記：確認授權", limitedEditWarning: "若對方同時取得正確 PIN，這會交付此筆記的解鎖能力。撤銷權限無法收回對方已經閱讀、複製或保存的內容。", limitedEditConfirm: "我了解，建立", limitedEditActive: "限時編輯者：{username} · 結束於 {time}", limitedEditRevoke: "撤銷權限", limitedEditRevokeTitle: "撤銷限時編輯？", limitedEditRevokeBody: "限時編輯者會立刻失去這篇筆記的存取權。", limitedEditRevoked: "已撤銷限時編輯權限。", limitedEditorExists: "這篇筆記已有啟用中的限時編輯者，請先撤銷。", limitedUsernameTaken: "請換一個暫時編輯者名稱。", limitedNoteUnavailable: "這篇筆記目前無法進行限時編輯。", limitedAccessExpired: "此限時編輯工作階段已到期。", limitedUnlock: "請輸入筆記 PIN 以解鎖", limitedEditSave: "儲存這篇筆記",
+});
+Object.assign(I18N.ja, {
+  limitedEdit: "期限付き編集", limitedEditEyebrow: "期限付き編集", limitedEditLoginTitle: "期限付き編集セッションを開く", limitedEditLoginBody: "共有された一時アカウント情報を入力してください。", limitedEditRules: "このノートだけを編集できます。他のノート、設定、プラン、ゴミ箱は表示できません。", limitedEditExpires: "編集アクセスは {time} に終了します。", limitedEditCreate: "期限付き編集者を作成", limitedEditCreateBody: "信頼できる一人に、このノートだけの編集アクセスを期限付きで渡します。同時に有効にできる編集者は一人です。", limitedEditUsername: "一時編集者名", limitedEditDuration: "アクセス期間", limitedEditAgent: "Astra Agent を許可", limitedEditCreated: "期限付き編集者を作成しました", limitedEditCreatedBody: "以下のサインイン情報は非公開で共有してください。相手はあなたのアカウントの他の部分を見られません。", limitedEditLoginUrl: "サインインページ", limitedEditWarningTitle: "暗号化ノート：アクセスを確認", limitedEditWarning: "相手が正しい PIN も知っている場合、このノートを解除できる権限を渡すことになります。アクセスを取り消しても、既に読まれた・コピーされた・保存された内容は取り消せません。", limitedEditConfirm: "理解して作成", limitedEditActive: "期限付き編集者：{username} · 終了 {time}", limitedEditRevoke: "アクセスを取り消す", limitedEditRevokeTitle: "期限付き編集を取り消しますか？", limitedEditRevokeBody: "この編集者は直ちにこのノートへアクセスできなくなります。", limitedEditRevoked: "期限付き編集アクセスを取り消しました。", limitedEditorExists: "このノートにはすでに有効な期限付き編集者がいます。先に取り消してください。", limitedUsernameTaken: "別の一時編集者名を選んでください。", limitedNoteUnavailable: "このノートは現在、期限付き編集に利用できません。", limitedAccessExpired: "この期限付き編集セッションは終了しました。", limitedUnlock: "ノートを解除するために PIN を入力", limitedEditSave: "このノートを保存",
+});
 
 Object.assign(I18N["en"], {
   zeroSummary:
@@ -1839,6 +1848,33 @@ Object.assign(I18N.ja, {
   aiPrivacyTitle: "Astra AI とノート", aiPrivacyText: "Astra AI を選ぶと、そのリクエストのノート名、内容、指示がプレビュー作成のため OpenAI に送信されます。API リクエストには store:false を設定していますが、OpenAI は適用される自身の規約とプライバシー実務に従ってそのデータを処理します。保存を選ぶまでノートは変更されません。PIN 保護ノートでは解除済みの文章がこの処理のために送信され、PIN と暗号鍵は送信・保存されません。そのサービスに処理させたくない内容には Astra AI を使わないでください。",
   standardEncryptionOption: "標準暗号化（AES-256-GCM）", legacyEncryptionOption: "旧式暗号化（AES-128-GCM）", secretOption: "シークレット（AstraSecret）", confidentialOption: "コンフィデンシャル（AstraConfidential）", zeroOption: "最高機密（AstraZero）", legacySchybridOption: "旧式コンフィデンシャル（AstraConfidential SCHybrid）", astraSecretIncluded: "シークレット（AstraSecret）の日常保護", confidentialIncluded: "コンフィデンシャル（AstraConfidential）の高度な保護", zeroIncluded: "最高機密（AstraZero）・クライアントで鍵を生成", basicEncryption: "暗号化なし · 標準暗号化（AES-256-GCM）",
 });
+// Astra Agent is the user-facing name. Internal endpoint names remain stable
+// so existing links, quota records, and deployment configuration continue to
+// work without a data migration.
+Object.assign(I18N.en, {
+  astraAi: "Astra Agent", astraAiUnavailable: "Astra Agent is currently unavailable",
+  aiTitle: "Astra Agent, on your terms", aiBody: "One instruction, a complete preview, and your final approval turn a note into its next useful version.",
+  astraAiPrompt: "Astra Agent instruction", astraAiPromptPlaceholder: "Describe how Astra Agent should improve this note…", astraAiPromptRequired: "Enter an instruction for Astra Agent.",
+  astraAiWorking: "Request sent. Astra Agent is preparing your preview…", astraAiPreview: "Astra Agent preview", astraAiEncryptedNotice: "Your unlocked title, content and instruction are sent to the AI service for this request. Your PIN and encryption key are not sent or stored.",
+  astraAiAllowance: "Astra Agent · every 30 days", aiPlanFree: "Try Astra Agent · basic allowance", aiPlanPlus: "Astra Agent · expanded allowance", aiPlanPro: "Astra Agent · advanced allowance", aiPlanUltra: "Astra Agent · highest allowance", aiPrivacyTitle: "Astra Agent and your note",
+  batchAgentTitle: "Astra Agent · {count} notes", batchAgentBody: "One instruction is applied to each selected note separately. Review every result before saving.", batchAgentEncrypted: "{count} PIN-protected note(s) need to be opened individually so their PIN never leaves this page.", batchAgentNoEligible: "Select at least one note that is ready for Astra Agent.", batchAgentPreview: "Astra Agent previews", batchAgentPreviewBody: "Choose the results you want to apply. Nothing changes until you save.", batchAgentChoose: "Choose at least one result to save.",
+});
+Object.assign(I18N["zh-Hant"], {
+  astraAi: "Astra Agent", astraAiUnavailable: "Astra Agent 目前無法使用",
+  aiTitle: "Astra Agent，由你掌握", aiBody: "一句指令、完整預覽、由你確認儲存；把筆記更快整理成下一個可用版本。",
+  astraAiPrompt: "Astra Agent 指令", astraAiPromptPlaceholder: "說明你希望 Astra Agent 如何修改這篇筆記…", astraAiPromptRequired: "請輸入給 Astra Agent 的指令。",
+  astraAiWorking: "已送出。Astra Agent 正在準備預覽…", astraAiPreview: "Astra Agent 預覽", astraAiEncryptedNotice: "為完成本次 Astra Agent 修改，已解鎖的筆記標題、內容與指令會傳送至 AI 處理服務。PIN 與加密金鑰不會傳送或儲存。",
+  astraAiAllowance: "Astra Agent · 每 30 天", aiPlanFree: "體驗 Astra Agent · 基本用量", aiPlanPlus: "Astra Agent · 更多用量", aiPlanPro: "Astra Agent · 進階用量", aiPlanUltra: "Astra Agent · 最高用量", aiPrivacyTitle: "Astra Agent 與你的筆記",
+  batchAgentTitle: "Astra Agent · {count} 篇筆記", batchAgentBody: "同一則指令會分別套用至每篇已選筆記。儲存前可逐篇查看結果。", batchAgentEncrypted: "{count} 篇使用 PIN 的筆記必須個別開啟處理，PIN 不會離開目前頁面。", batchAgentNoEligible: "請至少選擇一篇可交給 Astra Agent 處理的筆記。", batchAgentPreview: "Astra Agent 預覽", batchAgentPreviewBody: "選擇要套用的結果；儲存前不會改動任何筆記。", batchAgentChoose: "請至少選擇一筆結果儲存。",
+});
+Object.assign(I18N.ja, {
+  astraAi: "Astra Agent", astraAiUnavailable: "Astra Agent は現在利用できません",
+  aiTitle: "あなたが決める Astra Agent", aiBody: "一つの指示、全体のプレビュー、最後の承認で、ノートを次に使える形へ整えます。",
+  astraAiPrompt: "Astra Agent への指示", astraAiPromptPlaceholder: "Astra Agent にこのノートをどう改善してほしいか入力してください…", astraAiPromptRequired: "Astra Agent への指示を入力してください。",
+  astraAiWorking: "送信しました。Astra Agent がプレビューを準備しています…", astraAiPreview: "Astra Agent プレビュー", astraAiEncryptedNotice: "このリクエストでは、解除済みのタイトル、内容、指示が AI 処理サービスへ送信されます。PIN と暗号鍵は送信・保存されません。",
+  astraAiAllowance: "Astra Agent · 30日ごと", aiPlanFree: "Astra Agent を試す · 基本利用枠", aiPlanPlus: "Astra Agent · より多い利用枠", aiPlanPro: "Astra Agent · 上級利用枠", aiPlanUltra: "Astra Agent · 最大利用枠", aiPrivacyTitle: "Astra Agent とノート",
+  batchAgentTitle: "Astra Agent · {count}件のノート", batchAgentBody: "一つの指示を、選択した各ノートに個別に適用します。保存前にすべての結果を確認できます。", batchAgentEncrypted: "PIN 保護されたノート {count} 件は、PIN がこのページを離れないよう個別に開いて処理してください。", batchAgentNoEligible: "Astra Agent で処理できるノートを1件以上選択してください。", batchAgentPreview: "Astra Agent のプレビュー", batchAgentPreviewBody: "適用する結果を選択してください。保存するまでノートは変更されません。", batchAgentChoose: "保存する結果を1件以上選択してください。",
+});
 Object.assign(I18N.en, { legalUpdated: "Effective and last updated: 27 September 2026", termsUpdated: "Effective and last updated: 27 September 2026" });
 Object.assign(I18N["zh-Hant"], { legalUpdated: "生效及最後更新：2026 年 9 月 27 日", termsUpdated: "生效及最後更新：2026 年 9 月 27 日" });
 Object.assign(I18N.ja, { legalUpdated: "発効・最終更新：2026年9月27日", termsUpdated: "発効・最終更新：2026年9月27日" });
@@ -2319,6 +2355,55 @@ function requireManualPinEntry(input) {
   });
 }
 
+// Client-side validation is deliberately a usability layer only. The server
+// remains authoritative, but ordinary forms should tell someone what needs
+// attention before they press submit. Sign-in credentials and vault PINs are
+// excluded: showing format/account hints there would be both noisy and a
+// potential account-enumeration aid.
+function setFieldValidation(input, message, touched = true) {
+  if (!input) return;
+  const group = input.closest(".form-group, .check-row");
+  let hint = group?.querySelector(".input-validation-message");
+  if (message && !hint && group) {
+    hint = document.createElement("p");
+    hint.className = "input-validation-message";
+    hint.setAttribute("role", "alert");
+    group.append(hint);
+  }
+  if (hint) {
+    hint.textContent = message || "";
+    hint.hidden = !message || !touched;
+  }
+  input.setAttribute("aria-invalid", String(Boolean(message && touched)));
+  group?.classList.toggle("has-validation-error", Boolean(message && touched));
+}
+
+function bindLiveValidation(form, validators, submitButton = $("button[type='submit']", form)) {
+  const touched = new Set();
+  const validate = () => {
+    let valid = true;
+    for (const [name, validator] of Object.entries(validators)) {
+      const input = form.elements.namedItem(name);
+      if (!input) continue;
+      const message = validator(input, form) || "";
+      setFieldValidation(input, message, touched.has(name));
+      if (message) valid = false;
+    }
+    if (submitButton) submitButton.disabled = !valid;
+    return valid;
+  };
+  for (const name of Object.keys(validators)) {
+    const input = form.elements.namedItem(name);
+    if (!input) continue;
+    const markTouched = () => { touched.add(name); validate(); };
+    input.addEventListener("input", markTouched);
+    input.addEventListener("change", markTouched);
+    input.addEventListener("blur", markTouched);
+  }
+  validate();
+  return validate;
+}
+
 window.onCaptchaComplete = (result) => {
   state.captcha = result?.success
     ? {
@@ -2392,6 +2477,10 @@ async function api(url, options = {}) {
           account_unavailable: t("accountUnavailable"),
           agreement_required: t("agreementRequired"),
           invalid_credentials: t("invalidCredentials"),
+          limited_username_taken: t("limitedUsernameTaken"),
+          limited_editor_exists: t("limitedEditorExists"),
+          limited_note_unavailable: t("limitedNoteUnavailable"),
+          limited_session_expired: t("limitedAccessExpired"),
         }[data.error] ||
           data.message ||
           t("error"),
@@ -2576,6 +2665,14 @@ function applyLocale() {
 }
 
 function buildNav() {
+  if (page === "limited-edit") {
+    const nav = document.createElement("nav");
+    nav.className = "site-nav solid limited-nav";
+    nav.setAttribute("aria-label", "AstraNote");
+    nav.innerHTML = '<a class="brand" href="/limited-edit"><img src="/asset/logo.png" alt=""><span>AstraNote</span></a><span class="limited-nav-label"><i class="fa-solid fa-user-pen" aria-hidden="true"></i><span data-i18n="limitedEdit"></span></span>';
+    document.body.prepend(nav);
+    return;
+  }
   const authenticated = Boolean(state.session?.authenticated);
   const trashLink =
     authenticated &&
@@ -3799,6 +3896,32 @@ async function initAuthForm(kind) {
     loginStage = "password";
     showPasswordStep();
   }
+  if (kind === "register") {
+    bindLiveValidation(form, {
+      username: (input) => {
+        const value = String(input.value || "").trim();
+        return /^[A-Za-z0-9_]{3,24}$/.test(value) ? "" : t("usernameRules");
+      },
+      email: (input) =>
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(input.value || "").trim())
+          ? ""
+          : t("invalidEmail"),
+      password: (input, currentForm) => {
+        const value = String(input.value || "");
+        const username = String(currentForm.username?.value || "").trim();
+        if (value.length < 8 || value.length > 24) return t("passwordRules");
+        if (username && value.toLowerCase().includes(username.toLowerCase()))
+          return t("passwordContainsUsername");
+        return "";
+      },
+      passwordConfirmation: (input, currentForm) =>
+        String(input.value || "") === String(currentForm.password?.value || "") && input.value
+          ? ""
+          : t("passwordConfirmationRules"),
+      acceptTerms: (input) => input.checked ? "" : t("agreementRequired"),
+      legalCapacity: (input) => input.checked ? "" : t("agreementRequired"),
+    });
+  }
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const button = form.querySelector("[type=submit]");
@@ -3840,7 +3963,14 @@ async function initAuthForm(kind) {
     try {
       button.disabled = true;
       if (kind === "login" && !cancellation && !twoFactorUsername && loginStage === "identifier") {
-        const result = await api("/api/login/continue", { method: "POST", body: { username: form.username.value } });
+        // The first sign-in step also starts Magic Link delivery when that
+        // method is selected. It is CAPTCHA-protected server-side, so carry
+        // the successful page verification through this otherwise small
+        // request instead of losing it between login stages.
+        const result = await api("/api/login/continue", {
+          method: "POST",
+          body: { username: form.username.value, captcha: state.captcha },
+        });
         if (result.next === "magic") {
           const request = {
             username: result.username,
@@ -3998,7 +4128,26 @@ async function initResetPassword() {
   passwordInput.required = hasToken;
   confirmationInput.required = hasToken;
   const submitButton = $("button[type='submit']", form);
-  if (!hasToken) refreshEmailCooldown("reset", submitButton);
+  if (!hasToken) {
+    bindLiveValidation(form, {
+      email: (input) =>
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(input.value || "").trim())
+          ? ""
+          : t("invalidEmail"),
+    }, submitButton);
+    refreshEmailCooldown("reset", submitButton);
+  } else {
+    bindLiveValidation(form, {
+      password: (input) => {
+        const value = String(input.value || "");
+        return value.length >= 8 && value.length <= 24 ? "" : t("passwordRules");
+      },
+      confirmation: (input, currentForm) =>
+        input.value && input.value === currentForm.password.value
+          ? ""
+          : t("passwordConfirmationRules"),
+    }, submitButton);
+  }
   form.addEventListener("submit", async (event) => {
     event.preventDefault(); const message = $(".form-message", form); message.textContent = "";
     try {
@@ -4145,9 +4294,11 @@ async function initNotes() {
     $("#batch-pin").setAttribute("aria-label", pinLabel);
     $("#batch-archive").setAttribute("aria-label", archiveLabel);
     $("#batch-delete").setAttribute("aria-label", deleteLabel);
-    $$("#batch-actions button").forEach((button) => {
+    $$("#batch-actions button:not(#batch-agent)").forEach((button) => {
       button.disabled = batchBusy || !selected.size;
     });
+    const agent = $("#batch-agent");
+    if (agent) agent.disabled = batchBusy || !selected.size || !account.ai?.enabled;
     $$(".note-select input", list).forEach((input) => {
       input.disabled = batchBusy;
     });
@@ -4273,10 +4424,116 @@ async function initNotes() {
   };
   $("#batch-pin").onclick = () => runBatch("pin");
   $("#batch-archive").onclick = () => runBatch("archive");
+  $("#batch-agent").onclick = () => {
+    const notes = visible.filter((note) => selected.has(note.id));
+    if (notes.length && !batchBusy) openBatchAstraAgent(notes, refresh);
+  };
   $("#batch-delete").onclick = () => {
     if (selected.size && !batchBusy) deleteSelectedNotes([...selected]);
   };
   render();
+}
+
+function openBatchAstraAgent(notes, refresh) {
+  const protectedNotes = notes.filter((note) => isClientEncryptedMode(note.encryption));
+  const eligible = notes.filter((note) => !isClientEncryptedMode(note.encryption));
+  const content = document.createElement("div");
+  content.className = "astra-ai-form";
+  const prompt = document.createElement("textarea");
+  prompt.maxLength = 1600;
+  prompt.rows = 5;
+  prompt.placeholder = t("astraAiPromptPlaceholder");
+  prompt.setAttribute("aria-label", t("astraAiPrompt"));
+  content.append(prompt);
+  if (protectedNotes.length) {
+    const notice = document.createElement("p");
+    notice.className = "field-help";
+    notice.textContent = t("batchAgentEncrypted").replace("{count}", protectedNotes.length);
+    content.append(notice);
+  }
+  modal({
+    title: t("batchAgentTitle").replace("{count}", eligible.length),
+    body: t("batchAgentBody"),
+    content,
+    confirm: t("astraAiGenerate"),
+    onConfirm: async (close, button) => {
+      if (!eligible.length) throw new Error(t("batchAgentNoEligible"));
+      if (!prompt.value.trim()) throw new Error(t("astraAiPromptRequired"));
+      button.disabled = true;
+      button.innerHTML = `<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><span>${t("astraAiWorkingShort")}</span>`;
+      const previews = [];
+      try {
+        for (const summary of eligible) {
+          const note = await api(`/api/notes/${summary.id}`);
+          const result = await api(`/api/notes/${note.id}/ai`, {
+            method: "POST",
+            body: { prompt: prompt.value.trim(), title: note.name, content: note.content },
+          });
+          previews.push({ note, preview: result.preview });
+        }
+        close();
+        openBatchAstraAgentPreview(previews, refresh);
+      } catch (error) {
+        button.disabled = false;
+        button.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i><span>${t("astraAiGenerate")}</span>`;
+        throw error;
+      }
+    },
+  });
+}
+
+function openBatchAstraAgentPreview(items, refresh) {
+  const content = document.createElement("div");
+  content.className = "batch-agent-preview";
+  const fields = [];
+  for (const item of items) {
+    const article = document.createElement("article");
+    article.className = "batch-agent-note";
+    const toggle = document.createElement("label");
+    toggle.className = "check-row";
+    const include = document.createElement("input");
+    include.type = "checkbox";
+    include.checked = true;
+    const label = document.createElement("span");
+    label.textContent = item.note.name;
+    toggle.append(include, label);
+    const title = document.createElement("input");
+    title.value = item.preview.title;
+    title.maxLength = 80;
+    title.setAttribute("aria-label", t("noteName"));
+    const body = document.createElement("textarea");
+    body.value = item.preview.content;
+    body.rows = 8;
+    body.setAttribute("aria-label", t("note"));
+    article.append(toggle, title, body);
+    content.append(article);
+    fields.push({ item, include, title, body });
+  }
+  modal({
+    title: t("batchAgentPreview"),
+    body: t("batchAgentPreviewBody"),
+    content,
+    confirm: t("saveChanges"),
+    cancel: t("discardResult"),
+    onConfirm: async (close, button) => {
+      const selected = fields.filter(({ include }) => include.checked);
+      if (!selected.length) throw new Error(t("batchAgentChoose"));
+      button.disabled = true;
+      try {
+        for (const { item, title, body } of selected) {
+          await api(`/api/notes/${item.note.id}`, {
+            method: "PUT",
+            body: { name: title.value, content: body.value, revision: item.note.revision },
+          });
+        }
+        close();
+        await refresh();
+      } catch (error) {
+        button.disabled = false;
+        throw error;
+      }
+    },
+  });
 }
 
 function selectionActions(notes) {
@@ -4413,6 +4670,11 @@ async function initNewNote() {
   if (!account) return;
   const form = $("#note-form");
   const encryption = form.encryption;
+  bindLiveValidation(form, {
+    name: (input) => String(input.value || "").normalize("NFC").trim()
+      ? ""
+      : t("noteNameRequired"),
+  });
   const vaultFields = $("#vault-fields");
   const protectedOptions = [
     ...encryption.querySelectorAll(
@@ -4696,6 +4958,153 @@ function openAstraAiPreview(note, result, unlockedPin = null) {
     },
   });
 }
+function limitedEditorDurationOptions() {
+  return [
+    [3 * 60 * 60_000, "3 hours"], [7 * 60 * 60_000, "7 hours"],
+    [864e5, "1 day"], [3 * 864e5, "3 days"], [7 * 864e5, "7 days"],
+    [14 * 864e5, "14 days"], [30 * 864e5, "30 days"],
+  ];
+}
+function openLimitedEditor(note) {
+  const content = document.createElement("div");
+  content.className = "limited-editor-form modal-form-stack";
+  const makeField = (labelText, input) => {
+    const label = document.createElement("label");
+    label.className = "field";
+    const title = document.createElement("span");
+    title.textContent = labelText;
+    label.append(title, input);
+    return label;
+  };
+  const username = document.createElement("input");
+  username.autocomplete = "off"; username.maxLength = 24; username.placeholder = "editor_name";
+  const password = document.createElement("input");
+  password.type = "password"; password.autocomplete = "new-password"; password.maxLength = 24;
+  const confirmation = document.createElement("input");
+  confirmation.type = "password"; confirmation.autocomplete = "new-password"; confirmation.maxLength = 24;
+  const duration = document.createElement("select");
+  for (const [value, label] of limitedEditorDurationOptions()) {
+    const option = document.createElement("option"); option.value = String(value); option.textContent = label; duration.append(option);
+  }
+  const agent = document.createElement("label"); agent.className = "check-row";
+  const checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.checked = true;
+  agent.append(checkbox, document.createTextNode(` ${t("limitedEditAgent")}`));
+  content.append(
+    makeField(t("limitedEditUsername"), username),
+    makeField(t("password"), password),
+    makeField(t("confirmPassword"), confirmation),
+    makeField(t("limitedEditDuration"), duration), agent,
+  );
+  const submit = async (close) => {
+    if (!USERNAME_RE.test(username.value.trim())) throw new Error(t("usernameRules"));
+    if (password.value.length < 8 || password.value.length > 24)
+      throw new Error(t("passwordRules"));
+    if (password.value.toLowerCase().includes(username.value.trim().toLowerCase()))
+      throw new Error(t("passwordContainsUsername"));
+    if (password.value !== confirmation.value) throw new Error(t("passwordConfirmationRules"));
+    const result = await api(`/api/notes/${note.id}/limited-editor`, {
+      method: "POST", body: { username: username.value.trim(), password: password.value, duration: Number(duration.value), canUseAgent: checkbox.checked },
+    });
+    close();
+    const details = document.createElement("div"); details.className = "limited-editor-credentials";
+    const add = (label, value) => { const row = document.createElement("p"); const strong = document.createElement("strong"); strong.textContent = `${label}: `; row.append(strong, document.createTextNode(value)); details.append(row); };
+    add(t("limitedEditUsername"), username.value.trim()); add(t("password"), password.value); add(t("limitedEditLoginUrl"), new URL(result.loginUrl, location.origin).href); add(t("limitedEditExpires"), formatUtc(result.expiresAt));
+    modal({ title: t("limitedEditCreated"), body: t("limitedEditCreatedBody"), content: details, confirm: t("understood"), showCancel: false, onConfirm: (done) => { done(); location.reload(); } });
+  };
+  const openForm = () => modal({ title: t("limitedEditCreate"), body: t("limitedEditCreateBody"), content, confirm: t("create"), closeOnBackdrop: false, onConfirm: submit });
+  if (!isClientEncryptedMode(note.encryption)) return openForm();
+  modal({ title: t("limitedEditWarningTitle"), body: t("limitedEditWarning"), confirm: t("limitedEditConfirm"), cancel: t("cancel"), danger: true, closeOnBackdrop: false, onConfirm: (close) => { close(); openForm(); } });
+}
+async function loadLimitedEditorState(note) {
+  const editor = await api(`/api/notes/${note.id}/limited-editor`);
+  const button = $("#limited-edit");
+  if (!button) return;
+  if (!editor.editor) { button.onclick = () => openLimitedEditor(note); return; }
+  button.classList.add("btn-outline");
+  button.querySelector("span").textContent = t("limitedEditRevoke");
+  button.onclick = () => modal({ title: t("limitedEditRevokeTitle"), body: t("limitedEditRevokeBody"), confirm: t("limitedEditRevoke"), danger: true, onConfirm: async (close) => { await api(`/api/notes/${note.id}/limited-editor`, { method: "DELETE", body: {} }); close(); toast(t("limitedEditRevoked")); location.reload(); } });
+  const active = document.createElement("p"); active.className = "field-help limited-editor-active";
+  active.textContent = t("limitedEditActive").replace("{username}", editor.editor.username).replace("{time}", formatUtc(editor.editor.expiresAt));
+  $(".note-secondary-actions")?.prepend(active);
+}
+async function limitedApi(url, options = {}) {
+  const headers = { ...(options.body ? { "content-type": "application/json" } : {}), ...(options.headers || {}) };
+  if (!['GET', 'HEAD'].includes(options.method || 'GET') && state.limited?.csrf) headers['x-csrf-token'] = state.limited.csrf;
+  const response = await fetch(url, { ...options, headers, credentials: "same-origin", body: options.body && typeof options.body !== "string" ? JSON.stringify(options.body) : options.body });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw Object.assign(new Error(data.message || t("error")), { status: response.status, code: data.error, data });
+  return data;
+}
+async function deriveLimitedVaultKey(note, pin) {
+  const owner = note.cryptoOwner;
+  if (!owner || !window.hashwasm?.argon2id) throw new Error(t("vaultCryptoUnavailable"));
+  const contexts = { [LEGACY_SCHYBRID_MODE]: "AstraConfidential SCHybrid v1", [LEGACY_CONFIDENTIAL_MODE]: "AstraConfidential v2", [ASTRA_SECRET_MODE]: "AstraSecret v1", [CONFIDENTIAL_MODE]: "AstraConfidential v3" };
+  const clientHash = await sha256Hex([contexts[note.encryption], owner.username.toLowerCase(), owner.email.toLowerCase(), pin, note.id, note.clientSalt].join("\0"));
+  const { serverFactor } = await limitedApi("/api/limited/vault-factor", { method: "POST", body: { clientSalt: note.clientSalt, clientHash } });
+  const keyBytes = await window.hashwasm.argon2id({ password: `${pin}\0${serverFactor}`, salt: base64ToBytes(note.clientSalt), parallelism: 1, iterations: note.encryption === CONFIDENTIAL_MODE ? 5 : note.encryption === ASTRA_SECRET_MODE ? 3 : note.encryption === LEGACY_CONFIDENTIAL_MODE ? 4 : 3, memorySize: note.encryption === CONFIDENTIAL_MODE ? 98304 : 65536, hashLength: 32, outputType: "binary" });
+  return crypto.subtle.importKey("raw", keyBytes, "AES-GCM", false, ["encrypt", "decrypt"]);
+}
+function limitedAdditionalData(note) {
+  const contexts = { [LEGACY_SCHYBRID_MODE]: "AstraConfidential SCHybrid v1", [LEGACY_CONFIDENTIAL_MODE]: "AstraConfidential v2", [ASTRA_SECRET_MODE]: "AstraSecret v1", [CONFIDENTIAL_MODE]: "AstraConfidential v3" };
+  return textEncoder.encode(`${contexts[note.encryption]}\0${note.cryptoOwner.username.toLowerCase()}\0${note.id}`);
+}
+async function decryptLimitedNote(note, pin) {
+  if (note.encryption === ZERO_MODE) return AstraZero.decrypt(note.cryptoOwner.username, note, pin);
+  const key = await deriveLimitedVaultKey(note, pin);
+  const ciphertext = base64ToBytes(note.encrypted.ciphertext), tag = base64ToBytes(note.encrypted.tag);
+  const combined = new Uint8Array(ciphertext.length + tag.length); combined.set(ciphertext); combined.set(tag, ciphertext.length);
+  const bytes = await crypto.subtle.decrypt({ name: "AES-GCM", iv: base64ToBytes(note.encrypted.iv), additionalData: limitedAdditionalData(note), tagLength: 128 }, key, combined);
+  const payload = JSON.parse(textDecoder.decode(bytes));
+  return { key, payload: { name: (note.payloadVersion || 1) < 2 ? payload.name : note.name, content: payload.content } };
+}
+async function encryptLimitedNote(note, pin, key, payload) {
+  if (note.encryption === ZERO_MODE) return AstraZero.encrypt(note.cryptoOwner.username, note.id, note.clientSalt, pin, payload, note.encrypted);
+  const finalKey = key || await deriveLimitedVaultKey(note, pin);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const combined = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv, additionalData: limitedAdditionalData(note), tagLength: 128 }, finalKey, textEncoder.encode(JSON.stringify(payload))));
+  return { iv: bytesToBase64(iv), ciphertext: bytesToBase64(combined.slice(0, -16)), tag: bytesToBase64(combined.slice(-16)) };
+}
+async function initLimitedEdit() {
+  const limited = await limitedApi("/api/limited/session").catch(() => ({ authenticated: false }));
+  state.limited = limited;
+  const login = $("#limited-login-card"), card = $("#limited-note-card");
+  const logout = () => limitedApi("/api/limited/logout", { method: "POST", body: {} }).finally(() => location.href = "/login");
+  $("#limited-logout").onclick = logout;
+  if (!limited.authenticated) {
+    $("#limited-login-form").onsubmit = async (event) => {
+      event.preventDefault(); const form = event.currentTarget;
+      if (!state.captcha) return showError(t("captchaNeeded"));
+      const result = await limitedApi("/api/limited/login", { method: "POST", body: { username: form.username.value, password: form.password.value, captcha: state.captcha } });
+      state.limited = { authenticated: true, csrf: result.csrf }; location.reload();
+    }; return;
+  }
+  login.hidden = true; card.hidden = false;
+  const result = await limitedApi("/api/limited/note"); const note = result.note; let pin = null, key = null;
+  if (isClientEncryptedMode(note.encryption)) {
+    const unlock = document.createElement("input"); unlock.type = "password"; unlock.autocomplete = "off"; unlock.placeholder = t("vaultPin"); unlock.maxLength = 64;
+    await new Promise((resolve, reject) => modal({ title: t("limitedUnlock"), content: unlock, confirm: t("unlock"), closeOnBackdrop: false, onConfirm: async (close) => { if (!validVaultPin(unlock.value, note.encryption, true)) throw new Error(vaultPinError(note.encryption)); try { const decrypted = await decryptLimitedNote(note, unlock.value); note.name = decrypted.payload.name; note.content = decrypted.payload.content; pin = unlock.value; key = decrypted.key; close(); resolve(); } catch { throw new Error(t("vaultUnlockFailed")); } }, onCancel: () => reject(new Error("cancelled")) }));
+  }
+  $("#limited-note-name").textContent = note.name; $("#limited-note-expiry").textContent = t("limitedEditExpires").replace("{time}", formatUtc(result.editor.expiresAt));
+  $("#limited-editor-name").value = note.name; $("#limited-editor-content").value = note.content || "";
+  const agentButton = $("#limited-agent");
+  agentButton.hidden = result.editor.canUseAgent !== true;
+  agentButton.onclick = () => {
+    const prompt = document.createElement("textarea"); prompt.rows = 5; prompt.maxLength = 1600; prompt.placeholder = t("astraAiPromptPlaceholder");
+    modal({ title: t("astraAi"), body: t("astraAiBody"), content: prompt, confirm: t("astraAiGenerate"), onConfirm: async (close, button) => {
+      if (!prompt.value.trim()) throw new Error(t("astraAiPromptRequired"));
+      button.disabled = true;
+      const response = await limitedApi("/api/limited/note/ai", { method: "POST", body: { prompt: prompt.value.trim(), title: $("#limited-editor-name").value, content: $("#limited-editor-content").value } });
+      close();
+      const preview = document.createElement("div"); preview.className = "astra-ai-preview";
+      const message = document.createElement("p"); message.className = "astra-ai-message"; message.textContent = response.preview.message;
+      const title = document.createElement("input"); title.value = response.preview.title; title.maxLength = 80;
+      const content = document.createElement("textarea"); content.rows = 14; content.value = response.preview.content;
+      preview.append(message, title, content);
+      modal({ title: t("astraAiPreview"), body: t("astraAiPreviewBody"), content: preview, confirm: t("saveChanges"), cancel: t("discardResult"), onConfirm: (finish) => { $("#limited-editor-name").value = title.value; $("#limited-editor-content").value = content.value; finish(); } });
+    }});
+  };
+  $("#limited-note-form").onsubmit = async (event) => { event.preventDefault(); const button = $("button[type='submit']", event.currentTarget); button.disabled = true; try { const request = { name: $("#limited-editor-name").value, content: $("#limited-editor-content").value, revision: note.revision }; if (isClientEncryptedMode(note.encryption)) { request.encrypted = await encryptLimitedNote(note, pin, key, { content: request.content }); delete request.content; } await limitedApi("/api/limited/note", { method: "PUT", body: request }); location.reload(); } catch (error) { showError(error); button.disabled = false; } };
+}
 async function initNote() {
   if (!(await requireAccount())) return;
   let note;
@@ -4745,6 +5154,7 @@ async function initNote() {
     toast(t("contentCopied"));
   };
   $("#astra-ai").onclick = () => openAstraAi(note, vaultPin);
+  loadLimitedEditorState(note).catch(showError);
   const reference =
     state.account.notes.find((item) => item.id === note.id) || {};
   for (const [action, key] of [
@@ -5581,7 +5991,7 @@ async function boot() {
       location.reload();
   });
   buildNav();
-  buildFooter();
+  if (page !== "limited-edit") buildFooter();
   applyLocale();
   initPwaInstall();
   if (state.account) showPlanWarning(state.account);
@@ -5601,6 +6011,7 @@ async function boot() {
     editor: initEditor,
     settings: initSettings,
     admin: initAdmin,
+    "limited-edit": initLimitedEdit,
     shared: initShared,
     plans: initPlans,
   };

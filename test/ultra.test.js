@@ -1373,3 +1373,38 @@ test("AstraZero performs real browser-protocol round trips; tampering, wrong PIN
   assert.equal(JSON.stringify(encrypted).includes(pin), false);
   assert.equal(JSON.stringify(encrypted).includes(payload.content), false);
 });
+
+test("a limited editor is isolated to one note, can save it, and loses access when revoked", async () => {
+  const owner = await fixture("limited_owner", "free", 1);
+  const id = owner.metadata.notes[0].id;
+  const created = await request(owner, `/api/notes/${id}/limited-editor`, "POST", {
+    username: "limited_guest", password: "GuestPass!42", duration: 3 * 60 * 60_000, canUseAgent: true,
+  });
+  assert.equal(created.status, 201);
+  const loginResponse = await originalFetch(base + "/api/limited/login", {
+    method: "POST",
+    headers: { "content-type": "application/json", origin: base },
+    body: JSON.stringify({ username: "limited_guest", password: "GuestPass!42", captcha }),
+  });
+  assert.equal(loginResponse.status, 200);
+  const login = await loginResponse.json();
+  const guestHeaders = {
+    cookie: loginResponse.headers.get("set-cookie").split(";", 1)[0],
+    "x-csrf-token": login.csrf,
+    origin: base,
+    "content-type": "application/json",
+  };
+  const get = await originalFetch(base + "/api/limited/note", { headers: guestHeaders });
+  const loaded = await get.json();
+  assert.equal(get.status, 200);
+  assert.equal(loaded.note.id, id);
+  assert.equal((await originalFetch(base + "/api/account", { headers: guestHeaders })).status, 401);
+  const saved = await originalFetch(base + "/api/limited/note", {
+    method: "PUT", headers: guestHeaders,
+    body: JSON.stringify({ name: "Edited by guest", content: "guest update", revision: loaded.note.revision }),
+  });
+  assert.equal(saved.status, 200);
+  assert.equal((await read(notePath(owner.name, id))).content, "guest update");
+  assert.equal((await request(owner, `/api/notes/${id}/limited-editor`, "DELETE", {})).status, 200);
+  assert.equal((await originalFetch(base + "/api/limited/note", { headers: guestHeaders })).status, 401);
+});

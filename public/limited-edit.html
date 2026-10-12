@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>AstraNote - Limited editing</title>
+    <link rel="icon" href="/favicon.ico?v=20260915-2" sizes="any" type="image/x-icon" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/vendor/hash-wasm/argon2.umd.min.js" defer></script>
+    <script src="/zero.js" defer></script>
+    <script src="/app.js" defer></script>
+    <script src="/captcha-loader.js"></script>
+  </head>
+  <body data-page="limited-edit">
+    <main class="page">
+      <div class="shell limited-shell">
+        <section class="card auth-card reveal" id="limited-login-card">
+          <p class="eyebrow"><i class="fa-solid fa-user-pen"></i><span data-i18n="limitedEditEyebrow"></span></p>
+          <h1 data-i18n="limitedEditLoginTitle"></h1>
+          <p class="muted" data-i18n="limitedEditLoginBody"></p>
+          <form id="limited-login-form" class="auth-form" novalidate>
+            <label class="field"><span data-i18n="username"></span><input name="username" autocomplete="username" required /></label>
+            <label class="field"><span data-i18n="password"></span><input name="password" type="password" autocomplete="current-password" required /></label>
+            <div class="nexa-captcha" data-captcha-type="gravity" data-callback="onCaptchaComplete"></div>
+            <button class="btn btn-primary btn-lg" type="submit"><i class="fa-solid fa-right-to-bracket"></i><span data-i18n="login"></span></button>
+          </form>
+        </section>
+        <section class="card limited-note-card reveal" id="limited-note-card" hidden>
+          <header class="limited-note-head"><div><p class="eyebrow"><i class="fa-solid fa-user-pen"></i><span data-i18n="limitedEditEyebrow"></span></p><h1 id="limited-note-name"></h1><p class="muted" id="limited-note-expiry"></p></div><button class="btn" type="button" id="limited-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i><span data-i18n="logout"></span></button></header>
+          <p class="field-help" data-i18n="limitedEditRules"></p>
+          <form id="limited-note-form" class="editor-form" novalidate>
+            <label class="field"><span data-i18n="noteName"></span><input id="limited-editor-name" maxlength="80" required /></label>
+            <label class="field"><span data-i18n="noteContent"></span><textarea id="limited-editor-content" rows="18"></textarea></label>
+            <div class="limited-note-actions"><button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i><span data-i18n="save"></span></button><button class="btn btn-primary" type="button" id="limited-agent"><i class="fa-solid fa-wand-magic-sparkles"></i><span data-i18n="astraAi"></span></button></div>
+          </form>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

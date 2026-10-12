@@ -34,6 +34,10 @@ const SECRET_FILE = path.join(DATA_DIR, ".server-secret");
 const EMAIL_LIMITS_FILE = path.join(DATA_DIR, "email-limits.json");
 const ADMIN_BROADCAST_LIMITS_FILE = path.join(DATA_DIR, "admin-broadcast-limits.json");
 const ADMIN_BROADCAST_AUDIT_FILE = path.join(DATA_DIR, "admin-broadcasts.json");
+// A short-lived editor is deliberately not a normal AstraNote account. Keeping
+// these grants in one small, private index makes expiry/revocation atomic and
+// avoids giving a guest access to a user directory or account settings.
+const LIMITED_EDITORS_FILE = path.join(DATA_DIR, "limited-editors.json");
 
 const MAX_ACCOUNTS = 70_000;
 const MAX_NOTES = 20;
@@ -50,6 +54,17 @@ const SESSION_EXTENSION_MS = 2 * 864e5;
 const SESSION_MAX_MS = 28 * 864e5;
 const DELETE_REVERSAL_MS = 7 * 864e5;
 const DELETE_ERASE_MS = 62 * 864e5;
+const LIMITED_EDITOR_COOKIE = "astranote_limited_editor";
+const LIMITED_EDITOR_MAX_MS = 30 * 864e5;
+const LIMITED_EDITOR_DURATIONS = new Set([
+  3 * 60 * 60_000,
+  7 * 60 * 60_000,
+  1 * 864e5,
+  3 * 864e5,
+  7 * 864e5,
+  14 * 864e5,
+  30 * 864e5,
+]);
 const TERMS_VERSION = "2026-09-05";
 const TRASH_DAYS = Object.freeze([1, 3, 7, 14, 30]);
 const ADMIN_EMAIL = "neuralnexuslab@hotmail.com";
@@ -240,6 +255,25 @@ function notesDir(username) {
 function sessionsFile(username) {
   return path.join(userDir(username), "sessions.json");
 }
+async function readLimitedEditors() {
+  return readJson(LIMITED_EDITORS_FILE, {});
+}
+async function updateLimitedEditors(mutator) {
+  return withLock("limited-editors", async () => {
+    const records = await readLimitedEditors();
+    const now = Date.now();
+    let changed = false;
+    for (const [username, record] of Object.entries(records)) {
+      if (!record || now >= Date.parse(record.expiresAt || 0)) {
+        delete records[username];
+        changed = true;
+      }
+    }
+    const result = await mutator(records, now);
+    if (changed || result?.changed !== false) await writeJson(LIMITED_EDITORS_FILE, records);
+    return result?.value === undefined ? result : result.value;
+  });
+}
 function noteFile(username, id) {
   return path.join(notesDir(username), `${id}.json`);
 }
@@ -318,7 +352,7 @@ function auditDescriptor(method, route, status = 0) {
     "GET /api/notes/:id/previous": ["VIEW PREVIOUS VERSION", "LOW"],
     "POST /api/notes/:id/previous/restore": ["RESTORE PREVIOUS VERSION", "MEDIUM", "PREVIOUS VERSION RESTORE FAILED"],
     "GET /api/notes/:id": ["VIEW NOTE", "LOW"],
-    "POST /api/notes/:id/ai": ["USE ASTRA AI", "MEDIUM", "ASTRA AI REQUEST FAILED"],
+    "POST /api/notes/:id/ai": ["USE ASTRA AGENT", "MEDIUM", "ASTRA AGENT REQUEST FAILED"],
     "POST /api/notes": ["CREATE NOTE", "LOW", "CREATE NOTE FAILED"],
     "PUT /api/notes/:id": ["UPDATE NOTE", "LOW", "UPDATE NOTE FAILED"],
     "DELETE /api/notes/:id": ["REMOVE NOTE", "HIGH", "REMOVE NOTE FAILED"],
@@ -401,7 +435,7 @@ function aiCostMicrousd(usage) {
 }
 async function openAiTransform({ title, content, prompt, tier }) {
   if (!process.env.API_KEY)
-    throw Object.assign(new Error("Astra AI is not configured."), { status: 503, code: "ai_unavailable" });
+    throw Object.assign(new Error("Astra Agent is not configured."), { status: 503, code: "ai_unavailable" });
   const response = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
     headers: { authorization: `Bearer ${process.env.API_KEY}`, "content-type": "application/json" },
@@ -420,7 +454,7 @@ async function openAiTransform({ title, content, prompt, tier }) {
     }),
   });
   const data = await response.json().catch(() => null);
-  if (!response.ok) throw Object.assign(new Error("Astra AI could not complete this request."), { status: response.status, retryable: response.status === 408 || response.status === 429 || response.status >= 500 });
+  if (!response.ok) throw Object.assign(new Error("Astra Agent could not complete this request."), { status: response.status, retryable: response.status === 408 || response.status === 429 || response.status >= 500 });
   // Responses normally exposes `output_text`, but structured responses can also
   // arrive as an output_text content item. Supporting both keeps the API
   // contract stable across service tiers without logging private note content.
@@ -434,10 +468,10 @@ async function openAiTransform({ title, content, prompt, tier }) {
   try {
     result = JSON.parse(String(raw || "").trim().replace(/^```json\s*/i, "").replace(/\s*```$/, ""));
   } catch {
-    throw Object.assign(new Error("Astra AI returned an invalid result."), { status: 502 });
+    throw Object.assign(new Error("Astra Agent returned an invalid result."), { status: 502 });
   }
   if (!result || typeof result.message !== "string" || typeof result.title !== "string" || typeof result.content !== "string")
-    throw Object.assign(new Error("Astra AI returned an invalid result."), { status: 502 });
+    throw Object.assign(new Error("Astra Agent returned an invalid result."), { status: 502 });
   return { result: { message: result.message.slice(0, 600), title: normalizeText(result.title, MAX_NOTE_NAME), content: result.content.slice(0, AI_MAX_NOTE_BYTES) }, usage: data?.usage || {} };
 }
 
@@ -745,6 +779,17 @@ async function removeNoteFiles(username, metadata, ids) {
           delete shares[key];
     });
   }
+  // A removed note can never keep an independent temporary editing grant.
+  await updateLimitedEditors((records) => {
+    let changed = false;
+    for (const [guest, record] of Object.entries(records)) {
+      if (record.ownerUsername === userKey(username) && ids.has(record.noteId)) {
+        delete records[guest];
+        changed = true;
+      }
+    }
+    return { changed, value: null };
+  });
   return true;
 }
 
@@ -803,6 +848,7 @@ async function ensureData() {
     [DELETES_FILE, "[]\n"],
     [SHARES_FILE, "{}\n"],
     [ORDERS_FILE, "[]\n"],
+    [LIMITED_EDITORS_FILE, "{}\n"],
   ])
     if (!(await exists(file))) await atomicWrite(file, initial);
 
@@ -1554,6 +1600,19 @@ function setSessionCookie(req, res, username, token, expiresAt) {
 function clearSessionCookie(req, res) {
   res.clearCookie("astranote_session", sessionCookieOptions(req));
 }
+function setLimitedEditorCookie(req, res, username, token, expiresAt) {
+  res.cookie(LIMITED_EDITOR_COOKIE, `${userKey(username)}.${token}`, {
+    ...sessionCookieOptions(req, expiresAt),
+  });
+}
+function clearLimitedEditorCookie(req, res) {
+  res.clearCookie(LIMITED_EDITOR_COOKIE, sessionCookieOptions(req));
+}
+function parseLimitedEditorCookie(req) {
+  const value = parseCookies(req.headers.cookie)[LIMITED_EDITOR_COOKIE];
+  const match = /^([A-Za-z0-9_]{3,24})\.([A-Za-z0-9_-]{43})$/.exec(value || "");
+  return match ? { username: userKey(match[1]), token: match[2] } : null;
+}
 function parseSessionCookie(req) {
   const value = parseCookies(req.headers.cookie).astranote_session;
   if (!value) return null;
@@ -1765,6 +1824,45 @@ async function requireAuth(req, res, next) {
   } catch (error) {
     next(error);
   }
+}
+async function requireLimitedEditor(req, res, next) {
+  try {
+    const supplied = parseLimitedEditorCookie(req);
+    if (!supplied)
+      return jsonError(res, 401, "limited_authentication_required", "Please sign in to continue editing this note.");
+    const record = await updateLimitedEditors((records, now) => {
+      const current = records[supplied.username];
+      if (
+        !current ||
+        now >= Date.parse(current.expiresAt || 0) ||
+        !safeEqual(current.sessionDigest || "", sha256(supplied.token))
+      )
+        return { changed: false, value: null };
+      current.lastSeenAt = utcNow();
+      return { value: current };
+    });
+    if (!record) {
+      clearLimitedEditorCookie(req, res);
+      return jsonError(res, 401, "limited_session_expired", "This limited editing session has expired.");
+    }
+    const owner = await loadMetadata(record.ownerUsername);
+    if (!owner || accountIsBanned(owner))
+      return jsonError(res, 403, "limited_access_revoked", "This limited editing access is no longer available.");
+    const access = await refreshPlanState(record.ownerUsername, owner);
+    const ref = owner.notes.find((item) => item.id === record.noteId && !item.trashedAt);
+    if (!ref || access.lockedIds.has(record.noteId))
+      return jsonError(res, 423, "limited_note_unavailable", "This note is no longer available for limited editing.");
+    req.limitedEditor = { token: supplied.token, record, owner, access, ref };
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+function requireLimitedCsrf(req, res, next) {
+  const token = req.get("x-csrf-token");
+  if (!token || !safeEqual(token, req.limitedEditor.record.csrf || ""))
+    return jsonError(res, 403, "invalid_csrf", "Security token is missing or invalid.");
+  next();
 }
 function requireCsrf(req, res, next) {
   const token = req.get("x-csrf-token");
@@ -2625,6 +2723,23 @@ const noteSaveLimiter = accountLimiter(40);
 const noteLifecycleLimiter = accountLimiter(20);
 const aiMutationLimiter = accountLimiter(8);
 const shareMutationLimiter = accountLimiter(30);
+const limitedEditorCreateLimiter = accountLimiter(8);
+const limitedEditorLoginLimiter = rateLimit({
+  windowMs: 15 * 60_000,
+  limit: 12,
+  keyGenerator: (req) => `limited-editor-login:${ipKeyGenerator(req.ip)}:${userKey(req.body?.username || "unknown")}`,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
+const limitedEditorMutationLimiter = rateLimit({
+  windowMs: 60_000,
+  limit: 30,
+  keyGenerator: (req) => `limited-editor:${userKey(req.limitedEditor?.record?.username || "unknown")}`,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
 const billingCreateAccountLimiter = rateLimit({
   windowMs: ORDER_CREATION_WINDOW_MS,
   limit: MAX_NEW_ORDERS_PER_ACCOUNT_WINDOW,
@@ -3920,6 +4035,248 @@ app.post(
   },
 );
 
+// A limited editor receives a narrow, expiring capability for one note. It is
+// intentionally separate from normal accounts and cannot be used to discover
+// notes, account information, plans, or other signed-in features.
+app.get("/api/notes/:id/limited-editor", requireAuth, async (req, res, next) => {
+  try {
+    const record = await updateLimitedEditors((records) => {
+      const found = Object.values(records).find((item) =>
+        item.ownerUsername === req.auth.session.username && item.noteId === req.params.id,
+      );
+      return { changed: false, value: found || null };
+    });
+    res.json({ editor: record ? { username: record.username, expiresAt: record.expiresAt, canUseAgent: record.canUseAgent === true } : null });
+  } catch (error) { next(error); }
+});
+
+app.post(
+  "/api/notes/:id/limited-editor",
+  requireAuth,
+  limitedEditorCreateLimiter,
+  requireCsrf,
+  async (req, res, next) => {
+    try {
+      const username = userKey(req.auth.session.username);
+      const guestUsername = userKey(normalizeText(req.body?.username, 24));
+      const password = String(req.body?.password || "");
+      const duration = Number(req.body?.duration);
+      if (!USERNAME_RE.test(guestUsername))
+        return jsonError(res, 400, "invalid_username", "Use 3–24 letters, numbers, or underscores for the temporary editor name.");
+      const passwordError = passwordValidationError(guestUsername, password);
+      if (passwordError) return jsonError(res, 400, passwordError, "Choose a stronger temporary editor password.");
+      if (!LIMITED_EDITOR_DURATIONS.has(duration) || duration > LIMITED_EDITOR_MAX_MS)
+        return jsonError(res, 400, "invalid_duration", "Choose one of the available access periods.");
+      await withLock(`user:${username}`, async () => {
+        const metadata = await loadMetadata(username);
+        if (!metadata) throw Object.assign(new Error("Account not found."), { status: 404 });
+        const access = await refreshPlanState(username, metadata);
+        const ref = metadata.notes.find((item) => item.id === req.params.id && !item.trashedAt);
+        if (!ref) throw Object.assign(new Error("Note not found."), { status: 404 });
+        if (access.lockedIds.has(ref.id)) throw Object.assign(new Error("Upgrade your plan to unlock this note."), { status: 423, code: "note_locked" });
+        const note = await readJson(noteFile(username, ref.id), null);
+        if (!note) throw Object.assign(new Error("Note not found."), { status: 404 });
+        if (await exists(userDir(guestUsername)))
+          throw Object.assign(new Error("Choose a different temporary editor name."), { status: 409, code: "limited_username_taken" });
+        await updateLimitedEditors(async (records, now) => {
+          if (records[guestUsername])
+            throw Object.assign(new Error("Choose a different temporary editor name."), { status: 409, code: "limited_username_taken" });
+          const existing = Object.entries(records).find(([, item]) => item.ownerUsername === username && item.noteId === note.id);
+          if (existing)
+            throw Object.assign(new Error("This note already has an active temporary editor. Revoke it before creating another one."), { status: 409, code: "limited_editor_exists" });
+          records[guestUsername] = {
+            username: guestUsername,
+            passwordHash: await argon2.hash(password, { type: argon2.argon2id, memoryCost: 19456, timeCost: 2, parallelism: 1 }),
+            ownerUsername: username,
+            noteId: note.id,
+            canUseAgent: req.body?.canUseAgent !== false,
+            createdAt: new Date(now).toISOString(),
+            expiresAt: new Date(now + duration).toISOString(),
+            sessionDigest: null,
+            csrf: null,
+            lastSeenAt: null,
+          };
+          return { value: null };
+        });
+      });
+      res.status(201).json({ ok: true, loginUrl: "/limited-edit", expiresAt: new Date(Date.now() + duration).toISOString() });
+    } catch (error) { next(error); }
+  },
+);
+
+app.delete("/api/notes/:id/limited-editor", requireAuth, requireCsrf, async (req, res, next) => {
+  try {
+    const removed = await updateLimitedEditors((records) => {
+      const entry = Object.entries(records).find(([, item]) => item.ownerUsername === req.auth.session.username && item.noteId === req.params.id);
+      if (!entry) return { changed: false, value: false };
+      delete records[entry[0]];
+      return { value: true };
+    });
+    if (!removed) return jsonError(res, 404, "limited_editor_not_found", "No temporary editor is active for this note.");
+    res.json({ ok: true });
+  } catch (error) { next(error); }
+});
+
+app.post("/api/limited/login", limitedEditorLoginLimiter, verifyCaptcha, async (req, res, next) => {
+  try {
+    const username = userKey(normalizeText(req.body?.username, 24));
+    const password = String(req.body?.password || "");
+    const result = await updateLimitedEditors(async (records, now) => {
+      const record = records[username];
+      const verified = await argon2.verify(record?.passwordHash || DUMMY_PASSWORD_HASH, password).catch(() => false);
+      if (!record || !verified) return { changed: false, value: null };
+      const token = crypto.randomBytes(32).toString("base64url");
+      record.sessionDigest = sha256(token);
+      record.csrf = newId(24);
+      record.lastSeenAt = new Date(now).toISOString();
+      return { value: { token, record } };
+    });
+    if (!result) return jsonError(res, 401, "invalid_credentials", "The account name or password is incorrect.");
+    setLimitedEditorCookie(req, res, result.record.username, result.token, result.record.expiresAt);
+    res.json({ ok: true, csrf: result.record.csrf, redirect: "/limited-edit" });
+  } catch (error) { next(error); }
+});
+
+app.get("/api/limited/session", async (req, res, next) => {
+  try {
+    const supplied = parseLimitedEditorCookie(req);
+    if (!supplied) return res.json({ authenticated: false });
+    const record = await updateLimitedEditors((records) => {
+      const current = records[supplied.username];
+      if (!current || !safeEqual(current.sessionDigest || "", sha256(supplied.token))) return { changed: false, value: null };
+      return { changed: false, value: current };
+    });
+    if (!record) { clearLimitedEditorCookie(req, res); return res.json({ authenticated: false }); }
+    res.json({ authenticated: true, username: record.username, csrf: record.csrf, expiresAt: record.expiresAt });
+  } catch (error) { next(error); }
+});
+
+app.post("/api/limited/logout", requireLimitedEditor, requireLimitedCsrf, async (req, res, next) => {
+  try {
+    await updateLimitedEditors((records) => {
+      const record = records[req.limitedEditor.record.username];
+      if (record) { record.sessionDigest = null; record.csrf = null; }
+      return { value: null };
+    });
+    clearLimitedEditorCookie(req, res);
+    res.json({ ok: true, redirect: "/login" });
+  } catch (error) { next(error); }
+});
+
+function limitedNotePayload(note, username) {
+  if (isClientEncryptedMode(note.encryption)) {
+    return {
+      id: note.id, name: readNoteTitle(note, username) || null, encryption: note.encryption,
+      payloadVersion: note.payloadVersion || 1, clientSalt: note.clientSalt, encrypted: note.content,
+      createdAt: note.createdAt, updatedAt: note.updatedAt, revision: note.revision || 0,
+    };
+  }
+  const payload = readServerNotePayload(note, username);
+  return { id: note.id, name: payload.name, content: payload.content, encryption: note.encryption, createdAt: note.createdAt, updatedAt: note.updatedAt, revision: note.revision || 0 };
+}
+app.get("/api/limited/note", requireLimitedEditor, async (req, res, next) => {
+  try {
+    const { record, owner } = req.limitedEditor;
+    const note = await readJson(noteFile(record.ownerUsername, record.noteId), null);
+    if (!note) return jsonError(res, 404, "limited_note_unavailable", "This note is no longer available for limited editing.");
+    const payload = limitedNotePayload(note, record.ownerUsername);
+    // The client-side modes require the original identity for their existing
+    // AAD/client-hash format. This is disclosed only after the owner accepted
+    // the explicit encrypted-editor warning at creation time.
+    if (isClientEncryptedMode(note.encryption)) payload.cryptoOwner = { username: owner.username, email: owner.email };
+    res.json({ note: payload, editor: { username: record.username, expiresAt: record.expiresAt, canUseAgent: record.canUseAgent === true } });
+  } catch (error) { next(error); }
+});
+
+app.post("/api/limited/vault-factor", requireLimitedEditor, limitedEditorMutationLimiter, requireLimitedCsrf, async (req, res, next) => {
+  const { record, owner } = req.limitedEditor;
+  const clientSalt = String(req.body?.clientSalt || "");
+  const clientHash = String(req.body?.clientHash || "").toLowerCase();
+  if (!/^[A-Za-z0-9_-]{43}$/.test(clientSalt) || !/^[a-f0-9]{64}$/.test(clientHash))
+    return jsonError(res, 400, "invalid_vault_request", "Encryption key request is invalid.");
+  try {
+    const note = await readJson(noteFile(record.ownerUsername, record.noteId), null);
+    if (!note || ![ASTRA_SECRET_MODE, CONFIDENTIAL_MODE, LEGACY_CONFIDENTIAL_MODE, LEGACY_SCHYBRID_MODE].includes(note.encryption) || !safeEqual(note.clientSalt || "", clientSalt))
+      return jsonError(res, 404, "limited_note_unavailable", "This note is no longer available for limited editing.");
+    const secretAvailable = note.encryption === LEGACY_SCHYBRID_MODE ? Boolean(vaultSecret) : Boolean(confidentialSecret);
+    if (!secretAvailable) return jsonError(res, 503, "vault_unavailable", "This encryption version is unavailable.");
+    res.json({ serverFactor: deriveVaultFactor(owner, note.id, clientSalt, clientHash, note.encryption) });
+  } catch (error) { next(error); }
+});
+
+app.put("/api/limited/note", requireLimitedEditor, limitedEditorMutationLimiter, requireLimitedCsrf, async (req, res, next) => {
+  try {
+    const { record, owner, access } = req.limitedEditor;
+    await withLock(`user:${record.ownerUsername}`, async () => {
+      const metadata = await loadMetadata(record.ownerUsername);
+      const refreshed = await refreshPlanState(record.ownerUsername, metadata);
+      if (refreshed.lockedIds.has(record.noteId)) throw Object.assign(new Error("This note is no longer available for limited editing."), { status: 423, code: "limited_note_unavailable" });
+      const file = noteFile(record.ownerUsername, record.noteId);
+      const note = await readJson(file, null);
+      if (!note || req.body?.revision !== (note.revision || 0)) throw Object.assign(new Error("This note changed. Reload before saving."), { status: 409, code: "note_conflict" });
+      const originalBytes = (await fsp.stat(file)).size;
+      const snapshot = noteSnapshot(note);
+      const name = normalizeText(req.body?.name, MAX_NOTE_NAME);
+      if (!name) throw Object.assign(new Error("Note name is required."), { status: 400 });
+      if (isClientEncryptedMode(note.encryption)) {
+        if (!validClientEnvelope(req.body?.encrypted, note.encryption)) throw Object.assign(new Error("Encrypted note data is invalid."), { status: 400 });
+        note.name = encryptNoteTitle(name, record.ownerUsername, note.id);
+        note.content = req.body.encrypted;
+        note.payloadVersion = 3;
+      } else {
+        const content = typeof req.body?.content === "string" ? req.body.content.normalize("NFC") : "";
+        if (Buffer.byteLength(content, "utf8") > MAX_NOTE_BYTES) throw Object.assign(new Error("Note is too large."), { status: 413 });
+        writeServerNotePayload(note, record.ownerUsername, name, content);
+      }
+      note.updatedAt = utcNow();
+      if (refreshed.payload.canRecover) note.previous = snapshot;
+      note.revision = (note.revision || 0) + 1;
+      const serialized = JSON.stringify(note, null, 2) + "\n";
+      if ((await noteStorageSize(record.ownerUsername)) - originalBytes + Buffer.byteLength(serialized) > (refreshed.payload.maxBytes ?? Infinity))
+        throw Object.assign(new Error("Saving would exceed the note owner's storage limit."), { status: 413, code: "storage_limit" });
+      await atomicWrite(file, serialized);
+      await saveMetadata(record.ownerUsername, metadata);
+    });
+    res.json({ ok: true });
+  } catch (error) { next(error); }
+});
+
+app.post("/api/limited/note/ai", requireLimitedEditor, limitedEditorMutationLimiter, requireLimitedCsrf, async (req, res, next) => {
+  const prompt = String(req.body?.prompt || "").trim();
+  const title = String(req.body?.title || "");
+  const content = String(req.body?.content || "");
+  if (!prompt || prompt.length > AI_MAX_PROMPT_CHARS)
+    return jsonError(res, 400, "invalid_ai_prompt", "Enter a shorter Astra Agent instruction.");
+  if (Buffer.byteLength(content, "utf8") > AI_MAX_NOTE_BYTES)
+    return jsonError(res, 413, "ai_note_too_large", "Astra Agent can process up to 64 KB of note content at once.");
+  try {
+    const { record } = req.limitedEditor;
+    if (!record.canUseAgent)
+      return jsonError(res, 403, "limited_agent_disabled", "The note owner did not allow Astra Agent for this temporary editor.");
+    const result = await withLock(`user:${record.ownerUsername}`, async () => {
+      const metadata = await loadMetadata(record.ownerUsername);
+      const access = await refreshPlanState(record.ownerUsername, metadata);
+      if (!metadata || access.lockedIds.has(record.noteId))
+        throw Object.assign(new Error("This note is no longer available for limited editing."), { status: 423, code: "limited_note_unavailable" });
+      const ai = normalizeAiUsage(metadata, access.payload.type);
+      if (ai.remainingMicrousd <= 0) {
+        await saveMetadata(record.ownerUsername, metadata);
+        throw Object.assign(new Error("The note owner's Astra Agent allowance will refresh in 30 days."), { status: 429, code: "ai_quota_exhausted" });
+      }
+      let transformed;
+      try { transformed = await openAiTransform({ title, content, prompt, tier: "flex" }); }
+      catch (error) { if (access.payload.type !== "free" && error.retryable) transformed = await openAiTransform({ title, content, prompt, tier: "default" }); else throw error; }
+      const cost = aiCostMicrousd(transformed.usage);
+      if (Number.isFinite(ai.budgetMicrousd) && cost > ai.remainingMicrousd)
+        throw Object.assign(new Error("This request exceeds the note owner's remaining Astra Agent allowance."), { status: 429, code: "ai_quota_exhausted" });
+      metadata.aiUsage.spentMicrousd += cost;
+      await saveMetadata(record.ownerUsername, metadata);
+      return transformed.result;
+    });
+    res.json({ preview: result });
+  } catch (error) { next(error); }
+});
+
 app.post(
   "/api/notes/batch-delete",
   requireAuth,
@@ -4303,9 +4660,9 @@ app.post(
     const submittedTitle = String(req.body.title || "");
     const submittedContent = String(req.body.content || "");
     if (!prompt || prompt.length > AI_MAX_PROMPT_CHARS)
-      return jsonError(res, 400, "invalid_ai_prompt", "Enter a shorter Astra AI instruction.");
+      return jsonError(res, 400, "invalid_ai_prompt", "Enter a shorter Astra Agent instruction.");
     if (Buffer.byteLength(submittedContent, "utf8") > AI_MAX_NOTE_BYTES)
-      return jsonError(res, 413, "ai_note_too_large", "Astra AI can process up to 64 KB of note content at once.");
+      return jsonError(res, 413, "ai_note_too_large", "Astra Agent can process up to 64 KB of note content at once.");
     try {
       const username = req.auth.session.username;
       await withLock(`user:${username}`, async () => {
@@ -4325,11 +4682,11 @@ app.post(
           content = payload.content;
         }
         if (Buffer.byteLength(content, "utf8") > AI_MAX_NOTE_BYTES)
-          return jsonError(res, 413, "ai_note_too_large", "Astra AI can process up to 64 KB of note content at once.");
+          return jsonError(res, 413, "ai_note_too_large", "Astra Agent can process up to 64 KB of note content at once.");
         const ai = normalizeAiUsage(metadata, access.payload.type);
         if (ai.remainingMicrousd <= 0) {
           await saveMetadata(username, metadata);
-          return jsonError(res, 429, "ai_quota_exhausted", "Your Astra AI allowance will refresh in 30 days.");
+          return jsonError(res, 429, "ai_quota_exhausted", "Your Astra Agent allowance will refresh in 30 days.");
         }
         let transformed;
         try {
@@ -4341,7 +4698,7 @@ app.post(
         }
         const cost = aiCostMicrousd(transformed.usage);
         if (Number.isFinite(ai.budgetMicrousd) && cost > ai.remainingMicrousd)
-          return jsonError(res, 429, "ai_quota_exhausted", "This Astra AI request exceeds your remaining allowance.");
+          return jsonError(res, 429, "ai_quota_exhausted", "This Astra Agent request exceeds your remaining allowance.");
         metadata.aiUsage.spentMicrousd += cost;
         await saveMetadata(username, metadata);
         const refreshed = normalizeAiUsage(metadata, access.payload.type);
@@ -4845,6 +5202,7 @@ const pages = {
   "/trash": "trash.html",
   "/settings": "settings.html",
   "/admin": "admin.html",
+  "/limited-edit": "limited-edit.html",
   "/terms": "terms.html",
   "/privacy": "privacy.html",
   "/docs": "docs-article.html",
