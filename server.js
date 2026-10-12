@@ -1843,15 +1843,15 @@ async function requireLimitedEditor(req, res, next) {
     });
     if (!record) {
       clearLimitedEditorCookie(req, res);
-      return jsonError(res, 401, "limited_session_expired", "This limited editing session has expired.");
+      return jsonError(res, 401, "limited_session_expired", "This AstraPass has expired.");
     }
     const owner = await loadMetadata(record.ownerUsername);
     if (!owner || accountIsBanned(owner))
-      return jsonError(res, 403, "limited_access_revoked", "This limited editing access is no longer available.");
+      return jsonError(res, 403, "limited_access_revoked", "This AstraPass is no longer available.");
     const access = await refreshPlanState(record.ownerUsername, owner);
     const ref = owner.notes.find((item) => item.id === record.noteId && !item.trashedAt);
     if (!ref || access.lockedIds.has(record.noteId))
-      return jsonError(res, 423, "limited_note_unavailable", "This note is no longer available for limited editing.");
+      return jsonError(res, 423, "limited_note_unavailable", "This note is no longer available through AstraPass.");
     req.limitedEditor = { token: supplied.token, record, owner, access, ref };
     next();
   } catch (error) {
@@ -4035,9 +4035,9 @@ app.post(
   },
 );
 
-// A limited editor receives a narrow, expiring capability for one note. It is
-// intentionally separate from normal accounts and cannot be used to discover
-// notes, account information, plans, or other signed-in features.
+// AstraPass is a narrow, expiring capability for one note. It is intentionally
+// separate from normal accounts and cannot discover notes, account information,
+// plans, or other signed-in features.
 app.get("/api/notes/:id/limited-editor", requireAuth, async (req, res, next) => {
   try {
     const record = await updateLimitedEditors((records) => {
@@ -4062,9 +4062,9 @@ app.post(
       const password = String(req.body?.password || "");
       const duration = Number(req.body?.duration);
       if (!USERNAME_RE.test(guestUsername))
-        return jsonError(res, 400, "invalid_username", "Use 3–24 letters, numbers, or underscores for the temporary editor name.");
+        return jsonError(res, 400, "invalid_username", "Use 3–24 letters, numbers, or underscores for the AstraPass account name.");
       const passwordError = passwordValidationError(guestUsername, password);
-      if (passwordError) return jsonError(res, 400, passwordError, "Choose a stronger temporary editor password.");
+      if (passwordError) return jsonError(res, 400, passwordError, "Choose a stronger AstraPass password.");
       if (!LIMITED_EDITOR_DURATIONS.has(duration) || duration > LIMITED_EDITOR_MAX_MS)
         return jsonError(res, 400, "invalid_duration", "Choose one of the available access periods.");
       await withLock(`user:${username}`, async () => {
@@ -4077,13 +4077,13 @@ app.post(
         const note = await readJson(noteFile(username, ref.id), null);
         if (!note) throw Object.assign(new Error("Note not found."), { status: 404 });
         if (await exists(userDir(guestUsername)))
-          throw Object.assign(new Error("Choose a different temporary editor name."), { status: 409, code: "limited_username_taken" });
+          throw Object.assign(new Error("Choose a different AstraPass account name."), { status: 409, code: "limited_username_taken" });
         await updateLimitedEditors(async (records, now) => {
           if (records[guestUsername])
-            throw Object.assign(new Error("Choose a different temporary editor name."), { status: 409, code: "limited_username_taken" });
+            throw Object.assign(new Error("Choose a different AstraPass account name."), { status: 409, code: "limited_username_taken" });
           const existing = Object.entries(records).find(([, item]) => item.ownerUsername === username && item.noteId === note.id);
           if (existing)
-            throw Object.assign(new Error("This note already has an active temporary editor. Revoke it before creating another one."), { status: 409, code: "limited_editor_exists" });
+            throw Object.assign(new Error("This note already has an active AstraPass. Disable it before creating another one."), { status: 409, code: "limited_editor_exists" });
           records[guestUsername] = {
             username: guestUsername,
             passwordHash: await argon2.hash(password, { type: argon2.argon2id, memoryCost: 19456, timeCost: 2, parallelism: 1 }),
@@ -4112,7 +4112,7 @@ app.delete("/api/notes/:id/limited-editor", requireAuth, requireCsrf, async (req
       delete records[entry[0]];
       return { value: true };
     });
-    if (!removed) return jsonError(res, 404, "limited_editor_not_found", "No temporary editor is active for this note.");
+    if (!removed) return jsonError(res, 404, "limited_editor_not_found", "No AstraPass is active for this note.");
     res.json({ ok: true });
   } catch (error) { next(error); }
 });
@@ -4178,7 +4178,7 @@ app.get("/api/limited/note", requireLimitedEditor, async (req, res, next) => {
   try {
     const { record, owner } = req.limitedEditor;
     const note = await readJson(noteFile(record.ownerUsername, record.noteId), null);
-    if (!note) return jsonError(res, 404, "limited_note_unavailable", "This note is no longer available for limited editing.");
+    if (!note) return jsonError(res, 404, "limited_note_unavailable", "This note is no longer available through AstraPass.");
     const payload = limitedNotePayload(note, record.ownerUsername);
     // The client-side modes require the original identity for their existing
     // AAD/client-hash format. This is disclosed only after the owner accepted
@@ -4197,7 +4197,7 @@ app.post("/api/limited/vault-factor", requireLimitedEditor, limitedEditorMutatio
   try {
     const note = await readJson(noteFile(record.ownerUsername, record.noteId), null);
     if (!note || ![ASTRA_SECRET_MODE, CONFIDENTIAL_MODE, LEGACY_CONFIDENTIAL_MODE, LEGACY_SCHYBRID_MODE].includes(note.encryption) || !safeEqual(note.clientSalt || "", clientSalt))
-      return jsonError(res, 404, "limited_note_unavailable", "This note is no longer available for limited editing.");
+      return jsonError(res, 404, "limited_note_unavailable", "This note is no longer available through AstraPass.");
     const secretAvailable = note.encryption === LEGACY_SCHYBRID_MODE ? Boolean(vaultSecret) : Boolean(confidentialSecret);
     if (!secretAvailable) return jsonError(res, 503, "vault_unavailable", "This encryption version is unavailable.");
     res.json({ serverFactor: deriveVaultFactor(owner, note.id, clientSalt, clientHash, note.encryption) });
@@ -4210,7 +4210,7 @@ app.put("/api/limited/note", requireLimitedEditor, limitedEditorMutationLimiter,
     await withLock(`user:${record.ownerUsername}`, async () => {
       const metadata = await loadMetadata(record.ownerUsername);
       const refreshed = await refreshPlanState(record.ownerUsername, metadata);
-      if (refreshed.lockedIds.has(record.noteId)) throw Object.assign(new Error("This note is no longer available for limited editing."), { status: 423, code: "limited_note_unavailable" });
+      if (refreshed.lockedIds.has(record.noteId)) throw Object.assign(new Error("This note is no longer available through AstraPass."), { status: 423, code: "limited_note_unavailable" });
       const file = noteFile(record.ownerUsername, record.noteId);
       const note = await readJson(file, null);
       if (!note || req.body?.revision !== (note.revision || 0)) throw Object.assign(new Error("This note changed. Reload before saving."), { status: 409, code: "note_conflict" });
@@ -4252,12 +4252,12 @@ app.post("/api/limited/note/ai", requireLimitedEditor, limitedEditorMutationLimi
   try {
     const { record } = req.limitedEditor;
     if (!record.canUseAgent)
-      return jsonError(res, 403, "limited_agent_disabled", "The note owner did not allow Astra Agent for this temporary editor.");
+      return jsonError(res, 403, "limited_agent_disabled", "The note owner did not allow Astra Agent for this AstraPass.");
     const result = await withLock(`user:${record.ownerUsername}`, async () => {
       const metadata = await loadMetadata(record.ownerUsername);
       const access = await refreshPlanState(record.ownerUsername, metadata);
       if (!metadata || access.lockedIds.has(record.noteId))
-        throw Object.assign(new Error("This note is no longer available for limited editing."), { status: 423, code: "limited_note_unavailable" });
+        throw Object.assign(new Error("This note is no longer available through AstraPass."), { status: 423, code: "limited_note_unavailable" });
       const ai = normalizeAiUsage(metadata, access.payload.type);
       if (ai.remainingMicrousd <= 0) {
         await saveMetadata(record.ownerUsername, metadata);

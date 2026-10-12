@@ -1374,7 +1374,7 @@ test("AstraZero performs real browser-protocol round trips; tampering, wrong PIN
   assert.equal(JSON.stringify(encrypted).includes(payload.content), false);
 });
 
-test("a limited editor is isolated to one note, can save it, and loses access when revoked", async () => {
+test("an AstraPass is isolated to one note, can save it, and loses access when revoked", async () => {
   const owner = await fixture("limited_owner", "free", 1);
   const id = owner.metadata.notes[0].id;
   const created = await request(owner, `/api/notes/${id}/limited-editor`, "POST", {
