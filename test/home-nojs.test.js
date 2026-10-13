@@ -63,6 +63,20 @@ test("home renders every translation, responsive matrix label, and plan without 
   assert.match(renderHomeHtml("ja"), /ノート数無限/u);
 });
 
+test("visible homepage feature explains encrypted titles in every locale", () => {
+  const expected = {
+    en: "Encrypted note titles are also stored with AES-256-GCM protection",
+    "zh-Hant": "加密筆記的標題也會以 AES-256-GCM 加密儲存",
+    ja: "暗号化ノートのタイトルも AES-256-GCM で暗号化して保存",
+  };
+  for (const [locale, text] of Object.entries(expected)) {
+    const html = renderHomeHtml(locale);
+    const feature = html.match(/<p data-i18n="secureBody">([^<]+)<\/p>/u);
+    assert.ok(feature, `${locale}: visible encryption feature exists`);
+    assert.ok(feature[1].includes(text), `${locale}: visible feature explains title encryption`);
+  }
+});
+
 test("the storage illustration states its UTF-8 assumptions and is not a quota guarantee", () => {
   const fs = require("node:fs"), path = require("node:path");
   const bytes = Buffer.byteLength("字".repeat(500), "utf8") * 20;

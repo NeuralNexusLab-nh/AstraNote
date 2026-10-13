@@ -25,7 +25,7 @@
         "Keep short text, reference details, and things you need to remember close by. Search, copy, and use them from any device.",
       secureTitle: "Protect sensitive information",
       secureBody:
-        "Choose AstraSecret, AstraConfidential, or AstraZero when private text deserves additional protection. Your PIN stays with you.",
+        "Choose the right encryption for private content. Encrypted note titles are also stored with AES-256-GCM protection, while remaining visible and searchable after sign-in.",
       limitEyebrow: "BUILT FOR TEXT",
       limitTitle: "128 KB. More room than it sounds.",
       limitBody:
@@ -90,7 +90,7 @@
         "短句、參考資訊與需要記得的內容，集中放在手邊。跨裝置搜尋、複製後就能使用。",
       secureTitle: "私密內容，好好保護",
       secureBody:
-        "私密文字可依敏感程度選擇 AstraSecret、AstraConfidential 或 AstraZero；PIN 由你自己保存。",
+        "選擇適合的加密方式，保護私密內容。加密筆記的標題也會以 AES-256-GCM 加密儲存，登入後仍可查看與搜尋。",
       limitEyebrow: "為純文字而生",
       limitTitle: "128 KB，比你想的還更大。",
       limitBody:
@@ -155,7 +155,7 @@
         "短い文章、参照情報、覚えておきたいことを手元に。端末をまたいで検索し、コピーしてすぐ使えます。",
       secureTitle: "個人的な情報を、きちんと守る",
       secureBody:
-        "内容の機密性に合わせて AstraSecret、AstraConfidential、AstraZero を選べます。PIN は自分で保管します。",
+        "大切な内容には、用途に合った暗号化を。暗号化ノートのタイトルも AES-256-GCM で暗号化して保存され、ログイン後は表示・検索できます。",
       limitEyebrow: "テキストのための設計",
       limitTitle: "128 KB。思ったより、たくさん書ける。",
       limitBody:
