@@ -260,9 +260,9 @@
       },
     }[lang];
     body = body
-      .replaceAll("Ultra can keep one previous version", historyCopy.summary)
-      .replaceAll("Ultra 可保留一個上一版本", historyCopy.summary)
-      .replaceAll("Ultra は直前の版を一つ保存", historyCopy.summary)
+      .replaceAll("Ultra can keep one previous version and move unlocked notes to trash for a chosen period.", `${historyCopy.summary} Unlocked notes can also be moved to trash for a chosen period.`)
+      .replaceAll("Ultra 可保留一個上一版本，並將未鎖定筆記移至垃圾桶一段指定時間。", `${historyCopy.summary}未鎖定筆記也可移至垃圾桶一段指定時間。`)
+      .replaceAll("Ultra は直前の版を一つ残し、ロックされていないノートを指定期間ゴミ箱へ移せます。", `${historyCopy.summary}ロックされていないノートを指定期間ゴミ箱へ移すこともできます。`)
       .replaceAll("One previous version & trash", historyCopy.label)
       .replaceAll("一個上一版本與垃圾桶", historyCopy.label)
       .replaceAll("直前の版一つとゴミ箱", historyCopy.label)
