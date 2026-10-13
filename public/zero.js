@@ -60,15 +60,15 @@
         tagLength: 128,
       },
       "AES-GCM",
-      false,
+      true,
       ["encrypt", "decrypt"],
     );
   }
-  async function encrypt(owner, id, salt, pin, payload, existing = null) {
+  async function encrypt(owner, id, salt, pin, payload, existing = null, suppliedKey = null, onKey = null) {
     let key, wrap;
     if (existing) {
       wrap = existing.wrap;
-      key = await openKey(owner, id, salt, pin, wrap);
+      key = suppliedKey || await openKey(owner, id, salt, pin, wrap);
     } else {
       key = await root.crypto.subtle.generateKey(
         { name: "AES-GCM", length: 256 },
@@ -98,6 +98,7 @@
         enc.encode(JSON.stringify(payload)),
       ),
     );
+    if (onKey) await onKey(key);
     return {
       iv: encode(iv),
       ciphertext: encode(encrypted.slice(0, -16)),
@@ -105,9 +106,9 @@
       wrap,
     };
   }
-  async function decrypt(owner, note, pin) {
+  async function decrypt(owner, note, pin, suppliedKey = null) {
     const envelope = note.encrypted;
-    const key = await openKey(
+    const key = suppliedKey || await openKey(
       owner,
       note.id,
       note.clientSalt,

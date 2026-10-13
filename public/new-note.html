@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/style.css" />
     <script src="/vendor/hash-wasm/argon2.umd.min.js" defer></script>
     <script src="/zero.js" defer></script>
+    <script src="/note-history.js" defer></script>
     <script src="/app.js" defer></script>
   </head>
   <body data-page="new-note">
@@ -26,6 +27,10 @@
             <div class="form-group">
               <label for="name" data-i18n="noteName"></label
               ><input id="name" name="name" maxlength="80" required />
+            </div>
+            <div class="form-group">
+              <label for="new-content" data-i18n="noteContent"></label>
+              <textarea id="new-content" name="content" rows="8" class="note-draft" data-i18n-placeholder="newContentPlaceholder"></textarea>
             </div>
             <div class="form-group">
               <label for="encryption" data-i18n="encryption"></label

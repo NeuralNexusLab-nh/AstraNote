@@ -1486,6 +1486,26 @@ textarea {
   font-size: 13px;
   line-height: 1.65;
 }
+body[data-page="new-note"] .vault-fields {
+  align-items: start;
+  padding: 18px;
+  gap: 0 16px;
+}
+body[data-page="new-note"] .vault-fields .form-group { min-width: 0; margin-bottom: 12px; }
+body[data-page="new-note"] .vault-fields label { display: block; min-height: 1.6em; }
+body[data-page="new-note"] .vault-fields input { width: 100%; text-align: center; letter-spacing: .16em; }
+body[data-page="new-note"] .vault-explanation h3 { margin: 0 0 6px; font-size: 14px; }
+body[data-page="new-note"] .vault-explanation p { margin: 5px 0 0; line-height: 1.6; }
+.note-draft { width: 100%; line-height: 1.75; min-height: 180px; }
+.history-picker { display: grid; gap: 8px; min-width: 0; margin: 18px 0; }
+.history-picker select { min-width: 0; max-width: 100%; text-overflow: ellipsis; }
+#history-settings { min-width: 0; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
+#history-settings .field-help { line-height: 1.65; }
+@media (max-width: 480px) {
+  body[data-page="new-note"] .vault-fields { padding: 14px; grid-template-columns: minmax(0, 1fr); }
+  body[data-page="new-note"] .vault-fields .form-group { margin-bottom: 14px; }
+  .note-draft { min-height: 160px; }
+}
 .vault-explanation h3,
 .vault-explanation p:last-child {
   display: flex;
@@ -1853,7 +1873,7 @@ body.has-email-verification-banner .page { padding-top: 186px; }
 .note-actions {
   display: flex;
   gap: 8px;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   justify-content: flex-end;
 }
 .shared-note-actions {
@@ -1901,6 +1921,7 @@ body[data-page="note"] .note-actions .share-toggle > i { font-size: .92em; }
 .astra-ai-warning { margin: 0; color: var(--danger); font-weight: 700; line-height: 1.55; }
 .note-controls {
   width: min(620px, 100%);
+  min-width: 0;
   display: grid;
   justify-items: end;
   gap: 12px;
@@ -1984,6 +2005,8 @@ body[data-page="note"] .note-actions .share-toggle > i { font-size: .92em; }
 /* Limited editing belongs to the same restrained note surface: it is a
    capability, not a second dashboard or a guest version of the product. */
 .limited-shell { max-width: 900px; }
+#limited-login-card h1 { font-size: clamp(24px, 4vw, 38px); line-height: 1.2; text-wrap: balance; }
+.previous-panel, #trash-settings { scroll-margin-top: 110px; }
 .limited-nav { justify-content: space-between; }
 .limited-nav-label { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: .88rem; }
 .limited-note-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
@@ -4474,4 +4497,20 @@ body[data-page="home"] .zero-feature-list {
     padding: 10px 12px;
     font-size: 13px;
   }
+}
+
+/* Keep the expanded note toolbar balanced at tablet and phone widths. */
+@media (max-width: 1100px) {
+  body[data-page="note"] .page-head { flex-wrap: wrap; }
+  body[data-page="note"] .note-controls { width: 100%; justify-items: stretch; }
+  body[data-page="note"] .note-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; gap: 8px; }
+  body[data-page="note"] .note-actions .btn,
+  body[data-page="note"] .note-actions .share-toggle { min-width: 0; min-height: 44px; justify-content: center; }
+  body[data-page="note"] .note-actions #astra-ai { grid-column: span 2; }
+  body[data-page="note"] .note-actions:not(:has(.share-toggle[hidden])) #astra-ai { grid-column: auto; }
+}
+@media (max-width: 480px) {
+  body[data-page="note"] .note-actions { grid-template-columns: repeat(3, minmax(44px, 1fr)); }
+  body[data-page="note"] .note-actions .share-toggle { order: -1; grid-column: 1 / -1; justify-content: space-between; }
+  body[data-page="note"] .note-actions:not(:has(.share-toggle[hidden])) #astra-ai { grid-column: span 2; }
 }

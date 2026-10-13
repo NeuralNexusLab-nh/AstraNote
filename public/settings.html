@@ -152,8 +152,17 @@
               </select>
             </div>
             <p class="field-help" data-i18n="trashSettingsHelp"></p>
-            <p class="field-help" data-i18n="previousHelp"></p>
             <button class="btn btn-primary settings-section-save" type="submit" data-settings-save="trashDays" hidden><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span data-i18n="saveSettings"></span></button>
+            <div class="history-settings" id="history-settings">
+            <div class="form-group">
+              <label for="history-count" data-i18n="historyCount"></label>
+              <select id="history-count" name="historyCount">
+                <option value="0">0</option><option value="1">1</option><option value="3">3</option><option value="5">5</option><option value="10">10</option><option value="20">20</option>
+              </select>
+            </div>
+            <p class="field-help" data-i18n="historySettingsHelp"></p>
+            <button class="btn btn-primary settings-section-save" type="submit" data-settings-save="historyCount" hidden><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span data-i18n="saveSettings"></span></button>
+            </div>
           </section>
           <section class="card reveal signed-in-devices" aria-labelledby="signed-in-devices-title">
             <h2 class="feature-heading" id="signed-in-devices-title">

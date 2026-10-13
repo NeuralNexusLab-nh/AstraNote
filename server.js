@@ -9,6 +9,7 @@ const net = require("node:net");
 const fs = require("node:fs");
 const fsp = require("node:fs/promises");
 const path = require("node:path");
+const NoteHistory = require("./public/note-history");
 const {
   OrderStore,
   ORDER_RETENTION_MS,
@@ -67,6 +68,7 @@ const LIMITED_EDITOR_DURATIONS = new Set([
 ]);
 const TERMS_VERSION = "2026-09-05";
 const TRASH_DAYS = Object.freeze([1, 3, 7, 14, 30]);
+const HISTORY_COUNTS = Object.freeze([0, 1, 3, 5, 10, 20]);
 const ADMIN_EMAIL = "neuralnexuslab@hotmail.com";
 const SUPPORT_EMAIL = "astranote@nxlabtw.com";
 const EMAIL_FROM = "AstraNote <no-reply@mail.nxlabtw.com>";
@@ -795,6 +797,7 @@ async function removeNoteFiles(username, metadata, ids) {
 
 async function refreshPlanState(username, metadata, now = Date.now()) {
   normalizeEntitlements(metadata, now);
+  normalizeHistorySettings(metadata);
   const expiredTrash = new Set(
     metadata.notes
       .filter((ref) => ref.trashedAt && now >= Date.parse(ref.trashExpiresAt))
@@ -1054,21 +1057,26 @@ async function migrateLegacyEncryptedNotes() {
     for (const reference of metadata.notes) {
       const file = noteFile(entry.name, reference.id);
       const note = await readJson(file, null);
-      if (
-        !note ||
-        !LEGACY_AES_MODES.has(note.encryption) ||
-        note.payloadVersion !== 2
-      )
-        continue;
+      if (!note || note.encryption === "none") continue;
       try {
-        const payload = readServerNotePayload(note, entry.name);
-        writeServerNotePayload(
-          note,
-          entry.name,
-          payload.name || "Encrypted note",
-          payload.content,
-        );
-        await writeJson(file, note);
+        let changed = false;
+        const migrate = (version) => {
+          if (isEncryptedTitle(version.name)) return;
+          if (isClientEncryptedMode(note.encryption)) {
+            if (typeof version.name !== "string" || !version.name.trim()) return;
+            version.name = encryptNoteTitle(version.name, entry.name, note.id);
+          } else {
+            const payload = readServerNotePayload({ ...note, ...version }, entry.name);
+            const migrated = { ...note, ...version };
+            writeServerNotePayload(migrated, entry.name, payload.name, payload.content);
+            Object.assign(version, noteSnapshot(migrated));
+          }
+          changed = true;
+        };
+        migrate(note);
+        if (note.previous) migrate(note.previous);
+        for (const history of note.history || []) if (history.kind === "snapshot") migrate(history.snapshot);
+        if (changed) await writeJson(file, note);
       } catch (error) {
         console.error(
           `[${utcNow()}] Could not migrate encrypted note ${reference.id}:`,
@@ -1132,6 +1140,70 @@ function noteSnapshot(note) {
     payloadVersion: note.payloadVersion,
     updatedAt: note.updatedAt,
   };
+}
+
+function normalizeHistorySettings(metadata) {
+  metadata.settings ||= {};
+  const enabled = ["ultra", "admin", "beta"].includes(planForMetadata(metadata));
+  if (enabled && metadata.settings.historyEligible !== true)
+    metadata.settings.historyCount = 3;
+  if (!HISTORY_COUNTS.includes(metadata.settings.historyCount))
+    metadata.settings.historyCount = enabled ? 3 : 0;
+  metadata.settings.historyEligible = enabled;
+  return enabled ? metadata.settings.historyCount : 0;
+}
+function noteHistoryEntries(note) {
+  if (Array.isArray(note.history)) return note.history;
+  return note.previous ? [{ id: "legacy", kind: "snapshot", updatedAt: note.previous.updatedAt, snapshot: note.previous }] : [];
+}
+function historySelection(note, value = 1) {
+  const index = Number(value);
+  const entries = noteHistoryEntries(note);
+  if (!Number.isInteger(index) || index < 1 || index > 20 || !entries[index - 1])
+    throw Object.assign(new Error("This saved version is no longer available."), { status: 404, code: "history_unavailable" });
+  return { index, entries: entries.slice(0, index), all: entries };
+}
+function historyContext(note, revision) {
+  return `${note.id}:history:${revision}`;
+}
+function resolveServerHistory(note, username, entries) {
+  let payload = readServerNotePayload(note, username);
+  for (const entry of entries) {
+    if (entry.kind === "snapshot") payload = readServerNotePayload({ ...note, ...entry.snapshot }, username);
+    else {
+      const patch = note.encryption === "none" ? entry.data : JSON.parse(decryptContent(entry.data, username, historyContext(note, entry.revision), note.encryption));
+      payload = NoteHistory.restore(payload, patch);
+    }
+  }
+  return payload;
+}
+function recordNoteHistory(note, before, username, metadata, submittedDelta) {
+  const count = normalizeHistorySettings(metadata);
+  if (!count) { delete note.history; delete note.previous; return; }
+  const revision = (before.revision || 0) + 1;
+  let entry;
+  if (isClientEncryptedMode(note.encryption)) {
+    if (submittedDelta !== undefined) {
+      if (!validClientEnvelope(submittedDelta, note.encryption))
+        throw Object.assign(new Error("Encrypted history is invalid."), { status: 400, code: "invalid_history" });
+      // Bind every delta to its save revision. AstraZero keeps exactly the same
+      // wrapped content key, but uses an independent IV and history-purpose AAD.
+      if (note.encryption === ZERO_MODE && JSON.stringify(submittedDelta.wrap) !== JSON.stringify(note.content.wrap))
+        throw Object.assign(new Error("Encrypted history key does not match."), { status: 400, code: "invalid_history" });
+      entry = { kind: "delta", revision, updatedAt: before.updatedAt, data: submittedDelta };
+    } else {
+      // Older clients remain readable. They cannot compute a plaintext delta;
+      // retain their existing encrypted snapshot rather than lose a version.
+      entry = { kind: "snapshot", updatedAt: before.updatedAt, snapshot: noteSnapshot(before) };
+    }
+  } else {
+    const current = readServerNotePayload(note, username), previous = readServerNotePayload(before, username);
+    if (current.name === previous.name && current.content === previous.content) return;
+    const patch = NoteHistory.reverse(current, previous);
+    entry = { kind: "delta", revision, updatedAt: before.updatedAt, data: note.encryption === "none" ? patch : encryptContent(JSON.stringify(patch), username, historyContext(note, revision), note.encryption) };
+  }
+  note.history = [entry, ...noteHistoryEntries(before)].slice(0, count);
+  delete note.previous;
 }
 
 async function saveMetadataWithinQuota(username, metadata) {
@@ -1655,7 +1727,7 @@ function emailIpForRequest(req, language = "en") {
   return "Tor Network";
 }
 function sessionDevice(req) {
-  if (isTorGatewayRequest(req)) return "Tor Browser";
+  if (isLoopbackRequest(req)) return "Tor Browser";
   const ua = String(req.get("user-agent") || "");
   if (/DuckDuckGo/i.test(ua)) return "DuckDuckGo";
   if (/TorBrowser|Tor Browser/i.test(ua)) return "Tor Browser";
@@ -1674,7 +1746,7 @@ function publicIpForLookup(value) {
   return net.isIP(ip) ? ip : null;
 }
 async function sessionLocation(req) {
-  if (isTorGatewayRequest(req)) return { country: "Dark Web" };
+  if (isLoopbackRequest(req)) return { country: null };
   const ip = publicIpForLookup(requestIp(req));
   if (!ip) return { country: null };
   const controller = new AbortController();
@@ -2406,7 +2478,7 @@ async function noteSummary(username, reference) {
     archived: Boolean(reference.archived),
     trashedAt: reference.trashedAt || null,
     trashExpiresAt: reference.trashExpiresAt || null,
-    hasPrevious: Boolean(note.previous),
+    hasPrevious: noteHistoryEntries(note).length > 0,
   };
 }
 async function accountPayload(username) {
@@ -2433,6 +2505,7 @@ async function accountPayload(username) {
       displayName: metadata.displayName || metadata.username,
       createdAt: metadata.createdAt,
       settings: {
+        historyCount: normalizeHistorySettings(metadata),
         trashDays: TRASH_DAYS.includes(metadata.settings?.trashDays)
           ? metadata.settings.trashDays
           : 7,
@@ -3483,9 +3556,9 @@ app.get("/api/sessions", requireAuth, async (req, res, next) => {
       .map(([id, session]) => ({
         id,
         current: id === currentId,
-        device: session.device || "Browser",
-        ip: session.ip || "Unavailable",
-        location: session.location || { country: null },
+        device: /^(?:127\.0\.0\.1|::1|::ffff:127\.0\.0\.1)$/.test(session.ip || "") ? "Tor Browser" : session.device || "Browser",
+        ip: /^(?:127\.0\.0\.1|::1|::ffff:127\.0\.0\.1)$/.test(session.ip || "") ? "Tor Network" : session.ip || "Unavailable",
+        location: /^(?:127\.0\.0\.1|::1|::ffff:127\.0\.0\.1)$/.test(session.ip || "") ? { country: null } : session.location || { country: null },
         createdAt: session.createdAt,
         lastSeenAt: session.lastSeenAt || session.createdAt,
       }))
@@ -3541,6 +3614,23 @@ app.patch(
         const metadata = await loadMetadata(username);
         metadata.settings ||= { theme: "dark" };
         normalizeEntitlements(metadata);
+        normalizeHistorySettings(metadata);
+        if (req.body.historyCount !== undefined) {
+          if (!HISTORY_COUNTS.includes(req.body.historyCount))
+            throw Object.assign(new Error("Choose an available version count."), { status: 400, code: "invalid_history_count" });
+          if (req.body.historyCount !== 0 && !planPayload(metadata).canRecover)
+            throw Object.assign(new Error("Ultra is required for version history."), { status: 403, code: "history_plan_required" });
+          metadata.settings.historyCount = req.body.historyCount;
+          for (const ref of metadata.notes) {
+            const file = noteFile(username, ref.id), stored = await readJson(file, null);
+            if (!stored) continue;
+            const history = noteHistoryEntries(stored).slice(0, req.body.historyCount);
+            if (history.length) stored.history = history;
+            else delete stored.history;
+            delete stored.previous;
+            await writeJson(file, stored);
+          }
+        }
         if (req.body.trashDays !== undefined) {
           if (!planPayload(metadata).canRecover)
             throw Object.assign(
@@ -4184,7 +4274,7 @@ app.get("/api/limited/note", requireLimitedEditor, async (req, res, next) => {
     // AAD/client-hash format. This is disclosed only after the owner accepted
     // the explicit encrypted-editor warning at creation time.
     if (isClientEncryptedMode(note.encryption)) payload.cryptoOwner = { username: owner.username, email: owner.email };
-    res.json({ note: payload, editor: { username: record.username, expiresAt: record.expiresAt, canUseAgent: record.canUseAgent === true } });
+    res.json({ note: payload, editor: { username: record.username, expiresAt: record.expiresAt, canUseAgent: record.canUseAgent === true, historyCount: normalizeHistorySettings(owner) } });
   } catch (error) { next(error); }
 });
 
@@ -4215,7 +4305,7 @@ app.put("/api/limited/note", requireLimitedEditor, limitedEditorMutationLimiter,
       const note = await readJson(file, null);
       if (!note || req.body?.revision !== (note.revision || 0)) throw Object.assign(new Error("This note changed. Reload before saving."), { status: 409, code: "note_conflict" });
       const originalBytes = (await fsp.stat(file)).size;
-      const snapshot = noteSnapshot(note);
+      const snapshot = { ...note };
       const name = normalizeText(req.body?.name, MAX_NOTE_NAME);
       if (!name) throw Object.assign(new Error("Note name is required."), { status: 400 });
       if (isClientEncryptedMode(note.encryption)) {
@@ -4229,7 +4319,7 @@ app.put("/api/limited/note", requireLimitedEditor, limitedEditorMutationLimiter,
         writeServerNotePayload(note, record.ownerUsername, name, content);
       }
       note.updatedAt = utcNow();
-      if (refreshed.payload.canRecover) note.previous = snapshot;
+      recordNoteHistory(note, snapshot, record.ownerUsername, metadata, req.body?.historyDelta);
       note.revision = (note.revision || 0) + 1;
       const serialized = JSON.stringify(note, null, 2) + "\n";
       if ((await noteStorageSize(record.ownerUsername)) - originalBytes + Buffer.byteLength(serialized) > (refreshed.payload.maxBytes ?? Infinity))
@@ -4505,22 +4595,25 @@ app.get("/api/notes/:id/previous", requireAuth, async (req, res, next) => {
           code: "note_locked",
         });
       const note = await readJson(noteFile(username, ref.id), null);
-      if (!note?.previous)
+      if (!note || !noteHistoryEntries(note).length)
         throw Object.assign(new Error("No previous version."), { status: 404 });
-      const version = { ...note, ...note.previous };
-      const payload = isClientEncryptedMode(note.encryption)
-        ? { encrypted: version.content, clientSalt: version.clientSalt }
-        : readServerNotePayload(version, username);
+      const selected = historySelection(note, req.query.version ?? 1);
+      const entry = selected.entries.at(-1);
+      const client = isClientEncryptedMode(note.encryption);
+      const version = entry.kind === "snapshot" ? { ...note, ...entry.snapshot } : note;
+      const payload = client
+        ? { encrypted: note.content, clientSalt: note.clientSalt, chain: selected.entries.map((item) => item.kind === "snapshot" ? { ...item, snapshot: { ...item.snapshot, name: readNoteTitle({ ...note, ...item.snapshot }, username) } } : item) }
+        : resolveServerHistory(note, username, selected.entries);
       res.json({
         id: note.id,
-        name: isClientEncryptedMode(note.encryption)
-          ? readNoteTitle(version, username)
-          : version.name,
+        name: client ? readNoteTitle(version, username) : payload.name,
         encryption: note.encryption,
         payloadVersion: version.payloadVersion || 1,
         ...payload,
-        updatedAt: version.updatedAt,
+        updatedAt: entry.updatedAt,
         revision: note.revision || 0,
+        version: selected.index,
+        versions: selected.all.map((item, index) => ({ version: index + 1, updatedAt: item.updatedAt })),
       });
     });
   } catch (error) {
@@ -4552,7 +4645,7 @@ app.post(
           });
         const file = noteFile(username, ref.id);
         const note = await readJson(file, null);
-        if (!note?.previous)
+        if (!note || !noteHistoryEntries(note).length)
           throw Object.assign(new Error("No previous version."), {
             status: 404,
           });
@@ -4562,8 +4655,21 @@ app.post(
             { status: 409, code: "note_conflict" },
           );
         const originalBytes = (await fsp.stat(file)).size;
-        Object.assign(note, note.previous);
-        delete note.previous;
+        const selected = historySelection(note, req.body.version ?? 1);
+        const before = { ...note };
+        if (isClientEncryptedMode(note.encryption)) {
+          if (validClientEnvelope(req.body.encrypted, note.encryption) && normalizeText(req.body.name, MAX_NOTE_NAME)) {
+            note.name = encryptNoteTitle(normalizeText(req.body.name, MAX_NOTE_NAME), username, note.id);
+            note.content = req.body.encrypted;
+            note.payloadVersion = 3;
+          } else if (selected.entries.length === 1 && selected.entries[0].kind === "snapshot") {
+            Object.assign(note, selected.entries[0].snapshot);
+          } else throw Object.assign(new Error("Unlock this version before restoring it."), { status: 400, code: "invalid_history" });
+        } else {
+          const payload = resolveServerHistory(note, username, selected.entries);
+          writeServerNotePayload(note, username, payload.name, payload.content);
+        }
+        recordNoteHistory(note, before, username, metadata, req.body.historyDelta);
         note.updatedAt = utcNow();
         note.revision = (note.revision || 0) + 1;
         const serialized = JSON.stringify(note, null, 2) + "\n";
@@ -4623,7 +4729,7 @@ app.get("/api/notes/:id", requireAuth, async (req, res, next) => {
           characters: null,
           bytes: (await fsp.stat(noteFile(username, note.id))).size,
           revision: note.revision || 0,
-          hasPrevious: locked ? false : Boolean(note.previous),
+          hasPrevious: locked ? false : noteHistoryEntries(note).length > 0,
         });
       }
       const payload = readServerNotePayload(note, username);
@@ -4642,7 +4748,7 @@ app.get("/api/notes/:id", requireAuth, async (req, res, next) => {
         characters: characterCount(payload.content),
         bytes: (await fsp.stat(noteFile(username, note.id))).size,
         revision: note.revision || 0,
-        hasPrevious: locked ? false : Boolean(note.previous),
+        hasPrevious: locked ? false : noteHistoryEntries(note).length > 0,
       });
     });
   } catch (error) {
@@ -4815,7 +4921,10 @@ app.post(
           note.content = req.body.encrypted;
           note.payloadVersion = 3;
         } else {
-          writeServerNotePayload(note, username, name, "");
+          const content = typeof req.body.content === "string" ? req.body.content.normalize("NFC") : "";
+          if (Buffer.byteLength(content, "utf8") > MAX_NOTE_BYTES)
+            throw Object.assign(new Error("Note is too large."), { status: 413, code: "storage_limit" });
+          writeServerNotePayload(note, username, name, content);
         }
         await writeJson(noteFile(username, id), note);
         metadata.notes.unshift({ id, path: `notes/${id}.json` });
@@ -4884,7 +4993,7 @@ app.put(
             ),
             { status: 409, code: "note_conflict" },
           );
-        const snapshot = noteSnapshot(note);
+        const snapshot = { ...note };
         const isMigration =
           req.body.migrationOnly === true &&
           isClientEncryptedMode(note.encryption) &&
@@ -4924,7 +5033,7 @@ app.put(
           note.updatedAt = utcNow();
         }
         if (!isMigration) {
-          if (access.payload.canRecover) note.previous = snapshot;
+          recordNoteHistory(note, snapshot, username, metadata, req.body.historyDelta);
           note.revision = (note.revision || 0) + 1;
         }
         const maxBytes = access.payload.maxBytes ?? Infinity;
@@ -5316,6 +5425,7 @@ module.exports = {
     readNoteTitle,
     readServerNotePayload,
     writeServerNotePayload,
+    migrateLegacyEncryptedNotes,
     validSchybridEnvelope,
     deriveVaultFactor,
     isClientEncryptedMode,

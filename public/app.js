@@ -981,18 +981,8 @@ Object.assign(I18N.ja, {
   torSatoraWarning: "Satora は現在通常のウェブでのみ利用できます。続行すると Tor ネットワークを離れます。",
 });
 
-Object.assign(I18N.en, {
-  limitedEdit: "Limited edit", limitedEditEyebrow: "LIMITED EDITING", limitedEditLoginTitle: "Open a shared editing session", limitedEditLoginBody: "Use the temporary account details that were shared with you.", limitedEditRules: "You can edit this one note only. You cannot view other notes, account settings, plans, or the recycle bin.", limitedEditExpires: "Editing access ends {time}.", limitedEditCreate: "Create limited editor", limitedEditCreateBody: "Give one trusted person time-limited access to edit this note. Only one temporary editor can be active at a time.", limitedEditUsername: "Temporary editor name", limitedEditDuration: "Access period", limitedEditAgent: "Allow Astra Agent", limitedEditCreated: "Limited editor created", limitedEditCreatedBody: "Share these sign-in details privately. They cannot view any other part of your account.", limitedEditLoginUrl: "Sign-in page", limitedEditWarningTitle: "Encrypted note: confirm access", limitedEditWarning: "This gives the chosen person the ability to unlock this note when they also know its PIN. Revoking access cannot take back content they have already read, copied, or saved.", limitedEditConfirm: "I understand, create", limitedEditActive: "Temporary editor: {username} · ends {time}", limitedEditRevoke: "Revoke access", limitedEditRevokeTitle: "Revoke limited editing?", limitedEditRevokeBody: "The temporary editor will lose access to this note immediately.", limitedEditRevoked: "Limited editing access revoked.", limitedEditorExists: "This note already has an active temporary editor. Revoke it before creating another one.", limitedUsernameTaken: "Choose a different temporary editor name.", limitedNoteUnavailable: "This note is no longer available for limited editing.", limitedAccessExpired: "This limited editing session has expired.", limitedUnlock: "Enter the note PIN to unlock it", limitedEditSave: "Save this note",
-});
-Object.assign(I18N["zh-Hant"], {
-  limitedEdit: "限時編輯", limitedEditEyebrow: "限時編輯", limitedEditLoginTitle: "開啟限時編輯工作階段", limitedEditLoginBody: "請輸入對方私下提供給你的暫時帳號資料。", limitedEditRules: "你只能編輯這一篇筆記；無法查看其他筆記、帳號設定、方案或垃圾桶。", limitedEditExpires: "編輯權限將於 {time} 結束。", limitedEditCreate: "建立限時編輯者", limitedEditCreateBody: "讓一位受信任的人在指定時間內協助編輯這篇筆記。同一時間只能有一位限時編輯者。", limitedEditUsername: "暫時編輯者名稱", limitedEditDuration: "可使用時間", limitedEditAgent: "允許使用 Astra Agent", limitedEditCreated: "已建立限時編輯者", limitedEditCreatedBody: "請以私密方式分享以下登入資料；對方無法看到你帳戶的其他部分。", limitedEditLoginUrl: "登入頁面", limitedEditWarningTitle: "加密筆記：確認授權", limitedEditWarning: "若對方同時取得正確 PIN，這會交付此筆記的解鎖能力。撤銷權限無法收回對方已經閱讀、複製或保存的內容。", limitedEditConfirm: "我了解，建立", limitedEditActive: "限時編輯者：{username} · 結束於 {time}", limitedEditRevoke: "撤銷權限", limitedEditRevokeTitle: "撤銷限時編輯？", limitedEditRevokeBody: "限時編輯者會立刻失去這篇筆記的存取權。", limitedEditRevoked: "已撤銷限時編輯權限。", limitedEditorExists: "這篇筆記已有啟用中的限時編輯者，請先撤銷。", limitedUsernameTaken: "請換一個暫時編輯者名稱。", limitedNoteUnavailable: "這篇筆記目前無法進行限時編輯。", limitedAccessExpired: "此限時編輯工作階段已到期。", limitedUnlock: "請輸入筆記 PIN 以解鎖", limitedEditSave: "儲存這篇筆記",
-});
-Object.assign(I18N.ja, {
-  limitedEdit: "期限付き編集", limitedEditEyebrow: "期限付き編集", limitedEditLoginTitle: "期限付き編集セッションを開く", limitedEditLoginBody: "共有された一時アカウント情報を入力してください。", limitedEditRules: "このノートだけを編集できます。他のノート、設定、プラン、ゴミ箱は表示できません。", limitedEditExpires: "編集アクセスは {time} に終了します。", limitedEditCreate: "期限付き編集者を作成", limitedEditCreateBody: "信頼できる一人に、このノートだけの編集アクセスを期限付きで渡します。同時に有効にできる編集者は一人です。", limitedEditUsername: "一時編集者名", limitedEditDuration: "アクセス期間", limitedEditAgent: "Astra Agent を許可", limitedEditCreated: "期限付き編集者を作成しました", limitedEditCreatedBody: "以下のサインイン情報は非公開で共有してください。相手はあなたのアカウントの他の部分を見られません。", limitedEditLoginUrl: "サインインページ", limitedEditWarningTitle: "暗号化ノート：アクセスを確認", limitedEditWarning: "相手が正しい PIN も知っている場合、このノートを解除できる権限を渡すことになります。アクセスを取り消しても、既に読まれた・コピーされた・保存された内容は取り消せません。", limitedEditConfirm: "理解して作成", limitedEditActive: "期限付き編集者：{username} · 終了 {time}", limitedEditRevoke: "アクセスを取り消す", limitedEditRevokeTitle: "期限付き編集を取り消しますか？", limitedEditRevokeBody: "この編集者は直ちにこのノートへアクセスできなくなります。", limitedEditRevoked: "期限付き編集アクセスを取り消しました。", limitedEditorExists: "このノートにはすでに有効な期限付き編集者がいます。先に取り消してください。", limitedUsernameTaken: "別の一時編集者名を選んでください。", limitedNoteUnavailable: "このノートは現在、期限付き編集に利用できません。", limitedAccessExpired: "この期限付き編集セッションは終了しました。", limitedUnlock: "ノートを解除するために PIN を入力", limitedEditSave: "このノートを保存",
-});
 
-// Final AstraPass wording override: this block follows legacy locale data so
-// every rendered surface receives the owner-first product language.
+// AstraPass starts with its owner's short-term, cross-device workflow.
 Object.assign(I18N.en, {
   limitedEdit: "AstraPass", limitedEditEyebrow: "ASTRAPASS", limitedEditLoginTitle: "Open your AstraPass", limitedEditLoginBody: "Sign in with the short-term account you created for this one note.", limitedEditRules: "AstraPass opens this note only. It does not expose your other notes, account settings, plans, or recycle bin.", limitedEditExpires: "AstraPass ends {time}.", limitedEditCreate: "Create AstraPass", limitedEditCreateBody: "Create short-term sign-in details for this note. Use them yourself on another device, or share them only with someone you trust. Only one AstraPass can be active at a time.", limitedEditUsername: "AstraPass account name", limitedEditDuration: "Available for", limitedEditAgent: "Allow Astra Agent", limitedEditCreated: "AstraPass created", limitedEditCreatedBody: "Keep these sign-in details private. AstraPass opens only this one note.", limitedEditLoginUrl: "AstraPass sign-in", limitedEditWarningTitle: "Encrypted note: confirm AstraPass", limitedEditWarning: "AstraPass can unlock this note when the person using it also knows the PIN. Only create one if you understand that read, copied, or saved content cannot be taken back.", limitedEditConfirm: "I understand, create", limitedEditActive: "AstraPass: {username} · ends {time}", limitedEditRevoke: "Disable AstraPass", limitedEditRevokeTitle: "Disable AstraPass?", limitedEditRevokeBody: "This AstraPass will immediately lose access to the note.", limitedEditRevoked: "AstraPass disabled.", limitedEditorExists: "This note already has an active AstraPass. Disable it before creating another one.", limitedUsernameTaken: "Choose a different AstraPass account name.", limitedNoteUnavailable: "This note is no longer available through AstraPass.", limitedAccessExpired: "This AstraPass has expired.", limitedEditSave: "Save this note",
 });
@@ -1897,9 +1887,85 @@ Object.assign(I18N["zh-Hant"], {
 Object.assign(I18N.ja, {
   batchAgentEncrypted: "PIN 保護されたノート {count} 件は、この端末で順に解除してから指示欄を表示します。PIN が端末を離れることはありません。",
 });
-Object.assign(I18N.en, { legalUpdated: "Effective and last updated: 27 September 2026", termsUpdated: "Effective and last updated: 27 September 2026" });
-Object.assign(I18N["zh-Hant"], { legalUpdated: "生效及最後更新：2026 年 9 月 27 日", termsUpdated: "生效及最後更新：2026 年 9 月 27 日" });
-Object.assign(I18N.ja, { legalUpdated: "発効・最終更新：2026年9月27日", termsUpdated: "発効・最終更新：2026年9月27日" });
+Object.assign(I18N.en, { legalUpdated: "Effective and last updated: 13 October 2026", termsUpdated: "Effective and last updated: 13 October 2026" });
+Object.assign(I18N["zh-Hant"], { legalUpdated: "生效及最後更新：2026 年 10 月 13 日", termsUpdated: "生效及最後更新：2026 年 10 月 13 日" });
+Object.assign(I18N.ja, { legalUpdated: "発効・最終更新：2026年10月13日", termsUpdated: "発効・最終更新：2026年10月13日" });
+
+Object.assign(I18N.en, {
+  newContentPlaceholder: "Write something here, or leave it blank for later…",
+  pinLabelShort: "PIN",
+  astraAiEncryptedNotice: "For this request, your unlocked title, content and instruction are sent to the AI service. Your PIN and encryption key are never sent to that service.",
+  createPinNumericHint: "Use 4–6 digits. This PIN is separate from your account password.",
+  createPinAsciiHint: "Use 4–16 ASCII letters, numbers or symbols. Case matters.",
+  createPinKeepHint: "Keep your PIN safe; it cannot be recovered.",
+  passHours: "{count} hours", passDays: "{count} days", passOneDay: "1 day", passExpires: "Ends at",
+  unlockSessionHint: "Unlock once to keep using this note in the current tab.",
+  versionHistory: "Version history", historyCount: "Versions to keep per note",
+  historyChoose: "Saved version", historyVersion: "{number} version(s) back",
+  historySettingsHelp: "Ultra keeps 3 versions by default. Choose 0, 1, 3, 5, 10 or 20. Versions use storage; lowering this number permanently removes older versions. Other plans keep 0 new versions.",
+  historyInvalid: "This saved version could not be read. Reload the note and try again.",
+  historyUnlockAgain: "Please reopen and unlock this note before viewing its history.",
+  historyUnavailable: "This saved version is no longer available. Reload the note.",
+  historyPlanRequired: "Ultra is required to keep saved versions.",
+  historyCountInvalid: "Choose 0, 1, 3, 5, 10 or 20 saved versions.",
+  previousVersion: "Version history", previousHelp: "Choose a saved version to preview or restore. Versions and trash use your storage allowance.",
+  restoreVersionBody: "Replace the current title and content with this version? Your history setting determines whether the current version is kept.",
+  versionDiscardNotice: "Saved changes use your selected history limit. Older versions count toward storage.",
+  recoveryBody: "Up to 20 saved versions and a trash bin. Both count toward storage.",
+  recoveryTerms: "Ultra, Admin and Beta can keep 0, 1, 3, 5, 10 or 20 saved versions per note (default 3 on first activation). New versions store reverse text differences, encrypted with the note's content key for client-encrypted notes. Older full snapshots remain compatible. Differences, encryption data and trash count toward storage; small edits usually use less space, but a full rewrite can approach a full copy. Lowering the limit permanently removes older versions. After downgrade, no new versions are kept; editing a note clears its remaining version history. Unexpired trash and existing versions remain available within the current allowance before that edit. Restore replaces the current text and follows the current history setting. These features are not an independent backup. Existing liability provisions and mandatory consumer rights continue to apply.",
+  privacyNotebookData: "Encrypted note titles use separate server-managed AES-256-GCM protection and remain visible to the authenticated owner. Legacy plaintext titles are migrated when readable, including retained snapshots. Content keeps its selected encryption. During an unlocked tab session, that note's derived content key is held in memory and sessionStorage, scoped to the account, sign-in session and note. PINs, passwords and plaintext content are not placed in this cache. Signing out clears it; closing the tab normally ends it, although browsers may restore tab sessions. A compromised device or same-origin script can access unlocked data. Search uses the loaded title list locally. Eligible notes may retain encrypted reverse text differences or legacy snapshots; these count toward storage.",
+  privacyRetention: "Ultra, Admin and Beta can retain up to 20 versions, default 3; settings may disable history. Reducing the count removes older versions permanently. History and trash count toward storage. After downgrade, saving a note clears its remaining history. Trash retains its original deadline (1, 3, 7, 14 or 30 days). Account deletion, permanent deletion and automatic over-limit deletion create no recoverable backup. Locked notes cannot be edited or restored until an adequate upgrade unlocks them.",
+});
+Object.assign(I18N["zh-Hant"], {
+  newContentPlaceholder: "直接寫下內容，也可以稍後再補…",
+  pinLabelShort: "PIN",
+  astraAiEncryptedNotice: "這次處理會把已解鎖的標題、內容與指令傳送至 AI 服務；PIN 與加密金鑰不會傳送給 AI 服務。",
+  createPinNumericHint: "使用 4～6 位數字，與帳號密碼分開設定。",
+  createPinAsciiHint: "使用 4～16 位 ASCII 英文、數字或符號，區分大小寫。",
+  createPinKeepHint: "請妥善保存 PIN，遺失無法找回。",
+  passHours: "{count} 小時", passDays: "{count} 天", passOneDay: "1 天", passExpires: "結束時間",
+  unlockSessionHint: "解鎖一次，即可在目前分頁繼續使用這篇筆記。",
+  versionHistory: "版本紀錄", historyCount: "每篇筆記保留的版本數",
+  historyChoose: "選擇版本", historyVersion: "往前 {number} 個版本",
+  historySettingsHelp: "Ultra 首次啟用預設保留 3 個版本，可選 0、1、3、5、10、20 個。版本會占空間；調低數量會永久移除較舊版本。其他方案不保存新版本。",
+  historyInvalid: "無法讀取這個版本，請重新載入筆記後再試。",
+  historyUnlockAgain: "請重新開啟並解鎖筆記，再查看版本紀錄。",
+  historyUnavailable: "這個版本已不存在，請重新載入筆記。",
+  historyPlanRequired: "需要 Ultra 才能保留版本紀錄。",
+  historyCountInvalid: "請選擇保留 0、1、3、5、10 或 20 個版本。",
+  previousVersion: "版本紀錄", previousHelp: "選擇版本以預覽或還原。版本紀錄與垃圾桶都會占用儲存空間。",
+  restoreVersionBody: "要用此版本取代目前的標題與內容嗎？目前版本是否保留，依你的版本設定決定。",
+  versionDiscardNotice: "儲存時依設定保留版本；版本紀錄會占用儲存空間。",
+  recoveryBody: "最多保留 20 個版本與垃圾桶，復原資料會占空間。",
+  recoveryTerms: "Ultra、Admin 與 Beta 可為每篇筆記保留 0、1、3、5、10 或 20 個版本，首次啟用預設 3 個。新版紀錄儲存解密後的文字差異；客戶端加密筆記以原筆記的內容金鑰加密差異。舊的完整版本仍可讀取。差異、加密資料與垃圾桶都占空間；小幅修改通常較省空間，整篇重寫則可能接近完整副本。調低保留數量會永久移除較舊版本。降級後不再保存新版本；再次編輯筆記會清除該篇剩餘版本紀錄，在編輯前仍可於目前額度內讀取或還原既有版本及未到期垃圾桶。還原依目前設定保留版本。這些功能不構成獨立備份；原有責任約定及法律強制保障仍適用。",
+  privacyNotebookData: "加密筆記的標題以獨立、由伺服器管理的 AES-256-GCM 保護，登入的擁有者仍可辨識與搜尋。可讀取的舊明文標題會自動補加密，包含留存副本；內容維持原加密方式。分頁解鎖期間，該篇衍生出的內容金鑰會暫存在記憶體及 sessionStorage，綁定帳號、登入工作階段與筆記；快取不包含 PIN、密碼或筆記明文。登出會清除，關閉分頁通常結束，但瀏覽器可能還原分頁狀態。遭控制的裝置或同來源程式仍可存取已解鎖資料。搜尋在客戶端的標題清單進行。符合資格的版本紀錄為加密文字差異或舊版副本，並計入空間。",
+  privacyRetention: "Ultra、Admin 與 Beta 最多保留 20 個版本，預設 3 個，可關閉。調低數量會永久移除較舊版本；版本紀錄與垃圾桶都占空間。降級後再次儲存筆記會清除該篇剩餘版本。垃圾桶保留原到期時間，可為 1、3、7、14 或 30 天。刪除帳號、永久刪除與超額自動刪除不建立可復原備份。被鎖定筆記需升級至足夠額度才能編輯或還原。",
+});
+Object.assign(I18N.ja, {
+  newContentPlaceholder: "ここに書き始めるか、あとで入力できます…",
+  pinLabelShort: "PIN",
+  astraAiEncryptedNotice: "この処理では、解除済みのタイトル、内容、指示を AI サービスへ送信します。PIN と暗号鍵は AI サービスに送信しません。",
+  createPinNumericHint: "4～6桁の数字を使います。アカウントのパスワードとは別です。",
+  createPinAsciiHint: "ASCII の英字・数字・記号で4～16文字。大文字と小文字を区別します。",
+  createPinKeepHint: "PIN は復旧できません。安全に保管してください。",
+  passHours: "{count}時間", passDays: "{count}日", passOneDay: "1日", passExpires: "終了日時",
+  unlockSessionHint: "一度解除すると、このタブで引き続きノートを使えます。",
+  versionHistory: "変更履歴", historyCount: "ノートごとに保存する版の数",
+  historyChoose: "保存済みの版", historyVersion: "{number}つ前の版",
+  historySettingsHelp: "Ultra の初回有効化時は3つ。0、1、3、5、10、20から選べます。履歴は容量を使い、数を減らすと古い版は完全に削除されます。他のプランでは新しい履歴を保存しません。",
+  historyInvalid: "この版を読み込めません。ノートを再読み込みしてお試しください。",
+  historyUnlockAgain: "ノートを開き直して解除してから、履歴を確認してください。",
+  historyUnavailable: "この版は利用できなくなりました。ノートを再読み込みしてください。",
+  historyPlanRequired: "変更履歴の保存には Ultra が必要です。",
+  historyCountInvalid: "0、1、3、5、10、20から選択してください。",
+  previousVersion: "変更履歴", previousHelp: "版を選んでプレビューまたは復元できます。履歴とゴミ箱は容量を使います。",
+  restoreVersionBody: "現在のタイトルと内容をこの版に置き換えますか？現在の版を残すかは履歴設定に従います。",
+  versionDiscardNotice: "保存時は設定した数の版を保持します。履歴は容量を使います。",
+  recoveryBody: "最大20の保存済みの版とゴミ箱。復元データも容量に含まれます。",
+  recoveryTerms: "Ultra、Admin、Beta はノートごとに0、1、3、5、10、20の版を保持でき、初回有効化時は3つです。新しい履歴には復号後の文章の差分を保存し、クライアント暗号化ノートでは元の内容鍵で差分も暗号化します。従来の完全なコピーも読めます。履歴、暗号化データ、ゴミ箱は容量を使います。小さな変更は通常省容量ですが、全面的な書き換えは完全なコピーに近づく場合があります。保持数を減らすと古い版は完全に削除されます。ダウングレード後にノートを保存すると、その履歴は削除されます。それまでは現在の容量内で既存の版と期限内のゴミ箱を復元できます。復元は現在の設定に従います。独立したバックアップではなく、既存の責任条項と法定の権利は引き続き適用されます。",
+  privacyNotebookData: "暗号化ノートのタイトルはサーバー管理の独立した AES-256-GCM で保護し、ログインした所有者は表示・検索できます。読める従来の平文タイトルと保持済みコピーは自動で暗号化します。内容の方式は変えません。解除中はノートの内容鍵をメモリーと sessionStorage に一時保存し、アカウント、ログインセッション、ノートに紐付けます。PIN、パスワード、平文内容はこのキャッシュに含めません。ログアウトで削除し、通常はタブを閉じると終了しますが、ブラウザーがタブを復元する場合があります。侵害された端末や同一オリジンのコードは解除済みデータにアクセスできます。検索は端末内のタイトル一覧で行います。対象ノートの暗号化差分または従来のコピーは容量に含まれます。",
+  privacyRetention: "Ultra、Admin、Beta は最大20の版を保持でき、既定は3つ、無効化もできます。数を減らすと古い版は完全に削除されます。履歴とゴミ箱は容量を使います。ダウングレード後の保存でそのノートの履歴は削除されます。ゴミ箱は元の期限（1、3、7、14、30日）を維持します。アカウント削除、永久削除、上限超過による自動削除は復元可能なコピーを作りません。ロック済みノートの編集・復元には十分な容量のプランが必要です。",
+});
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -2211,10 +2277,49 @@ async function deriveConfidentialKey(noteId, clientSalt, pin, mode) {
     hashLength: 32,
     outputType: "binary",
   });
-  return crypto.subtle.importKey("raw", keyBytes, "AES-GCM", false, [
-    "encrypt",
-    "decrypt",
-  ]);
+  try {
+    return await crypto.subtle.importKey("raw", keyBytes, "AES-GCM", true, ["encrypt", "decrypt"]);
+  } finally { keyBytes.fill(0); }
+}
+
+const UNLOCK_CACHE_PREFIX = "astranote_unlock_v1:";
+const unlockedNoteKeys = new Map();
+function unlockCacheId(note) {
+  const owner = note.cryptoOwner?.username || state.account?.username;
+  const scope = note.cryptoOwner ? state.limited?.csrf : state.session?.csrf;
+  return owner && scope ? `${UNLOCK_CACHE_PREFIX}${note.cryptoOwner ? "pass" : "account"}:${owner.toLowerCase()}:${scope}:${note.id}:${note.encryption}:${note.clientSalt}` : null;
+}
+function forgetUnlockedNotes(type = "") {
+  const prefix = UNLOCK_CACHE_PREFIX + (type ? `${type}:` : "");
+  for (const key of unlockedNoteKeys.keys()) if (key.startsWith(prefix)) unlockedNoteKeys.delete(key);
+  try {
+    for (const key of Object.keys(sessionStorage)) if (key.startsWith(prefix)) sessionStorage.removeItem(key);
+  } catch { /* Storage can be disabled by the device. */ }
+}
+async function cachedNoteKey(note) {
+  try {
+    const id = unlockCacheId(note);
+    if (id && unlockedNoteKeys.has(id)) return unlockedNoteKeys.get(id);
+    const raw = id && sessionStorage.getItem(id);
+    if (!raw) return null;
+    const bytes = base64ToBytes(raw);
+    if (bytes.length !== 32) { sessionStorage.removeItem(id); return null; }
+    try { return await crypto.subtle.importKey("raw", bytes, "AES-GCM", false, ["encrypt", "decrypt"]); }
+    finally { bytes.fill(0); }
+  } catch { return null; }
+}
+async function rememberNoteKey(note, key) {
+  try {
+    const id = unlockCacheId(note);
+    if (id) unlockedNoteKeys.set(id, key);
+    if (!id || !key.extractable) return;
+    const bytes = new Uint8Array(await crypto.subtle.exportKey("raw", key));
+    try { sessionStorage.setItem(id, bytesToBase64(bytes)); }
+    finally { bytes.fill(0); }
+  } catch { /* A full/unavailable session store does not prevent editing. */ }
+}
+function forgetNoteKey(note) {
+  try { const id = unlockCacheId(note); if (id) { unlockedNoteKeys.delete(id); sessionStorage.removeItem(id); } } catch {}
 }
 function confidentialAdditionalData(noteId, mode) {
   const contexts = {
@@ -2235,6 +2340,8 @@ async function encryptConfidentialPayload(
   mode,
   existingKey = null,
 ) {
+  const cacheNote = { id: noteId, clientSalt, encryption: mode };
+  const cached = await cachedNoteKey(cacheNote);
   if (mode === ZERO_MODE)
     return AstraZero.encrypt(
       state.account.username,
@@ -2243,9 +2350,11 @@ async function encryptConfidentialPayload(
       pin,
       payload,
       existingKey,
+      cached,
+      (key) => rememberNoteKey(cacheNote, key),
     );
   const key =
-    existingKey || (await deriveConfidentialKey(noteId, clientSalt, pin, mode));
+    existingKey || cached || (await deriveConfidentialKey(noteId, clientSalt, pin, mode));
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const encrypted = new Uint8Array(
     await crypto.subtle.encrypt(
@@ -2261,6 +2370,7 @@ async function encryptConfidentialPayload(
   );
   const tag = encrypted.slice(-16);
   const ciphertext = encrypted.slice(0, -16);
+  await rememberNoteKey(cacheNote, key);
   return {
     iv: bytesToBase64(iv),
     ciphertext: bytesToBase64(ciphertext),
@@ -2269,9 +2379,13 @@ async function encryptConfidentialPayload(
 }
 async function decryptConfidentialPayload(note, pin) {
   try {
-    if (note.encryption === ZERO_MODE)
-      return await AstraZero.decrypt(state.account.username, note, pin);
-    const key = await deriveConfidentialKey(
+    const cached = pin == null ? await cachedNoteKey(note) : null;
+    if (note.encryption === ZERO_MODE) {
+      const result = await AstraZero.decrypt(state.account.username, note, pin, cached);
+      await rememberNoteKey(note, result.key);
+      return result;
+    }
+    const key = cached || await deriveConfidentialKey(
       note.id,
       note.clientSalt,
       pin,
@@ -2305,6 +2419,7 @@ async function decryptConfidentialPayload(note, pin) {
       typeof payload.content !== "string"
     )
       throw new Error("Invalid payload");
+    await rememberNoteKey(note, key);
     return {
       key,
       payload: {
@@ -2316,6 +2431,45 @@ async function decryptConfidentialPayload(note, pin) {
     if (error.status === 429 || error.code === "vault_unavailable") throw error;
     throw new Error(t("vaultUnlockFailed"));
   }
+}
+
+function historyAAD(note, revision) {
+  const owner = note.cryptoOwner?.username || state.account.username;
+  return textEncoder.encode(`AstraNote history v1\0${owner.toLowerCase()}\0${note.id}\0${revision}`);
+}
+async function encryptHistoryDelta(note, previous, current, key) {
+  const patch = AstraHistory.reverse(current, previous);
+  patch.fromDigest = await sha256Hex(JSON.stringify(current));
+  patch.toDigest = await sha256Hex(JSON.stringify(previous));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const bytes = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv, additionalData: historyAAD(note, (note.revision || 0) + 1), tagLength: 128 }, key, textEncoder.encode(JSON.stringify(patch))));
+  return { iv: bytesToBase64(iv), ciphertext: bytesToBase64(bytes.slice(0, -16)), tag: bytesToBase64(bytes.slice(-16)), ...(note.encryption === ZERO_MODE ? { wrap: note.encrypted.wrap } : {}) };
+}
+async function attachClientHistory(note, request, pin = null, suppliedKey = null) {
+  const canRecover = note.cryptoOwner ? state.limited?.historyCount > 0 : state.account?.settings?.historyCount > 0;
+  if (!isClientEncryptedMode(note.encryption) || !canRecover) return;
+  const key = suppliedKey || await cachedNoteKey(note) || (await decryptConfidentialPayload(note, pin)).key;
+  request.historyDelta = await encryptHistoryDelta(note, { name: note.name, content: note.content }, { name: request.name.normalize("NFC").trim(), content: request.clearContent.normalize("NFC") }, key);
+}
+async function decryptHistoryChain(note, response) {
+  let current = { name: note.name, content: note.content };
+  const key = await cachedNoteKey(note);
+  if (!key) throw new Error(t("historyUnlockAgain"));
+  for (const entry of response.chain) {
+    if (entry.kind === "snapshot") {
+      const snapshot = { ...note, ...entry.snapshot, encrypted: entry.snapshot.content, isPrevious: true };
+      current = (await decryptConfidentialPayload(snapshot, null)).payload;
+      continue;
+    }
+    const bytes = base64ToBytes(entry.data.ciphertext), tag = base64ToBytes(entry.data.tag);
+    const combined = new Uint8Array(bytes.length + tag.length); combined.set(bytes); combined.set(tag, bytes.length);
+    const clear = await crypto.subtle.decrypt({ name: "AES-GCM", iv: base64ToBytes(entry.data.iv), additionalData: historyAAD(note, entry.revision), tagLength: 128 }, key, combined);
+    const patch = JSON.parse(textDecoder.decode(clear));
+    if (patch.fromDigest !== await sha256Hex(JSON.stringify(current))) throw new Error(t("historyInvalid"));
+    current = AstraHistory.restore(current, patch);
+    if (patch.toDigest !== await sha256Hex(JSON.stringify(current))) throw new Error(t("historyInvalid"));
+  }
+  return current;
 }
 
 function getStoredPreference(key) {
@@ -2480,6 +2634,10 @@ async function api(url, options = {}) {
       new Error(
         {
           note_conflict: t("noteConflict"),
+          history_unavailable: t("historyUnavailable"),
+          invalid_history: t("historyInvalid"),
+          invalid_history_count: t("historyCountInvalid"),
+          history_plan_required: t("historyPlanRequired"),
           organization_required: t("organizationRequired"),
           storage_limit: t("storageLimit"),
           restore_quota: t("restoreQuota"),
@@ -2808,6 +2966,7 @@ function buildNav() {
           body: {},
         });
         close();
+        forgetUnlockedNotes();
         location.href = result.redirect;
       },
     }),
@@ -3300,7 +3459,16 @@ function otpCode(form) {
   return $$("[data-otp]", form).map((input) => input.value).join("");
 }
 
-function unlockConfidential(note) {
+async function unlockConfidential(note) {
+  if (await cachedNoteKey(note)) {
+    try {
+      const decrypted = await decryptConfidentialPayload(note, null);
+      return { payload: decrypted.payload, pin: null, key: decrypted.key };
+    } catch (error) {
+      forgetNoteKey(note);
+      if (error.status === 429) throw error;
+    }
+  }
   return new Promise((resolve, reject) => {
     const content = document.createElement("div");
     content.className = "vault-unlock";
@@ -3345,16 +3513,7 @@ function unlockConfidential(note) {
         "{name}",
         note.name || t("confidentialNote"),
       ),
-      body:
-        note.encryption === ZERO_MODE
-          ? t("zeroWarning")
-          : note.encryption === ASTRA_SECRET_MODE
-            ? t("astraSecretExplanation")
-            : note.encryption === CONFIDENTIAL_MODE
-              ? t("unlockConfidentialBody")
-              : note.encryption === LEGACY_SCHYBRID_MODE
-                ? t("unlockLegacyVaultBody")
-                : t("unlockVaultBody"),
+      body: t("unlockSessionHint"),
       content,
       confirm: t("unlock"),
       danger: false,
@@ -3393,7 +3552,7 @@ function unlockConfidential(note) {
             );
           }
         }
-        const result = { payload: decrypted.payload, pin: input.value };
+        const result = { payload: decrypted.payload, pin: input.value, key: decrypted.key };
         input.value = "";
         close();
         resolve(result);
@@ -4584,6 +4743,9 @@ function openBatchAstraAgentPreview(items, refresh) {
               item.note.encryption,
               item.note.encryption === ZERO_MODE ? item.note.encrypted : null,
             );
+            request.clearContent = body.value;
+            await attachClientHistory(item.note, request, item.note.agentPin);
+            delete request.clearContent;
             delete request.content;
           }
           await api(`/api/notes/${item.note.id}`, {
@@ -4697,14 +4859,22 @@ async function initTrash() {
     list.innerHTML = `<div class="empty-state"><p>${t("trashEmpty")}</p></div>`;
 }
 
-async function showPrevious(note) {
-  const previous = await api(`/api/notes/${note.id}/previous`);
-  previous.isPrevious = true;
+async function showPrevious(note, version = 1) {
+  const previous = await api(`/api/notes/${note.id}/previous?version=${version}`);
   if (isClientEncryptedMode(previous.encryption)) {
-    const unlocked = await unlockConfidential(previous);
-    previous.name = unlocked.payload.name;
-    previous.content = unlocked.payload.content;
+    const restored = await decryptHistoryChain(note, previous);
+    previous.name = restored.name;
+    previous.content = restored.content;
   }
+  const picker = $("#history-version");
+  picker.replaceChildren(...previous.versions.map((item) => {
+    const option = document.createElement("option");
+    option.value = String(item.version);
+    option.textContent = `${t("historyVersion").replace("{number}", item.version)} · ${formatUtc(item.updatedAt)}`;
+    return option;
+  }));
+  picker.value = String(previous.version);
+  picker.onchange = () => showPrevious(note, Number(picker.value)).catch(showError);
   $("#previous-title").textContent = previous.name;
   $("#previous-time").textContent = formatUtc(previous.updatedAt);
   $("#previous-content").textContent = previous.content;
@@ -4720,9 +4890,17 @@ async function showPrevious(note) {
       body: t("restoreVersionBody"),
       confirm: t("restore"),
       onConfirm: async (close) => {
+        const request = { revision: previous.revision, version: previous.version, name: previous.name, content: previous.content };
+        if (isClientEncryptedMode(note.encryption)) {
+          request.encrypted = await encryptConfidentialPayload(note.id, note.clientSalt, null, { content: previous.content }, note.encryption, note.encryption === ZERO_MODE ? note.encrypted : null);
+          request.clearContent = previous.content;
+          await attachClientHistory(note, request);
+          delete request.clearContent;
+          delete request.content;
+        }
         await api(`/api/notes/${note.id}/previous/restore`, {
           method: "POST",
-          body: { revision: previous.revision },
+          body: request,
         });
         close();
         location.reload();
@@ -4777,11 +4955,7 @@ async function initNewNote() {
       form.vaultPin.pattern = astraSecret ? "[0-9]{4,6}" : "[!-~]{4,16}";
       form.vaultPinConfirmation.pattern = form.vaultPin.pattern;
       const pinLabel = $("label[for='vault-pin']");
-      pinLabel.dataset.i18n = astraSecret
-        ? "astraSecretPin"
-        : zero
-          ? "zeroPin"
-          : "confidentialPin";
+      pinLabel.dataset.i18n = "pinLabelShort";
       pinLabel.textContent = t(pinLabel.dataset.i18n);
       $(".vault-explanation h3 span").removeAttribute("data-i18n");
       $(".vault-explanation h3 span").textContent = astraSecret
@@ -4790,22 +4964,15 @@ async function initNewNote() {
           ? "AstraZero"
           : "AstraConfidential";
       const explanation = $(".vault-explanation p");
-      explanation.dataset.i18n = astraSecret
-        ? "astraSecretExplanation"
-        : zero
-          ? "zeroExplanation"
-          : "vaultExplanation";
+      explanation.dataset.i18n = astraSecret ? "createPinNumericHint" : "createPinAsciiHint";
       explanation.textContent = t(explanation.dataset.i18n);
       const warning = $$(".vault-explanation p")[1];
-      warning.dataset.i18n = astraSecret
-        ? "astraSecretPinWarning"
-        : zero
-          ? "zeroWarning"
-          : "vaultPinWarning";
+      warning.dataset.i18n = "createPinKeepHint";
       warning.textContent = t(warning.dataset.i18n);
     }
   };
   encryption.addEventListener("change", updateEncryptionFields);
+  window.addEventListener("astranote:localechange", updateEncryptionFields);
   updateEncryptionFields();
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -4816,6 +4983,7 @@ async function initNewNote() {
       const mode = encryption.value;
       const body = {
         name: form.name.value,
+        content: form.content.value.normalize("NFC"),
         encryption: mode,
       };
       if ([ASTRA_SECRET_MODE, CONFIDENTIAL_MODE, ZERO_MODE].includes(mode)) {
@@ -4835,9 +5003,10 @@ async function initNewNote() {
           id,
           clientSalt,
           pin,
-          { content: "" },
+          { content: body.content },
           mode,
         );
+        delete body.content;
       }
       const result = await api("/api/notes", {
         method: "POST",
@@ -4845,10 +5014,11 @@ async function initNewNote() {
       });
       form.vaultPin.value = "";
       form.vaultPinConfirmation.value = "";
-      location.href = result.redirect;
+      location.href = `/notes/${result.id}`;
     } catch (error) {
       resetCaptcha();
       message.textContent = error.message;
+      showError(error);
       button.disabled = false;
     }
   });
@@ -4920,7 +5090,8 @@ function openAstraAi(note, unlockedPin = null) {
     pin.dataset.aiPin = "true";
     pin.className = "vault-pin-input";
     pin.setAttribute("data-1p-ignore", "true");
-    content.append(notice, pin);
+    content.append(notice);
+    if (!(state.account && note.content !== undefined)) content.append(pin);
   }
   const warning = document.createElement("p");
   warning.className = "astra-ai-warning";
@@ -5011,6 +5182,9 @@ function openAstraAiPreview(note, result, unlockedPin = null) {
             { content: body.value.normalize("NFC") }, note.encryption,
             note.encryption === ZERO_MODE ? note.encrypted : null,
           );
+          request.clearContent = body.value;
+          await attachClientHistory(note, request, unlockedPin);
+          delete request.clearContent;
           delete request.content;
         }
         const saved = await api(`/api/notes/${note.id}`, { method: "PUT", body: request });
@@ -5025,9 +5199,9 @@ function openAstraAiPreview(note, result, unlockedPin = null) {
 }
 function limitedEditorDurationOptions() {
   return [
-    [3 * 60 * 60_000, "3 hours"], [7 * 60 * 60_000, "7 hours"],
-    [864e5, "1 day"], [3 * 864e5, "3 days"], [7 * 864e5, "7 days"],
-    [14 * 864e5, "14 days"], [30 * 864e5, "30 days"],
+    ...[3, 7].map(count => [count * 60 * 60_000, t("passHours").replace("{count}", count)]),
+    [864e5, t("passOneDay")],
+    ...[3, 7, 14, 30].map(count => [count * 864e5, t("passDays").replace("{count}", count)]),
   ];
 }
 function openLimitedEditor(note) {
@@ -5061,7 +5235,7 @@ function openLimitedEditor(note) {
     makeField(t("limitedEditDuration"), duration), agent,
   );
   const submit = async (close) => {
-    if (!USERNAME_RE.test(username.value.trim())) throw new Error(t("usernameRules"));
+    if (!/^[A-Za-z0-9_]{3,24}$/.test(username.value.trim())) throw new Error(t("usernameRules"));
     if (password.value.length < 8 || password.value.length > 24)
       throw new Error(t("passwordRules"));
     if (password.value.toLowerCase().includes(username.value.trim().toLowerCase()))
@@ -5073,10 +5247,10 @@ function openLimitedEditor(note) {
     close();
     const details = document.createElement("div"); details.className = "limited-editor-credentials";
     const add = (label, value) => { const row = document.createElement("p"); const strong = document.createElement("strong"); strong.textContent = `${label}: `; row.append(strong, document.createTextNode(value)); details.append(row); };
-    add(t("limitedEditUsername"), username.value.trim()); add(t("password"), password.value); add(t("limitedEditLoginUrl"), new URL(result.loginUrl, location.origin).href); add(t("limitedEditExpires"), formatUtc(result.expiresAt));
+    add(t("limitedEditUsername"), username.value.trim()); add(t("password"), password.value); add(t("limitedEditLoginUrl"), new URL(result.loginUrl, location.origin).href); add(t("passExpires"), formatUtc(result.expiresAt));
     modal({ title: t("limitedEditCreated"), body: t("limitedEditCreatedBody"), content: details, confirm: t("understood"), showCancel: false, onConfirm: (done) => { done(); location.reload(); } });
   };
-  const openForm = () => modal({ title: t("limitedEditCreate"), body: t("limitedEditCreateBody"), content, confirm: t("create"), closeOnBackdrop: false, onConfirm: submit });
+  const openForm = () => modal({ title: t("limitedEditCreate"), body: t("limitedEditCreateBody"), content, confirm: t("limitedEditCreate"), closeOnBackdrop: false, onConfirm: submit });
   if (!isClientEncryptedMode(note.encryption)) return openForm();
   modal({ title: t("limitedEditWarningTitle"), body: t("limitedEditWarning"), confirm: t("limitedEditConfirm"), cancel: t("cancel"), danger: true, closeOnBackdrop: false, onConfirm: (close) => { close(); openForm(); } });
 }
@@ -5107,23 +5281,30 @@ async function deriveLimitedVaultKey(note, pin) {
   const clientHash = await sha256Hex([contexts[note.encryption], owner.username.toLowerCase(), owner.email.toLowerCase(), pin, note.id, note.clientSalt].join("\0"));
   const { serverFactor } = await limitedApi("/api/limited/vault-factor", { method: "POST", body: { clientSalt: note.clientSalt, clientHash } });
   const keyBytes = await window.hashwasm.argon2id({ password: `${pin}\0${serverFactor}`, salt: base64ToBytes(note.clientSalt), parallelism: 1, iterations: note.encryption === CONFIDENTIAL_MODE ? 5 : note.encryption === ASTRA_SECRET_MODE ? 3 : note.encryption === LEGACY_CONFIDENTIAL_MODE ? 4 : 3, memorySize: note.encryption === CONFIDENTIAL_MODE ? 98304 : 65536, hashLength: 32, outputType: "binary" });
-  return crypto.subtle.importKey("raw", keyBytes, "AES-GCM", false, ["encrypt", "decrypt"]);
+  try { return await crypto.subtle.importKey("raw", keyBytes, "AES-GCM", true, ["encrypt", "decrypt"]); }
+  finally { keyBytes.fill(0); }
 }
 function limitedAdditionalData(note) {
   const contexts = { [LEGACY_SCHYBRID_MODE]: "AstraConfidential SCHybrid v1", [LEGACY_CONFIDENTIAL_MODE]: "AstraConfidential v2", [ASTRA_SECRET_MODE]: "AstraSecret v1", [CONFIDENTIAL_MODE]: "AstraConfidential v3" };
   return textEncoder.encode(`${contexts[note.encryption]}\0${note.cryptoOwner.username.toLowerCase()}\0${note.id}`);
 }
 async function decryptLimitedNote(note, pin) {
-  if (note.encryption === ZERO_MODE) return AstraZero.decrypt(note.cryptoOwner.username, note, pin);
-  const key = await deriveLimitedVaultKey(note, pin);
+  const cached = pin == null ? await cachedNoteKey(note) : null;
+  if (note.encryption === ZERO_MODE) {
+    const result = await AstraZero.decrypt(note.cryptoOwner.username, note, pin, cached);
+    await rememberNoteKey(note, result.key);
+    return result;
+  }
+  const key = cached || await deriveLimitedVaultKey(note, pin);
   const ciphertext = base64ToBytes(note.encrypted.ciphertext), tag = base64ToBytes(note.encrypted.tag);
   const combined = new Uint8Array(ciphertext.length + tag.length); combined.set(ciphertext); combined.set(tag, ciphertext.length);
   const bytes = await crypto.subtle.decrypt({ name: "AES-GCM", iv: base64ToBytes(note.encrypted.iv), additionalData: limitedAdditionalData(note), tagLength: 128 }, key, combined);
   const payload = JSON.parse(textDecoder.decode(bytes));
+  await rememberNoteKey(note, key);
   return { key, payload: { name: (note.payloadVersion || 1) < 2 ? payload.name : note.name, content: payload.content } };
 }
 async function encryptLimitedNote(note, pin, key, payload) {
-  if (note.encryption === ZERO_MODE) return AstraZero.encrypt(note.cryptoOwner.username, note.id, note.clientSalt, pin, payload, note.encrypted);
+  if (note.encryption === ZERO_MODE) return AstraZero.encrypt(note.cryptoOwner.username, note.id, note.clientSalt, pin, payload, note.encrypted, key);
   const finalKey = key || await deriveLimitedVaultKey(note, pin);
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const combined = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv, additionalData: limitedAdditionalData(note), tagLength: 128 }, finalKey, textEncoder.encode(JSON.stringify(payload))));
@@ -5133,9 +5314,10 @@ async function initLimitedEdit() {
   const limited = await limitedApi("/api/limited/session").catch(() => ({ authenticated: false }));
   state.limited = limited;
   const login = $("#limited-login-card"), card = $("#limited-note-card");
-  const logout = () => limitedApi("/api/limited/logout", { method: "POST", body: {} }).finally(() => location.href = "/login");
+  const logout = () => limitedApi("/api/limited/logout", { method: "POST", body: {} }).finally(() => { forgetUnlockedNotes("pass"); location.href = "/login"; });
   $("#limited-logout").onclick = logout;
   if (!limited.authenticated) {
+    forgetUnlockedNotes("pass");
     $("#limited-login-form").onsubmit = async (event) => {
       event.preventDefault(); const form = event.currentTarget;
       if (!state.captcha) return showError(t("captchaNeeded"));
@@ -5145,9 +5327,17 @@ async function initLimitedEdit() {
   }
   login.hidden = true; card.hidden = false;
   const result = await limitedApi("/api/limited/note"); const note = result.note; let pin = null, key = null;
-  if (isClientEncryptedMode(note.encryption)) {
-    const unlock = document.createElement("input"); unlock.type = "password"; unlock.autocomplete = "off"; unlock.placeholder = t("vaultPin"); unlock.maxLength = 64;
-    await new Promise((resolve, reject) => modal({ title: t("limitedUnlock"), content: unlock, confirm: t("unlock"), closeOnBackdrop: false, onConfirm: async (close) => { if (!validVaultPin(unlock.value, note.encryption, true)) throw new Error(vaultPinError(note.encryption)); try { const decrypted = await decryptLimitedNote(note, unlock.value); note.name = decrypted.payload.name; note.content = decrypted.payload.content; pin = unlock.value; key = decrypted.key; close(); resolve(); } catch { throw new Error(t("vaultUnlockFailed")); } }, onCancel: () => reject(new Error("cancelled")) }));
+  state.limited.historyCount = result.editor.historyCount;
+  if (isClientEncryptedMode(note.encryption) && await cachedNoteKey(note)) {
+    try {
+      const decrypted = await decryptLimitedNote(note, null);
+      note.name = decrypted.payload.name; note.content = decrypted.payload.content; key = decrypted.key;
+    } catch { forgetNoteKey(note); }
+  }
+  if (isClientEncryptedMode(note.encryption) && !key) {
+    const unlock = document.createElement("input"); unlock.type = "text"; unlock.autocomplete = "off"; unlock.placeholder = t("pinLabelShort"); unlock.maxLength = 64;
+    requireManualPinEntry(unlock);
+    await new Promise((resolve, reject) => modal({ title: t("unlockNamedNote").replace("{name}", note.name || t("note")), body: `${t("unlockSessionHint")} ${t("trustedDeviceOnly")}`, content: unlock, confirm: t("unlock"), closeOnBackdrop: false, onConfirm: async (close) => { if (!validVaultPin(unlock.value, note.encryption, true)) throw new Error(vaultPinError(note.encryption)); try { const decrypted = await decryptLimitedNote(note, unlock.value); note.name = decrypted.payload.name; note.content = decrypted.payload.content; pin = unlock.value; key = decrypted.key; close(); resolve(); } catch { throw new Error(t("vaultUnlockFailed")); } }, onCancel: () => reject(new Error("cancelled")) }));
   }
   $("#limited-note-name").textContent = note.name; $("#limited-note-expiry").textContent = t("limitedEditExpires").replace("{time}", formatUtc(result.editor.expiresAt));
   $("#limited-editor-name").value = note.name; $("#limited-editor-content").value = note.content || "";
@@ -5168,7 +5358,23 @@ async function initLimitedEdit() {
       modal({ title: t("astraAiPreview"), body: t("astraAiPreviewBody"), content: preview, confirm: t("saveChanges"), cancel: t("discardResult"), onConfirm: (finish) => { $("#limited-editor-name").value = title.value; $("#limited-editor-content").value = content.value; finish(); } });
     }});
   };
-  $("#limited-note-form").onsubmit = async (event) => { event.preventDefault(); const button = $("button[type='submit']", event.currentTarget); button.disabled = true; try { const request = { name: $("#limited-editor-name").value, content: $("#limited-editor-content").value, revision: note.revision }; if (isClientEncryptedMode(note.encryption)) { request.encrypted = await encryptLimitedNote(note, pin, key, { content: request.content }); delete request.content; } await limitedApi("/api/limited/note", { method: "PUT", body: request }); location.reload(); } catch (error) { showError(error); button.disabled = false; } };
+  $("#limited-note-form").onsubmit = async (event) => {
+    event.preventDefault();
+    const button = $("button[type='submit']", event.currentTarget);
+    button.disabled = true;
+    try {
+      const request = { name: $("#limited-editor-name").value, content: $("#limited-editor-content").value.normalize("NFC"), revision: note.revision };
+      if (isClientEncryptedMode(note.encryption)) {
+        request.encrypted = await encryptLimitedNote(note, pin, key, { content: request.content });
+        request.clearContent = request.content;
+        await attachClientHistory(note, request, pin, key);
+        delete request.clearContent;
+        delete request.content;
+      }
+      await limitedApi("/api/limited/note", { method: "PUT", body: request });
+      location.reload();
+    } catch (error) { showError(error); button.disabled = false; }
+  };
 }
 async function initNote() {
   if (!(await requireAccount())) return;
@@ -5356,6 +5562,9 @@ async function initEditor() {
           note.encryption,
           note.encryption === ZERO_MODE ? note.encrypted : null,
         );
+        body.clearContent = content.value;
+        await attachClientHistory(note, body, vaultPin);
+        delete body.clearContent;
         delete body.content;
       }
       const result = await api(`/api/notes/${note.id}`, {
@@ -5423,8 +5632,11 @@ async function initSettings() {
     ["admin", "beta"].includes(account.plan.type)
       ? t("unlimited")
       : planDaysText(account.plan.ultraDays);
-  $("#trash-settings").hidden = !account.plan.canRecover;
+  $("#trash-settings").hidden = false;
+  form.trashDays.disabled = !account.plan.canRecover;
   form.trashDays.value = account.settings.trashDays;
+  form.historyCount.value = account.settings.historyCount;
+  for (const option of form.historyCount.options) option.disabled = !account.plan.canRecover && option.value !== "0";
   $("#settings-pro-days").textContent =
     ["admin", "beta"].includes(account.plan.type)
       ? t("unlimited")
@@ -5453,7 +5665,7 @@ async function initSettings() {
       icon.setAttribute("aria-hidden", "true");
       device.append(icon, document.createTextNode(` ${session.device || "Browser"}`));
       const address = document.createElement("span");
-      address.textContent = `${session.ip || "Unavailable"} · ${location}`;
+      address.textContent = session.ip === "Tor Network" ? "Tor Network" : `${session.ip || "Unavailable"} · ${location}`;
       const timing = document.createElement("small");
       timing.textContent = `${t("signedInAt")}: ${formatUtc(session.createdAt)} · ${t("lastActive")}: ${formatUtc(session.lastSeenAt)}`;
       details.append(device, address, timing);
@@ -5483,6 +5695,7 @@ async function initSettings() {
     displayName: form.displayName.value,
     loginMethod,
     trashDays: form.trashDays?.value,
+    historyCount: form.historyCount?.value,
   };
   const updateSectionSave = (field) => {
     const button = $(`[data-settings-save="${field}"]`, form);
@@ -5495,7 +5708,7 @@ async function initSettings() {
     const original = initialSettings[field];
     button.hidden = field === "password" ? !current : current === original;
   };
-  ["theme", "language", "displayName", "trashDays"].forEach((field) =>
+  ["theme", "language", "displayName", "trashDays", "historyCount"].forEach((field) =>
     form[field]?.addEventListener("input", () => updateSectionSave(field)),
   );
   loginMethodInputs.forEach((input) => input.addEventListener("change", () => updateSectionSave("loginMethod")));
@@ -5515,6 +5728,7 @@ async function initSettings() {
         : field === "displayName" ? { displayName: form.displayName.value }
         : field === "loginMethod" ? { loginMethod: $('input[name="loginMethod"]:checked', form)?.value }
         : field === "trashDays" ? { trashDays: Number(form.trashDays.value) }
+        : field === "historyCount" ? { historyCount: Number(form.historyCount.value) }
         : { currentPassword: form.currentPassword.value, newPassword: form.newPassword.value, passwordConfirmation: form.passwordConfirmation.value };
       await api("/api/settings", {
         method: "PATCH",
@@ -5546,6 +5760,7 @@ async function initSettings() {
           body: {},
         });
         close();
+        forgetUnlockedNotes();
         location.href = result.redirect;
       },
     });
@@ -6045,6 +6260,7 @@ async function boot() {
       state.theme = state.account.settings.theme || state.theme;
     }
   } else {
+    if (page !== "limited-edit") forgetUnlockedNotes();
     state.language =
       storedLanguage ||
       browserLanguage ||

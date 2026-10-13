@@ -20,7 +20,7 @@ security-sensitive actions.
 - Free (128 KB/20 notes), Plus (256 KB/50 notes), Pro (512 KB/Infinity notes), and Ultra (1024 KB/Infinity notes)
 - Independent Ultra, Pro and Plus balances, consumed in that order; one month is always 30 days
 - Plus/Pro/Ultra note organization: pins, archive and batch actions; title search for every plan
-- Ultra: one previous version and configurable trash retention (default 7 days), both included in storage
+- Ultra: 0/1/3/5/10/20 saved versions (default 3), reverse text differences and configurable trash retention (default 7 days), all included in storage. Client-encrypted history uses the note's content key; legacy full snapshots remain readable.
 - Satora Bitcoin checkout with server-side status verification, validated coupon
   totals, and idempotent fulfilment
 - Compact, indexed SQLite payment records: completed orders retain only the ownership,

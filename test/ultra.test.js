@@ -227,13 +227,43 @@ test("old and new server AES formats preserve an encrypted previous version", as
       200,
     );
     const saved = await read(notePath(user.name, id));
-    assert.equal(typeof saved.previous.content, "object");
+    assert.equal(saved.history[0].kind, "delta");
+    assert.equal(typeof saved.history[0].data, "object");
     assert.equal(JSON.stringify(saved).includes("舊版內容"), false);
     assert.equal(
       (await request(user, "/api/notes/" + id + "/previous")).data.content,
       "舊版內容",
     );
   }
+});
+
+test("startup migration protects readable legacy titles and retained snapshots without changing client ciphertext", async () => {
+  const user = await fixture("legacy_title_migration", "ultra", 3);
+  const [aesId, clientId, noneId] = user.metadata.notes.map(note => note.id);
+  const aes = await read(notePath(user.name, aesId));
+  aes.encryption = "aes-256-gcm-new";
+  aes.name = "Old private title";
+  aes.content = testables.encryptContent("Old text", user.name, aesId, aes.encryption);
+  aes.payloadVersion = 1;
+  aes.previous = testables.noteSnapshot(aes);
+  await write(notePath(user.name, aesId), aes);
+  const client = await read(notePath(user.name, clientId));
+  client.encryption = constants.CONFIDENTIAL_MODE; client.name = "Client private title"; client.content = enc; client.clientSalt = crypto.randomBytes(32).toString("base64url"); client.payloadVersion = 2;
+  client.previous = testables.noteSnapshot(client);
+  await write(notePath(user.name, clientId), client);
+  await testables.migrateLegacyEncryptedNotes();
+  const migratedAes = await read(notePath(user.name, aesId)), migratedClient = await read(notePath(user.name, clientId));
+  assert.equal(typeof migratedAes.name, "object");
+  assert.equal(typeof migratedAes.previous.name, "object");
+  assert.deepEqual(testables.readServerNotePayload(migratedAes, user.name), { name: "Old private title", content: "Old text" });
+  assert.equal(testables.readNoteTitle(migratedClient, user.name), "Client private title");
+  assert.deepEqual(migratedClient.content, client.content);
+  assert.deepEqual(migratedClient.previous.content, client.previous.content);
+  assert.equal(JSON.stringify(migratedClient).includes("Client private title"), false);
+  const first = await fs.readFile(notePath(user.name, clientId), "utf8");
+  await testables.migrateLegacyEncryptedNotes();
+  assert.equal(await fs.readFile(notePath(user.name, clientId), "utf8"), first);
+  assert.equal(typeof (await read(notePath(user.name, noneId))).name, "string");
 });
 
 test("one settings request persists all preferences, validates retention and rejects expired access", async () => {
@@ -526,7 +556,7 @@ test("Zero creation is gated by the backend; existing encrypted notes survive do
   );
 });
 
-test("one previous version, conflict detection, atomic quota rejection and restore", async () => {
+test("multiple reverse versions, conflict detection, atomic quota rejection and restore", async () => {
   const ultra = await fixture("versions_ultra", "ultra", 1),
     id = ultra.metadata.notes[0].id;
   const put = (content, revision) =>
@@ -546,8 +576,9 @@ test("one previous version, conflict detection, atomic quota rejection and resto
   );
   assert.equal((await put("third", 2)).status, 200);
   const current = await read(notePath(ultra.name, id));
-  assert.equal(current.previous.content, "second");
-  assert.equal(current.previous.previous, undefined);
+  assert.equal(current.history.length, 2);
+  assert.equal(current.history[0].kind, "delta");
+  assert.equal((await request(ultra, "/api/notes/" + id + "/previous?version=2")).data.content, "original");
   assert.equal((await put("stale", 1)).status, 409);
   const before = await fs.readFile(notePath(ultra.name, id), "utf8");
   assert.equal((await put("x".repeat(1_024_000), 3)).status, 413);
@@ -568,6 +599,30 @@ test("one previous version, conflict detection, atomic quota rejection and resto
   assert.equal(restored.previous, undefined);
   assert.equal((await put("free edit", 4)).status, 200);
   assert.equal((await read(notePath(ultra.name, id))).previous, undefined);
+});
+
+test("history settings apply to existing accounts, bound retained versions, and enforce plan access", async () => {
+  const user = await fixture("history_count_owner", "ultra", 1);
+  const outsider = await fixture("history_count_other", "ultra");
+  const id = user.metadata.notes[0].id;
+  assert.equal((await request(user, "/api/account")).data.settings.historyCount, 3);
+  for (let i = 1; i <= 5; i++) assert.equal((await request(user, `/api/notes/${id}`, "PUT", { name: "Note", content: "version " + i, revision: i })).status, 200);
+  assert.equal((await read(notePath(user.name, id))).history.length, 3);
+  assert.equal((await request(user, `/api/notes/${id}/previous?version=3`)).data.content, "version 2");
+  assert.equal((await request(outsider, `/api/notes/${id}/previous?version=1`)).status, 404);
+  assert.equal((await request(user, `/api/notes/${id}/previous?version=0`)).status, 404);
+  assert.equal((await request(user, "/api/settings", "PATCH", { historyCount: 5 })).status, 200);
+  assert.equal((await request(user, "/api/account")).data.settings.historyCount, 5);
+  assert.equal((await request(user, "/api/settings", "PATCH", { historyCount: 1 })).status, 200);
+  assert.equal((await read(notePath(user.name, id))).history.length, 1);
+  assert.equal((await request(user, "/api/settings", "PATCH", { historyCount: 0 })).status, 200);
+  assert.equal((await read(notePath(user.name, id))).history, undefined);
+  const free = await fixture("history_free_owner", "free");
+  assert.equal((await request(free, "/api/account")).data.settings.historyCount, 0);
+  assert.equal((await request(free, "/api/settings", "PATCH", { historyCount: 3 })).status, 403);
+  const upgraded = await read(metaPath(free.name)); upgraded.entitlements.ultraMs = 864e5;
+  await write(metaPath(free.name), upgraded);
+  assert.equal((await request(free, "/api/account")).data.settings.historyCount, 3);
 });
 
 test("trash revokes every content path, preserves expiry, supports quota-safe restore and purge", async () => {

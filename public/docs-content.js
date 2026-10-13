@@ -241,6 +241,35 @@
       .replace(/(?<![(（])AstraSecret(?![)）])/gu, protectionNames.secret)
       .replace(/(?<![(（])AstraConfidential(?!\s+SCHybrid|[)）])/gu, protectionNames.confidential)
       .replace(/(?<![(（])AstraZero(?![)）])/gu, protectionNames.zero);
+    const historyCopy = {
+      en: {
+        label: "Up to 20 saved versions & trash",
+        summary: "Ultra keeps 3 saved versions by default, with a choice of 0, 1, 3, 5, 10 or 20.",
+        body: '<h2 id="version-history">Choose how far to go back</h2><div class="docs-diagram"><div><i class="fa-solid fa-pen"></i><strong>Save a change</strong><span>The new text becomes your current note.</span></div><div><i class="fa-solid fa-clock-rotate-left"></i><strong>Keep the difference</strong><span>Only the text needed to return to the older version is added.</span></div><div><i class="fa-solid fa-lock"></i><strong>Keep its encryption</strong><span>Client-encrypted history uses the same note key, with separate authentication for each version.</span></div></div><p>Ultra, Admin and Beta default to 3 versions on first activation. Settings offers 0, 1, 3, 5, 10 or 20; other plans keep 0 new versions. In a note, open Version history, select a timestamp, preview, then restore. Versions and trash use storage. Lowering the setting removes older versions permanently. A small change usually saves space; a full rewrite may approach a full copy. Older full snapshots stay readable.</p><p>After downgrade, existing versions remain available within your current allowance until you edit that note; saving then clears its remaining history. Restoration uses your current history setting. Locked notes cannot be edited or restored until an adequate upgrade unlocks them.</p>',
+        session: '<p class="docs-callout"><i class="fa-solid fa-key" aria-hidden="true"></i>Unlock once per tab. The note key—not your PIN—is temporarily kept in sessionStorage, scoped to your account and sign-in session. Signing out clears it. Closing the tab normally ends it, although a browser may restore tabs. Use a trusted device.</p>',
+      },
+      "zh-Hant": {
+        label: "最多 20 個版本與垃圾桶", summary: "Ultra 預設保留 3 個版本，可選 0、1、3、5、10 或 20 個。",
+        body: '<h2 id="version-history">選擇要保留多少個版本</h2><div class="docs-diagram"><div><i class="fa-solid fa-pen"></i><strong>儲存修改</strong><span>新文字成為目前筆記。</span></div><div><i class="fa-solid fa-clock-rotate-left"></i><strong>保留差異</strong><span>只新增回到舊版本所需的文字。</span></div><div><i class="fa-solid fa-lock"></i><strong>延續加密</strong><span>客戶端加密版本使用同一篇筆記的金鑰，各自驗證完整性。</span></div></div><p>Ultra、Admin 與 Beta 首次啟用預設 3 個版本。在設定可選 0、1、3、5、10 或 20 個；其他方案不保存新版本。開啟筆記的「版本紀錄」，選擇時間、預覽，再還原。版本與垃圾桶都占空間；調低數量會永久移除較舊版本。小幅修改通常更省空間，整篇重寫則可能接近完整副本。舊的完整版本仍可讀取。</p><p>降級後，在目前額度內仍可查看與還原既有版本；再次編輯並儲存該篇筆記會清除剩餘版本。還原依目前設定保留版本。被鎖定筆記需升級至足夠額度，才能編輯或還原。</p>',
+        session: '<p class="docs-callout"><i class="fa-solid fa-key" aria-hidden="true"></i>每個分頁只需解鎖一次。暫存的是筆記金鑰，不是 PIN，並綁定帳號與登入工作階段。登出會清除；關閉分頁通常結束，但瀏覽器可能還原分頁。請使用信任的裝置。</p>',
+      },
+      ja: {
+        label: "最大20の保存済みの版とゴミ箱", summary: "Ultra は既定で3つの版を保持し、0、1、3、5、10、20から選べます。",
+        body: '<h2 id="version-history">残す版の数を選ぶ</h2><div class="docs-diagram"><div><i class="fa-solid fa-pen"></i><strong>変更を保存</strong><span>新しい文章が現在のノートになります。</span></div><div><i class="fa-solid fa-clock-rotate-left"></i><strong>差分を保持</strong><span>古い版へ戻るための文章だけを追加します。</span></div><div><i class="fa-solid fa-lock"></i><strong>暗号化を維持</strong><span>クライアント暗号化では同じノート鍵を使い、版ごとに完全性を検証します。</span></div></div><p>Ultra、Admin、Beta の初回有効化時は3つの版を保持します。設定で0、1、3、5、10、20から選べ、他のプランでは新しい履歴を保存しません。ノートの「変更履歴」で日時を選び、確認して復元します。履歴とゴミ箱は容量を使い、保持数を減らすと古い版は完全に削除されます。小さな変更は通常省容量ですが、全面的な書き換えは完全なコピーに近づく場合があります。従来の完全な版も読めます。</p><p>ダウングレード後も現在の容量内で既存の版を確認・復元できますが、そのノートを編集して保存すると履歴は削除されます。復元は現在の設定に従います。ロック済みノートの編集・復元には十分な容量のプランが必要です。</p>',
+        session: '<p class="docs-callout"><i class="fa-solid fa-key" aria-hidden="true"></i>解除はタブごとに一度だけ。PIN ではなくノート鍵を一時保存し、アカウントとログインセッションに紐付けます。ログアウトで削除され、通常はタブを閉じると終了しますが、ブラウザーが復元する場合があります。信頼できる端末を使ってください。</p>',
+      },
+    }[lang];
+    body = body
+      .replaceAll("Ultra can keep one previous version", historyCopy.summary)
+      .replaceAll("Ultra 可保留一個上一版本", historyCopy.summary)
+      .replaceAll("Ultra は直前の版を一つ保存", historyCopy.summary)
+      .replaceAll("One previous version & trash", historyCopy.label)
+      .replaceAll("一個上一版本與垃圾桶", historyCopy.label)
+      .replaceAll("直前の版一つとゴミ箱", historyCopy.label)
+      .replaceAll("one previous version", historyCopy.label)
+      .replaceAll("一個上一版本", historyCopy.label);
+    if (route === "notes") body += historyCopy.body;
+    if (route === "encryption" || route === "security") body += historyCopy.session;
     const current = sections.findIndex(([key]) => key === route);
     const previous = current <= 0 ? ["home", "fa-book-open"] : sections[current - 1];
     const next = current === sections.length - 1 ? null : sections[Math.max(current + 1, 0)];

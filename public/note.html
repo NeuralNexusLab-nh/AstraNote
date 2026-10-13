@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/style.css" />
     <script src="/vendor/hash-wasm/argon2.umd.min.js" defer></script>
     <script src="/zero.js" defer></script>
+    <script src="/note-history.js" defer></script>
     <script src="/app.js" defer></script>
     <script src="/captcha-loader.js"></script>
   </head>
@@ -136,6 +137,7 @@
               ><span data-i18n="close"></span>
             </button>
           </header>
+          <label class="history-picker" for="history-version"><span data-i18n="historyChoose"></span><select id="history-version"></select></label>
           <h3 id="previous-title"></h3>
           <p class="muted" id="previous-time"></p>
           <p class="field-help" data-i18n="previousHelp"></p>

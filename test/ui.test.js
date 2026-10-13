@@ -24,6 +24,30 @@ function browserContext() {
   vm.runInContext(source.slice(0, source.lastIndexOf("boot().catch")), context);
   return context;
 }
+test("unlocked keys survive a same-session page change without storing PINs and are scoped to the note and sign-in", async () => {
+  const context = browserContext();
+  context.crypto = require("node:crypto").webcrypto;
+  context.btoa = btoa; context.atob = atob;
+  context.sessionStorage = {
+    getItem(key) { return this[key] || null; },
+    setItem(key, value) { this[key] = value; },
+    removeItem(key) { delete this[key]; },
+  };
+  context.testKey = await context.crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
+  vm.runInContext('state.account = { username: "cache_owner" }; state.session = { csrf: "session-one" }; var cacheNote = { id: "123", encryption: "astra-zero-v1", clientSalt: "salt" };', context);
+  await vm.runInContext("rememberNoteKey(cacheNote, testKey)", context);
+  const values = Object.entries(context.sessionStorage).filter(([key]) => key.startsWith("astranote_unlock_v1:"));
+  assert.equal(values.length, 1);
+  assert.equal(Buffer.from(values[0][1], "base64").length, 32);
+  vm.runInContext("unlockedNoteKeys.clear()", context);
+  assert.ok(await vm.runInContext("cachedNoteKey(cacheNote)", context));
+  assert.equal(await vm.runInContext('cachedNoteKey({ ...cacheNote, id: "456" })', context), null);
+  vm.runInContext('state.session.csrf = "session-two"', context);
+  assert.equal(await vm.runInContext("cachedNoteKey(cacheNote)", context), null);
+  vm.runInContext("forgetUnlockedNotes()", context);
+  assert.equal(Object.keys(context.sessionStorage).filter(key => key.startsWith("astranote_unlock_v1:")).length, 0);
+});
+
 test("forgot-password recovery is available before the password sign-in step", () => {
   const login = fs.readFileSync(path.join(__dirname, "../public/login.html"), "utf8");
   const recoveryLink = login.indexOf('href="/reset-password"');
@@ -287,9 +311,9 @@ test("paid plan layout, settings support placement and legal locales are complet
   assert.match(plans, /class="[^"]*plan-card-featured[^"]*"\s+data-plan="pro"/);
   assert.equal((plans.match(/data-i18n="expiryLockNotice"/g) || []).length, 2);
   const settings = read("settings.html");
-  assert.equal((settings.match(/type="submit"/g) || []).length, 6);
+  assert.equal((settings.match(/type="submit"/g) || []).length, 7);
   assert.equal(settings.includes('class="settings-save-bar"'), false);
-  for (const field of ["theme", "language", "displayName", "loginMethod", "password", "trashDays"])
+  for (const field of ["theme", "language", "displayName", "loginMethod", "password", "trashDays", "historyCount"])
     assert.match(settings, new RegExp(`data-settings-save="${field}"`));
   const planCard = settings.slice(
     settings.indexOf("plan-settings-card"),

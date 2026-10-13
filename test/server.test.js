@@ -64,7 +64,7 @@ test("admin announcements include unverified email and honor account, plan, and 
   assert.deepEqual(testables.broadcastRecipients(users, { excludedAccounts: ["missing"] }).unmatched, ["missing"]);
 });
 
-test("only an onion request from the local Tor gateway is labelled as Tor", async () => {
+test("local gateway sessions use Tor labels without a location", async () => {
   const torRequest = {
     ip: "127.0.0.1",
     get(name) {
@@ -77,7 +77,7 @@ test("only an onion request from the local Tor gateway is labelled as Tor", asyn
   };
   assert.equal(testables.isTorGatewayRequest(torRequest), true);
   assert.equal(testables.sessionDevice(torRequest), "Tor Browser");
-  assert.deepEqual(await testables.sessionLocation(torRequest), { country: "Dark Web" });
+  assert.deepEqual(await testables.sessionLocation(torRequest), { country: null });
 
   const ordinaryLoopbackRequest = {
     ...torRequest,
@@ -89,7 +89,8 @@ test("only an onion request from the local Tor gateway is labelled as Tor", asyn
     },
   };
   assert.equal(testables.isTorGatewayRequest(ordinaryLoopbackRequest), false);
-  assert.equal(testables.sessionDevice(ordinaryLoopbackRequest), "Edge");
+  assert.equal(testables.sessionDevice(ordinaryLoopbackRequest), "Tor Browser");
+  assert.equal(testables.sessionDevice({ ...ordinaryLoopbackRequest, ip: "198.51.100.23" }), "Edge");
 });
 
 test("onion-triggered email links and branding remain on the onion service", () => {
