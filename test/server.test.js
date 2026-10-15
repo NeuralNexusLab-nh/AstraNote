@@ -32,7 +32,7 @@ test.before(async () => {
   });
 });
 
-test("Astra AI accepts structured Responses output content", async () => {
+test("Astra Agent accepts structured Responses output content", async () => {
   const originalFetch = global.fetch;
   global.fetch = async () => new Response(JSON.stringify({
     output: [{ type: "message", content: [{ type: "output_text", text: JSON.stringify({

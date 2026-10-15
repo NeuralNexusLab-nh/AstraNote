@@ -5321,6 +5321,8 @@ const pages = {
   "/docs/sharing": "docs-article.html",
   "/docs/security": "docs-article.html",
   "/docs/astra-ai": "docs-article.html",
+  "/docs/astra-agent": "docs-article.html",
+  "/docs/astra-pass": "docs-article.html",
   "/docs/plans": "docs-article.html",
   "/docs/faq": "docs-article.html",
   "/plans": "plans.html",

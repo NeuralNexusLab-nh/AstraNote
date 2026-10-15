@@ -26,6 +26,15 @@
       secureTitle: "Protect sensitive information",
       secureBody:
         "Choose the right encryption for private content. Encrypted note titles are also stored with AES-256-GCM protection, while remaining visible and searchable after sign-in.",
+      homePassTitle: "One note. A temporary sign-in.",
+      homePassBody: "Need this note on another device without opening your main account? Create an AstraPass just for it. Saved edits go straight back to the original note; access ends at expiry.",
+      homePassCreate: "Create a temporary account",
+      homePassCreateHint: "From the note's action bar.",
+      homePassEdit: "Edit the same note",
+      homePassEditHint: "Saved changes update your original.",
+      homePassExpire: "Access ends on time",
+      homePassExpireHint: "Your original note stays with you.",
+      homePassLearn: "How AstraPass works",
       limitEyebrow: "BUILT FOR TEXT",
       limitTitle: "128 KB. More room than it sounds.",
       limitBody:
@@ -91,6 +100,15 @@
       secureTitle: "私密內容，好好保護",
       secureBody:
         "選擇適合的加密方式，保護私密內容。加密筆記的標題也會以 AES-256-GCM 加密儲存，登入後仍可查看與搜尋。",
+      homePassTitle: "只用這一篇，不必登入整個帳號。",
+      homePassBody: "換個裝置，只想編輯這篇筆記？用 AstraPass 為它單獨建立臨時帳號。儲存的修改直接更新原筆記，到期後立即失效。",
+      homePassCreate: "建立臨時帳號",
+      homePassCreateHint: "在這篇筆記的操作列建立。",
+      homePassEdit: "修改同步原筆記",
+      homePassEditHint: "不是副本，不用來回搬內容。",
+      homePassExpire: "到期立即失效",
+      homePassExpireHint: "臨時存取結束，原筆記仍保留。",
+      homePassLearn: "了解 AstraPass",
       limitEyebrow: "為純文字而生",
       limitTitle: "128 KB，比你想的還更大。",
       limitBody:
@@ -156,6 +174,15 @@
       secureTitle: "個人的な情報を、きちんと守る",
       secureBody:
         "大切な内容には、用途に合った暗号化を。暗号化ノートのタイトルも AES-256-GCM で暗号化して保存され、ログイン後は表示・検索できます。",
+      homePassTitle: "一つのノートに、一時ログイン。",
+      homePassBody: "別の端末でこのノートだけ編集したいときは、AstraPass の専用アカウントを。保存した変更は元ノートに反映され、期限になるとアクセスが終了します。",
+      homePassCreate: "一時アカウントを作成",
+      homePassCreateHint: "ノートの操作欄から作成。",
+      homePassEdit: "同じノートを編集",
+      homePassEditHint: "保存した変更は元ノートに反映。",
+      homePassExpire: "期限でアクセス終了",
+      homePassExpireHint: "元のノートはそのまま残ります。",
+      homePassLearn: "AstraPass の使い方",
       limitEyebrow: "テキストのための設計",
       limitTitle: "128 KB。思ったより、たくさん書ける。",
       limitBody:

@@ -3,7 +3,7 @@
 Copyright © 2026 NXLabTW. All Rights Reserved. This is proprietary
 software; see [LICENSE](LICENSE).
 
-> Write it down. Find it whenever you need it.
+> Write it once. Find it fast.
 
 AstraNote is a multilingual, responsive online notebook built with Node.js and
 Express. It provides optional authenticated encryption, a client-side
@@ -17,6 +17,10 @@ security-sensitive actions.
 - Animated, scroll-reactive starfield landing page
 - Dark and light themes synchronized to signed-in accounts
 - Plain-text lined note reader and editor
+- Astra Agent revises titles and content with a preview-first workflow, including
+  selected notes; PIN-protected notes are unlocked before entering an instruction.
+- AstraPass creates one expiring account for one existing note. Saved edits update
+  the original note; expiry immediately ends access without deleting the note.
 - Free (128 KB/20 notes), Plus (256 KB/50 notes), Pro (512 KB/Infinity notes), and Ultra (1024 KB/Infinity notes)
 - Independent Ultra, Pro and Plus balances, consumed in that order; one month is always 30 days
 - Plus/Pro/Ultra note organization: pins, archive and batch actions; title search for every plan
@@ -36,7 +40,7 @@ security-sensitive actions.
 - Billing history verifies recent unresolved invoices and routes payment actions
   through a fresh status check. Failed/expired invoices never offer a payment link;
   failed verification or a provider outage never grants subscription time.
-- No encryption, AES-128-GCM, AES-256-GCM, AstraSecret, AstraConfidential, or client-only AstraZero at note creation
+- No encryption, AES-256-GCM, AstraSecret, AstraConfidential, or client-only AstraZero at note creation; legacy AES-128 notes remain readable
 - New encrypted notes protect both content and titles; title storage uses a separate AES-256-GCM envelope while authenticated owners can still list and search titles
 - Server-enforced overage locks and permanent deletion after 30 continuously locked days
 - Capacity for up to 70,000 registered accounts

@@ -984,13 +984,13 @@ Object.assign(I18N.ja, {
 
 // AstraPass starts with its owner's short-term, cross-device workflow.
 Object.assign(I18N.en, {
-  limitedEdit: "AstraPass", limitedEditEyebrow: "ASTRAPASS", limitedEditLoginTitle: "Open your AstraPass", limitedEditLoginBody: "Sign in with the short-term account you created for this one note.", limitedEditRules: "AstraPass opens this note only. It does not expose your other notes, account settings, plans, or recycle bin.", limitedEditExpires: "AstraPass ends {time}.", limitedEditCreate: "Create AstraPass", limitedEditCreateBody: "Create short-term sign-in details for this note. Use them yourself on another device, or share them only with someone you trust. Only one AstraPass can be active at a time.", limitedEditUsername: "AstraPass account name", limitedEditDuration: "Available for", limitedEditAgent: "Allow Astra Agent", limitedEditCreated: "AstraPass created", limitedEditCreatedBody: "Keep these sign-in details private. AstraPass opens only this one note.", limitedEditLoginUrl: "AstraPass sign-in", limitedEditWarningTitle: "Encrypted note: confirm AstraPass", limitedEditWarning: "AstraPass can unlock this note when the person using it also knows the PIN. Only create one if you understand that read, copied, or saved content cannot be taken back.", limitedEditConfirm: "I understand, create", limitedEditActive: "AstraPass: {username} · ends {time}", limitedEditRevoke: "Disable AstraPass", limitedEditRevokeTitle: "Disable AstraPass?", limitedEditRevokeBody: "This AstraPass will immediately lose access to the note.", limitedEditRevoked: "AstraPass disabled.", limitedEditorExists: "This note already has an active AstraPass. Disable it before creating another one.", limitedUsernameTaken: "Choose a different AstraPass account name.", limitedNoteUnavailable: "This note is no longer available through AstraPass.", limitedAccessExpired: "This AstraPass has expired.", limitedEditSave: "Save this note",
+  limitedEdit: "AstraPass", limitedEditEyebrow: "ASTRAPASS", limitedEditLoginTitle: "Open your AstraPass", limitedEditLoginBody: "Use the temporary credentials for this note. Saved edits update the original; access ends at expiry.", limitedEditRules: "AstraPass opens this note only. It does not expose your other notes, account settings, plans, or recycle bin.", limitedEditExpires: "AstraPass ends {time}.", limitedEditCreate: "Create AstraPass", limitedEditCreateBody: "Create a temporary account just for this note. Saved changes update the original note in your account. The temporary account loses access immediately at expiry.", limitedEditUsername: "AstraPass account name", limitedEditDuration: "Available for", limitedEditAgent: "Allow Astra Agent", limitedEditCreated: "AstraPass created", limitedEditCreatedBody: "Keep these credentials private. Use the sign-in link on another device; saved edits update your original note. Expiry stops access, not the note itself.", limitedEditLoginUrl: "AstraPass sign-in", limitedEditWarningTitle: "Encrypted note: confirm AstraPass", limitedEditWarning: "AstraPass can unlock this note when the person using it also knows the PIN. Only create one if you understand that read, copied, or saved content cannot be taken back.", limitedEditConfirm: "I understand, create", limitedEditActive: "AstraPass: {username} · ends {time}", limitedEditRevoke: "Disable AstraPass", limitedEditRevokeTitle: "Disable AstraPass?", limitedEditRevokeBody: "This AstraPass will immediately lose access to the note.", limitedEditRevoked: "AstraPass disabled.", limitedEditorExists: "This note already has an active AstraPass. Disable it before creating another one.", limitedUsernameTaken: "Choose a different AstraPass account name.", limitedNoteUnavailable: "This note is no longer available through AstraPass.", limitedAccessExpired: "This AstraPass has expired.", limitedEditSave: "Save this note",
 });
 Object.assign(I18N["zh-Hant"], {
-  limitedEdit: "AstraPass", limitedEditEyebrow: "ASTRAPASS", limitedEditLoginTitle: "開啟你的 AstraPass", limitedEditLoginBody: "使用你為這篇筆記建立的短期帳號登入。", limitedEditRules: "AstraPass 只能開啟這篇筆記；不會顯示其他筆記、帳號設定、方案或垃圾桶。", limitedEditExpires: "AstraPass 將於 {time} 結束。", limitedEditCreate: "建立 AstraPass", limitedEditCreateBody: "為這篇筆記建立短期登入資料。你可在其他裝置自行使用，也可只交給你信任的人；同一時間只能啟用一組 AstraPass。", limitedEditUsername: "AstraPass 帳號名稱", limitedEditDuration: "可使用時間", limitedEditAgent: "允許使用 Astra Agent", limitedEditCreated: "AstraPass 已建立", limitedEditCreatedBody: "請妥善保存這組登入資料。AstraPass 只能開啟這一篇筆記。", limitedEditLoginUrl: "AstraPass 登入頁面", limitedEditWarningTitle: "加密筆記：確認 AstraPass", limitedEditWarning: "只要使用 AstraPass 的人同時知道 PIN，就能解鎖這篇筆記。請確認你接受：已被閱讀、複製或保存的內容無法透過停用 AstraPass 收回。", limitedEditConfirm: "我了解，建立", limitedEditActive: "AstraPass：{username} · 結束於 {time}", limitedEditRevoke: "停用 AstraPass", limitedEditRevokeTitle: "停用 AstraPass？", limitedEditRevokeBody: "這組 AstraPass 會立刻失去這篇筆記的存取權。", limitedEditRevoked: "AstraPass 已停用。", limitedEditorExists: "這篇筆記已有啟用中的 AstraPass，請先停用。", limitedUsernameTaken: "請換一個 AstraPass 帳號名稱。", limitedNoteUnavailable: "這篇筆記目前無法透過 AstraPass 開啟。", limitedAccessExpired: "這組 AstraPass 已到期。", limitedEditSave: "儲存這篇筆記",
+  limitedEdit: "AstraPass", limitedEditEyebrow: "ASTRAPASS", limitedEditLoginTitle: "開啟你的 AstraPass", limitedEditLoginBody: "使用這篇筆記專屬的臨時帳密登入。儲存修改會更新原筆記，到期後立即失效。", limitedEditRules: "AstraPass 只能開啟這篇筆記；不會顯示其他筆記、帳號設定、方案或垃圾桶。", limitedEditExpires: "AstraPass 將於 {time} 結束。", limitedEditCreate: "建立 AstraPass", limitedEditCreateBody: "單獨為這篇筆記建立臨時帳號。儲存的修改會直接更新目前帳號的原筆記；到期後，臨時帳號立即失效。", limitedEditUsername: "AstraPass 帳號名稱", limitedEditDuration: "可使用時間", limitedEditAgent: "允許使用 Astra Agent", limitedEditCreated: "AstraPass 已建立", limitedEditCreatedBody: "請妥善保存這組帳密，並在其他裝置開啟登入網址。修改儲存後會更新原筆記；到期只會中止臨時存取，原筆記仍保留。", limitedEditLoginUrl: "AstraPass 登入頁面", limitedEditWarningTitle: "加密筆記：確認 AstraPass", limitedEditWarning: "只要使用 AstraPass 的人同時知道 PIN，就能解鎖這篇筆記。請確認你接受：已被閱讀、複製或保存的內容無法透過停用 AstraPass 收回。", limitedEditConfirm: "我了解，建立", limitedEditActive: "AstraPass：{username} · 結束於 {time}", limitedEditRevoke: "停用 AstraPass", limitedEditRevokeTitle: "停用 AstraPass？", limitedEditRevokeBody: "這組 AstraPass 會立刻失去這篇筆記的存取權。", limitedEditRevoked: "AstraPass 已停用。", limitedEditorExists: "這篇筆記已有啟用中的 AstraPass，請先停用。", limitedUsernameTaken: "請換一個 AstraPass 帳號名稱。", limitedNoteUnavailable: "這篇筆記目前無法透過 AstraPass 開啟。", limitedAccessExpired: "這組 AstraPass 已到期。", limitedEditSave: "儲存這篇筆記",
 });
 Object.assign(I18N.ja, {
-  limitedEdit: "AstraPass", limitedEditEyebrow: "ASTRAPASS", limitedEditLoginTitle: "AstraPass を開く", limitedEditLoginBody: "このノート用に作成した短期間のアカウントでサインインしてください。", limitedEditRules: "AstraPass で開けるのはこのノートだけです。ほかのノート、設定、プラン、ゴミ箱は表示されません。", limitedEditExpires: "AstraPass は {time} に終了します。", limitedEditCreate: "AstraPass を作成", limitedEditCreateBody: "このノート用の短期間のサインイン情報を作成します。別の端末で自分で使うことも、信頼できる人にだけ渡すこともできます。同時に有効にできる AstraPass は一つです。", limitedEditUsername: "AstraPass アカウント名", limitedEditDuration: "利用可能期間", limitedEditAgent: "Astra Agent を許可", limitedEditCreated: "AstraPass を作成しました", limitedEditCreatedBody: "このサインイン情報は安全に保管してください。AstraPass で開けるのはこのノートだけです。", limitedEditLoginUrl: "AstraPass サインインページ", limitedEditWarningTitle: "暗号化ノート：AstraPass を確認", limitedEditWarning: "AstraPass を使う人が PIN も知っている場合、このノートを解除できます。すでに読まれた、コピーされた、保存された内容は、AstraPass を無効にしても取り消せません。", limitedEditConfirm: "理解して作成", limitedEditActive: "AstraPass：{username} · 終了 {time}", limitedEditRevoke: "AstraPass を無効にする", limitedEditRevokeTitle: "AstraPass を無効にしますか？", limitedEditRevokeBody: "この AstraPass は直ちにノートへアクセスできなくなります。", limitedEditRevoked: "AstraPass を無効にしました。", limitedEditorExists: "このノートにはすでに有効な AstraPass があります。先に無効にしてください。", limitedUsernameTaken: "別の AstraPass アカウント名を選んでください。", limitedNoteUnavailable: "このノートは現在 AstraPass で開けません。", limitedAccessExpired: "この AstraPass は終了しました。", limitedEditSave: "このノートを保存",
+  limitedEdit: "AstraPass", limitedEditEyebrow: "ASTRAPASS", limitedEditLoginTitle: "AstraPass を開く", limitedEditLoginBody: "このノート専用の一時アカウントでログイン。保存した変更は元ノートに反映され、期限でアクセスが終了します。", limitedEditRules: "AstraPass で開けるのはこのノートだけです。ほかのノート、設定、プラン、ゴミ箱は表示されません。", limitedEditExpires: "AstraPass は {time} に終了します。", limitedEditCreate: "AstraPass を作成", limitedEditCreateBody: "このノート専用の一時アカウントを作成します。保存した変更は元アカウントの同じノートに反映され、期限になると一時アカウントは直ちに失効します。", limitedEditUsername: "AstraPass アカウント名", limitedEditDuration: "利用可能期間", limitedEditAgent: "Astra Agent を許可", limitedEditCreated: "AstraPass を作成しました", limitedEditCreatedBody: "認証情報を安全に保管し、別の端末でログイン URL を開いてください。保存した変更は元ノートに反映されます。失効しても元ノートは残ります。", limitedEditLoginUrl: "AstraPass サインインページ", limitedEditWarningTitle: "暗号化ノート：AstraPass を確認", limitedEditWarning: "AstraPass を使う人が PIN も知っている場合、このノートを解除できます。すでに読まれた、コピーされた、保存された内容は、AstraPass を無効にしても取り消せません。", limitedEditConfirm: "理解して作成", limitedEditActive: "AstraPass：{username} · 終了 {time}", limitedEditRevoke: "AstraPass を無効にする", limitedEditRevokeTitle: "AstraPass を無効にしますか？", limitedEditRevokeBody: "この AstraPass は直ちにノートへアクセスできなくなります。", limitedEditRevoked: "AstraPass を無効にしました。", limitedEditorExists: "このノートにはすでに有効な AstraPass があります。先に無効にしてください。", limitedUsernameTaken: "別の AstraPass アカウント名を選んでください。", limitedNoteUnavailable: "このノートは現在 AstraPass で開けません。", limitedAccessExpired: "この AstraPass は終了しました。", limitedEditSave: "このノートを保存",
 });
 
 Object.assign(I18N["en"], {
@@ -1807,48 +1807,48 @@ Object.assign(I18N["ja"], {
 });
 
 Object.assign(I18N.en, {
-  astraAi: "Astra AI", aiEveryThirtyDays: "Available every 30 days",
+  astraAi: "Astra Agent", astraAiQuotaLabel: "Astra Agent quota remaining", aiEveryThirtyDays: "Available every 30 days",
   astraAiUnavailable: "Currently unavailable",
-  aiTitle: "Astra AI, on your terms", aiBody: "One instruction, a complete preview, and your final approval turn a note into its next useful version.",
-  astraAiPrompt: "Astra AI instruction", astraAiPromptPlaceholder: "Describe how Astra AI should improve this note…",
-  astraAiBody: "Describe how you want Astra AI to revise this note.", astraAiGenerate: "Generate preview",
-  astraAiPromptRequired: "Enter an instruction for Astra AI.",
-  astraAiWorking: "Request sent. Astra AI is preparing your preview…", astraAiWorkingShort: "Preparing preview…",
+  aiTitle: "Astra Agent, on your terms", aiBody: "One instruction, a complete preview, and your final approval turn a note into its next useful version.",
+  astraAiPrompt: "Astra Agent instruction", astraAiPromptPlaceholder: "Describe how Astra Agent should improve this note…",
+  astraAiBody: "Describe how you want Astra Agent to revise this note.", astraAiGenerate: "Generate preview",
+  astraAiPromptRequired: "Enter an instruction for Astra Agent.",
+  astraAiWorking: "Request sent. Astra Agent is preparing your preview…", astraAiWorkingShort: "Preparing preview…",
   astraAiBusyWarning: "Please keep this window open. Closing it, refreshing, or leaving AstraNote cancels this request and nothing will be saved.",
-  astraAiPreview: "Astra AI preview", astraAiPreviewBody: "Review the suggested title and content before saving.", saveChanges: "Save changes", discardResult: "Discard result",
+  astraAiPreview: "Astra Agent preview", astraAiPreviewBody: "Review the suggested title and content before saving.", saveChanges: "Save changes", discardResult: "Discard result",
   astraAiEncryptedNotice: "Your unlocked title, content and instruction are sent to the AI service for this request. Your PIN and encryption key are not sent or stored.",
-  astraAiAllowance: "Astra AI · every 30 days", astraAiBasic: "Included", astraAiMore: "More available", astraAiMost: "Most available", aiAllowanceFree: "Basic allowance", aiAllowancePlus: "Expanded allowance", aiAllowancePro: "Advanced allowance", aiAllowanceUltra: "Highest allowance", aiPlanFree: "Try Astra AI · basic allowance", aiPlanPlus: "Astra AI · expanded allowance", aiPlanPro: "Astra AI · advanced allowance", aiPlanUltra: "Astra AI · highest allowance",
-  aiPrivacyTitle: "Astra AI and your note", aiPrivacyText: "When you choose Astra AI, the title, content and instruction for that request are sent to OpenAI to create a preview. The API request is configured with store:false; OpenAI processes it under its own applicable terms and privacy practices. Nothing changes until you choose to save it. For a PIN-protected note, its unlocked text is sent for that request; your PIN and encryption key are not sent or stored. Do not use Astra AI for content you do not want processed by that service.",
+  astraAiAllowance: "Astra Agent · every 30 days", astraAiBasic: "Included", astraAiMore: "More available", astraAiMost: "Most available", aiAllowanceFree: "Basic allowance", aiAllowancePlus: "Expanded allowance", aiAllowancePro: "Advanced allowance", aiAllowanceUltra: "Highest allowance", aiPlanFree: "Try Astra Agent · basic allowance", aiPlanPlus: "Astra Agent · expanded allowance", aiPlanPro: "Astra Agent · advanced allowance", aiPlanUltra: "Astra Agent · highest allowance",
+  aiPrivacyTitle: "Astra Agent and your note", aiPrivacyText: "When you choose Astra Agent, the title, content and instruction for that request are sent to OpenAI to create a preview. The API request is configured with store:false; OpenAI processes it under its own applicable terms and privacy practices. Nothing changes until you choose to save it. For a PIN-protected note, its unlocked text is sent for that request; your PIN and encryption key are not sent or stored. Do not use Astra Agent for content you do not want processed by that service.",
   standardEncryptionOption: "Standard encryption (AES-256-GCM)", legacyEncryptionOption: "Legacy encryption (AES-128-GCM)", secretOption: "Secret (AstraSecret)", confidentialOption: "Confidential (AstraConfidential)", zeroOption: "Top Secret (AstraZero)", legacySchybridOption: "Legacy Confidential (AstraConfidential SCHybrid)", astraSecretIncluded: "Secret (AstraSecret) everyday protection", confidentialIncluded: "Confidential (AstraConfidential) advanced protection", zeroIncluded: "Top Secret (AstraZero) · client-generated keys", basicEncryption: "No encryption · Standard encryption (AES-256-GCM)",
 });
 Object.assign(I18N["zh-Hant"], {
-  astraAi: "Astra AI", aiEveryThirtyDays: "每 30 天可用額度",
+  astraAi: "Astra Agent", astraAiQuotaLabel: "Astra Agent 剩餘額度", aiEveryThirtyDays: "每 30 天可用額度",
   astraAiUnavailable: "目前無法使用",
-  aiTitle: "Astra AI，由你掌握", aiBody: "一句指令、完整預覽、由你確認儲存；把筆記更快整理成下一個可用版本。",
-  astraAiPrompt: "Astra AI 指令", astraAiPromptPlaceholder: "說明你希望 Astra AI 如何修改這篇筆記…",
-  astraAiBody: "說明你希望 Astra AI 如何修改這篇筆記。", astraAiGenerate: "產生預覽",
-  astraAiPromptRequired: "請輸入給 Astra AI 的指令。",
-  astraAiWorking: "已送出。Astra AI 正在準備預覽…", astraAiWorkingShort: "正在準備預覽…",
+  aiTitle: "Astra Agent，由你掌握", aiBody: "一句指令、完整預覽、由你確認儲存；把筆記更快整理成下一個可用版本。",
+  astraAiPrompt: "Astra Agent 指令", astraAiPromptPlaceholder: "說明你希望 Astra Agent 如何修改這篇筆記…",
+  astraAiBody: "說明你希望 Astra Agent 如何修改這篇筆記。", astraAiGenerate: "產生預覽",
+  astraAiPromptRequired: "請輸入給 Astra Agent 的指令。",
+  astraAiWorking: "已送出。Astra Agent 正在準備預覽…", astraAiWorkingShort: "正在準備預覽…",
   astraAiBusyWarning: "請保持此視窗開啟。關閉、重新整理或離開 AstraNote 會取消本次處理，結果不會儲存。",
-  astraAiPreview: "Astra AI 預覽", astraAiPreviewBody: "儲存前，請確認建議的新標題與內容。", saveChanges: "儲存變更", discardResult: "捨棄結果",
-  astraAiEncryptedNotice: "為完成本次 Astra AI 修改，已解鎖的筆記標題、內容與指令會傳送至 AI 處理服務。PIN 與加密金鑰不會傳送或儲存。",
-  astraAiAllowance: "Astra AI · 每 30 天", astraAiBasic: "包含", astraAiMore: "更多可用額度", astraAiMost: "最多可用額度", aiAllowanceFree: "基本用量", aiAllowancePlus: "更多用量", aiAllowancePro: "進階用量", aiAllowanceUltra: "最高用量", aiPlanFree: "體驗 Astra AI · 基本用量", aiPlanPlus: "Astra AI · 更多用量", aiPlanPro: "Astra AI · 進階用量", aiPlanUltra: "Astra AI · 最高用量",
-  aiPrivacyTitle: "Astra AI 與你的筆記", aiPrivacyText: "當你選擇使用 Astra AI，該次的筆記標題、內容與指令會傳送至 OpenAI 產生預覽。API 請求設定為 store:false；OpenAI 仍依其適用條款與隱私實務處理該次資料。你選擇儲存前，不會改動筆記。使用 PIN 的筆記會為這次處理傳送已解鎖文字；PIN 與加密金鑰不會傳送或儲存。不希望由該服務處理的內容，請不要使用 Astra AI。",
+  astraAiPreview: "Astra Agent 預覽", astraAiPreviewBody: "儲存前，請確認建議的新標題與內容。", saveChanges: "儲存變更", discardResult: "捨棄結果",
+  astraAiEncryptedNotice: "為完成本次 Astra Agent 修改，已解鎖的筆記標題、內容與指令會傳送至 AI 處理服務。PIN 與加密金鑰不會傳送或儲存。",
+  astraAiAllowance: "Astra Agent · 每 30 天", astraAiBasic: "包含", astraAiMore: "更多可用額度", astraAiMost: "最多可用額度", aiAllowanceFree: "基本用量", aiAllowancePlus: "更多用量", aiAllowancePro: "進階用量", aiAllowanceUltra: "最高用量", aiPlanFree: "體驗 Astra Agent · 基本用量", aiPlanPlus: "Astra Agent · 更多用量", aiPlanPro: "Astra Agent · 進階用量", aiPlanUltra: "Astra Agent · 最高用量",
+  aiPrivacyTitle: "Astra Agent 與你的筆記", aiPrivacyText: "當你選擇使用 Astra Agent，該次的筆記標題、內容與指令會傳送至 OpenAI 產生預覽。API 請求設定為 store:false；OpenAI 仍依其適用條款與隱私實務處理該次資料。你選擇儲存前，不會改動筆記。使用 PIN 的筆記會為這次處理傳送已解鎖文字；PIN 與加密金鑰不會傳送或儲存。不希望由該服務處理的內容，請不要使用 Astra Agent。",
   standardEncryptionOption: "一般加密（AES-256-GCM）", legacyEncryptionOption: "舊版加密（AES-128-GCM）", secretOption: "秘密（AstraSecret）", confidentialOption: "機密（AstraConfidential）", zeroOption: "最高機密（AstraZero）", legacySchybridOption: "舊版機密（AstraConfidential SCHybrid）", astraSecretIncluded: "秘密（AstraSecret）日常保護", confidentialIncluded: "機密（AstraConfidential）進階保護", zeroIncluded: "最高機密（AstraZero）· 客戶端產生金鑰", basicEncryption: "不加密 · 一般加密（AES-256-GCM）",
 });
 Object.assign(I18N.ja, {
-  astraAi: "Astra AI", aiEveryThirtyDays: "30日ごとの利用枠",
+  astraAi: "Astra Agent", astraAiQuotaLabel: "Astra Agent の残り利用枠", aiEveryThirtyDays: "30日ごとの利用枠",
   astraAiUnavailable: "現在利用できません",
-  aiTitle: "あなたが決める Astra AI", aiBody: "一つの指示、全体のプレビュー、最後の承認で、ノートを次に使える形へ整えます。",
-  astraAiPrompt: "Astra AI への指示", astraAiPromptPlaceholder: "Astra AI にこのノートをどう改善してほしいか入力してください…",
+  aiTitle: "あなたが決める Astra Agent", aiBody: "一つの指示、全体のプレビュー、最後の承認で、ノートを次に使える形へ整えます。",
+  astraAiPrompt: "Astra Agent への指示", astraAiPromptPlaceholder: "Astra Agent にこのノートをどう改善してほしいか入力してください…",
   astraAiBody: "このノートをどのように変更したいか入力してください。", astraAiGenerate: "プレビューを作成",
-  astraAiPromptRequired: "Astra AI への指示を入力してください。",
-  astraAiWorking: "送信しました。Astra AI がプレビューを準備しています…", astraAiWorkingShort: "プレビューを準備中…",
+  astraAiPromptRequired: "Astra Agent への指示を入力してください。",
+  astraAiWorking: "送信しました。Astra Agent がプレビューを準備しています…", astraAiWorkingShort: "プレビューを準備中…",
   astraAiBusyWarning: "この画面を開いたままにしてください。閉じる、更新する、AstraNote から離れると処理は中止され、結果は保存されません。",
-  astraAiPreview: "Astra AI プレビュー", astraAiPreviewBody: "保存前に、提案されたタイトルと内容を確認してください。", saveChanges: "変更を保存", discardResult: "結果を破棄",
+  astraAiPreview: "Astra Agent プレビュー", astraAiPreviewBody: "保存前に、提案されたタイトルと内容を確認してください。", saveChanges: "変更を保存", discardResult: "結果を破棄",
   astraAiEncryptedNotice: "このリクエストでは、解除済みのタイトル、内容、指示が AI 処理サービスへ送信されます。PIN と暗号鍵は送信・保存されません。",
-  astraAiAllowance: "Astra AI · 30日ごと", astraAiBasic: "含まれる", astraAiMore: "より多く利用可能", astraAiMost: "最大の利用枠", aiAllowanceFree: "基本利用枠", aiAllowancePlus: "より多い利用枠", aiAllowancePro: "上級利用枠", aiAllowanceUltra: "最大利用枠", aiPlanFree: "Astra AI を試す · 基本利用枠", aiPlanPlus: "Astra AI · より多い利用枠", aiPlanPro: "Astra AI · 上級利用枠", aiPlanUltra: "Astra AI · 最大利用枠",
-  aiPrivacyTitle: "Astra AI とノート", aiPrivacyText: "Astra AI を選ぶと、そのリクエストのノート名、内容、指示がプレビュー作成のため OpenAI に送信されます。API リクエストには store:false を設定していますが、OpenAI は適用される自身の規約とプライバシー実務に従ってそのデータを処理します。保存を選ぶまでノートは変更されません。PIN 保護ノートでは解除済みの文章がこの処理のために送信され、PIN と暗号鍵は送信・保存されません。そのサービスに処理させたくない内容には Astra AI を使わないでください。",
+  astraAiAllowance: "Astra Agent · 30日ごと", astraAiBasic: "含まれる", astraAiMore: "より多く利用可能", astraAiMost: "最大の利用枠", aiAllowanceFree: "基本利用枠", aiAllowancePlus: "より多い利用枠", aiAllowancePro: "上級利用枠", aiAllowanceUltra: "最大利用枠", aiPlanFree: "Astra Agent を試す · 基本利用枠", aiPlanPlus: "Astra Agent · より多い利用枠", aiPlanPro: "Astra Agent · 上級利用枠", aiPlanUltra: "Astra Agent · 最大利用枠",
+  aiPrivacyTitle: "Astra Agent とノート", aiPrivacyText: "Astra Agent を選ぶと、そのリクエストのノート名、内容、指示がプレビュー作成のため OpenAI に送信されます。API リクエストには store:false を設定していますが、OpenAI は適用される自身の規約とプライバシー実務に従ってそのデータを処理します。保存を選ぶまでノートは変更されません。PIN 保護ノートでは解除済みの文章がこの処理のために送信され、PIN と暗号鍵は送信・保存されません。そのサービスに処理させたくない内容には Astra Agent を使わないでください。",
   standardEncryptionOption: "標準暗号化（AES-256-GCM）", legacyEncryptionOption: "旧式暗号化（AES-128-GCM）", secretOption: "シークレット（AstraSecret）", confidentialOption: "コンフィデンシャル（AstraConfidential）", zeroOption: "最高機密（AstraZero）", legacySchybridOption: "旧式コンフィデンシャル（AstraConfidential SCHybrid）", astraSecretIncluded: "シークレット（AstraSecret）の日常保護", confidentialIncluded: "コンフィデンシャル（AstraConfidential）の高度な保護", zeroIncluded: "最高機密（AstraZero）・クライアントで鍵を生成", basicEncryption: "暗号化なし · 標準暗号化（AES-256-GCM）",
 });
 // Astra Agent is the user-facing name. Internal endpoint names remain stable
@@ -5116,7 +5116,7 @@ function openAstraAi(note, unlockedPin = null) {
       if (pin && !validVaultPin(pin.value, note.encryption, true))
         throw new Error(vaultPinError(note.encryption));
       // This confirms the PIN that unlocked the note in this tab. It is never
-      // sent to Astra AI or persisted by the browser.
+      // sent to Astra Agent or persisted by the browser.
       if (pin && pin.value !== unlockedPin) throw new Error(vaultPinError(note.encryption));
       const backdrop = button.closest(".modal-backdrop");
       const cancelButton = button.closest(".modal-actions").querySelector("button:not(.btn-primary)");
@@ -5207,16 +5207,23 @@ function limitedEditorDurationOptions() {
 function openLimitedEditor(note) {
   const content = document.createElement("div");
   content.className = "limited-editor-form modal-form-stack";
-  const makeField = (labelText, input) => {
+  const makeField = (labelText, input, helpText) => {
     const label = document.createElement("label");
     label.className = "field";
     const title = document.createElement("span");
     title.textContent = labelText;
+    title.id = `limited-field-${randomHex(4)}`;
+    input.setAttribute("aria-labelledby", title.id);
     label.append(title, input);
+    if (helpText) {
+      const help = document.createElement("small"); help.className = "field-help";
+      help.id = `${title.id}-help`; input.setAttribute("aria-describedby", help.id);
+      help.textContent = helpText; label.append(help);
+    }
     return label;
   };
   const username = document.createElement("input");
-  username.autocomplete = "off"; username.maxLength = 24; username.placeholder = "editor_name";
+  username.autocomplete = "off"; username.maxLength = 24; username.placeholder = "note_access";
   const password = document.createElement("input");
   password.type = "password"; password.autocomplete = "new-password"; password.maxLength = 24;
   const confirmation = document.createElement("input");
@@ -5228,11 +5235,19 @@ function openLimitedEditor(note) {
   const agent = document.createElement("label"); agent.className = "check-row";
   const checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.checked = true;
   agent.append(checkbox, document.createTextNode(` ${t("limitedEditAgent")}`));
+  const passwordRow = document.createElement("div"); passwordRow.className = "limited-password-row";
+  passwordRow.append(makeField(t("password"), password), makeField(t("confirmPassword"), confirmation));
+  const passwordHelp = document.createElement("small"); passwordHelp.className = "field-help"; passwordHelp.textContent = t("passwordRules");
+  passwordHelp.id = `limited-password-help-${randomHex(4)}`;
+  password.setAttribute("aria-describedby", passwordHelp.id); confirmation.setAttribute("aria-describedby", passwordHelp.id);
+  const guideLink = document.createElement("a"); guideLink.href = "/docs/astra-pass"; guideLink.className = "limited-guide-link";
+  const guideIcon = document.createElement("i"); guideIcon.className = "fa-solid fa-circle-info"; guideIcon.setAttribute("aria-hidden", "true");
+  guideLink.append(guideIcon, document.createTextNode(` ${t("docs")} · AstraPass`));
   content.append(
-    makeField(t("limitedEditUsername"), username),
-    makeField(t("password"), password),
-    makeField(t("confirmPassword"), confirmation),
+    makeField(t("limitedEditUsername"), username, t("usernameRules")),
+    passwordRow, passwordHelp,
     makeField(t("limitedEditDuration"), duration), agent,
+    guideLink,
   );
   const submit = async (close) => {
     if (!/^[A-Za-z0-9_]{3,24}$/.test(username.value.trim())) throw new Error(t("usernameRules"));
@@ -5245,12 +5260,12 @@ function openLimitedEditor(note) {
       method: "POST", body: { username: username.value.trim(), password: password.value, duration: Number(duration.value), canUseAgent: checkbox.checked },
     });
     close();
-    const details = document.createElement("div"); details.className = "limited-editor-credentials";
-    const add = (label, value) => { const row = document.createElement("p"); const strong = document.createElement("strong"); strong.textContent = `${label}: `; row.append(strong, document.createTextNode(value)); details.append(row); };
+    const details = document.createElement("dl"); details.className = "limited-editor-credentials";
+    const add = (label, value) => { const row = document.createElement("div"); const term = document.createElement("dt"); term.textContent = label; const description = document.createElement("dd"); description.textContent = value; row.append(term, description); details.append(row); };
     add(t("limitedEditUsername"), username.value.trim()); add(t("password"), password.value); add(t("limitedEditLoginUrl"), new URL(result.loginUrl, location.origin).href); add(t("passExpires"), formatUtc(result.expiresAt));
     modal({ title: t("limitedEditCreated"), body: t("limitedEditCreatedBody"), content: details, confirm: t("understood"), showCancel: false, onConfirm: (done) => { done(); location.reload(); } });
   };
-  const openForm = () => modal({ title: t("limitedEditCreate"), body: t("limitedEditCreateBody"), content, confirm: t("limitedEditCreate"), closeOnBackdrop: false, onConfirm: submit });
+  const openForm = () => modal({ title: t("limitedEditCreate"), body: t("limitedEditCreateBody"), content, dialogClass: "astrapass-modal", confirm: t("limitedEditCreate"), closeOnBackdrop: false, onConfirm: submit });
   if (!isClientEncryptedMode(note.encryption)) return openForm();
   modal({ title: t("limitedEditWarningTitle"), body: t("limitedEditWarning"), confirm: t("limitedEditConfirm"), cancel: t("cancel"), danger: true, closeOnBackdrop: false, onConfirm: (close) => { close(); openForm(); } });
 }
