@@ -25,7 +25,7 @@ test("updated guides cover every workflow in all three existing locales", () => 
     }
   }
   for (const locale of ["en", "zh-Hant", "ja"]) {
-    assert.match(pages["astra-agent"][locale].body, /GPT-5\.6-Luna/u);
+    assert.match(pages["astra-agent"][locale].body, /GPT-6-Luna/u);
     assert.match(pages["astra-agent"][locale].body, /OpenAI/u);
     assert.match(pages["astra-pass"][locale].body, /\/limited-edit/u);
     assert.match(pages.security[locale].body, /100/u);
@@ -39,7 +39,8 @@ test("homepage features AstraPass and docs keep existing links working", () => {
   const { renderHomeHtml } = require("../bootstrap");
   for (const locale of ["en", "zh-Hant", "ja"]) {
     const html = renderHomeHtml(locale);
-    assert.match(html, /id="astrapass"/u);
+    assert.doesNotMatch(html, /id="astrapass"/u);
+    assert.match(html, /AstraPass/u);
     assert.match(html, /href="\/docs\/astra-pass"/u);
     assert.doesNotMatch(html, /Astra AI/u);
   }

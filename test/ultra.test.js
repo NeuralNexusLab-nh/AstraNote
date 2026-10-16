@@ -59,6 +59,7 @@ async function fixture(name, plan = "free", noteCount = 0) {
     email:
       plan === "admin" ? "neuralnexuslab@hotmail.com" : name + "@example.test",
     displayName: name,
+    emailVerified: true,
     passwordHash: "test-fixture-hash",
     createdAt: new Date(now - 864e5).toISOString(),
     settings: { theme: "dark", language: "en" },
@@ -1427,6 +1428,86 @@ test("AstraZero performs real browser-protocol round trips; tampering, wrong PIN
   await assert.rejects(api.encrypt("owner", id, salt, "123", payload));
   assert.equal(JSON.stringify(encrypted).includes(pin), false);
   assert.equal(JSON.stringify(encrypted).includes(payload.content), false);
+});
+
+test("unverified Free gets 64 KB and half Agent allowance; Education is derived, permanent and not purchasable", async () => {
+  const user = await fixture("education_owner");
+  const meta = await read(metaPath(user.name)); meta.emailVerified=false; await write(metaPath(user.name),meta);
+  assert.equal((await request(user,"/api/account")).data.maxBytes,64000);
+  assert.equal(testables.normalizeAiUsage(meta,"free").budgetMicrousd,25000);
+  meta.email="student@university.edu.tw"; await write(metaPath(user.name),meta);
+  assert.equal((await request(user,"/api/account")).data.plan.educationPending,true);
+  assert.equal((await request(user,"/api/account")).data.plan.canPurchase,false);
+  assert.equal((await request(user,"/api/billing/create","POST",{plan:"plus",months:1,checkoutToken:crypto.randomBytes(16).toString("hex"),captcha})).status,403);
+  meta.emailVerified=true; await write(metaPath(user.name),meta);
+  let account=(await request(user,"/api/account")).data;
+  assert.equal(account.plan.type,"education"); assert.equal(account.maxBytes,256000); assert.equal(account.maxNotes,50);
+  assert.equal(account.plan.canCreateConfidential,true); assert.equal(account.plan.canOrganize,true); assert.equal(account.plan.canRecover,false); assert.equal(account.plan.canCreateZero,false); assert.equal(account.plan.canPurchase,false);
+  assert.equal(testables.normalizeAiUsage(meta,"education").budgetMicrousd,500000);
+  const blocked=await request(user,"/api/billing/create","POST",{plan:"pro",months:1,checkoutToken:crypto.randomBytes(16).toString("hex"),captcha});
+  assert.equal(blocked.status,403); assert.equal(blocked.data.error,"education_purchase_disabled");
+  meta.entitlements.proMs=864e5; meta.entitlements.updatedAt=stamp(); await write(metaPath(user.name),meta);
+  assert.equal((await request(user,"/api/account")).data.plan.type,"pro");
+  meta.entitlements.proMs=0; meta.entitlements.updatedAt=stamp(); await write(metaPath(user.name),meta);
+  assert.equal((await request(user,"/api/account")).data.plan.type,"education");
+  meta.beta=true; await write(metaPath(user.name),meta); account=(await request(user,"/api/account")).data;
+  assert.equal(account.plan.type,"beta"); assert.equal(account.maxBytes,10_000_000);
+  assert.equal(testables.normalizeAiUsage(meta,"beta").budgetMicrousd,5_000_000);
+});
+
+test("AstraPass concurrency limits are backend-enforced and expiry releases a slot", async () => {
+  const user=await fixture("pass_quota_owner","free",3);
+  const payload={username:"pass_quota_one",password:"B!7aK9xQ",duration:3*60*60_000};
+  for(let i=0;i<2;i++) assert.equal((await request(user,`/api/notes/${user.metadata.notes[i].id}/limited-editor`,"POST",{...payload,username:`pass_quota_${i}`})).status,201);
+  const third=await request(user,`/api/notes/${user.metadata.notes[2].id}/limited-editor`,"POST",payload);
+  assert.equal(third.status,409); assert.equal(third.data.error,"pass_limit");
+  const index=path.join(directory,"limited-editors.json"), records=await read(index);
+  records.pass_quota_0.expiresAt=new Date(Date.now()-1000).toISOString(); await write(index,records);
+  assert.equal((await request(user,`/api/notes/${user.metadata.notes[2].id}/limited-editor`,"POST",payload)).status,201);
+});
+
+test("image note routes enforce ownership, CSRF, safe raster storage, sharing and full-image history", async () => {
+  const user=await fixture("media_owner","ultra"), other=await fixture("media_other","ultra");
+  const D=require("../public/note-document"), sharp=require("sharp");
+  const image={id:"img_"+"a".repeat(24),type:"image/png",width:24,height:24,caption:"A safe caption",data:(await sharp({create:{width:24,height:24,channels:3,background:"#bbbbff"}}).png().toBuffer()).toString("base64")};
+  const value=D.pack("# Heading\n{img_"+"a".repeat(24)+"}",[image]);
+  const created=await request(user,"/api/notes","POST",{name:"Media",encryption:"aes-256-gcm-new",content:value});
+  assert.equal(created.status,201); const id=created.data.id, route="/api/notes/"+id;
+  let note=(await request(user,route)).data;
+  assert.equal(D.unpack(note.content).images.length,1);
+  assert.ok(!(await fs.readFile(notePath(user.name,id),"utf8")).includes("A safe caption"));
+  assert.equal((await request(other,route)).status,404);
+  assert.equal((await request(other,route,"PUT",{name:"Stolen",content:"x",revision:note.revision})).status,404);
+  const csrf=user.headers["x-csrf-token"]; delete user.headers["x-csrf-token"];
+  assert.equal((await request(user,route,"PUT",{name:"CSRF",content:value,revision:note.revision})).status,403); user.headers["x-csrf-token"]=csrf;
+  assert.equal((await request(user,route,"PUT",{name:"Media",content:"No images now",revision:note.revision})).status,200);
+  const previous=await request(user,route+"/previous"); assert.equal(D.unpack(previous.data.content).images.length,1);
+  note=(await request(user,route)).data;
+  assert.equal((await request(user,route+"/previous/restore","POST",{revision:note.revision,version:1})).status,200);
+  const share=await request(user,route+"/share","POST",{enabled:true}); assert.equal(share.status,200);
+  const shared=await request(user,"/api/shared/"+share.data.url.split("/").at(-1)); assert.equal(shared.status,200); assert.equal(D.unpack(shared.data.content).images.length,1);
+  const invalid=D.pack("",[{...image,data:Buffer.from('<svg onload="alert(1)"/>').toString("base64")}]);
+  assert.equal((await request(user,"/api/notes","POST",{name:"Rejected",encryption:"none",content:invalid})).status,400);
+});
+
+test("Agent uses GPT-6-Luna; Free can fall back to Standard and exact tier rates are charged", async () => {
+  const user=await fixture("media_agent_free","free",1), before=global.fetch, calls=[];
+  process.env.API_KEY="isolated-test-placeholder";
+  global.fetch=async(url,options)=>{
+    if(String(url).startsWith("https://api.openai.com/")) {
+      const payload=JSON.parse(options.body); calls.push(payload);
+      if(calls.length===1) return Response.json({error:{type:"server_error"}},{status:503});
+      return Response.json({service_tier:"default",output_text:JSON.stringify({message:"Done",title:"Updated",content:"Changed",imageEdits:[]}),usage:{input_tokens:100,output_tokens:100}});
+    }
+    return before(url,options);
+  };
+  try {
+    const result=await request(user,`/api/notes/${user.metadata.notes[0].id}/ai`,"POST",{prompt:"Improve it"});
+    assert.equal(result.status,200); assert.deepEqual(calls.map(call=>call.service_tier),["flex","default"]); assert.ok(calls.every(call=>call.model==="gpt-6-luna"));
+    assert.equal((await read(metaPath(user.name))).aiUsage.spentMicrousd,60);
+    assert.equal(testables.aiCostMicrousd({input_tokens:100,output_tokens:100},"flex"),30);
+    assert.equal(testables.aiCostMicrousd({input_tokens:100,output_tokens:100},"default"),60);
+  } finally {global.fetch=before;delete process.env.API_KEY;}
 });
 
 test("an AstraPass is isolated to one note, can save it, and loses access when revoked", async () => {

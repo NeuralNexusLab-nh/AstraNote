@@ -8,6 +8,9 @@
     <link rel="icon" href="/favicon.ico?v=20260915-2" sizes="any" type="image/x-icon" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="stylesheet" href="/style.css" />
+    <script src="/note-document.js" defer></script>
+    <script src="/vendor/markdown-it/markdown-it.min.js" defer></script>
+    <script src="/note-media.js" defer></script>
     <script src="/app.js" defer></script>
   </head>
   <body data-page="admin">
@@ -25,7 +28,7 @@
           <div class="admin-filter-grid">
             <label><span data-i18n="adminSearch"></span><input id="admin-query" type="search" maxlength="254" data-i18n-placeholder="adminSearchPlaceholder" /></label>
             <label><span data-i18n="adminLanguage"></span><select id="admin-language"><option value="">All languages</option><option value="en">English</option><option value="zh-Hant">繁體中文</option><option value="ja">日本語</option></select></label>
-            <label><span data-i18n="adminPlan"></span><select id="admin-plan"><option value="">All plans</option><option value="free">Free</option><option value="plus">Plus</option><option value="pro">Pro</option><option value="ultra">Ultra</option><option value="beta">BETA</option><option value="admin">Admin</option></select></label>
+            <label><span data-i18n="adminPlan"></span><select id="admin-plan"><option value="">All plans</option><option value="free">Free</option><option value="plus">Plus</option><option value="education">Education</option><option value="pro">Pro</option><option value="ultra">Ultra</option><option value="beta">BETA</option><option value="admin">Admin</option></select></label>
             <button class="btn btn-primary" id="admin-refresh" type="button"><i class="fa-solid fa-rotate" aria-hidden="true"></i><span data-i18n="refresh"></span></button>
           </div>
           <p class="field-help" id="admin-email-limit"></p>
@@ -47,7 +50,7 @@
               <label><span data-i18n="adminExcludeAccounts"></span><textarea id="admin-excluded-accounts" maxlength="2000" rows="3" data-i18n-placeholder="adminExcludeAccountsPlaceholder"></textarea><small class="field-help" data-i18n="adminExcludeAccountsHelp"></small></label>
               <fieldset><legend data-i18n="adminExcludePlans"></legend><div class="admin-exclusion-options">
                 <label><input type="checkbox" name="admin-excluded-plan" value="free" /> Free</label>
-                <label><input type="checkbox" name="admin-excluded-plan" value="plus" /> Plus</label>
+                <label><input type="checkbox" name="admin-excluded-plan" value="plus" /> Plus</label><label><input type="checkbox" name="admin-excluded-plan" value="education" /> Education</label>
                 <label><input type="checkbox" name="admin-excluded-plan" value="pro" /> Pro</label>
                 <label><input type="checkbox" name="admin-excluded-plan" value="ultra" /> Ultra</label>
                 <label><input type="checkbox" name="admin-excluded-plan" value="beta" /> BETA</label>

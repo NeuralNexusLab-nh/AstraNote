@@ -7,6 +7,9 @@
     <link rel="icon" href="/favicon.ico?v=20260915-2" sizes="any" type="image/x-icon" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="stylesheet" href="/style.css" />
+    <script src="/note-document.js" defer></script>
+    <script src="/vendor/markdown-it/markdown-it.min.js" defer></script>
+    <script src="/note-media.js" defer></script>
     <script src="/app.js" defer></script>
   </head>
   <body data-page="privacy">
@@ -35,6 +38,7 @@
           <h2 id="ai-privacy-title" data-i18n="aiPrivacyTitle"></h2>
           <p data-i18n="aiPrivacyText"></p>
         </section>
+        <section class="legal-feature-note"><h2 data-i18n="mediaTermsTitle"></h2><p data-i18n="mediaTerms"></p></section>
         <div data-lang="en">
           <p class="legal-note">
             This policy explains how the individual operator using the
@@ -94,7 +98,7 @@
             </li>
             <li>
               <strong>Astra Agent:</strong> only when you choose to generate a
-              preview, the note title, note content, and instruction are sent
+              preview, the note title, note text, explicitly selected images, and instruction are sent
               to OpenAI. The API request uses <code>store:false</code>. PINs
               and encryption keys are not sent. Do not use this feature for
               content you do not want processed by OpenAI.
@@ -255,7 +259,7 @@
               服務憑證不會傳送至客戶端。
             </li>
             <li>
-              <strong>Astra Agent：</strong>僅在您選擇產生預覽時，筆記標題、內容與指令才會傳送至 OpenAI。API 請求使用 <code>store:false</code>；PIN 與加密金鑰不會傳送。若不希望內容由 OpenAI 處理，請不要使用此功能。
+              <strong>Astra Agent：</strong>僅在您選擇產生預覽時，筆記標題、文字、明確勾選的圖片與指令才會傳送至 OpenAI。API 請求使用 <code>store:false</code>；PIN 與加密金鑰不會傳送。若不希望內容由 OpenAI 處理，請不要使用此功能。
             </li>
           </ul>
           <h2>三、目的與依據</h2>
@@ -359,7 +363,7 @@
               支払い番号・URL、状態、取引識別番号、付与日時。圧縮した支払い記録とクーポン記録は前述のとおりです。サービスの認証秘密はクライアントに送信しません。
             </li>
             <li>
-              Astra Agent：「プレビューを生成」を選んだ場合のみ、ノート名、内容、指示を OpenAI に送信します。API リクエストには <code>store:false</code> を設定し、PIN と暗号鍵は送信しません。OpenAI に処理させたくない内容にはこの機能を使わないでください。
+              Astra Agent：「プレビューを生成」を選んだ場合のみ、ノート名、文章、明示的に選んだ画像、指示を OpenAI に送信します。API リクエストには <code>store:false</code> を設定し、PIN と暗号鍵は送信しません。OpenAI に処理させたくない内容にはこの機能を使わないでください。
             </li>
           </ul>
           <h2>3. 目的と根拠</h2>

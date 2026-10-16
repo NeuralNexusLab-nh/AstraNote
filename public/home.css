@@ -42,10 +42,10 @@ body[data-page="home"] .feature-card p { line-height: 1.85; text-wrap: pretty; }
 .home-plan-pro:hover { border-color: var(--primary-hover); }
 .home-plan-ultra { border: 2px solid #a66ae5; box-shadow: 0 0 0 1px color-mix(in srgb, #a66ae5 35%, transparent), 0 14px 40px color-mix(in srgb, #a66ae5 16%, transparent); }
 .home-plan-ultra:hover { border-color: #b77cf1; }
-.home-plan-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.home-plan-heading { display: block; }
 .home-plan-heading h3, .home-free h3 { display: flex; align-items: center; gap: 12px; font: 550 1.5rem/1.4 var(--display); margin: 0; }
 .home-plan-heading h3 i { font-size: 1.125rem; color: var(--primary-hover); }
-.home-plan-role { font-size: .875rem; color: var(--muted); }
+.home-plan-role { display: block; margin-top: 6px; font-size: .875rem; color: var(--muted); }
 .home-plan-pro .home-plan-role { color: var(--primary-hover); }
 .home-plan-ultra .home-plan-role,
 .home-plan-ultra .home-plan-heading h3 i { color: #a66ae5; }

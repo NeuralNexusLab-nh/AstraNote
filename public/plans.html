@@ -26,6 +26,9 @@
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="stylesheet" href="/style.css" />
     <script src="/captcha-loader.js"></script>
+    <script src="/note-document.js" defer></script>
+    <script src="/vendor/markdown-it/markdown-it.min.js" defer></script>
+    <script src="/note-media.js" defer></script>
     <script src="/app.js" defer></script>
     <script src="/plans-marketing.js" defer></script>
   </head>
@@ -60,7 +63,7 @@
                 ><i class="fa-solid fa-star" aria-hidden="true"></i
               ></span>
               <div>
-                <p class="plan-name">Plus</p>
+                <p class="plan-name">Plus / Education</p>
                 <p class="plan-price">
                   0.000025 BTC <small data-i18n="perMonth"></small>
                 </p>
@@ -89,6 +92,7 @@
                 ><span data-i18n="aiPlanPlus"></span>
               </li>
             </ul>
+            <p class="field-help education-note" data-i18n="educationSummary"></p>
             <button
               class="btn btn-primary plan-buy"
               type="button"
@@ -232,12 +236,14 @@
               ><span data-i18n="aiPlanFree"></span>
             </li>
           </ul>
+          <p class="field-help" data-i18n="unverifiedAgent"></p>
           <p class="plan-included-label">
             <i class="fa-solid fa-circle-check" aria-hidden="true"></i
             ><span data-i18n="freeIncluded"></span>
           </p>
         </section>
 
+        <p class="education-note education-policy"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i><span data-i18n="educationDescription"></span></p>
         <aside class="plan-expiry-notice reveal" role="note">
           <i class="fa-solid fa-lock" aria-hidden="true"></i>
           <p data-i18n="expiryLockNotice"></p>
@@ -260,7 +266,7 @@
                 <tr>
                   <th scope="col" data-i18n="compareFeature"></th>
                   <th scope="col">Free</th>
-                  <th scope="col">Plus</th>
+                  <th scope="col">Plus / Education</th>
                   <th scope="col">Pro</th>
                   <th scope="col">Ultra</th>
                 </tr>

@@ -42,7 +42,7 @@ test("Astra Agent accepts structured Responses output content", async () => {
   }), { status: 200, headers: { "content-type": "application/json" } });
   try {
     const result = await testables.openAiTransform({ title: "Before", content: "Original", prompt: "Improve it", tier: "flex" });
-    assert.deepEqual(result.result, { message: "Made the note clearer.", title: "Clear note", content: "A concise result." });
+    assert.deepEqual(result.result, { message: "Made the note clearer.", title: "Clear note", content: "A concise result.", imageEdits: [] });
   } finally {
     global.fetch = originalFetch;
   }

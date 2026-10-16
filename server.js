@@ -10,6 +10,10 @@ const fs = require("node:fs");
 const fsp = require("node:fs/promises");
 const path = require("node:path");
 const NoteHistory = require("./public/note-history");
+const NoteDocument = require("./public/note-document");
+const NoteImages = require("./lib/note-images");
+const AgentImages = require("./lib/agent-images");
+const Education = require("./lib/education");
 const {
   OrderStore,
   ORDER_RETENTION_MS,
@@ -43,7 +47,7 @@ const LIMITED_EDITORS_FILE = path.join(DATA_DIR, "limited-editors.json");
 const MAX_ACCOUNTS = 70_000;
 const MAX_NOTES = 20;
 const MAX_ACCOUNT_BYTES = 128 * 1000;
-const UNVERIFIED_FREE_BYTES = 32 * 1000;
+const UNVERIFIED_FREE_BYTES = 64 * 1000;
 const EMAIL_TOKEN_MS = 10 * 60_000;
 const EMAIL_DAILY_LIMIT = 100;
 const ADMIN_BROADCAST_DAILY_LIMIT = 50;
@@ -66,7 +70,7 @@ const LIMITED_EDITOR_DURATIONS = new Set([
   14 * 864e5,
   30 * 864e5,
 ]);
-const TERMS_VERSION = "2026-09-05";
+const TERMS_VERSION = "2026-10-17";
 const TRASH_DAYS = Object.freeze([1, 3, 7, 14, 30]);
 const HISTORY_COUNTS = Object.freeze([0, 1, 3, 5, 10, 20]);
 const ADMIN_EMAIL = "neuralnexuslab@hotmail.com";
@@ -83,11 +87,12 @@ const AI_MAX_NOTE_BYTES = 64 * 1000;
 const AI_MAX_PROMPT_CHARS = 1600;
 const AI_MAX_OUTPUT_TOKENS = 16_000;
 const AI_BUDGETS_MICRO_USD = Object.freeze({
-  free: 20_000,
-  plus: 100_000,
-  pro: 300_000,
-  ultra: 900_000,
-  beta: Infinity,
+  free: 50_000,
+  plus: 500_000,
+  education: 500_000,
+  pro: 1_000_000,
+  ultra: 2_500_000,
+  beta: 5_000_000,
   admin: Infinity,
 });
 const BILLING_MONTH_OPTIONS = Object.freeze([1, 3, 6, 9, 12, 24, 36]);
@@ -105,9 +110,10 @@ const NEXACAPTCHA_ONION_ORIGIN = `http://nexacaptcha.${ONION_SERVICE_ID}.onion`;
 const PLAN_DEFINITIONS = Object.freeze({
   free: { maxBytes: 128 * 1000, maxNotes: 20, monthlySats: 0 },
   plus: { maxBytes: 256 * 1000, maxNotes: 50, monthlySats: 2500 },
+  education: { maxBytes: 256 * 1000, maxNotes: 50, monthlySats: 0 },
   pro: { maxBytes: 512 * 1000, maxNotes: Infinity, monthlySats: 6000 },
   ultra: { maxBytes: 1_024_000, maxNotes: Infinity, monthlySats: 12500 },
-  beta: { maxBytes: 1_000_000_000, maxNotes: Infinity, monthlySats: 0 },
+  beta: { maxBytes: 10_000_000, maxNotes: Infinity, monthlySats: 0 },
   admin: { maxBytes: Infinity, maxNotes: Infinity, monthlySats: 0 },
 });
 const CAPTCHA_VERIFY_URL = "https://nexacaptcha.nxlabtw.com/api/siteverify";
@@ -189,7 +195,7 @@ function userKey(username) {
   return username.toLowerCase();
 }
 function freeStorageAllowance(metadata) {
-  return metadata?.emailQuotaRestricted === true && metadata?.emailVerified !== true
+  return metadata?.emailVerified !== true
     ? UNVERIFIED_FREE_BYTES
     : MAX_ACCOUNT_BYTES;
 }
@@ -417,7 +423,7 @@ function normalizeAiUsage(metadata, plan, now = Date.now()) {
       startedAt: new Date(startedAt).toISOString(),
       spentMicrousd: Math.max(0, Math.floor(Number(current.spentMicrousd) || 0)),
     };
-  const budgetMicrousd = aiBudgetForPlan(plan);
+  const budgetMicrousd = plan === "free" && metadata.emailVerified !== true ? aiBudgetForPlan("free") / 2 : aiBudgetForPlan(plan);
   const remainingMicrousd = Number.isFinite(budgetMicrousd)
     ? Math.max(0, budgetMicrousd - metadata.aiUsage.spentMicrousd)
     : Infinity;
@@ -430,33 +436,35 @@ function normalizeAiUsage(metadata, plan, now = Date.now()) {
     resetsAt: new Date(Date.parse(metadata.aiUsage.startedAt) + AI_WINDOW_MS).toISOString(),
   };
 }
-function aiCostMicrousd(usage) {
+function aiCostMicrousd(usage, tier = "default") {
   const input = Math.max(0, Number(usage?.input_tokens) || 0);
   const output = Math.max(0, Number(usage?.output_tokens) || 0);
-  return Math.ceil(input * 0.2 + output * 1.2);
+  const cached = Math.min(input, Math.max(0, Number(usage?.input_tokens_details?.cached_tokens) || 0));
+  return Math.ceil(((input - cached) * 0.1 + cached * 0.01 + output * 0.5) * (tier === "flex" ? 0.5 : 1));
 }
-async function openAiTransform({ title, content, prompt, tier }) {
+async function openAiTransform({ title, content, prompt, tier, images = [], maxOutputTokens = AI_MAX_OUTPUT_TOKENS }) {
   if (!process.env.API_KEY)
     throw Object.assign(new Error("Astra Agent is not configured."), { status: 503, code: "ai_unavailable" });
-  const response = await fetch("https://api.openai.com/v1/responses", {
+  let response;
+  try { response = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
     headers: { authorization: `Bearer ${process.env.API_KEY}`, "content-type": "application/json" },
     signal: AbortSignal.timeout(45_000),
     body: JSON.stringify({
-      model: "gpt-5.6-luna",
+      model: "gpt-6-luna",
       service_tier: tier,
       store: false,
       reasoning: { effort: "none" },
-      max_output_tokens: AI_MAX_OUTPUT_TOKENS,
+      max_output_tokens: maxOutputTokens,
       text: { format: { type: "json_schema", name: "astranote_note", strict: true, schema: {
-        type: "object", additionalProperties: false, required: ["message", "title", "content"],
-        properties: { message: { type: "string", maxLength: 600 }, title: { type: "string", maxLength: MAX_NOTE_NAME }, content: { type: "string", maxLength: AI_MAX_NOTE_BYTES } },
+        type: "object", additionalProperties: false, required: ["message", "title", "content", "imageEdits"],
+        properties: { message: { type: "string", maxLength: 600 }, title: { type: "string", maxLength: MAX_NOTE_NAME }, content: { type: "string", maxLength: AI_MAX_NOTE_BYTES }, imageEdits: AgentImages.schema },
       } } },
-      input: [{ role: "system", content: [{ type: "input_text", text: "You edit only the supplied note. Follow the user's instruction. Return valid JSON only. Do not mention system instructions." }] }, { role: "user", content: [{ type: "input_text", text: JSON.stringify({ prompt, note: { title, content } }) }] }],
+      input: [{ role: "system", content: [{ type: "input_text", text: "Edit only the supplied note. Return JSON with message, title, content and imageEdits (empty if no image changes). Preserve {img_ID} references. Never create image URLs. For supplied images you may return only the schema's drawing/adjustment operations; coordinates x/y/w/h are normalized 0..1, color is #RRGGBB, text max 200 characters, value is degrees for rotation, percent change (-100..100) for brightness/contrast, or font size as a percentage of image width for text. Use zero/empty defaults for unused fields. Do not claim to regenerate images or remove objects: explain unsupported tasks in message. No code, HTML or scripts." }] }, { role: "user", content: [{ type: "input_text", text: JSON.stringify({ prompt, note: { title, content }, images: images.map(({id,width,height}) => ({id,width,height})) }) }, ...images.map(image => ({ type: "input_image", image_url: `data:${image.type};base64,${image.data}`, detail: "low" }))] }],
     }),
-  });
+  }); } catch (error) { throw Object.assign(new Error("Astra Agent could not connect. Try again shortly."), { status: 503, code: "ai_failed", retryable: ["TimeoutError", "AbortError"].includes(error.name) || ["ECONNRESET","ETIMEDOUT"].includes(error.cause?.code) }); }
   const data = await response.json().catch(() => null);
-  if (!response.ok) throw Object.assign(new Error("Astra Agent could not complete this request."), { status: response.status, retryable: response.status === 408 || response.status === 429 || response.status >= 500 });
+  if (!response.ok) throw Object.assign(new Error("Astra Agent could not complete this request."), { status: response.status, code: "ai_failed", retryable: response.status === 408 || response.status === 429 || response.status >= 500 });
   // Responses normally exposes `output_text`, but structured responses can also
   // arrive as an output_text content item. Supporting both keeps the API
   // contract stable across service tiers without logging private note content.
@@ -470,11 +478,35 @@ async function openAiTransform({ title, content, prompt, tier }) {
   try {
     result = JSON.parse(String(raw || "").trim().replace(/^```json\s*/i, "").replace(/\s*```$/, ""));
   } catch {
-    throw Object.assign(new Error("Astra Agent returned an invalid result."), { status: 502 });
+    throw Object.assign(new Error("Astra Agent returned an invalid result."), { status: 502, code: "ai_invalid_result" });
   }
   if (!result || typeof result.message !== "string" || typeof result.title !== "string" || typeof result.content !== "string")
-    throw Object.assign(new Error("Astra Agent returned an invalid result."), { status: 502 });
-  return { result: { message: result.message.slice(0, 600), title: normalizeText(result.title, MAX_NOTE_NAME), content: result.content.slice(0, AI_MAX_NOTE_BYTES) }, usage: data?.usage || {} };
+    throw Object.assign(new Error("Astra Agent returned an invalid result."), { status: 502, code: "ai_invalid_result" });
+  let imageEdits;
+  try { imageEdits = AgentImages.validate(result.imageEdits || [], images); }
+  catch { throw Object.assign(new Error("Astra Agent returned unsupported image changes."), { status: 502, code: "ai_invalid_result" }); }
+  return { result: { message: result.message.slice(0, 600), title: normalizeText(result.title, MAX_NOTE_NAME), content: result.content.slice(0, AI_MAX_NOTE_BYTES), imageEdits }, usage: data?.usage || {}, tier: ["flex", "default"].includes(data?.service_tier) ? data.service_tier : tier };
+}
+
+async function budgetedAiTransform({ title, content, prompt, selectedIds, remainingMicrousd }) {
+  const doc = NoteDocument.unpack(content);
+  if (Buffer.byteLength(doc.text, "utf8") > AI_MAX_NOTE_BYTES) throw Object.assign(new Error("Astra Agent can process up to 64 KB of text at once."), { status: 413, code: "ai_note_too_large" });
+  const ids = selectedIds === undefined ? [] : selectedIds;
+  if (!Array.isArray(ids) || ids.length > 3 || ids.some(id => !NoteDocument.ID.test(id) || !doc.images.some(image => image.id === id)))
+    throw Object.assign(new Error("Choose images from this note only."), { status: 400, code: "invalid_image" });
+  const selected = doc.images.filter(image => ids.includes(image.id));
+  const validated = NoteDocument.unpack(await NoteImages.validate(NoteDocument.pack(doc.text, selected)));
+  // Reserve using Standard rates and a conservative input bound before either
+  // tier is called. Image input consumes the same allowance as text input.
+  const inputBound = Buffer.byteLength(doc.text + prompt + title) + 4_000 + selected.length * 20_000;
+  const maxOutputTokens = Number.isFinite(remainingMicrousd)
+    ? Math.min(AI_MAX_OUTPUT_TOKENS, Math.floor((remainingMicrousd - inputBound * 0.1) / 0.5)) : AI_MAX_OUTPUT_TOKENS;
+  if (maxOutputTokens < 256) throw Object.assign(new Error("Not enough Astra Agent allowance for this request."), { status: 429, code: "ai_quota_exhausted" });
+  const args = { title, content: doc.text, prompt, images: validated.images, maxOutputTokens };
+  let transformed;
+  try { transformed = await openAiTransform({ ...args, tier: "flex" }); }
+  catch (error) { if (!error.retryable) throw error; transformed = await openAiTransform({ ...args, tier: "default" }); }
+  return transformed;
 }
 
 async function exists(file) {
@@ -498,7 +530,15 @@ async function atomicWrite(file, value) {
   const temporary = `${file}.${process.pid}.${newId(4)}.tmp`;
   try {
     await fsp.writeFile(temporary, value, { encoding: "utf8", mode: 0o600 });
-    await fsp.rename(temporary, file);
+    for (let attempt = 0; ; attempt++) {
+      try { await fsp.rename(temporary, file); break; }
+      catch (error) {
+        // Windows scanners can briefly hold the destination open. Never
+        // unlink it: keep the previous complete file until atomic replace wins.
+        if (process.platform !== "win32" || attempt >= 3 || !["EPERM","EACCES","EBUSY"].includes(error.code)) throw error;
+        await new Promise(resolve => setTimeout(resolve, 25 * (attempt + 1)));
+      }
+    }
   } finally {
     await fsp.unlink(temporary).catch((error) => {
       if (error.code !== "ENOENT")
@@ -605,7 +645,7 @@ function normalizeText(value, max) {
   return value.normalize("NFC").trim().slice(0, max);
 }
 function characterCount(text) {
-  return Array.from(String(text)).filter((char) => !/\s/u.test(char)).length;
+  return Array.from(NoteDocument.unpack(String(text)).text).filter((char) => !/\s/u.test(char)).length;
 }
 function maskEmail(email) {
   const [local, domain] = String(email).split("@");
@@ -678,6 +718,7 @@ function planForMetadata(metadata) {
   if ((metadata.entitlements?.ultraMs || 0) > 0) return "ultra";
   if ((metadata.entitlements?.proMs || 0) > 0) return "pro";
   if ((metadata.entitlements?.plusMs || 0) > 0) return "plus";
+  if (Education.eligible(metadata)) return "education";
   return "free";
 }
 
@@ -699,10 +740,13 @@ function planPayload(metadata, now = Date.now()) {
           : null;
   return {
     type: plan,
+    educationEligible: Education.eligible(metadata),
+    canPurchase: !Education.matchesEmail(metadata.email) && !["admin", "beta"].includes(plan),
+    educationPending: Education.matchesEmail(metadata.email) && metadata.emailVerified !== true,
     maxBytes: Number.isFinite(definition.maxBytes) ? definition.maxBytes : null,
     maxNotes: Number.isFinite(definition.maxNotes) ? definition.maxNotes : null,
     ultraDays: Math.ceil(ultraMs / 864e5),
-    canOrganize: ["plus", "pro", "ultra", "beta", "admin"].includes(plan),
+    canOrganize: ["plus", "education", "pro", "ultra", "beta", "admin"].includes(plan),
     canRecover: ["ultra", "beta", "admin"].includes(plan),
     canCreateZero: ["pro", "ultra", "beta", "admin"].includes(plan),
     canUseBetaFeatures: ["beta", "admin"].includes(plan),
@@ -710,7 +754,7 @@ function planPayload(metadata, now = Date.now()) {
     proDays: Math.ceil(proMs / 864e5),
     activeEndsAt:
       activeMs === null ? null : new Date(now + activeMs).toISOString(),
-    canCreateConfidential: ["plus", "pro", "ultra", "beta", "admin"].includes(plan),
+    canCreateConfidential: ["plus", "education", "pro", "ultra", "beta", "admin"].includes(plan),
   };
 }
 
@@ -2322,13 +2366,13 @@ function validateBroadcastContent({ subject, html, text }) {
 
 function normalizeAdminFilters(raw = {}) {
   const languages = Array.isArray(raw.languages) ? raw.languages.filter((value) => ["en", "zh-Hant", "ja"].includes(value)) : [];
-  const plans = Array.isArray(raw.plans) ? raw.plans.filter((value) => ["free", "plus", "pro", "ultra", "beta", "admin"].includes(value)) : [];
+  const plans = Array.isArray(raw.plans) ? raw.plans.filter((value) => ["free", "plus", "education", "pro", "ultra", "beta", "admin"].includes(value)) : [];
   return { languages: [...new Set(languages)], plans: [...new Set(plans)] };
 }
 
 function normalizeBroadcastExclusions(raw = {}) {
   const excludedPlans = Array.isArray(raw.excludedPlans)
-    ? raw.excludedPlans.filter((value) => ["free", "plus", "pro", "ultra", "beta", "admin"].includes(value))
+    ? raw.excludedPlans.filter((value) => ["free", "plus", "education", "pro", "ultra", "beta", "admin"].includes(value))
     : [];
   const excludedAccounts = Array.isArray(raw.excludedAccounts)
     ? raw.excludedAccounts.map((value) => String(value).trim().toLocaleLowerCase("en-US")).filter(Boolean)
@@ -2527,6 +2571,7 @@ async function accountPayload(username) {
       plan: access.payload,
       ai: {
         percent: ai.percent,
+        unlimited: !Number.isFinite(ai.budgetMicrousd),
         resetsAt: ai.resetsAt,
         enabled: Boolean(process.env.API_KEY),
       },
@@ -2662,9 +2707,18 @@ app.use(
     handler: rateLimitHandler,
   }),
 );
-// Client-encrypted notes expand when encoded, but never need a 6 MB body.
-// This keeps the 2 MB note allowance while reducing pre-auth memory exposure.
-app.use(express.json({ limit: "3mb", strict: true }));
+const ordinaryJson = express.json({ limit: "3mb", strict: true });
+const encryptedHistoryJson = express.json({ limit: "6mb", strict: true });
+app.use((req, res, next) => {
+  // A save may include both current ciphertext and a full encrypted image
+  // snapshot for history. Only an authenticated save gets the larger parser;
+  // anonymous/general requests keep the smaller pre-auth memory bound.
+  const ownerSave = req.method === "PUT" && /^\/api\/notes\/[a-f0-9]{24}$/.test(req.path)
+    || req.method === "POST" && /^\/api\/notes\/[a-f0-9]{24}\/previous\/restore$/.test(req.path);
+  if (ownerSave) return requireAuth(req, res, () => encryptedHistoryJson(req, res, next));
+  if (req.method === "PUT" && req.path === "/api/limited/note") return requireLimitedEditor(req, res, () => encryptedHistoryJson(req, res, next));
+  return ordinaryJson(req, res, next);
+});
 app.use(express.urlencoded({ extended: false, limit: "20kb" }));
 app.use((req, res, next) => {
   const origin = req.get("origin");
@@ -3746,6 +3800,8 @@ app.post(
       const result = await withLock("orders", async () => {
         const metadata = await loadMetadata(username);
         const accountId = accountOrderId(metadata);
+        if (Education.matchesEmail(metadata.email) && !isAdmin(metadata) && !isBeta(metadata))
+          throw Object.assign(new Error("Education includes Plus features for free and cannot purchase other plans. Existing paid time remains available."), { status: 403, code: "education_purchase_disabled" });
         let order = orderStore.byCheckout(accountId, checkoutToken);
         if (order) {
           if (!retainedOrder(order))
@@ -3994,6 +4050,9 @@ app.get(
             );
             if (!metadata.fulfilledOrders.length)
               delete metadata.fulfilledOrders;
+            // Receipt delivery is optional. Persist entitlement replay cleanup
+            // even if mail is unavailable or today's sending limit is reached.
+            await saveMetadata(username, metadata);
             metadata.emailAuth ||= {};
             metadata.emailAuth.planReceipts ||= [];
             if (metadata.emailVerified && !metadata.emailAuth.planReceipts.includes(order.orderId)) {
@@ -4174,6 +4233,9 @@ app.post(
           const existing = Object.entries(records).find(([, item]) => item.ownerUsername === username && item.noteId === note.id);
           if (existing)
             throw Object.assign(new Error("This note already has an active AstraPass. Disable it before creating another one."), { status: 409, code: "limited_editor_exists" });
+          const limit = ({ free: 2, plus: 10, education: 10, pro: 25, ultra: 100 })[access.payload.type] ?? Infinity;
+          if (Object.values(records).filter(item => item.ownerUsername === username).length >= limit)
+            throw Object.assign(new Error("Your plan's active AstraPass limit has been reached. Disable an existing AstraPass or wait for it to expire."), { status: 409, code: "pass_limit" });
           records[guestUsername] = {
             username: guestUsername,
             passwordHash: await argon2.hash(password, { type: argon2.argon2id, memoryCost: 19456, timeCost: 2, parallelism: 1 }),
@@ -4314,7 +4376,7 @@ app.put("/api/limited/note", requireLimitedEditor, limitedEditorMutationLimiter,
         note.content = req.body.encrypted;
         note.payloadVersion = 3;
       } else {
-        const content = typeof req.body?.content === "string" ? req.body.content.normalize("NFC") : "";
+        const content = await NoteImages.validate(typeof req.body?.content === "string" ? req.body.content.normalize("NFC") : "");
         if (Buffer.byteLength(content, "utf8") > MAX_NOTE_BYTES) throw Object.assign(new Error("Note is too large."), { status: 413 });
         writeServerNotePayload(note, record.ownerUsername, name, content);
       }
@@ -4337,7 +4399,7 @@ app.post("/api/limited/note/ai", requireLimitedEditor, limitedEditorMutationLimi
   const content = String(req.body?.content || "");
   if (!prompt || prompt.length > AI_MAX_PROMPT_CHARS)
     return jsonError(res, 400, "invalid_ai_prompt", "Enter a shorter Astra Agent instruction.");
-  if (Buffer.byteLength(content, "utf8") > AI_MAX_NOTE_BYTES)
+  if (Buffer.byteLength(content, "utf8") > MAX_NOTE_BYTES)
     return jsonError(res, 413, "ai_note_too_large", "Astra Agent can process up to 64 KB of note content at once.");
   try {
     const { record } = req.limitedEditor;
@@ -4353,10 +4415,8 @@ app.post("/api/limited/note/ai", requireLimitedEditor, limitedEditorMutationLimi
         await saveMetadata(record.ownerUsername, metadata);
         throw Object.assign(new Error("The note owner's Astra Agent allowance will refresh in 30 days."), { status: 429, code: "ai_quota_exhausted" });
       }
-      let transformed;
-      try { transformed = await openAiTransform({ title, content, prompt, tier: "flex" }); }
-      catch (error) { if (access.payload.type !== "free" && error.retryable) transformed = await openAiTransform({ title, content, prompt, tier: "default" }); else throw error; }
-      const cost = aiCostMicrousd(transformed.usage);
+      const transformed = await budgetedAiTransform({ title, content, prompt, selectedIds: req.body.imageIds, remainingMicrousd: ai.remainingMicrousd });
+      const cost = aiCostMicrousd(transformed.usage, transformed.tier);
       if (Number.isFinite(ai.budgetMicrousd) && cost > ai.remainingMicrousd)
         throw Object.assign(new Error("This request exceeds the note owner's remaining Astra Agent allowance."), { status: 429, code: "ai_quota_exhausted" });
       metadata.aiUsage.spentMicrousd += cost;
@@ -4767,7 +4827,7 @@ app.post(
     const submittedContent = String(req.body.content || "");
     if (!prompt || prompt.length > AI_MAX_PROMPT_CHARS)
       return jsonError(res, 400, "invalid_ai_prompt", "Enter a shorter Astra Agent instruction.");
-    if (Buffer.byteLength(submittedContent, "utf8") > AI_MAX_NOTE_BYTES)
+    if (Buffer.byteLength(submittedContent, "utf8") > MAX_NOTE_BYTES)
       return jsonError(res, 413, "ai_note_too_large", "Astra Agent can process up to 64 KB of note content at once.");
     try {
       const username = req.auth.session.username;
@@ -4787,22 +4847,15 @@ app.post(
           title = payload.name;
           content = payload.content;
         }
-        if (Buffer.byteLength(content, "utf8") > AI_MAX_NOTE_BYTES)
+        if (Buffer.byteLength(NoteDocument.unpack(content).text, "utf8") > AI_MAX_NOTE_BYTES)
           return jsonError(res, 413, "ai_note_too_large", "Astra Agent can process up to 64 KB of note content at once.");
         const ai = normalizeAiUsage(metadata, access.payload.type);
         if (ai.remainingMicrousd <= 0) {
           await saveMetadata(username, metadata);
           return jsonError(res, 429, "ai_quota_exhausted", "Your Astra Agent allowance will refresh in 30 days.");
         }
-        let transformed;
-        try {
-          transformed = await openAiTransform({ title, content, prompt, tier: "flex" });
-        } catch (error) {
-          if (access.payload.type !== "free" && error.retryable)
-            transformed = await openAiTransform({ title, content, prompt, tier: "default" });
-          else throw error;
-        }
-        const cost = aiCostMicrousd(transformed.usage);
+        const transformed = await budgetedAiTransform({ title, content, prompt, selectedIds: req.body.imageIds, remainingMicrousd: ai.remainingMicrousd });
+        const cost = aiCostMicrousd(transformed.usage, transformed.tier);
         if (Number.isFinite(ai.budgetMicrousd) && cost > ai.remainingMicrousd)
           return jsonError(res, 429, "ai_quota_exhausted", "This Astra Agent request exceeds your remaining allowance.");
         metadata.aiUsage.spentMicrousd += cost;
@@ -4921,7 +4974,7 @@ app.post(
           note.content = req.body.encrypted;
           note.payloadVersion = 3;
         } else {
-          const content = typeof req.body.content === "string" ? req.body.content.normalize("NFC") : "";
+          const content = await NoteImages.validate(typeof req.body.content === "string" ? req.body.content.normalize("NFC") : "");
           if (Buffer.byteLength(content, "utf8") > MAX_NOTE_BYTES)
             throw Object.assign(new Error("Note is too large."), { status: 413, code: "storage_limit" });
           writeServerNotePayload(note, username, name, content);
@@ -5017,10 +5070,10 @@ app.put(
           if (!preserveTimestamp) note.updatedAt = utcNow();
         } else {
           const name = normalizeText(req.body.name, MAX_NOTE_NAME);
-          const content =
+          const content = await NoteImages.validate(
             typeof req.body.content === "string"
               ? req.body.content.normalize("NFC")
-              : "";
+              : "");
           if (!name)
             throw Object.assign(new Error("Note name is required."), {
               status: 400,
@@ -5294,6 +5347,7 @@ app.use(
     dotfiles: "deny",
   }),
 );
+app.use("/vendor/markdown-it", express.static(path.join(ROOT, "node_modules", "markdown-it", "dist"), { maxAge: "7d", dotfiles: "deny" }));
 app.get("/.well-known/security.txt", (req, res) =>
   res.type("text/plain; charset=utf-8").sendFile(path.join(PUBLIC_DIR, "security.txt")),
 );
@@ -5463,6 +5517,9 @@ module.exports = {
     cleanupBillingRecords,
     retainedOrder,
     openAiTransform,
+    aiCostMicrousd,
+    budgetedAiTransform,
+    normalizeAiUsage,
     parseCookies,
     publicIpForLookup,
     sessionCookieOptions,

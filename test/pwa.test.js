@@ -56,7 +56,7 @@ test("PWA install entry points stay available without caching private applicatio
 
 test("the service worker refreshes interface assets from the network before using cache", () => {
   const serviceWorker = fs.readFileSync(path.join(__dirname, "../public/sw.js"), "utf8");
-  assert.match(serviceWorker, /const CACHE_NAME = "astranote-interface-v4"/);
+  assert.match(serviceWorker, /const CACHE_NAME = "astranote-interface-v5"/);
   assert.match(serviceWorker, /fetch\(request\)\s*\.then\(/);
   assert.match(serviceWorker, /\.catch\(\(\) => caches\.match\(request\)\)/);
   assert.doesNotMatch(serviceWorker, /return cached \|\| network/);

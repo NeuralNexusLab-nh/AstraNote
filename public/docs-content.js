@@ -70,9 +70,9 @@
     ja: { title: "Astra Agent：ノートを次に使える形へ。", lead: "素早く使え、確認しやすく、リクエストのデータ境界も明確です。", body: `<h2 id="what">Astra Agent でできること</h2><p>Astra Agent は、入力した指示に従って一つのノートのタイトルと内容を整えます。まずプレビューを返し、<strong>変更を保存</strong>するまで元のノートは変わりません。</p><div class="docs-flow"><div><i class="fa-solid fa-pen"></i><strong>指示する</strong><span>変えたいことを書きます。</span></div><i class="fa-solid fa-arrow-right"></i><div><i class="fa-solid fa-eye"></i><strong>確認する</strong><span>提案されたタイトルと文章を見ます。</span></div><i class="fa-solid fa-arrow-right"></i><div><i class="fa-solid fa-floppy-disk"></i><strong>選ぶ</strong><span>保存するか、結果を破棄します。</span></div></div><h2 id="uses">速さ、手軽さ、明確な安全の境界</h2><div class="docs-facts"><div><i class="fa-solid fa-bolt"></i><h3>すばやく整える</h3><p>一つの明確な指示で、粗い文章を手順や読みやすい構成、別の読み手向けの文章に整えられます。</p></div><div><i class="fa-solid fa-eye"></i><h3>手軽に確認する</h3><p>タイトルと内容をまとめてプレビューできます。合えば保存し、合わなければそのまま破棄できます。</p></div><div><i class="fa-solid fa-shield-halved"></i><h3>明確な安全の境界</h3><p>一回の処理で送信されるのはタイトル、内容、指示だけです。PIN と暗号鍵は送信も保存もされません。</p></div></div><h2 id="privacy">リクエストで送信されるもの</h2><p>「プレビューを作成」を選んだ場合のみ、タイトル、内容、指示が OpenAI に送信されます。AstraSecret、AstraConfidential、AstraZero では解除済みのタイトルと内容がその処理のために送信されますが、PIN と暗号鍵は送信・保存されません。処理されたくない内容には Astra Agent を使わないでください。</p><h2 id="limits">利用枠と可用性</h2><p>Astra Agent には 30 日ごとに更新される独立した利用枠があり、ダッシュボードに残量の割合が表示されます。Free は Flex サービス階層で利用でき、有料プランにはより大きな枠があります。Flex が一時的に利用できない場合、有料プランは標準階層へ切り替わります。公平な利用のためレート制限があります。</p><h2 id="safe-use">始める前に</h2><p>処理中は Astra Agent の画面を開いたままにしてください。閉じる、更新する、AstraNote から離れるとリクエストは中止され、何も保存されません。AI の出力は不完全または誤っている可能性があるため、必ずプレビューを確認してください。保存するかは常にあなたが決めます。</p>` },
   };
   const aiModelDisclosure = {
-    en: "Astra Agent uses GPT-5.6-Luna to generate its preview.",
-    "zh-Hant": "Astra Agent 使用 GPT-5.6-Luna 產生預覽內容。",
-    ja: "Astra Agent は GPT-5.6-Luna を使ってプレビューを生成します。",
+    en: "Astra Agent uses GPT-6-Luna to generate its preview.",
+    "zh-Hant": "Astra Agent 使用 GPT-6-Luna 產生預覽內容。",
+    ja: "Astra Agent は GPT-6-Luna を使ってプレビューを生成します。",
   };
   Object.entries(aiModelDisclosure).forEach(([language, disclosure]) => {
     const page = content["astra-ai"][language];
@@ -290,6 +290,10 @@
     const directoryLabel = { en: "Browse documentation", "zh-Hant": "瀏覽文件目錄", ja: "ドキュメントの目次" }[lang];
     root.innerHTML = `<div class="docs-layout"><aside class="docs-sidebar"><a class="docs-sidebar-home ${route === "home" ? "active" : ""}" href="/docs"><i class="fa-solid fa-book-open" aria-hidden="true"></i>${lang === "zh-Hant" ? "文件首頁" : lang === "ja" ? "ドキュメント" : "Documentation"}</a><details class="docs-nav-details" ${compactNavigation.matches ? "" : "open"}><summary>${directoryLabel}</summary><nav aria-label="${directoryLabel}">${nav}</nav><div class="docs-sidebar-links">${utilityLinks.map(([href, icon, text, external]) => `<a href="${href}"${external ? ' target="_blank" rel="noopener noreferrer"' : ""}><i class="fa-${icon === "fa-github" ? "brands" : "solid"} ${icon}" aria-hidden="true"></i>${text}</a>`).join("")}</div></details></aside><article class="docs-article"><header class="docs-article-head reveal visible"><p class="eyebrow"><i class="fa-solid fa-book-open" aria-hidden="true"></i>${label}</p><h1>${page.title}</h1><p class="muted docs-lead">${page.lead}</p></header><div class="docs-article-body">${body}</div><footer class="docs-next"><a href="${pagePath(previous[0])}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>${previousText}</span></a>${next ? `<a href="${pagePath(next[0])}"><span>${nextText}</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>` : `<a href="mailto:astranote@nxlabtw.com"><span>${nextText}</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>`}</footer></article></div>`;
     if (route === "plans") {
+      const plusTitle = root.querySelector(".docs-plan-plus h2");
+      if (plusTitle) plusTitle.textContent = "Plus / Education";
+      const education = document.createElement("p"); education.className = "education-note"; education.textContent = t("educationDescription");
+      root.querySelector(".docs-plan-overview")?.after(education);
       [
         [".docs-plan-plus", "aiPlanPlus"],
         [".docs-plan-pro", "aiPlanPro"],

@@ -59,6 +59,9 @@
       }
     </script>
 
+    <script src="/note-document.js" defer></script>
+    <script src="/vendor/markdown-it/markdown-it.min.js" defer></script>
+    <script src="/note-media.js" defer></script>
     <script src="/app.js" defer></script>
     <script src="/home-marketing.js" defer></script>
   </head>
@@ -115,24 +118,9 @@
             <article class="card feature-card reveal">
               <h3 class="feature-heading"><span class="feature-icon"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i></span><span data-i18n="aiTitle">Make notes useful</span></h3>
               <p data-i18n="aiBody">Use Astra Agent, sharing, and recovery tools when a note needs to do more than stay saved.</p>
+              <a class="feature-learn" href="/docs/astra-pass" data-i18n="homePassLearn">How AstraPass works</a>
             </article>
           </div>
-        </div>
-      </section>
-
-      <section class="home-section home-pass" id="astrapass" aria-labelledby="home-pass-heading">
-        <div class="shell">
-          <header class="section-head reveal">
-            <p class="eyebrow"><i class="fa-solid fa-user-pen" aria-hidden="true"></i><span>AstraPass</span></p>
-            <h2 id="home-pass-heading" data-i18n="homePassTitle">One note. A temporary sign-in.</h2>
-            <p class="muted home-intro" data-i18n="homePassBody">Need this note on another device without opening your main account? Create an AstraPass just for it. Saved edits go straight back to the original note; access ends at expiry.</p>
-          </header>
-          <ol class="home-pass-steps reveal">
-            <li><i class="fa-solid fa-user-plus" aria-hidden="true"></i><div><h3 data-i18n="homePassCreate">Create a temporary account</h3><p data-i18n="homePassCreateHint">From the note's action bar.</p></div></li>
-            <li><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i><div><h3 data-i18n="homePassEdit">Edit the same note</h3><p data-i18n="homePassEditHint">Saved changes update your original.</p></div></li>
-            <li><i class="fa-solid fa-clock" aria-hidden="true"></i><div><h3 data-i18n="homePassExpire">Access ends on time</h3><p data-i18n="homePassExpireHint">Your original note stays with you.</p></div></li>
-          </ol>
-          <a class="btn home-pass-learn" href="/docs/astra-pass"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span data-i18n="homePassLearn">How AstraPass works</span></a>
         </div>
       </section>
 
@@ -164,7 +152,7 @@
           </header>
           <div class="home-plan-grid">
             <article class="card home-plan reveal" data-home-plan="plus">
-              <header class="home-plan-heading"><h3><i class="fa-solid fa-star" aria-hidden="true"></i>Plus</h3><span class="home-plan-role" data-i18n="homePlusRole">Organize</span></header>
+              <header class="home-plan-heading"><h3><i class="fa-solid fa-star" aria-hidden="true"></i>Plus / Education</h3><span class="home-plan-role" data-i18n="homePlusRole">Organize</span></header>
               <p class="home-plan-description" data-i18n="homePlusBody">Keep your everyday notes in order.</p>
               <ul class="home-plan-features">
                 <li><i class="fa-solid fa-thumbtack" aria-hidden="true"></i><span data-i18n="homeOrganize">Pin, archive &amp; batch manage</span></li>
@@ -172,6 +160,7 @@
                 <li><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i><span data-i18n="aiPlanPlus"></span></li>
               </ul>
               <p class="home-plan-spec" data-i18n="homePlusSpec">256 KB · 50 notes</p>
+              <p class="field-help education-note" data-i18n="educationSummary"></p>
               <div class="home-plan-bottom">
                 <p class="home-plan-price">0.000025 BTC <small data-i18n="perMonth">/ month</small><span data-i18n="plusUsdEstimate">About US$2 / month</span></p>
                 <a class="btn btn-outline" href="/plans"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i><span data-i18n="explore">See plans</span><span class="sr-only">Plus</span></a>
@@ -206,13 +195,14 @@
               </div>
             </article>
           </div>
+          <p class="education-note education-policy"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i><span data-i18n="educationDescription"></span></p>
           <article class="home-free reveal" data-home-plan="free">
             <h3><i class="fa-regular fa-note-sticky" aria-hidden="true"></i>Free</h3>
             <div><p data-i18n="homeFreeTitle">A place to start. Free to keep using.</p><p class="muted" data-i18n="homeFreeBody">128 KB · 20 notes · AstraSecret encryption</p><p class="home-free-ai"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i><span data-i18n="aiPlanFree"></span></p></div>
             <a class="btn btn-outline" id="home-free-cta" href="/register"><i class="fa-solid fa-pen-nib" aria-hidden="true"></i><span data-i18n="homeFreeCta">Start free</span></a>
           </article>
           <div class="home-plans-after">
-            <div class="home-plan-footnotes"><p data-i18n="usdEstimateNote"></p><p data-i18n="homePlansFinePrint"></p></div>
+            <div class="home-plan-footnotes"><p data-i18n="unverifiedAgent"></p><p data-i18n="usdEstimateNote"></p><p data-i18n="homePlansFinePrint"></p></div>
             <a class="btn home-compare-link" href="/plans"><i class="fa-solid fa-table-columns" aria-hidden="true"></i><span data-i18n="homePlansCompare">Compare all plans</span></a>
           </div>
         </div>

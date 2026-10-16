@@ -1680,6 +1680,10 @@ Object.assign(I18N.ja, {
   magicLinkExpired: "このサインインリクエストは期限切れです。新しいリンクを受け取るには、もう一度開始してください。",
 });
 
+Object.assign(I18N.en, { educationDescription: "Education is free. Accounts registered with .edu or supported .edu.[country code] emails automatically receive permanent Education after verification, with Plus features. Educational accounts cannot purchase or upgrade to other plans, even before verification. Existing paid time is kept.", education_purchase_disabled: "Education includes Plus features for free. Other plan purchases are unavailable; your existing paid time is kept.", educationInfo: "Education · free Plus features", unverifiedAgent: "Unverified Free includes 64 KB and half the Free Astra Agent allowance. Verify email to unlock 128 KB and the full allowance." });
+Object.assign(I18N["zh-Hant"], { educationDescription: "使用 .edu 或受支援的 .edu.[國碼]（如 .edu.tw）註冊，驗證信箱後會自動升級為 Education，永久免費享有 Plus 同等功能。教育信箱帳號無論是否已驗證，都不能購買或升級其他方案；既有付費天數仍會保留。", education_purchase_disabled: "Education 免費享有 Plus 同等功能，不能購買其他方案；已購買的天數仍會保留。", educationInfo: "Education · 免費享 Plus 同等功能", unverifiedAgent: "未驗證 Free 提供 64 KB 與一半的 Astra Agent 額度；驗證信箱即可完整使用 128 KB 與 Free 額度。" });
+Object.assign(I18N.ja, { educationDescription: "Educationは無料です。.eduや対応する.edu.[国コード]（例.edu.tw）で登録し、メール認証すると自動的にPlus相当のEducationへ移行します。教育メールのアカウントは認証前も他プランを購入・アップグレードできません。購入済み期間は保持されます。", education_purchase_disabled: "EducationではPlus相当の機能を無料で利用できます。他プランの購入はできませんが、購入済み期間は保持されます。", educationInfo: "Education · Plus相当の機能を無料で", unverifiedAgent: "未認証Freeは64 KBとFreeの半分のAstra Agent利用枠。メール認証後は128 KBと全利用枠を使えます。" });
+if (typeof window !== "undefined") for (const language of Object.keys(window.AstraMedia?.copy || {})) Object.assign(I18N[language], window.AstraMedia.copy[language]);
 const state = {
   session: null,
   account: null,
@@ -1967,6 +1971,15 @@ Object.assign(I18N.ja, {
   privacyRetention: "Ultra、Admin、Beta は最大20の版を保持でき、既定は3つ、無効化もできます。数を減らすと古い版は完全に削除されます。履歴とゴミ箱は容量を使います。ダウングレード後の保存でそのノートの履歴は削除されます。ゴミ箱は元の期限（1、3、7、14、30日）を維持します。アカウント削除、永久削除、上限超過による自動削除は復元可能なコピーを作りません。ロック済みノートの編集・復元には十分な容量のプランが必要です。",
 });
 
+Object.assign(I18N.en, { mediaTermsTitle: "Images, editing and Education", mediaTerms: "Each note may contain up to three images. Images, captions, drawings and complete image snapshots in history share your storage and note encryption. Compression is a target, not a quality or size guarantee; keep independent copies. Astra Agent processes readable note text and explicitly selected images through OpenAI, never your PIN or key. Results require your review before saving. Education eligibility depends on a verified email in an approved educational namespace and grants permanent Plus-equivalent features, without new paid purchases. Existing purchased time is preserved. Unverified Free includes 64 KB and half the full Free Agent allowance.", aiPrivacyText: "Generating a preview sends readable titles, note text, your instruction and explicitly selected images to OpenAI, including unlocked encrypted content. PINs and encryption keys are not sent. Do not submit content you do not want processed there. The request uses store:false; OpenAI's applicable processing and retention policies still apply. Review every result before saving." });
+Object.assign(I18N["zh-Hant"], { mediaTermsTitle: "圖片、編輯與 Education", mediaTerms: "每篇最多三張圖片；圖片、註解、繪圖及版本中的完整圖片副本，都共用筆記空間與加密。壓縮為目標，不保證大小或畫質，請自行保留副本。Astra Agent 會透過 OpenAI 處理可讀文字與明確勾選的圖片，不包含 PIN 或金鑰；結果由您檢查後儲存。Education 須驗證核可教育網域的信箱，永久提供 Plus 同等功能，不可新增付費購買；已購買的天數仍會保留。未驗證 Free 提供 64 KB 與完整 Free 額度的一半。", aiPrivacyText: "產生預覽時，可讀標題、筆記文字、指令及明確勾選的圖片會傳送至 OpenAI，包括已解鎖的加密內容；PIN 與加密金鑰不會傳送。不希望由該服務處理的資料，請勿提交。請求使用 store:false，但仍適用 OpenAI 的資料處理與保留政策。儲存前請檢查每項結果。" });
+Object.assign(I18N.ja, { mediaTermsTitle: "画像・編集・Education", mediaTerms: "1ノート3画像まで。説明・描画・履歴の完全な画像コピーは、ノートの容量と暗号化を共有します。圧縮は目標で、容量や画質を保証せず、別にもコピーを保管してください。Astra Agentは読める文章と選択画像をOpenAIで処理しますが、PINや鍵は送りません。保存前に結果を確認してください。Educationは承認済み教育ドメインのメール認証でPlus相当の機能を期限なしで提供。他プランの新規購入は不可、購入済み期間は保持。未認証Freeは64 KBと全Free枠の半分です。", aiPrivacyText: "プレビュー生成時、読めるタイトル・文章・指示と明示的に選んだ画像をOpenAIへ送信します。解除済みの暗号化内容も含みますが、PINや暗号鍵は送りません。処理させたくない情報は送信しないでください。store:falseを設定しますが、OpenAIの適用される処理・保持ポリシーに従います。保存前に結果を確認してください。" });
+Object.assign(I18N["en"], {"emailBannerFree":"Verify your email for 128 KB, the full Free Agent allowance and email security.","emailBannerEducation":"Verify your educational email to automatically unlock free Education with Plus features.","legalUpdated":"Effective and last updated: 17 October 2026","termsUpdated":"Effective and last updated: 17 October 2026"});
+Object.assign(I18N["zh-Hant"], {"emailBannerFree":"驗證信箱，即可使用 128 KB、完整 Free Agent 額度與信箱安全功能。","emailBannerEducation":"驗證教育信箱，即可自動取得免費 Education，享 Plus 同等功能。","legalUpdated":"生效及最後更新：2026 年 10 月 17 日","termsUpdated":"生效及最後更新：2026 年 10 月 17 日"});
+Object.assign(I18N["ja"], {"emailBannerFree":"メール認証で128 KB、全Free Agent枠とメール保護を利用できます。","emailBannerEducation":"教育メールを認証して、Plus相当の無料Educationを自動で利用。","legalUpdated":"発効・最終更新：2026年10月17日","termsUpdated":"発効・最終更新：2026年10月17日"});
+Object.assign(I18N["en"], {"educationSummary":"Education: free Plus features after educational email verification.","educationUnavailable":"Unavailable for Education","educationActive":"Education included"});
+Object.assign(I18N["zh-Hant"], {"educationSummary":"Education：驗證教育信箱，免費享 Plus 同等功能。","educationUnavailable":"Education 不可升級","educationActive":"已包含 Education"});
+Object.assign(I18N["ja"], {"educationSummary":"Education：教育メール認証でPlus相当の機能を無料で。","educationUnavailable":"Educationは変更不可","educationActive":"Educationに含まれる"});
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const page = document.body.dataset.page || "";
@@ -2114,6 +2127,9 @@ Object.assign(I18N.ja, {
 });
 
 const t = (key) => I18N[state.language]?.[key] || I18N.en[key] || key;
+window.addEventListener("beforeunload", (event) => {
+  if (document.querySelector('.modal-backdrop[data-busy="true"]')) { event.preventDefault(); event.returnValue = ""; }
+});
 const formatBytes = (bytes) =>
   `${Number((Number(bytes || 0) / 1000).toFixed(2))} KB`;
 const formatUtc = (value) =>
@@ -2640,6 +2656,15 @@ async function api(url, options = {}) {
           history_plan_required: t("historyPlanRequired"),
           organization_required: t("organizationRequired"),
           storage_limit: t("storageLimit"),
+          invalid_image: t("invalid_image"),
+          image_busy: t("image_busy"),
+          ai_failed: t("ai_failed"),
+          ai_unavailable: t("astraAiUnavailable"),
+          ai_invalid_result: t("ai_invalid_result"),
+          ai_quota_exhausted: t("ai_quota_exhausted"),
+          ai_note_too_large: t("ai_note_too_large"),
+          pass_limit: t("pass_limit"),
+          education_purchase_disabled: t("education_purchase_disabled"),
           restore_quota: t("restoreQuota"),
           note_locked: t("noteLocked"),
           order_not_found: t("billingRetention"),
@@ -2727,6 +2752,8 @@ function renderPlanComparison() {
     ],
     ["totalStorage", null, ["128 KB", "256 KB", "512 KB", "1024 KB"]],
     ["noteAllowance", null, ["20", "50", t("unlimited"), t("unlimited")]],
+    ["images", "mediaHint", ["3", "3", "3", "3"]],
+    ["passCapacity", null, ["2", "10", "25", "100"]],
     ["basicEncryption", null, [true, true, true, true]],
     ["secretOption", null, [true, true, true, true]],
     ["confidentialOption", null, [false, true, true, true]],
@@ -2878,7 +2905,7 @@ function buildNav() {
   const reportedPlanName = String(
     state.account?.plan?.type || "",
   ).toLowerCase();
-  const planName = ["free", "plus", "pro", "ultra", "beta", "admin"].includes(
+  const planName = ["free", "plus", "education", "pro", "ultra", "beta", "admin"].includes(
     reportedPlanName,
   )
     ? reportedPlanName
@@ -2899,7 +2926,7 @@ function buildNav() {
   if (authenticated && state.account?.emailSecurity?.showVerificationBanner) {
     const banner = document.createElement("aside");
     banner.className = "email-verification-banner";
-    const bannerCopy = state.account.emailSecurity?.verificationUnlocksStorage ? t("emailBannerFree") : t("emailBannerSecurity");
+    const bannerCopy = state.account.plan?.educationPending ? t("emailBannerEducation") : state.account.emailSecurity?.verificationUnlocksStorage ? t("emailBannerFree") : t("emailBannerSecurity");
     banner.innerHTML = `<div class="shell"><span class="email-banner-copy"><i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i> ${bannerCopy}</span><button type="button" class="btn email-banner-action"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>${t("verifyNow")}</span></button></div>`;
     nav.after(banner);
     document.body.classList.add("has-email-verification-banner");
@@ -3063,6 +3090,7 @@ function modal({
       previousFocus.focus({ preventScroll: true });
   };
   const cancelDialog = () => {
+    if (backdrop.dataset.busy === "true") return;
     close();
     onCancel?.();
   };
@@ -4372,7 +4400,7 @@ async function initDashboard() {
       ? `${formatBytes(account.usedBytes)} / ${t("unlimited")}`
       : `${formatBytes(account.usedBytes)} / ${formatBytes(account.maxBytes)}`;
   const aiPercent = account.ai?.percent ?? 0;
-  $("#ai-percent").textContent = `${aiPercent}%`;
+  $("#ai-percent").textContent = account.ai?.unlimited ? t("unlimited") : `${aiPercent}%`;
   const aiMeter = $(".ai-meter span");
   if (aiMeter) {
     const progress = Math.max(0, Math.min(100, aiPercent));
@@ -4383,7 +4411,7 @@ async function initDashboard() {
     meter.setAttribute("aria-valuenow", String(Math.round(progress)));
   }
   $("#ai-caption").textContent = account.ai?.enabled
-    ? t("aiEveryThirtyDays")
+    ? t(account.ai?.unlimited ? "unlimited" : "aiEveryThirtyDays")
     : t("astraAiUnavailable");
   $(".meter span").style.setProperty(
     "--progress",
@@ -4399,10 +4427,10 @@ async function initDashboard() {
       ? t("unlimited")
       : planDaysText(account.plan.proDays);
   $("#dashboard-plus-days").textContent =
-    ["admin", "beta"].includes(account.plan.type)
+    ["admin", "beta", "education"].includes(account.plan.type)
       ? t("unlimited")
       : planDaysText(account.plan.plusDays);
-  if (["admin", "beta"].includes(account.plan.type)) $(".account-plan-card .btn").hidden = true;
+  if (account.plan.canPurchase === false) $(".account-plan-card .btn").hidden = true;
   const lockedWarning = $("#dashboard-locked-warning");
   if (account.lockedNoteCount) {
     lockedWarning.hidden = false;
@@ -4655,6 +4683,13 @@ function openBatchAstraAgent(notes, refresh) {
   prompt.setAttribute("aria-label", t("astraAiPrompt"));
   content.append(prompt);
   const protectedCount = prepared.filter((note) => isClientEncryptedMode(note.encryption)).length;
+  const selections = new Map();
+  for (const note of prepared) {
+    if (!AstraDocument.unpack(note.content).images.length) continue;
+    const heading = document.createElement("h3"); heading.textContent = note.name; content.append(heading);
+    selections.set(note.id, AstraMedia.agentSelection(content, note.content, mediaOptions()));
+  }
+  const progress = document.createElement("div"); progress.className = "astra-ai-progress"; progress.setAttribute("role","status"); progress.textContent = t("agentWorking"); progress.hidden = true; content.append(progress);
   if (protectedCount) {
     const notice = document.createElement("p");
     notice.className = "field-help";
@@ -4672,17 +4707,24 @@ function openBatchAstraAgent(notes, refresh) {
       button.disabled = true;
       button.innerHTML = `<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><span>${t("astraAiWorkingShort")}</span>`;
       const previews = [];
+      const backdrop = button.closest(".modal-backdrop"); backdrop.dataset.busy = "true";
+      const cancelButton = button.closest(".modal-actions").querySelector("button:not(.btn-primary)");
+      if (cancelButton) cancelButton.disabled = true;
+      prompt.disabled = true; progress.hidden = false;
       try {
         for (const note of prepared) {
           const result = await api(`/api/notes/${note.id}/ai`, {
             method: "POST",
-            body: { prompt: prompt.value.trim(), title: note.name, content: note.content },
+            body: { prompt: prompt.value.trim(), title: note.name, content: note.content, imageIds: selections.get(note.id)?.() || [] },
           });
           previews.push({ note, preview: result.preview });
         }
+        backdrop.dataset.busy = "false";
         close();
-        openBatchAstraAgentPreview(previews, refresh);
+        await openBatchAstraAgentPreview(previews, refresh);
       } catch (error) {
+        backdrop.dataset.busy = "false"; prompt.disabled = false; progress.hidden = true;
+        if (cancelButton) cancelButton.disabled = false;
         button.disabled = false;
         button.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i><span>${t("astraAiGenerate")}</span>`;
         throw error;
@@ -4694,7 +4736,7 @@ function openBatchAstraAgent(notes, refresh) {
   begin();
 }
 
-function openBatchAstraAgentPreview(items, refresh) {
+async function openBatchAstraAgentPreview(items, refresh) {
   const content = document.createElement("div");
   content.className = "batch-agent-preview";
   const fields = [];
@@ -4719,7 +4761,9 @@ function openBatchAstraAgentPreview(items, refresh) {
     body.setAttribute("aria-label", t("note"));
     article.append(toggle, title, body);
     content.append(article);
-    fields.push({ item, include, title, body });
+    const images = await AstraMedia.applyCommands(AstraDocument.unpack(item.note.content).images, item.preview.imageEdits);
+    const media = AstraMedia.mount(body, AstraDocument.pack(body.value, images), mediaOptions({ account: state.account, originalBytes: item.note.bytes, mode: () => item.note.encryption }));
+    fields.push({ item, include, title, body, media });
   }
   modal({
     title: t("batchAgentPreview"),
@@ -4732,18 +4776,20 @@ function openBatchAstraAgentPreview(items, refresh) {
       if (!selected.length) throw new Error(t("batchAgentChoose"));
       button.disabled = true;
       try {
-        for (const { item, title, body } of selected) {
-          const request = { name: title.value, content: body.value, revision: item.note.revision };
+        for (const { item, title, body, media } of selected) {
+          if (media.busy()) throw new Error(t("image_busy"));
+          const draftContent = media.get();
+          const request = { name: title.value, content: draftContent, revision: item.note.revision };
           if (isClientEncryptedMode(item.note.encryption)) {
             request.encrypted = await encryptConfidentialPayload(
               item.note.id,
               item.note.clientSalt,
               item.note.agentPin,
-              { content: body.value.normalize("NFC") },
+              { content: draftContent.normalize("NFC") },
               item.note.encryption,
               item.note.encryption === ZERO_MODE ? item.note.encrypted : null,
             );
-            request.clearContent = body.value;
+            request.clearContent = draftContent;
             await attachClientHistory(item.note, request, item.note.agentPin);
             delete request.clearContent;
             delete request.content;
@@ -4877,7 +4923,7 @@ async function showPrevious(note, version = 1) {
   picker.onchange = () => showPrevious(note, Number(picker.value)).catch(showError);
   $("#previous-title").textContent = previous.name;
   $("#previous-time").textContent = formatUtc(previous.updatedAt);
-  $("#previous-content").textContent = previous.content;
+  AstraMedia.render($("#previous-content"), previous.content, mediaOptions());
   $("#previous-panel").hidden = false;
   $("#previous-panel").scrollIntoView({ behavior: "smooth", block: "start" });
   $("#close-previous").onclick = () => {
@@ -4913,6 +4959,8 @@ async function initNewNote() {
   if (!account) return;
   const form = $("#note-form");
   const encryption = form.encryption;
+  const media = AstraMedia.mount(form.content, "", mediaOptions({ account, mode: () => encryption.value }));
+  encryption.addEventListener("change", media.refresh);
   bindLiveValidation(form, {
     name: (input) => String(input.value || "").normalize("NFC").trim()
       ? ""
@@ -4983,9 +5031,10 @@ async function initNewNote() {
       const mode = encryption.value;
       const body = {
         name: form.name.value,
-        content: form.content.value.normalize("NFC"),
+        content: media.get().normalize("NFC"),
         encryption: mode,
       };
+      if (media.busy()) throw new Error(t("image_busy"));
       if ([ASTRA_SECRET_MODE, CONFIDENTIAL_MODE, ZERO_MODE].includes(mode)) {
         if (mode !== ZERO_MODE && !account.vaultAvailable)
           throw new Error(t("vaultUnavailable"));
@@ -5027,6 +5076,9 @@ async function initNewNote() {
 function currentNoteId() {
   return location.pathname.split("/").filter(Boolean)[1];
 }
+function mediaOptions(extra = {}) {
+  return { t, modal, showError, formatBytes, copyText, feedback: () => toast(t("copied")), ...extra };
+}
 
 async function copyText(text) {
   if (!text) return false;
@@ -5059,7 +5111,7 @@ function renderLockedNote(note) {
   $(".note-controls").hidden = true;
   $(".note-secondary-actions").hidden = true;
   $("#note-content").hidden = false;
-  $("#note-content").textContent = note.content || "";
+  AstraMedia.render($("#note-content"), note.content || "", mediaOptions());
   const panel = $("#locked-note-panel");
   panel.hidden = false;
   $("#locked-delete-date").textContent = t("scheduledDeletion").replace(
@@ -5077,6 +5129,7 @@ function openAstraAi(note, unlockedPin = null) {
   prompt.placeholder = t("astraAiPromptPlaceholder");
   prompt.setAttribute("aria-label", t("astraAiPrompt"));
   content.append(prompt);
+  const selectedImages = AstraMedia.agentSelection(content, note.content, mediaOptions());
   if (isClientEncryptedMode(note.encryption)) {
     const notice = document.createElement("p");
     notice.className = "field-help";
@@ -5103,7 +5156,7 @@ function openAstraAi(note, unlockedPin = null) {
   progress.setAttribute("role", "status");
   progress.setAttribute("aria-live", "polite");
   progress.innerHTML = `<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><span></span>`;
-  progress.querySelector("span").textContent = t("astraAiWorking");
+  progress.querySelector("span").textContent = t("agentWorking");
   content.append(progress, warning);
   modal({
     title: t("astraAi"),
@@ -5132,11 +5185,13 @@ function openAstraAi(note, unlockedPin = null) {
       try {
         const preview = await api(`/api/notes/${note.id}/ai`, {
           method: "POST",
-          body: { prompt: prompt.value.trim(), title: note.name, content: note.content },
+          body: { prompt: prompt.value.trim(), title: note.name, content: note.content, imageIds: selectedImages() },
         });
+        progress.querySelector("span").textContent = t("preparingPreview");
+        preview.preparedImages = await AstraMedia.applyCommands(AstraDocument.unpack(note.content).images, preview.preview.imageEdits);
         backdrop.dataset.busy = "false";
         close();
-        openAstraAiPreview(note, preview, unlockedPin);
+        await openAstraAiPreview(note, preview, unlockedPin);
       } catch (error) {
         backdrop.dataset.busy = "false";
         warning.hidden = true;
@@ -5151,7 +5206,7 @@ function openAstraAi(note, unlockedPin = null) {
     },
   });
 }
-function openAstraAiPreview(note, result, unlockedPin = null) {
+async function openAstraAiPreview(note, result, unlockedPin = null) {
   const content = document.createElement("div");
   content.className = "astra-ai-preview";
   const message = document.createElement("p");
@@ -5164,6 +5219,8 @@ function openAstraAiPreview(note, result, unlockedPin = null) {
   body.value = result.preview.content;
   body.rows = 14;
   content.append(message, title, body);
+  const images = result.preparedImages || await AstraMedia.applyCommands(AstraDocument.unpack(note.content).images, result.preview.imageEdits);
+  const media = AstraMedia.mount(body, AstraDocument.pack(body.value, images), mediaOptions({ account: state.account, originalBytes: note.bytes, mode: () => note.encryption }));
   modal({
     title: t("astraAiPreview"),
     body: t("astraAiPreviewBody"),
@@ -5173,16 +5230,18 @@ function openAstraAiPreview(note, result, unlockedPin = null) {
     onConfirm: async (close, button) => {
       button.disabled = true;
       try {
-        const request = { name: title.value, content: body.value, revision: note.revision };
+        if (media.busy()) throw new Error(t("image_busy"));
+        const draftContent = media.get();
+        const request = { name: title.value, content: draftContent, revision: note.revision };
         if (isClientEncryptedMode(note.encryption)) {
           const normalizedName = title.value.normalize("NFC").trim();
           if (!normalizedName) throw new Error(t("noteNameRequired"));
           request.encrypted = await encryptConfidentialPayload(
             note.id, note.clientSalt, unlockedPin,
-            { content: body.value.normalize("NFC") }, note.encryption,
+            { content: draftContent.normalize("NFC") }, note.encryption,
             note.encryption === ZERO_MODE ? note.encrypted : null,
           );
-          request.clearContent = body.value;
+          request.clearContent = draftContent;
           await attachClientHistory(note, request, unlockedPin);
           delete request.clearContent;
           delete request.content;
@@ -5286,7 +5345,11 @@ async function limitedApi(url, options = {}) {
   if (!['GET', 'HEAD'].includes(options.method || 'GET') && state.limited?.csrf) headers['x-csrf-token'] = state.limited.csrf;
   const response = await fetch(url, { ...options, headers, credentials: "same-origin", body: options.body && typeof options.body !== "string" ? JSON.stringify(options.body) : options.body });
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw Object.assign(new Error(data.message || t("error")), { status: response.status, code: data.error, data });
+  if (!response.ok) {
+    const key = ({ storage_limit: "storageLimit", note_conflict: "noteConflict", invalid_history: "historyInvalid", invalid_credentials: "invalidCredentials", captcha_required: "captchaNeeded", captcha_failed: "captchaNeeded", limited_note_unavailable: "limitedNoteUnavailable", limited_session_expired: "limitedAccessExpired", invalid_username: "usernameRules" })[data.error] || data.error;
+    const translated = key && t(key);
+    throw Object.assign(new Error(translated && translated !== key ? translated : data.message || t("error")), { status: response.status, code: data.error, data });
+  }
   return data;
 }
 async function deriveLimitedVaultKey(note, pin) {
@@ -5336,8 +5399,14 @@ async function initLimitedEdit() {
     $("#limited-login-form").onsubmit = async (event) => {
       event.preventDefault(); const form = event.currentTarget;
       if (!state.captcha) return showError(t("captchaNeeded"));
-      const result = await limitedApi("/api/limited/login", { method: "POST", body: { username: form.username.value, password: form.password.value, captcha: state.captcha } });
-      state.limited = { authenticated: true, csrf: result.csrf }; location.reload();
+      const submit = form.querySelector('[type="submit"]');
+      submit.disabled = true;
+      try {
+        const result = await limitedApi("/api/limited/login", { method: "POST", body: { username: form.username.value, password: form.password.value, captcha: state.captcha } });
+        state.limited = { authenticated: true, csrf: result.csrf }; location.reload();
+      } catch (error) {
+        resetCaptcha(); showError(error.message);
+      } finally { submit.disabled = false; }
     }; return;
   }
   login.hidden = true; card.hidden = false;
@@ -5356,21 +5425,36 @@ async function initLimitedEdit() {
   }
   $("#limited-note-name").textContent = note.name; $("#limited-note-expiry").textContent = t("limitedEditExpires").replace("{time}", formatUtc(result.editor.expiresAt));
   $("#limited-editor-name").value = note.name; $("#limited-editor-content").value = note.content || "";
+  let media = AstraMedia.mount($("#limited-editor-content"), note.content || "", mediaOptions({ mode: () => note.encryption }));
   const agentButton = $("#limited-agent");
   agentButton.hidden = result.editor.canUseAgent !== true;
   agentButton.onclick = () => {
     const prompt = document.createElement("textarea"); prompt.rows = 5; prompt.maxLength = 1600; prompt.placeholder = t("astraAiPromptPlaceholder");
-    modal({ title: t("astraAi"), body: t("astraAiBody"), content: prompt, confirm: t("astraAiGenerate"), onConfirm: async (close, button) => {
+    const form = document.createElement("div"); form.append(prompt);
+    const selectedImages = AstraMedia.agentSelection(form, media.get(), mediaOptions());
+    const progress = document.createElement("div"); progress.className = "astra-ai-progress"; progress.setAttribute("role","status"); progress.textContent = t("agentWorking"); progress.hidden = true; form.append(progress);
+    modal({ title: t("astraAi"), body: t("astraAiBody"), content: form, confirm: t("astraAiGenerate"), onConfirm: async (close, button) => {
       if (!prompt.value.trim()) throw new Error(t("astraAiPromptRequired"));
       button.disabled = true;
-      const response = await limitedApi("/api/limited/note/ai", { method: "POST", body: { prompt: prompt.value.trim(), title: $("#limited-editor-name").value, content: $("#limited-editor-content").value } });
+      const backdrop = button.closest(".modal-backdrop"); backdrop.dataset.busy = "true"; progress.hidden = false;
+      const cancel = button.closest(".modal-actions").querySelector("button:not(.btn-primary)"); if(cancel)cancel.disabled=true; prompt.disabled=true;
+      let response;
+      try { response = await limitedApi("/api/limited/note/ai", { method: "POST", body: { prompt: prompt.value.trim(), title: $("#limited-editor-name").value, content: media.get(), imageIds: selectedImages() } }); }
+      finally { backdrop.dataset.busy = "false"; progress.hidden = true; button.disabled = false; if(cancel)cancel.disabled=false; prompt.disabled=false; }
       close();
       const preview = document.createElement("div"); preview.className = "astra-ai-preview";
       const message = document.createElement("p"); message.className = "astra-ai-message"; message.textContent = response.preview.message;
       const title = document.createElement("input"); title.value = response.preview.title; title.maxLength = 80;
       const content = document.createElement("textarea"); content.rows = 14; content.value = response.preview.content;
       preview.append(message, title, content);
-      modal({ title: t("astraAiPreview"), body: t("astraAiPreviewBody"), content: preview, confirm: t("saveChanges"), cancel: t("discardResult"), onConfirm: (finish) => { $("#limited-editor-name").value = title.value; $("#limited-editor-content").value = content.value; finish(); } });
+      const images = await AstraMedia.applyCommands(media.images(), response.preview.imageEdits);
+      const previewMedia = AstraMedia.mount(content, AstraDocument.pack(content.value, images), mediaOptions({ mode: () => note.encryption }));
+      modal({ title: t("astraAiPreview"), body: t("astraAiPreviewBody"), content: preview, confirm: t("saveChanges"), cancel: t("discardResult"), onConfirm: (finish) => {
+        $("#limited-editor-name").value = title.value;
+        $("#limited-editor-content").nextElementSibling.remove();
+        media = AstraMedia.mount($("#limited-editor-content"), previewMedia.get(), mediaOptions({ mode: () => note.encryption }));
+        finish();
+      } });
     }});
   };
   $("#limited-note-form").onsubmit = async (event) => {
@@ -5378,7 +5462,8 @@ async function initLimitedEdit() {
     const button = $("button[type='submit']", event.currentTarget);
     button.disabled = true;
     try {
-      const request = { name: $("#limited-editor-name").value, content: $("#limited-editor-content").value.normalize("NFC"), revision: note.revision };
+      if (media.busy()) throw new Error(t("image_busy"));
+      const request = { name: $("#limited-editor-name").value, content: media.get().normalize("NFC"), revision: note.revision };
       if (isClientEncryptedMode(note.encryption)) {
         request.encrypted = await encryptLimitedNote(note, pin, key, { content: request.content });
         request.clearContent = request.content;
@@ -5410,7 +5495,7 @@ async function initNote() {
       note.name = unlocked.payload.name;
       note.content = unlocked.payload.content;
       vaultPin = unlocked.pin;
-      note.characters = Array.from(note.content).filter(
+      note.characters = Array.from(AstraDocument.unpack(note.content).text).filter(
         (character) => !/\s/u.test(character),
       ).length;
     } catch (error) {
@@ -5421,7 +5506,7 @@ async function initNote() {
   const noteName = $("#note-name");
   noteName.removeAttribute("data-i18n");
   noteName.textContent = note.name;
-  $("#note-content").textContent = note.content;
+  AstraMedia.render($("#note-content"), note.content, mediaOptions());
   $("#note-encryption").textContent = encryptionLabel(note.encryption);
   $("#note-characters").textContent =
     `${note.characters.toLocaleString()} ${t("characters")}`;
@@ -5433,7 +5518,7 @@ async function initNote() {
   }
   $("#edit-note").href = `/notes/${note.id}/edit`;
   $("#copy-note-content").onclick = async () => {
-    if (!(await copyText(note.content))) {
+    if (!(await copyText(AstraDocument.unpack(note.content).text))) {
       showError(t("error"));
       return;
     }
@@ -5545,6 +5630,7 @@ async function initEditor() {
   $("#editor-encryption").textContent = encryptionLabel(note.encryption);
   let dirty = false,
     saved = false;
+  const media = AstraMedia.mount(content, note.content, mediaOptions({ account: state.account, originalBytes: note.bytes, mode: () => note.encryption, onchange: () => { dirty = true; } }));
   const update = () => {
     $("#editor-count").textContent = `${Array.from(content.value)
       .filter((x) => !/\s/u.test(x))
@@ -5559,9 +5645,11 @@ async function initEditor() {
     const button = $("#save-note");
     button.disabled = true;
     try {
+      if (media.busy()) throw new Error(t("image_busy"));
+      const draftContent = media.get();
       const body = {
         name: name.value,
-        content: content.value,
+        content: draftContent,
         revision: note.revision,
       };
       if (isClientEncryptedMode(note.encryption)) {
@@ -5572,12 +5660,12 @@ async function initEditor() {
           note.clientSalt,
           vaultPin,
           {
-            content: content.value.normalize("NFC"),
+            content: draftContent.normalize("NFC"),
           },
           note.encryption,
           note.encryption === ZERO_MODE ? note.encrypted : null,
         );
-        body.clearContent = content.value;
+        body.clearContent = draftContent;
         await attachClientHistory(note, body, vaultPin);
         delete body.clearContent;
         delete body.content;
@@ -5657,10 +5745,10 @@ async function initSettings() {
       ? t("unlimited")
       : planDaysText(account.plan.proDays);
   $("#settings-plus-days").textContent =
-    ["admin", "beta"].includes(account.plan.type)
+    ["admin", "beta", "education"].includes(account.plan.type)
       ? t("unlimited")
       : planDaysText(account.plan.plusDays);
-  if (["admin", "beta"].includes(account.plan.type))
+  if (account.plan.canPurchase === false)
     $(".plan-settings-card a[href='/plans']").hidden = true;
   const renderSessions = (sessions) => {
     const list = $("#session-list");
@@ -5825,7 +5913,7 @@ async function initShared() {
     const sharedName = $("#shared-name");
     sharedName.removeAttribute("data-i18n");
     sharedName.textContent = note.name;
-    $("#shared-content").textContent = note.content;
+    AstraMedia.render($("#shared-content"), note.content, mediaOptions());
     $("#shared-author").textContent =
       `${t("by")} ${note.author} · ${note.email}`;
     $("#shared-encryption").textContent = encryptionLabel(note.encryption);
@@ -5833,7 +5921,7 @@ async function initShared() {
     $("#shared-characters").textContent =
       `${note.characters.toLocaleString()} ${t("characters")}`;
     $("#copy-shared-content").onclick = async () => {
-      if (!(await copyText(note.content))) {
+      if (!(await copyText(AstraDocument.unpack(note.content).text))) {
         showError(t("error"));
         return;
       }
@@ -6062,14 +6150,14 @@ async function initPlans() {
   let checkoutToken = randomHex(16);
   const panel = $("#checkout-panel");
   const monthsInput = $("#purchase-months");
-  const isPrivilegedAccount = ["admin", "beta"].includes(state.account?.plan?.type);
+  const isPrivilegedAccount = state.account?.plan?.canPurchase === false;
   if (isPrivilegedAccount) {
     $$("[data-plan-buy]").forEach((button) => {
       button.disabled = true;
       const label = button.querySelector("span");
       if (label) {
-        label.dataset.i18n = "permanent";
-        label.textContent = t("permanent");
+        label.dataset.i18n = state.account?.plan?.educationPending ? "verifyNow" : state.account?.plan?.educationEligible ? (button.dataset.planBuy === "plus" ? "educationActive" : "educationUnavailable") : "permanent";
+        label.textContent = t(label.dataset.i18n);
       }
     });
   }

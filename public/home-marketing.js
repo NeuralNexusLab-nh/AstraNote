@@ -18,8 +18,10 @@
       purposeIntroThree:
         "Sharing is just as direct: send a read-only link. The reader does not need an AstraNote account.",
       quickTitle: "Write it down",
+      aiTitle: "Do more with one note",
+      aiBody: "Refine text and images with Astra Agent. Use AstraPass to edit one note elsewhere with a temporary sign-in, without opening your main account.",
       quickBody:
-        "Ideas, tasks, study points, and meeting notes. Write first; organize only when you need to.",
+        "Write in Markdown and add up to three images. Sketch, annotate and keep useful details together.",
       shareTitle: "Retrieve it in seconds",
       shareBody:
         "Keep short text, reference details, and things you need to remember close by. Search, copy, and use them from any device.",
@@ -92,8 +94,10 @@
       purposeIntroThree:
         "要給別人？丟一個唯讀連結就好。對方不需要 AstraNote 帳號。",
       quickTitle: "好好記下來",
+      aiTitle: "讓筆記更好用",
+      aiBody: "用 Astra Agent 整理文字與圖片；透過 AstraPass 的臨時帳號，在其他裝置編輯同一篇筆記，不必開啟主帳號。",
       quickBody:
-        "想法、待辦、學習重點與會議紀錄。先寫下來，要整理時再整理。",
+        "用 Markdown 整理文字，每篇可加入三張圖片。手繪、加字、寫註解，把需要的資訊放在一起。",
       shareTitle: "需要時立刻拿到",
       shareBody:
         "短句、參考資訊與需要記得的內容，集中放在手邊。跨裝置搜尋、複製後就能使用。",
@@ -166,6 +170,8 @@
       purposeIntroThree:
         "共有も直接的です。読み取り専用リンクを一つ送るだけで、相手に AstraNote アカウントは必要ありません。",
       quickTitle: "きちんと書き留める",
+      aiTitle: "ノートをもっと便利に",
+      aiBody: "Astra Agentで文章や画像を整える。AstraPassの一時アカウントなら、メインアカウントを開かず別の端末で同じノートを編集できます。",
       quickBody:
         "アイデア、やること、学習の要点、会議メモ。まず書いて、整理は必要になったときに。",
       shareTitle: "必要なとき、すぐ取り出す",
@@ -226,6 +232,9 @@
     }
   };
 
+  Object.assign(COPY.en, { quickBody: "Write in Markdown and add up to three images. Sketch, annotate and keep useful details together.", aiBody: "Refine text and images with Astra Agent. Use AstraPass to edit one note elsewhere with a temporary sign-in, without opening your main account.", aiTitle: "Do more with one note" });
+  Object.assign(COPY["zh-Hant"], { quickBody: "用 Markdown 整理文字，每篇可加入三張圖片。手繪、加字、寫註解，把需要的資訊放在一起。", aiBody: "用 Astra Agent 整理文字與圖片；透過 AstraPass 的臨時帳號，在其他裝置編輯同一篇筆記，不必開啟主帳號。", aiTitle: "讓筆記更好用" });
+  Object.assign(COPY.ja, { quickBody: "Markdownと3枚までの画像で記録。描画・文字・説明を加え、必要な情報をひとまとめに。", aiBody: "Astra Agentで文章や画像を整える。AstraPassの一時アカウントなら、メインアカウントを開かず別の端末で同じノートを編集できます。", aiTitle: "ノートをもっと便利に" });
   for (const [locale, values] of Object.entries(COPY)) {
     if (typeof I18N !== "undefined" && I18N[locale]) {
       Object.assign(I18N[locale], values);

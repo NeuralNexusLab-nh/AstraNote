@@ -3,6 +3,10 @@ Copyright (c) 2026 NXLabTW. All Rights Reserved.
 This repository and all of its contents, including source code,
 documentation, designs, assets, and configuration, are proprietary.
 
+Third-party dependencies and their distributed assets are excluded from this
+proprietary claim and retain their original licenses. See THIRD_PARTY_NOTICES.md
+and the license files distributed with each dependency.
+
 No permission is granted to use, copy, modify, merge, publish, distribute,
 sublicense, sell, reverse engineer, or create derivative works from any part
 of this repository without prior written permission from NXLabTW.

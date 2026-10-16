@@ -11,7 +11,7 @@ function browserContext() {
     "utf8",
   );
   const context = vm.createContext({
-    window: {},
+    window: { addEventListener() {} },
     TextEncoder,
     TextDecoder,
     document: {
@@ -206,7 +206,7 @@ test("note copy controls copy only note content and have localized feedback", ()
   const app = fs.readFileSync(path.join(__dirname, "../public/app.js"), "utf8");
   assert.ok(note.indexOf('id="copy-note-content"') < note.indexOf('id="edit-note"'));
   assert.match(shared, /id="copy-shared-content"/);
-  assert.match(app, /copyText\(note\.content\)/);
+  assert.match(app, /copyText\(AstraDocument\.unpack\(note\.content\)\.text\)/);
   assert.match(app, /toast\(t\("contentCopied"\)\)/);
 });
 

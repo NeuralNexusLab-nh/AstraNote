@@ -47,8 +47,16 @@
     if (size + text.length - offset > MAX_TEXT) throw new Error("History text is too large.");
     return parts.join("") + text.slice(offset);
   }
-  const reverse = (current, previous) => ({ v: 1, name: diff(current.name, previous.name), content: diff(current.content, previous.content) });
+  const Document = typeof module !== "undefined" && module.exports ? require("./note-document") : root.AstraDocument;
+  const reverse = (current, previous) => {
+    const a = Document.unpack(current.content), b = Document.unpack(previous.content);
+    if (!a.images.length && !b.images.length) return { v: 1, name: diff(current.name, previous.name), content: diff(current.content, previous.content) };
+    // Text is a reverse delta; each revision owns a full image snapshot, even
+    // when only its text changed. Restoring never depends on a deleted image.
+    return { v: 2, name: diff(current.name, previous.name), content: diff(a.text, b.text), images: b.images };
+  };
   function restore(current, patch) {
+    if (patch?.v === 2) return { name: apply(current.name, patch.name), content: Document.pack(apply(Document.unpack(current.content).text, patch.content), patch.images) };
     if (patch?.v !== 1) throw new Error("Unsupported history patch.");
     return { name: apply(current.name, patch.name), content: apply(current.content, patch.content) };
   }

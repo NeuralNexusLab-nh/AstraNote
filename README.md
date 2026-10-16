@@ -16,15 +16,30 @@ security-sensitive actions.
 - English, Traditional Chinese, and Japanese across the application interface
 - Animated, scroll-reactive starfield landing page
 - Dark and light themes synchronized to signed-in accounts
-- Plain-text lined note reader and editor
+- Safe Markdown note reader and editable source; remote images and raw HTML are disabled.
+- Up to three PNG/JPEG/WebP images per note. Local compression targets 5 KB in
+  the small profile; users can choose higher quality. Images share note storage
+  and encryption, use note-local `{img_<id>}` references, and support local drawing.
 - Astra Agent revises titles and content with a preview-first workflow, including
   selected notes; PIN-protected notes are unlocked before entering an instruction.
 - AstraPass creates one expiring account for one existing note. Saved edits update
   the original note; expiry immediately ends access without deleting the note.
+  Concurrent limits: Free 2, Plus 10, Pro 25, Ultra 100, Beta/Admin unlimited.
+  Downgrades prevent new grants above the limit but do not revoke existing grants.
+- Beta storage is 10 MB (10,000,000 bytes); Admin has no storage limit.
+- Astra Agent uses GPT-6-Luna with Flex first and retryable failures falling back
+  to Standard on every plan. Standard token rates are twice Flex rates. Monthly
+  internal budgets (30 days): Free $0.05, Plus $0.50, Pro $1, Ultra $2.50, Beta $5,
+  Admin unlimited. Only percentages are shown in the interface.
+- Selected image analysis returns allowlisted drawing/adjustment commands,
+  never executable code or image-generation requests. Preview before saving.
 - Free (128 KB/20 notes), Plus (256 KB/50 notes), Pro (512 KB/Infinity notes), and Ultra (1024 KB/Infinity notes)
 - Independent Ultra, Pro and Plus balances, consumed in that order; one month is always 30 days
 - Plus/Pro/Ultra note organization: pins, archive and batch actions; title search for every plan
-- Ultra: 0/1/3/5/10/20 saved versions (default 3), reverse text differences and configurable trash retention (default 7 days), all included in storage. Client-encrypted history uses the note's content key; legacy full snapshots remain readable.
+- Ultra: 0/1/3/5/10/20 saved versions (default 3), reverse text differences and full
+  image snapshots per version; configurable trash retention (default 7 days),
+  all included in storage. Client-encrypted history uses the note's content key;
+  legacy text-only notes and full snapshots remain readable.
 - Satora Bitcoin checkout with server-side status verification, validated coupon
   totals, and idempotent fulfilment
 - Compact, indexed SQLite payment records: completed orders retain only the ownership,

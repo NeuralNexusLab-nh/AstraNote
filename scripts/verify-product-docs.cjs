@@ -18,12 +18,18 @@ let browser, server, core, data;
   const page = await browser.newPage();
   await page.addInitScript(() => localStorage.setItem("astranote_cookie_notice", "accepted"));
   await page.route("https://**/*", route => route.abort());
+  let navigation=0;
+  await page.route(base+"/**", route => {
+    if(route.request().isNavigationRequest())navigation++;
+    return route.continue({headers:{...route.request().headers(),"x-forwarded-for":`198.51.${Math.floor(navigation/200)}.${navigation%200+1}`}});
+  });
   const errors = []; page.on("pageerror", error => errors.push(error.message));
-  const routes = process.argv.includes("--polish") ? ["/docs/plans", "/limited-edit"] : ["/", "/docs", "/docs/getting-started", "/docs/notes", "/docs/encryption", "/docs/sharing", "/docs/astra-pass", "/docs/security", "/docs/astra-agent", "/docs/plans", "/docs/faq", "/limited-edit"];
+  const routes = process.argv.includes("--pricing") ? ["/", "/plans", "/docs/plans"] : process.argv.includes("--polish") ? ["/docs/plans", "/limited-edit"] : ["/", "/docs", "/docs/getting-started", "/docs/notes", "/docs/encryption", "/docs/sharing", "/docs/astra-pass", "/docs/security", "/docs/astra-agent", "/docs/plans", "/docs/faq", "/limited-edit"];
   const screenshots = new Map();
   let checks = 0;
   for (const locale of ["en","zh-Hant","ja"]) for (const theme of ["dark","light"]) {
     for (const route of routes) {
+      console.log("Review",locale,theme,route);
       await page.setViewportSize({width:1440,height:900});
       const response = await page.goto(base + route);
       assert.equal(response.status(), 200, route);
@@ -34,7 +40,9 @@ let browser, server, core, data;
       for (const [width,height] of sizes) {
         await page.setViewportSize({width,height});
         await page.waitForTimeout(45);
-        assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false, `${route} ${locale} ${theme} ${width}`);
+        const overflow = await page.evaluate(()=>({width:document.documentElement.scrollWidth,viewport:innerWidth,offenders:[...document.querySelectorAll("main *")].filter(el=>el.getBoundingClientRect().right>innerWidth+1).slice(0,10).map(el=>({tag:el.tagName,class:el.className,text:el.textContent.slice(0,100),width:el.getBoundingClientRect().width}))}));
+        if(overflow.width>overflow.viewport){console.log(JSON.stringify({route,locale,theme,width,overflow}));await page.screenshot({path:path.join(images,"overflow.png"),fullPage:true});}
+        assert.equal(overflow.width>overflow.viewport,false, `${route} ${locale} ${theme} ${width}`);
         if (route.startsWith("/docs")) {
           const nav = page.locator(".docs-nav-details");
           assert.equal(await nav.evaluate(el=>el.open), width > 900);
@@ -47,10 +55,11 @@ let browser, server, core, data;
         }
         checks++;
         if (width === 320 || width === 1440) {
-          if (route === "/") await page.locator("#astrapass").scrollIntoViewIfNeeded(); else await page.evaluate(()=>scrollTo(0,0));
+          if (route === "/") await page.locator("#purpose").scrollIntoViewIfNeeded(); else await page.evaluate(()=>scrollTo(0,0));
           await page.waitForTimeout(120);
           const file = path.join(images, `${route.replaceAll("/","_") || "home"}-${locale}-${theme}-${width}.png`);
           await page.screenshot({path:file,animations:"disabled"});
+          if(route==="/") await page.locator('[data-home-plan="plus"]').screenshot({path:path.join(images,`education-${locale}-${theme}-${width}.png`),animations:"disabled"});
           if(width===320) {const list=screenshots.get(route)||[];list.push(file);screenshots.set(route,list);}
         }
       }
