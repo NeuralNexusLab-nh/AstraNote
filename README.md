@@ -17,8 +17,8 @@ security-sensitive actions.
 - Animated, scroll-reactive starfield landing page
 - Dark and light themes synchronized to signed-in accounts
 - Safe Markdown note reader and editable source; remote images and raw HTML are disabled.
-- Up to three PNG/JPEG/WebP images per note. Local compression targets 5 KB in
-  the small profile; users can choose higher quality. Images share note storage
+- Up to three PNG/JPEG/WebP images per note. Three local compression presets
+  balance storage and detail without a separate quality control. Images share note storage
   and encryption, use note-local `{img_<id>}` references, and support local drawing.
 - Astra Agent revises titles and content with a preview-first workflow, including
   selected notes; PIN-protected notes are unlocked before entering an instruction.

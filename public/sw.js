@@ -2,7 +2,7 @@
 
 // AstraNote deliberately caches only public interface assets. It never caches
 // HTML documents, API responses, notes, sessions, PINs, or decrypted text.
-const CACHE_NAME = "astranote-interface-v5";
+const CACHE_NAME = "astranote-interface-v6";
 const INTERFACE_ASSETS = [
   "/style.css",
   "/home.css",

@@ -32,13 +32,23 @@ const stamp=()=>new Date().toISOString();
   let navigation=1;await context.route(base+"/**",route=>route.continue({headers:{...route.request().headers(),"x-forwarded-for":`198.51.100.${(++navigation%200)+1}`}}));
   page=await context.newPage();page.setDefaultTimeout(20_000);page.setDefaultNavigationTimeout(20_000);const errors=[];page.on("pageerror",error=>errors.push(error.message));
   const fixture=await sharp({create:{width:480,height:320,channels:3,background:"#d5d7ff"}}).composite([{input:Buffer.from('<svg width="480" height="320"><text x="30" y="80" font-size="28" fill="#253064">Synthetic QA image</text></svg>')}]).png().toBuffer();
-  const imageFiles=[0,1,2].map(i=>({name:`synthetic-${i}.png`,mimeType:"image/png",buffer:fixture}));
+  const imageFiles=await Promise.all([[480,320],[360,640],[960,240]].map(async([width,height],i)=>({name:`synthetic-${i}.png`,mimeType:"image/png",buffer:await sharp(fixture).resize(width,height,{fit:'fill'}).png().toBuffer()})));
   let checks=0,first;
   for(const [mode,pin] of [["none",null],["aes-256-gcm-new",null],["astra-secret-v1","659371"],["astra-confidential-v3","Qa!2Only4Fixture"],["astra-zero-v1","Zero!8Fixture"]]) {
     console.log("Media round-trip:",mode);await page.goto(base+"/notes/new");await page.locator(".note-media-editor").waitFor();
     await page.locator("#name").fill("Media "+mode);
     await page.locator('.media-toolbar input[type="file"]').setInputFiles(imageFiles);
     await page.waitForFunction(()=>document.querySelectorAll(".media-image-card").length===3);
+    if(mode==='none'){
+      const originalIds=await page.locator('.media-image-data').allTextContents();
+      for(const preset of ['balanced','clear','small']){
+        await page.locator('.media-toolbar select').selectOption(preset);await page.waitForFunction(()=>document.querySelector('.note-media-editor').getAttribute('aria-busy')==='false');
+        assert.deepEqual(await page.locator('.media-image-data').allTextContents(),originalIds);checks++;
+      }
+      await page.locator('.media-preview-toggle').click();await page.locator('.note-preview-modal .note-image').first().waitFor();
+      assert.equal(await page.locator('.note-preview-modal .note-image').count(),3);
+      await page.locator('.note-preview-modal .modal-actions button').click();assert.equal(await page.locator('.note-preview-modal').count(),0);checks+=2;
+    }
     await page.locator('.media-image-card input').first().fill("Fixture caption");
     const reference=(await page.locator(".media-image-data").first().textContent()).match(/\{img_[a-f0-9]{24}\}/)[0];
     await page.locator("#new-content").fill(`# A real heading\n\n**Bold text**\n\n${reference}\n\n\`${reference}\`\n\n![remote](https://image.invalid/tracker.png)\n\n<script>window.mediaXss=true</script>\n\n[bad](javascript:alert(1))`);
@@ -53,8 +63,17 @@ const stamp=()=>new Date().toISOString();
     assert.equal(await page.locator(".media-image-card").count(),3);
     await page.locator(".media-image-actions").first().getByRole("button",{name:"Draw & edit",exact:true}).click();await page.locator(".image-editor-stage canvas").first().waitFor();
     const canvas=page.locator(".image-editor-stage canvas").last(),rect=await canvas.boundingBox();await page.mouse.move(rect.x+rect.width*.2,rect.y+rect.height*.2);await page.mouse.down();await page.mouse.move(rect.x+rect.width*.5,rect.y+rect.height*.5,{steps:6});await page.mouse.up();
-    await page.getByRole("button",{name:"Erase drawing",exact:true}).click();await page.mouse.click(rect.x+rect.width*.3,rect.y+rect.height*.3);
+    await page.getByRole("button",{name:"Eraser",exact:true}).click();await page.mouse.click(rect.x+rect.width*.3,rect.y+rect.height*.3);
     await page.getByRole("button",{name:"Undo",exact:true}).click();await page.getByRole("button",{name:"Redo",exact:true}).click();
+    await page.getByRole("button",{name:"Add text",exact:true}).click();
+    await page.getByRole("button",{name:"Place text",exact:true}).click();
+    assert.equal(await page.locator('.image-text-controls input').getAttribute('aria-invalid'),'true');
+    const inkBefore=await canvas.evaluate(el=>el.getContext('2d').getImageData(0,0,el.width,el.height).data.filter((n,i)=>i%4===3&&n>0).length);
+    await page.locator('.image-text-controls input').fill('Saved text QA');await page.getByRole('button',{name:'Place text',exact:true}).click();
+    const inkAfter=await canvas.evaluate(el=>el.getContext('2d').getImageData(0,0,el.width,el.height).data.filter((n,i)=>i%4===3&&n>0).length);
+    assert.ok(inkAfter>inkBefore,'text changes real image pixels');
+    await page.locator('.image-text-controls input').fill('Enter also places text');await page.locator('.image-text-controls input').press('Enter');
+    assert.equal(await page.locator('.image-edit-modal').count(),1,'Enter must not submit and close the image editor');checks+=3;
     await page.getByRole("button",{name:"Apply changes",exact:true}).click();await page.locator(".image-edit-modal").waitFor({state:"detached"});
     await page.locator("#editor-content").fill("Updated image version");await page.locator("#save-note").click();await page.waitForURL(new RegExp(`/notes/${id}$`));await page.locator("#note-content .note-image").first().waitFor();
     await page.locator("#previous-note").click();await page.locator("#previous-content .note-image").first().waitFor();assert.equal(await page.locator("#previous-content .note-image").count(),3);checks+=12;
@@ -66,8 +85,23 @@ const stamp=()=>new Date().toISOString();
   for(const locale of ["en","zh-Hant","ja"])for(const theme of ["dark","light"]){
     await page.goto(base+`/notes/${first}/edit`);await page.locator(".media-image-card").first().waitFor();
     await page.evaluate(({locale,theme})=>{state.language=locale;state.theme=theme;applyLocale();document.documentElement.style.scrollBehavior="auto";},{locale,theme});
-    for(const [width,height]of sizes){await page.setViewportSize({width,height});await page.waitForTimeout(70);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${locale}/${theme}/${width}`);assert.equal(await page.locator('.media-toolbar input[type="range"]').count(),1);checks++;
-      if(width===320||width===1440){await page.locator(".note-media-editor").scrollIntoViewIfNeeded();await page.screenshot({path:path.join(artifacts,`editor-${locale}-${theme}-${width}.png`),animations:"disabled"});}
+    for(const [width,height]of sizes){await page.setViewportSize({width,height});await page.waitForTimeout(70);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${locale}/${theme}/${width}`);assert.equal(await page.locator('.media-toolbar input[type="range"]').count(),0);assert.equal(await page.locator('.media-toolbar select option').count(),3);assert.doesNotMatch(await page.evaluate(()=>Object.values(AstraMedia.copy).flatMap(Object.values).join(' ')),/5\s?KB/);checks++;
+      if(width===320||width===1440){await page.locator(".note-media-editor").evaluate(el=>scrollTo(0,el.getBoundingClientRect().top+scrollY-110));await page.screenshot({path:path.join(artifacts,`editor-${locale}-${theme}-${width}.png`),animations:"disabled"});}
+      const cardsFit=await page.locator('.media-image-card > .note-image').evaluateAll(nodes=>nodes.every(node=>{const a=node.getBoundingClientRect(),b=node.parentElement.getBoundingClientRect();return a.left>=b.left&&a.right<=b.right+1;}));assert.ok(cardsFit,'preview stays inside its image card');
+      await page.locator('.media-image-actions').first().locator('button').nth(1).click();await page.locator('.image-editor-stage canvas').last().waitFor();await page.waitForTimeout(100);
+      const fit=await page.locator('.image-editor-stage canvas').last().evaluate(canvas=>{const a=canvas.getBoundingClientRect(),w=canvas.closest('.image-editor-workspace').getBoundingClientRect();return {ratio:a.width/a.height,original:canvas.width/canvas.height,visible:a.width>0&&a.height>0&&a.left>=w.left&&a.top>=w.top&&a.right<=w.right+1&&a.bottom<=w.bottom+1&&a.bottom<=innerHeight};});
+      assert.ok(fit.visible,`whole drawing image fits ${locale}/${theme}/${width}`);assert.ok(Math.abs(fit.ratio-fit.original)<.02);
+      await page.locator('.image-draw-tools button').last().click();await page.locator('.image-text-controls input').fill(locale==='zh-Hant'?'放上文字':locale==='ja'?'文字を追加':'Add a label');await page.waitForTimeout(70);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+      if(width===320||width===1440||width===844)await page.screenshot({path:path.join(artifacts,`draw-${locale}-${theme}-${width}.png`),animations:'disabled'});
+      const confirmBox=await page.locator('.image-edit-modal .modal-actions .btn-primary').boundingBox();assert.ok(confirmBox.y+confirmBox.height<=height);
+      await page.locator('.image-edit-modal .modal-actions button').first().click();checks++;
+      if(locale==='en'&&theme==='dark')for(const index of [1,2]){
+        await page.locator('.media-image-actions').nth(index).locator('button').nth(1).click();await page.waitForTimeout(100);
+        assert.ok(await page.locator('.image-editor-stage canvas').last().evaluate(el=>{const a=el.getBoundingClientRect(),w=el.closest('.image-editor-workspace').getBoundingClientRect();return a.width>0&&a.height>0&&a.right<=w.right&&a.bottom<=w.bottom&&a.left>=w.left&&a.top>=w.top&&Math.abs(a.width/a.height-el.width/el.height)<.02;}),'portrait and panoramic drawing fit');
+        if(width===320||width===1440||width===844)await page.screenshot({path:path.join(artifacts,`draw-shape${index}-${width}.png`),animations:'disabled'});
+        await page.locator('.image-edit-modal .modal-actions button').first().click();checks++;
+      }
     }
   }
   assert.deepEqual(errors,[]);console.log(JSON.stringify({success:true,checks,screenshots:artifacts}));

@@ -53,3 +53,17 @@ test("client dimension checks reject animated containers and mismatched WebP can
   assert.throws(()=>dimensions(animated,"image/webp"),/invalid_image/);
   assert.throws(()=>dimensions(Buffer.from('<svg onload="evil"/>'),"image/png"),/invalid_image/);
 });
+
+test("image controls expose three compression presets without internal targets or a quality slider", () => {
+  const fs=require("node:fs"),vm=require("node:vm"),window={AstraDocument:D,addEventListener(){}};
+  const source=fs.readFileSync(require.resolve("../public/note-media.js"),"utf8");
+  vm.runInNewContext(source,{window,Uint8Array,DataView,Object});
+  for(const locale of ["en","zh-Hant","ja"]){
+    const copy=window.AstraMedia.copy[locale];
+    assert.ok(copy.smallImage&&copy.balancedImage&&copy.clearImage);
+    assert.doesNotMatch(Object.values(copy).join(" "),/5\s?KB/);
+    assert.ok(copy.writeNote&&copy.placeText&&copy.textRequired);
+  }
+  assert.doesNotMatch(source,/quality\.type\s*=\s*"range"/);
+  assert.match(source,/event\.stopPropagation\(\); if \(event\.isComposing\) return/);
+});
