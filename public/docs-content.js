@@ -293,13 +293,17 @@
       const plusTitle = root.querySelector(".docs-plan-plus h2");
       if (plusTitle) plusTitle.textContent = "Plus / Education";
       const education = document.createElement("p"); education.className = "education-note"; education.textContent = t("educationDescription");
+      const support = document.createElement("span"); support.className = "education-support";
+      support.append(document.createTextNode(t("educationHelp") + " "));
+      const supportLink = document.createElement("a"); supportLink.href = "mailto:education@nxlabtw.com"; supportLink.textContent = "education@nxlabtw.com";
+      support.append(supportLink); education.append(support);
       root.querySelector(".docs-plan-overview")?.after(education);
       [
-        [".docs-plan-plus", "aiPlanPlus"],
-        [".docs-plan-pro", "aiPlanPro"],
-        [".docs-plan-ultra", "aiPlanUltra"],
-        [".docs-plan-free", "aiPlanFree"],
-      ].forEach(([selector, key]) => {
+        [".docs-plan-plus", "aiPlanPlus", 50],
+        [".docs-plan-pro", "aiPlanPro", 150],
+        [".docs-plan-ultra", "aiPlanUltra", 500],
+        [".docs-plan-free", "aiPlanFree", 15],
+      ].forEach(([selector, key, maximum]) => {
         const list = root.querySelector(`${selector} ul`);
         if (!list) return;
         const item = document.createElement("li");
@@ -307,6 +311,10 @@
         item.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i><span></span>';
         item.querySelector("span").textContent = t(key);
         list.append(item);
+        const images = document.createElement("li");
+        images.innerHTML = '<i class="fa-regular fa-images" aria-hidden="true"></i><span></span>';
+        images.querySelector("span").textContent = `${t("imageAllowance")}: ${maximum}`;
+        list.append(images);
       });
     }
     if (route === "encryption") {

@@ -198,6 +198,42 @@ variable**. Keep all existing production encryption secrets unchanged. Back up
 the persistent volume before deploying this format migration; a JSON-only
 rollback cannot read orders created in SQLite.
 
+## File-backed performance and compatibility
+
+Account metadata, sessions and note JSON files remain authoritative. A hashed
+email lookup is rebuilt at startup from account files; registration and deletion
+update it immediately. `.indexes/notes/` contains disposable note summaries,
+actual file sizes, encrypted titles and image counts, never content, image bytes,
+PINs or content keys. Missing or invalid indexes rebuild from the originals.
+Unchanged note files are checked by file size and modification time rather than
+loading their images or history for every list. Do not restore only an index:
+restore the original data directory. After manually changing account email files,
+restart the service to rebuild the lookup.
+
+Session activity writes are coalesced to one minute; validity, bans and revocation
+are still checked on every authenticated request. Repeated statistics reads avoid
+rewriting unchanged daily records. New daily visitors append a small durable
+journal event, then snapshots are compacted in batches; restarts replay the
+journal without double counting. An account allows one Agent request at a time;
+the external AI wait releases its account lock, and completion reloads current
+metadata before charging usage. Plan cleanup yields in batches and sends notices
+outside account locks. Image decoding permits two active jobs with at most eight
+waiting jobs and a ten-second queue deadline.
+
+Images count toward both storage and the plan's image allowance: Free 15,
+Plus/Education 50, Pro 150, Ultra 500, Beta/Admin unlimited, including trash.
+Existing over-limit images are retained; increases are rejected. Old PIN-encrypted
+files disclose their attachment count only on the next owner unlock or save;
+their original encryption, PINs and contents are not rewritten by indexing.
+Stored timestamps stay UTC. Display uses the device timezone; a validated IANA
+timezone identifier may be saved for account emails. No new environment variable
+is required.
+
+Run `node scripts/load-test.cjs --accounts=1000 --requests=200 --concurrency=8`
+for isolated synthetic login/list/save/image workloads. It creates only OS-temporary
+fixtures, blocks external services, records percentiles, CPU/RSS and errors, then
+removes its test data. See [the measured performance report](docs/performance-update.md).
+
 ## Licence
 
 Repository source code is proprietary and protected by [All Rights Reserved](LICENSE).

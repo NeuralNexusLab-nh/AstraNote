@@ -36,6 +36,14 @@ test("Agent image edits accept only bounded declarative operations for supplied 
   assert.deepEqual(AgentImages.validate([op],[source]),[op]);
   for(const bad of [{...op,type:"eval"},{...op,id:"img_"+"b".repeat(24)},{...op,color:"url(javascript:evil)"},{...op,x:2},{...op,text:"x".repeat(201)},{...op,type:"crop",x:.9,w:.8}]) assert.throws(()=>AgentImages.validate([bad],[source]));
 });
+test("concurrent raster decoding queues briefly with bounded admission and releases its slots", async () => {
+  const source=await image();
+  const jobs=Array.from({length:12},()=>Images.validate(D.pack("batch",[source])));
+  const results=await Promise.allSettled(jobs);
+  assert.equal(results.filter(result=>result.status==="fulfilled").length,10);
+  assert.ok(results.filter(result=>result.status==="rejected").every(result=>result.reason.code==="image_busy"));
+  assert.equal(D.unpack(await Images.validate(D.pack("after",[source]))).images.length,1);
+});
 test("Education requires actual verified institution suffixes, not lookalikes or arbitrary country codes", () => {
   for(const email of ["student@school.edu","student@school.edu.tw","student@dept.school.edu.tw","student@school.edu.au","STUDENT@SCHOOL.EDU.HK"])
     assert.equal(Education.eligible({email,emailVerified:true}),true,email);

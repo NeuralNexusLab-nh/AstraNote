@@ -6,7 +6,7 @@
   const translations = {
     en: {
       home: ["Get more from AstraNote", "Write, find, protect and work on your notes—from any device.", [
-        ["text", "A notebook for the text you actually use", "Keep everyday notes, instructions, reference details and private information together. AstraNote is for text, not large attachments or a replacement for a file drive."],
+        ["text", "Keep useful text and images together", "AstraNote is a free online notebook for everyday notes, instructions, pictures and private information. Write in Markdown, add up to three images per note, and draw or add text directly on them. Find your notes again from another device."],
         ["cards", "Start with what you need", [
           ["fa-note-sticky", "Write and find", "Create a note with its title and content, then search titles in My notes.", "/docs/getting-started"],
           ["fa-lock", "Choose encryption", "From ordinary encrypted storage to client-generated keys and a PIN you keep.", "/docs/encryption"],
@@ -73,7 +73,7 @@
     },
     "zh-Hant": {
       home: ["從這裡，認識 AstraNote", "記下、找回、加密與整理；在不同裝置上，繼續使用你的筆記。", [
-        ["text", "留住真正會用到的文字", "AstraNote 是線上純文字筆記本，適合日常筆記、操作說明、常用資訊與私密內容。它不替代大型檔案雲端硬碟，也不用先整理一整個知識庫才能開始。"],
+        ["text", "把實用的文字與圖片放在一起", "AstraNote 是免費的線上筆記本，能記錄日常筆記、操作說明、圖片與私密資訊。用 Markdown 編寫，每篇最多加入三張圖片，也能直接繪圖與加字；換個裝置，依然能找回需要的筆記。"],
         ["cards", "依照你的需要開始", [["fa-note-sticky", "記下與找回", "建立時直接輸入標題和內容；在「我的筆記」搜尋標題。", "/docs/getting-started"], ["fa-lock", "選擇加密", "從普通加密儲存，到客戶端獨立產生金鑰，以及由你保管的 PIN。", "/docs/encryption"], ["fa-wand-magic-sparkles", "使用 Astra Agent", "修改單篇或多篇已選筆記，先預覽，再決定儲存哪些結果。", "/docs/astra-agent"], ["fa-user-pen", "用 AstraPass 帶走一篇筆記", "為單篇筆記建立臨時帳號，不必在另一台裝置登入主帳號。", "/docs/astra-pass"]]],
         ["text", "空間不大，也能很實用", "已驗證的 Free 帳號有 128 KB、20 篇筆記；未驗證時為 64 KB。純文字很省空間，但加密、垃圾桶與歷史版本也會計入用量。把真正常用的內容留下就好。"],
         ["cards", "遇到問題前，先了解", [["fa-user-shield", "帳號安全", "驗證信箱、選擇登入方式，管理已登入裝置。", "/docs/security"], ["fa-layer-group", "方案與限制", "了解空間、Agent 用量、還原功能與訂閱到期規則。", "/docs/plans"]]],
@@ -132,7 +132,7 @@
     },
     ja: {
       home: ["AstraNote を使いこなす", "書く、探す、守る、整える。どの端末でもノートを手元に。", [
-        ["text", "実際に使う文章のためのノート", "日々のメモ、手順、参照情報、大切な個人情報をまとめられます。大きな添付ファイルやドライブの代わりではなく、すぐ使う文章のためのサービスです。"],
+        ["text", "役立つ文章と画像をひとまとめに", "AstraNoteは日々のメモ、手順、画像、個人情報を保存できる無料オンラインノートです。Markdownと1ノート3枚までの画像に対応し、描画や文字も追加できます。別の端末でも必要なノートを見つけられます。"],
         ["cards", "目的から始める", [["fa-note-sticky", "書いて見つける", "タイトルと内容を入力して作成し、マイノートでタイトルを検索。", "/docs/getting-started"], ["fa-lock", "暗号化を選ぶ", "通常の暗号化保存から、クライアントが生成する鍵と自分で保管する PIN まで。", "/docs/encryption"], ["fa-wand-magic-sparkles", "Astra Agent を使う", "一つ、または選択したノートを修正。確認してから保存。", "/docs/astra-agent"], ["fa-user-pen", "AstraPass で一つだけ持ち出す", "メインアカウントを開かず、一つのノート専用の一時アカウントを利用。", "/docs/astra-pass"]]],
         ["text", "小さな容量でも、役立つ文章を", "認証済み Free は 128 KB・20件、未認証の Free は 64 KB です。文章は省容量ですが、暗号化、ごみ箱、保存済みの版も容量に含まれます。"],
         ["cards", "困る前に確認", [["fa-user-shield", "アカウント保護", "メール認証、ログイン方法、ログイン中の端末を管理。", "/docs/security"], ["fa-layer-group", "プランと制限", "容量、Agent の利用枠、復元、契約終了後のルールを確認。", "/docs/plans"]]],
@@ -229,6 +229,27 @@
     translations[locale]["astra-pass"][2].push(extra.pass);
     translations[locale].security[2].push(extra.education);
   }
+  const imageLimits = {
+    en: ["text", "Images and your plan", "Free: 15 images; Plus and free Education: 50; Pro: 150; Ultra: 500; Beta and Admin: unlimited. Each note holds up to three. Images in trash also count, and all images share your storage allowance. After downgrade, existing images are kept; remove images to add more above the new limit."],
+    "zh-Hant": ["text", "圖片數量與方案", "Free 最多 15 張；Plus 與免費 Education 為 50 張；Pro 為 150 張；Ultra 為 500 張；Beta、Admin 不限。每篇最多三張，垃圾桶中的圖片也計數，且全部共用筆記空間。降級後保留既有圖片；超過新上限時，須先移除圖片才能增加。"],
+    ja: ["text", "画像とプラン", "Freeは15枚、Plusと無料Educationは50枚、Proは150枚、Ultraは500枚、Beta・Adminは無制限。1ノート3枚まで。ごみ箱の画像も数と容量に含まれます。降格後も既存画像は維持し、上限を超えている間は追加できません。"],
+  };
+  const educationHelp = {
+    en: ["text", "Education is permanently free", "Verify a supported educational email to receive Plus-equivalent Education for free. If verification succeeds but Education is missing, contact education@nxlabtw.com. Existing purchased time runs first; educational accounts cannot purchase another plan."],
+    "zh-Hant": ["text", "Education 永久免費", "符合資格的教育信箱完成驗證後，即可免費享有 Plus 同等功能。若驗證後未取得 Education，請聯絡 education@nxlabtw.com。既有付費天數會先使用完；教育信箱帳號不能購買其他方案。"],
+    ja: ["text", "Educationは永久無料", "対象の教育メールを認証すると、Plus相当のEducationを無料で利用できます。認証後も表示されない場合はeducation@nxlabtw.comへ。購入済み期間を先に利用し、教育アカウントは他プランを購入できません。"],
+  };
+  for (const locale of Object.keys(translations)) {
+    translations[locale].notes[2].push(imageLimits[locale]);
+    translations[locale].security[2].push(educationHelp[locale]);
+    translations[locale].home[2].push(educationHelp[locale]);
+  }
+  const agentAvailability = {
+    en: ["text", "Processing and allowance", "Astra Agent automatically retries temporary service failures. A fallback processing method uses twice the allowance for the same work. Text and images share your 30-day allowance; unverified Free has half of verified Free's allowance."],
+    "zh-Hant": ["text", "處理方式與用量", "Astra Agent 會自動重試暫時失敗的請求。若改用備援處理方式，相同處理量會使用兩倍額度。文字與圖片共用每 30 天的用量；未驗證 Free 為完整 Free 額度的一半。"],
+    ja: ["text", "処理方法と利用枠", "一時的なサービス障害では自動で再試行します。代替処理では同じ処理量に2倍の利用枠を使います。文章と画像は30日ごとの利用枠を共有し、未認証Freeは認証済みFreeの半分です。"],
+  };
+  for (const locale of Object.keys(translations)) translations[locale]["astra-agent"][2][translations[locale]["astra-agent"][2].length - 1] = agentAvailability[locale];
   const escape = text => String(text).replace(/[&<>"']/g, ch => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"}[ch]));
   const block = ([kind, heading, value], index) => {
     const h = `<h2 id="guide-${index}">${escape(heading)}</h2>`;

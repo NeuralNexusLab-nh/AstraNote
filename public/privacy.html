@@ -39,6 +39,7 @@
           <p data-i18n="aiPrivacyText"></p>
         </section>
         <section class="legal-feature-note"><h2 data-i18n="mediaTermsTitle"></h2><p data-i18n="mediaTerms"></p></section>
+        <section class="legal-feature-note"><h2 data-i18n="privacyIndexesTitle"></h2><p data-i18n="privacyIndexesBody"></p></section>
         <div data-lang="en">
           <p class="legal-note">
             This policy explains how the individual operator using the
@@ -75,8 +76,8 @@
             </li>
             <li>
               <strong>Content:</strong> note names and content, encryption
-              selection, update time, and optional share token. Titles remain
-              plaintext in every mode. Encrypted content is stored as ciphertext
+              selection, update time, and optional share token. Encrypted note
+              titles use a separate server-managed AES-256-GCM layer and remain readable to the signed-in owner. Encrypted content is stored as ciphertext
               with the information needed for authenticated decryption.
               AstraSecret, AstraConfidential and legacy SCHybrid also store a
               random client salt. AstraZero stores a PIN-protected note key and
@@ -125,7 +126,7 @@
           </p>
           <h2>5. Human verification</h2>
           <p>
-            For registration, permanent note deletion, and payment-order
+            For registration, sign-in, permanent note deletion, and payment-order
             creation, the client loads a CAPTCHA
             from
             <code>nexacaptcha.nxlabtw.com</code>. AstraNote sends the resulting
@@ -275,7 +276,7 @@
           </p>
           <h2>五、人類驗證</h2>
           <p>
-            註冊、永久刪除筆記及建立付款訂單時，客戶端會從
+            註冊、登入、永久刪除筆記及建立付款訂單時，客戶端會從
             <code>nexacaptcha.nxlabtw.com</code> 載入 CAPTCHA。AstraNote
             會將驗證 ID 及一次性 驗證權杖 傳至 NexaCAPTCHA
             固定的後端驗證端點。驗證權杖
@@ -347,7 +348,7 @@
               トークン、短縮したブラウザ名、ログイン・最終利用時刻、言語、外観、公開表示名、容量、ノート情報。ログイン中端末と関連するアカウントセキュリティメールの表示のため、公開 IP アドレスを NXLabTW 運営の <code>nxlabtw.com/ipinfo/</code> に送信し、返された国または地域だけを保存する場合があります。無関係な商用 IP 位置情報サービスには送信しません。
             </li>
             <li>
-              内容：タイトル、内容、暗号化方式、更新日時、任意の共有コード。タイトルは平文です。暗号化内容と復号検証用情報を保存します。AstraSecret、AstraConfidential、従来の
+              内容：タイトル、内容、暗号化方式、更新日時、任意の共有コード。暗号化タイトルは独立したサーバー管理のAES-256-GCMで保存され、ログインした所有者には表示できます。暗号化内容と復号検証用情報を保存します。AstraSecret、AstraConfidential、従来の
               SCHybrid
               はランダムなクライアント用パラメーターも保存します。AstraZero は
               PIN で保護した鍵と暗号文を保存しますが、PIN
@@ -379,7 +380,7 @@
           </p>
           <h2>5. 人間による認証</h2>
           <p>
-            登録、ノートの完全削除、支払い注文作成の際、クライアントは
+            登録、ログイン、ノートの完全削除、支払い注文作成の際、クライアントは
             nexacaptcha.nxlabtw.com から CAPTCHA
             を読み込みます。認証識別子と一回限りの応答を固定のサーバー検証先へ送信します。トークンは原則一回のみ、5分で期限切れです。認証欄に個人情報を入力しないでください。
           </p>

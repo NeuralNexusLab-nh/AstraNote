@@ -140,9 +140,11 @@ test("health, statistics, and 404 routes respond correctly", async () => {
   await fs.mkdir(liveAccount);
   await fs.writeFile(path.join(liveAccount, "metadata.json"), "{}\n");
   await fs.writeFile(path.join(temporaryData, "users.txt"), "999\n");
+  await testables.rebuildEmailDirectory();
   const liveStats = await fetch(`${baseUrl}/api/stats`);
   assert.equal((await liveStats.json()).totalUsers, 1);
   await fs.rm(liveAccount, { recursive: true, force: true });
+  await testables.rebuildEmailDirectory();
   await fs.writeFile(path.join(temporaryData, "users.txt"), "0\n");
 
   const missing = await fetch(`${baseUrl}/unknown-coordinate`);
@@ -228,6 +230,8 @@ test("Magic Link approval signs in only the tab holding the original request sec
   // The following activity-count test starts from a deliberately empty day.
   await fs.writeFile(path.join(temporaryData, "onlineTodayUsers.json"), JSON.stringify({ date: new Date().toISOString().slice(0, 10), users: [] }));
   await fs.writeFile(path.join(temporaryData, "onlineToday.txt"), "0\n");
+  await fs.writeFile(path.join(temporaryData, "onlineTodayJournal.ndjson"), "");
+  await testables.reloadOnlineUsers();
 });
 
 test("operation audit records safe route templates and clear security levels", () => {
@@ -420,6 +424,7 @@ test("published account limits match the 20-note, 128 KB, and 70,000-account pol
   assert.deepEqual(constants.PLAN_DEFINITIONS.plus, {
     maxBytes: 256_000,
     maxNotes: 50,
+    maxImages: 50,
     monthlySats: 2500,
   });
   assert.equal(constants.PLAN_DEFINITIONS.pro.maxBytes, 512_000);

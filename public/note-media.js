@@ -152,7 +152,11 @@
     const compression = element("label", "media-compression"); compression.append(element("span", "", options.t("compression")), profile);
     const compressionGroup = element("div", "media-compression-group"); compressionGroup.append(compression, profileHint);
     const picker = element("input"); picker.type = "file"; picker.accept = "image/png,image/jpeg,image/webp"; picker.multiple = true; picker.hidden = true;
-    const add = button(options.t("addImages"), "plus", () => picker.click(), "btn btn-primary media-add");
+    const add = button(options.t("addImages"), "plus", () => {
+      const total=(options.account?.imageCount||0)-doc.images.length+images.length;
+      if(total>=(options.account?.plan?.maxImages??Infinity))return options.showError(new Error(options.t("image_quota_exceeded")));
+      picker.click();
+    }, "btn btn-primary media-add");
     const previewToggle = button(options.t("mediaPreview"), "eye", () => {
       const preview = element("div", "media-note-preview"); render(preview, get(), options);
       options.modal({ title: options.t("mediaPreview"), content: preview, dialogClass: "note-preview-modal", confirm: options.t("writeNote"), confirmIcon: "fa-pen", showCancel: false, onConfirm: close => close() });
@@ -190,7 +194,10 @@
     }
     function draw() {
       processing.hidden = !busy;
+      const maximum = options.account?.plan?.maxImages ?? Infinity;
+      const total = (options.account?.imageCount || 0) - doc.images.length + images.length;
       add.disabled = busy || images.length >= 3;
+      add.title = total >= maximum ? options.t("image_quota_exceeded") : "";
       profile.disabled = busy;
       count.textContent = `${images.length} / 3`;
       empty.hidden = images.length > 0;
@@ -224,6 +231,8 @@
     async function ingest(files, replace = null) {
       if (busy || !files.length) return;
       if (replace === null && images.length + files.length > 3) return options.showError(new Error(options.t("imageLimit")));
+      if (replace === null && (options.account?.imageCount || 0) - doc.images.length + images.length + files.length > (options.account?.plan?.maxImages ?? Infinity))
+        return options.showError(new Error(options.t("image_quota_exceeded")));
       busy = true; draw();
       const pending = [];
       try {

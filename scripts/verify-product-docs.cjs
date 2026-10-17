@@ -15,7 +15,7 @@ let browser, server, core, data;
   await new Promise(r => server.once("listening", r));
   const base = `http://127.0.0.1:${server.address().port}`;
   browser = await chromium.launch({channel:"msedge",headless:true});
-  const page = await browser.newPage();
+  const page = await browser.newPage({serviceWorkers:"block"});
   await page.addInitScript(() => localStorage.setItem("astranote_cookie_notice", "accepted"));
   await page.route("https://**/*", route => route.abort());
   let navigation=0;

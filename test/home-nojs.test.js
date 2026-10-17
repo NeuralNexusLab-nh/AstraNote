@@ -12,7 +12,7 @@ test("no-JS homepage renders current marketing copy in all supported languages",
   assert.match(english, /Write it once\. Find it fast\./u);
   assert.match(
     english,
-    /From everyday notes and text you need to retrieve in seconds to sensitive information worth protecting—AstraNote keeps it ready when you need it\./u,
+    /Everyday notes, useful images and private information—ready on any device when you need them\./u,
   );
   assert.match(english, /href="\/plans"/u);
   assert.doesNotMatch(english, /hero-kicker/u);
@@ -22,7 +22,7 @@ test("no-JS homepage renders current marketing copy in all supported languages",
   assert.match(traditionalChinese, /隨手記下，隨時找到。/u);
   assert.match(
     traditionalChinese,
-    /從日常筆記、隨手要記的資訊，到需要妥善保護的私密文字；<br>AstraNote 讓它們在你需要的時候，立刻就在手邊。/u,
+    /日常筆記、隨手保存的圖片，以及需要保護的私密資訊；<br>換個裝置，需要時依然就在手邊。/u,
   );
   assert.match(traditionalChinese, /了解方案/u);
   assert.doesNotMatch(traditionalChinese, /小抄/u);
@@ -35,7 +35,7 @@ test("no-JS homepage renders current marketing copy in all supported languages",
   assert.match(japanese, /書いておけば、すぐ見つかる。/u);
   assert.match(
     japanese,
-    /日常のノート、すぐに取り出したい文章、大切に守りたい個人的な情報まで。必要なとき、AstraNote ですぐ手元にあります。/u,
+    /日々のノート、役立つ画像、大切な個人情報。必要なとき、どの端末でもすぐ手元に。/u,
   );
 });
 
@@ -77,24 +77,24 @@ test("visible homepage feature explains encrypted titles in every locale", () =>
   }
 });
 
-test("the storage illustration states its UTF-8 assumptions and is not a quota guarantee", () => {
+test("the storage illustration states its ASCII assumptions and is not a quota guarantee", () => {
   const fs = require("node:fs"), path = require("node:path");
-  const bytes = Buffer.byteLength("字".repeat(500), "utf8") * 20;
-  assert.equal(bytes, 30000);
-  assert.ok(bytes < 128000 / 4);
+  const bytes = Buffer.byteLength("a".repeat(500), "utf8") * 20;
+  assert.equal(bytes, 10000);
+  assert.ok(bytes < 128000 / 10);
   const css = fs.readFileSync(path.join(__dirname, "../public/home.css"), "utf8");
   assert.ok(css.includes(`width: ${bytes / 128000 * 100}%`));
   for (const locale of ["en", "zh-Hant", "ja"]) {
     const html = renderHomeHtml(locale);
     assert.match(html, /data-i18n="storageExampleScenario"[^>]*>[^<]*20[^<]*500/u);
-    assert.match(html, /data-i18n="storageExampleAmount"[^>]*>[^<]*30 KB/u);
-    assert.match(html, /data-i18n="storageExampleCaution"[^>]*>[^<]*UTF-8/u);
+    assert.match(html, /data-i18n="storageExampleAmount"[^>]*>[^<]*10 KB/u);
+    assert.match(html, /data-i18n="storageExampleCaution"[^>]*>[^<]*ASCII/u);
     assert.match(html, /class="storage-example-meter" aria-hidden="true"/u);
     assert.doesNotMatch(html, /password.manager.grade|unbreakable|絕對安全|密碼管理器等級/iu);
   }
   const chinese = renderHomeHtml("zh-Hant");
   assert.match(chinese, /搜尋標題/u);
-  assert.match(chinese, /標題、加密與帳號資料另占空間/u);
+  assert.match(chinese, /標題、圖片、加密與版本紀錄也會占空間/u);
   assert.match(chinese, /AstraSecret 的短數字 PIN 較容易被猜中/u);
 });
 

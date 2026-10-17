@@ -41,7 +41,7 @@ test("homepage features AstraPass and docs keep existing links working", () => {
     const html = renderHomeHtml(locale);
     assert.doesNotMatch(html, /id="astrapass"/u);
     assert.match(html, /AstraPass/u);
-    assert.match(html, /href="\/docs\/astra-pass"/u);
+    assert.doesNotMatch(html, /href="\/docs\/astra-pass"/u);
     assert.doesNotMatch(html, /Astra AI/u);
   }
   const server = fs.readFileSync(path.join(root, "server.js"), "utf8");

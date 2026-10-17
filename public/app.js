@@ -1986,6 +1986,45 @@ Object.assign(I18N.ja, { emailDeliveryFailed: "メールを送信できません
 Object.assign(I18N.en, { historyClientRefresh: "This editor is out of date. Keep a copy of your draft, then reload the page before saving." });
 Object.assign(I18N["zh-Hant"], { historyClientRefresh: "編輯器版本已更新。請先保留草稿，再重新整理頁面後儲存。" });
 Object.assign(I18N.ja, { historyClientRefresh: "エディターが更新されました。下書きを控えてから、ページを再読み込みして保存してください。" });
+Object.assign(I18N.en, {
+  agentWorking: "Request sent. Astra Agent is preparing your preview…",
+  passwordStepBody: "Enter your password to continue.", codeStepBody: "Enter the six-digit code from your email.", historyLatest: "Previous version", historyVersion: "{number} versions earlier",
+  ai_busy: "Astra Agent is already working. Wait for the current request to finish.",
+  image_quota_exceeded: "Your plan's image limit has been reached. Remove an image or upgrade to add more.",
+  imageAllowance: "Images per account", imageAllowanceHint: "Up to 3 per note. Images share your storage allowance, including those in trash.",
+  freeNotes: "20 notes · 15 images", plusNotes: "50 notes · 50 images",
+  educationSummary: "Education is permanently free, with Plus features.",
+  educationDescription: "Free Education includes all Plus features. Verify a supported .edu or .edu.[country code] email to activate it automatically. Educational accounts cannot purchase other plans; existing paid time is preserved.",
+  educationHelp: "Verified your educational email but still missing Education? Contact",
+  privacyIndexesTitle: "Images, indexes and display times",
+  privacyIndexesBody: "Images and captions follow the note's encryption and share its storage allowance. New version history retains text only; restoring it keeps current images unchanged. We maintain an email-to-account lookup and note summaries, sizes and image counts to serve lists efficiently. These rebuildable indexes do not duplicate note bodies or image files; encrypted titles remain encrypted in the index. Session activity may be recorded at one-minute intervals. Stored timestamps use UTC; the interface displays your device's time zone. Your time-zone identifier may be saved for account emails. Education eligibility is determined from a verified educational email address.",
+});
+Object.assign(I18N["zh-Hant"], {
+  agentWorking: "指令已送出，Astra Agent 正在準備預覽…",
+  passwordStepBody: "輸入密碼，繼續登入。", codeStepBody: "輸入信件中的六位數驗證碼。", historyLatest: "上一個版本", historyVersion: "前 {number} 個版本",
+  ai_busy: "Astra Agent 正在處理上一個指令，請等完成後再試。",
+  image_quota_exceeded: "已達方案的圖片上限。請移除圖片或升級方案，再加入新的圖片。",
+  imageAllowance: "帳號圖片總數", imageAllowanceHint: "每篇最多 3 張，與筆記共用儲存空間；垃圾桶中的圖片也計入數量。",
+  freeNotes: "20 篇筆記 · 15 張圖片", plusNotes: "50 篇筆記 · 50 張圖片",
+  educationSummary: "Education 永久免費，享 Plus 同等功能。",
+  educationDescription: "Education 是永久免費的教育方案，提供 Plus 同等功能。使用受支援的 .edu 或 .edu.[國碼] 信箱，驗證後即可自動啟用。教育信箱帳號不能購買其他方案；既有付費天數仍會保留。",
+  educationHelp: "教育信箱驗證後未取得 Education？請聯絡",
+  privacyIndexesTitle: "圖片、索引與時間顯示",
+  privacyIndexesBody: "圖片與註解沿用筆記加密，並共用儲存空間。新的版本紀錄只保留文字，還原時維持目前圖片。為加快查詢，我們保存信箱對應帳號的索引，以及筆記摘要、容量和圖片數量；索引可由原始資料重建，不複製筆記內文或圖片，加密標題在索引中也維持加密。登入活動可能以一分鐘間隔更新。時間以 UTC 儲存，介面依裝置時區顯示；帳號可保存時區名稱供信件顯示。Education 資格依已驗證的教育信箱判定。",
+});
+Object.assign(I18N.ja, {
+  agentWorking: "リクエストを送信しました。Astra Agent がプレビューを準備しています…",
+  passwordStepBody: "パスワードを入力して続けてください。", codeStepBody: "メールに届いた6桁のコードを入力してください。", historyLatest: "直前の版", historyVersion: "{number}つ前の版",
+  ai_busy: "Astra Agent は処理中です。現在のリクエストが完了してからお試しください。",
+  image_quota_exceeded: "プランの画像上限に達しました。画像を削除するか、プランを変更して追加してください。",
+  imageAllowance: "アカウントの画像上限", imageAllowanceHint: "1ノート3枚まで。ごみ箱の画像も数と容量に含まれます。",
+  freeNotes: "20 ノート · 15 画像", plusNotes: "50 ノート · 50 画像",
+  educationSummary: "Education は永久無料。Plus と同じ機能を利用できます。",
+  educationDescription: "Education は Plus 相当の永久無料プランです。対応する .edu または .edu.[国コード] のメールを認証すると自動で利用できます。他プランの購入はできませんが、購入済み期間は保持されます。",
+  educationHelp: "教育メールを認証しても Education にならない場合の連絡先：",
+  privacyIndexesTitle: "画像・索引・時刻の表示",
+  privacyIndexesBody: "画像と説明はノートと暗号化・容量を共有します。新しい履歴は文章のみを保持し、復元時も現在の画像を維持します。検索を高速化するため、メールとアカウントの対応、ノートの概要・容量・画像数を索引に保存します。索引は元データから再構築でき、本文や画像を複製せず、暗号化タイトルも暗号化されたままです。利用時刻は1分間隔で更新する場合があります。保存時刻はUTC、画面は端末のタイムゾーンです。メール表示用にタイムゾーン名を保存する場合があります。Educationの資格は認証済みの教育メールで判定します。",
+});
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const page = document.body.dataset.page || "";
@@ -2148,9 +2187,14 @@ const formatUtc = (value) =>
     {
       dateStyle: "medium",
       timeStyle: "short",
-      timeZone: "UTC",
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
-  ).format(new Date(value)) + " UTC";
+  ).format(new Date(value));
+function renderLocalTime(element, value) {
+  element.dataset.localTime = value;
+  element.textContent = formatUtc(value);
+}
+function historyVersionLabel(number) { return t(Number(number) === 1 ? "historyLatest" : "historyVersion").replace("{number}", number); }
 const planDisplayName = (value) =>
   value === "beta"
     ? t("betaPlan")
@@ -2471,6 +2515,7 @@ async function encryptHistoryDelta(note, previous, current, key) {
   return { iv: bytesToBase64(iv), ciphertext: bytesToBase64(bytes.slice(0, -16)), tag: bytesToBase64(bytes.slice(-16)), ...(note.encryption === ZERO_MODE ? { wrap: note.encrypted.wrap } : {}) };
 }
 async function attachClientHistory(note, request, pin = null, suppliedKey = null) {
+  if (typeof request.clearContent === "string") request.imageCount = AstraDocument.unpack(request.clearContent).images.length;
   const canRecover = note.cryptoOwner ? state.limited?.historyCount > 0 : state.account?.settings?.historyCount > 0;
   if (!isClientEncryptedMode(note.encryption) || !canRecover) return;
   const key = suppliedKey || await cachedNoteKey(note) || (await decryptConfidentialPayload(note, pin)).key;
@@ -2652,6 +2697,7 @@ function resetCaptcha(scope = "page") {
 
 async function api(url, options = {}) {
   const headers = {
+    "x-client-time-zone": Intl.DateTimeFormat().resolvedOptions().timeZone,
     ...(options.body ? { "content-type": "application/json" } : {}),
     ...(options.headers || {}),
   };
@@ -2680,6 +2726,8 @@ async function api(url, options = {}) {
           organization_required: t("organizationRequired"),
           storage_limit: t("storageLimit"),
           invalid_image: t("invalid_image"),
+          image_quota_exceeded: t("image_quota_exceeded"),
+          ai_busy: t("ai_busy"),
           image_busy: t("image_busy"),
           ai_failed: t("ai_failed"),
           ai_unavailable: t("astraAiUnavailable"),
@@ -2779,7 +2827,7 @@ function renderPlanComparison() {
     ],
     ["totalStorage", null, ["128 KB", "256 KB", "512 KB", "1024 KB"]],
     ["noteAllowance", null, ["20", "50", t("unlimited"), t("unlimited")]],
-    ["images", "mediaHint", ["3", "3", "3", "3"]],
+    ["imageAllowance", "imageAllowanceHint", ["15", "50", "150", "500"]],
     ["passCapacity", null, ["2", "10", "25", "100"]],
     ["basicEncryption", null, [true, true, true, true]],
     ["secretOption", null, [true, true, true, true]],
@@ -2868,6 +2916,10 @@ function observeStaticProtectionLabels() {
 function applyLocale() {
   document.documentElement.lang = state.language;
   document.documentElement.dataset.theme = state.theme;
+  $$("[data-code-email]").forEach(element => { element.textContent = t("codeSentTo").replace("{email}", element.dataset.codeEmail); });
+  $$('input[data-otp]').forEach((input, index) => input.setAttribute("aria-label", `${t("verificationCode")} ${index + 1}`));
+  $$("[data-local-time]").forEach(element => { element.textContent = formatUtc(element.dataset.localTime); });
+  $$("#history-version option[data-updated-at]").forEach(option => { option.textContent = `${historyVersionLabel(option.value)} · ${formatUtc(option.dataset.updatedAt)}`; });
   $$("[data-i18n]").forEach((el) => {
     const value = t(el.dataset.i18n);
     if (value) el.textContent = value;
@@ -3514,10 +3566,20 @@ function otpCode(form) {
   return $$("[data-otp]", form).map((input) => input.value).join("");
 }
 
+async function rememberLegacyMediaCount(note, payload) {
+  if (note.isPrevious || note.cryptoOwner || note.imageCount !== null) return;
+  const imageCount = AstraDocument.unpack(payload.content).images.length;
+  try {
+    await api(`/api/notes/${note.id}/media-summary`, {method:"POST",body:{imageCount}});
+    note.imageCount = imageCount;
+    if (state.account) state.account.imageCount = (state.account.imageCount || 0) + imageCount;
+  } catch { /* The original note stays usable if a disposable summary is unavailable. */ }
+}
 async function unlockConfidential(note) {
   if (await cachedNoteKey(note)) {
     try {
       const decrypted = await decryptConfidentialPayload(note, null);
+      await rememberLegacyMediaCount(note, decrypted.payload);
       return { payload: decrypted.payload, pin: null, key: decrypted.key };
     } catch (error) {
       forgetNoteKey(note);
@@ -3593,6 +3655,7 @@ async function unlockConfidential(note) {
               body: {
                 name: decrypted.payload.name,
                 encrypted,
+                imageCount: AstraDocument.unpack(decrypted.payload.content).images.length,
                 migrationOnly: true,
                 revision: note.revision,
               },
@@ -3607,6 +3670,7 @@ async function unlockConfidential(note) {
             );
           }
         }
+        await rememberLegacyMediaCount(note, decrypted.payload);
         const result = { payload: decrypted.payload, pin: input.value, key: decrypted.key };
         input.value = "";
         close();
@@ -4003,6 +4067,7 @@ async function initAuthForm(kind) {
     try { sessionStorage.setItem(magicRequestStorageKey, JSON.stringify(request)); } catch {}
   };
   const renderMagicWait = (request) => {
+    const intro = $("[data-auth-body]"); intro.dataset.i18n = "magicLinkWaitingBody"; intro.textContent = t("magicLinkWaitingBody");
     form.replaceChildren();
     const message = document.createElement("div");
     message.className = "auth-method-message magic-link-wait";
@@ -4010,21 +4075,24 @@ async function initAuthForm(kind) {
     icon.className = "fa-solid fa-spinner fa-spin";
     icon.setAttribute("aria-hidden", "true");
     const title = document.createElement("strong");
+    title.dataset.i18n = "magicLinkWaitingTitle";
     title.textContent = t("magicLinkWaitingTitle");
     const steps = document.createElement("div");
     steps.className = "magic-link-steps";
     [
-      ["fa-envelope-open-text", t("magicLinkStepOpen")],
-      ["fa-arrow-left", t("magicLinkStepReturn")],
-    ].forEach(([iconClass, text]) => {
+      ["fa-envelope-open-text", "magicLinkStepOpen"],
+      ["fa-arrow-left", "magicLinkStepReturn"],
+    ].forEach(([iconClass, key]) => {
       const step = document.createElement("p");
       step.className = "magic-link-step";
       step.innerHTML = `<i class="fa-solid ${iconClass}" aria-hidden="true"></i><span></span>`;
-      step.querySelector("span").textContent = text;
+      step.querySelector("span").dataset.i18n = key;
+      step.querySelector("span").textContent = t(key);
       steps.append(step);
     });
     const status = document.createElement("span");
     status.className = "field-help";
+    status.dataset.i18n = "magicLinkWaitingStatus";
     status.setAttribute("role", "status");
     status.textContent = t("magicLinkWaitingStatus");
     message.append(icon, title, steps, status);
@@ -4081,6 +4149,10 @@ async function initAuthForm(kind) {
       else input.value = value;
     }
   };
+  const setLoginCaptchaVisible = (visible) => {
+    if (kind !== "login") return;
+    $$(".captcha-heading, .captcha-box", form).forEach(element => { element.hidden = !visible; });
+  };
   const showPasswordStep = () => {
     loginStage = "password";
     const passwordGroup = $("#login-password-group", form);
@@ -4090,6 +4162,8 @@ async function initAuthForm(kind) {
     passwordGroup.append($(".auth-forgot", form));
     form.password.required = true;
     form.password.focus();
+    if (!cancellation) { const intro = $("[data-auth-body]"); intro.dataset.i18n = "passwordStepBody"; intro.textContent = t("passwordStepBody"); }
+    if (!cancellation && state.captcha) setLoginCaptchaVisible(false);
   };
   if (magicLink?.get("magic") === "1") {
     try {
@@ -4237,10 +4311,12 @@ async function initAuthForm(kind) {
       const result = await api(endpoint, { method: "POST", body: data });
       if (result.twoFactorRequired) {
         twoFactorUsername = result.username;
+        const intro = $("[data-auth-body]"); intro.dataset.i18n = "codeStepBody"; intro.textContent = t("codeStepBody");
         form.replaceChildren();
         const codeGroup = document.createElement("div");
         codeGroup.className = "form-group";
         const codeLabel = document.createElement("label");
+        codeLabel.dataset.i18n = "verificationCode";
         codeLabel.id = "login-code-label";
         codeLabel.textContent = t("verificationCode");
         const otpInputs = document.createElement("div");
@@ -4261,6 +4337,7 @@ async function initAuthForm(kind) {
         codeGroup.append(codeLabel, otpInputs);
         const sentTo = document.createElement("p");
         sentTo.className = "field-help";
+        sentTo.dataset.codeEmail = String(result.email || "");
         sentTo.textContent = t("codeSentTo").replace("{email}", String(result.email || ""));
         const formMessage = document.createElement("p");
         formMessage.className = "form-message";
@@ -4274,6 +4351,7 @@ async function initAuthForm(kind) {
         backIcon.className = "fa-solid fa-arrow-left";
         backIcon.setAttribute("aria-hidden", "true");
         const backText = document.createElement("span");
+        backText.dataset.i18n = "backHome";
         backText.textContent = t("backHome");
         back.append(backIcon, document.createTextNode(" "), backText);
         const confirm = document.createElement("button");
@@ -4283,6 +4361,7 @@ async function initAuthForm(kind) {
         confirmIcon.className = "fa-solid fa-shield-halved";
         confirmIcon.setAttribute("aria-hidden", "true");
         const confirmText = document.createElement("span");
+        confirmText.dataset.i18n = "confirmSignIn";
         confirmText.textContent = t("confirmSignIn");
         confirm.append(confirmIcon, confirmText);
         actions.append(back, confirm);
@@ -4298,6 +4377,7 @@ async function initAuthForm(kind) {
     } catch (error) {
       const registerDraft = captureRegisterDraft();
       if (needsCaptcha) {
+        setLoginCaptchaVisible(true);
         resetCaptcha();
         // Some CAPTCHA renderers update their mount asynchronously. Restore
         // again on the next frame so that update cannot clear form controls.
@@ -4943,13 +5023,14 @@ async function showPrevious(note, version = 1) {
   picker.replaceChildren(...previous.versions.map((item) => {
     const option = document.createElement("option");
     option.value = String(item.version);
-    option.textContent = `${t("historyVersion").replace("{number}", item.version)} · ${formatUtc(item.updatedAt)}`;
+    option.dataset.updatedAt = item.updatedAt;
+    option.textContent = `${historyVersionLabel(item.version)} · ${formatUtc(item.updatedAt)}`;
     return option;
   }));
   picker.value = String(previous.version);
   picker.onchange = () => showPrevious(note, Number(picker.value)).catch(showError);
   $("#previous-title").textContent = previous.name;
-  $("#previous-time").textContent = formatUtc(previous.updatedAt);
+  renderLocalTime($("#previous-time"), previous.updatedAt);
   AstraMedia.render($("#previous-content"), previous.content, mediaOptions());
   $("#previous-panel").hidden = false;
   $("#previous-panel").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -5059,6 +5140,7 @@ async function initNewNote() {
       const body = {
         name: form.name.value,
         content: media.get().normalize("NFC"),
+        imageCount: media.images().length,
         encryption: mode,
       };
       if (media.busy()) throw new Error(t("image_busy"));
@@ -5538,7 +5620,7 @@ async function initNote() {
   $("#note-characters").textContent =
     `${note.characters.toLocaleString()} ${t("characters")}`;
   $("#note-size").textContent = formatBytes(note.bytes);
-  $("#note-updated").textContent = formatUtc(note.updatedAt);
+  renderLocalTime($("#note-updated"), note.updatedAt);
   if (note.locked) {
     renderLockedNote(note);
     return;
@@ -5944,7 +6026,7 @@ async function initShared() {
     $("#shared-author").textContent =
       `${t("by")} ${note.author} · ${note.email}`;
     $("#shared-encryption").textContent = encryptionLabel(note.encryption);
-    $("#shared-updated").textContent = formatUtc(note.updatedAt);
+    renderLocalTime($("#shared-updated"), note.updatedAt);
     $("#shared-characters").textContent =
       `${note.characters.toLocaleString()} ${t("characters")}`;
     $("#copy-shared-content").onclick = async () => {

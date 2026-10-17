@@ -93,7 +93,7 @@ body[data-page="home"] .feature-card p { line-height: 1.85; text-wrap: pretty; }
 .storage-example strong { display: block; font: 500 clamp(1.4rem, 2.2vw, 1.75rem)/1.5 var(--display); color: var(--text); text-wrap: balance; }
 .storage-example-meter { height: 8px; margin: 20px 0 14px; border-radius: 99px; overflow: hidden; background: var(--button); }
 /* 20 × 500 × 3 UTF-8 bytes / 128,000 bytes; illustrative content only, not account usage. */
-.storage-example-meter > span { display: block; height: 100%; width: 23.4375%; border-radius: inherit; background: var(--primary-hover); }
+.storage-example-meter > span { display: block; height: 100%; width: 7.8125%; border-radius: inherit; background: var(--primary-hover); }
 .storage-example-context { font-size: .875rem; line-height: 1.75; margin-bottom: 16px; }
 .home-text .storage-example-caution { font-size: .8125rem; margin-bottom: 0; line-height: 1.8; }
 .home-text .limit-caption { display: flex; align-items: baseline; gap: 8px; font-size: .8125rem; margin: 12px 0 0; }
