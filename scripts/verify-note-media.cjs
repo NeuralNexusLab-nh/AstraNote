@@ -76,13 +76,21 @@ const stamp=()=>new Date().toISOString();
     assert.equal(await page.locator('.image-edit-modal').count(),1,'Enter must not submit and close the image editor');checks+=3;
     await page.getByRole("button",{name:"Apply changes",exact:true}).click();await page.locator(".image-edit-modal").waitFor({state:"detached"});
     await page.locator("#editor-content").fill("Updated image version");await page.locator("#save-note").click();await page.waitForURL(new RegExp(`/notes/${id}$`));await page.locator("#note-content .note-image").first().waitFor();
-    await page.locator("#previous-note").click();await page.locator("#previous-content .note-image").first().waitFor();assert.equal(await page.locator("#previous-content .note-image").count(),3);checks+=12;
-    await page.locator("#close-previous").click();
+    const currentSources=await page.locator('#note-content .note-image img').evaluateAll(nodes=>nodes.map(node=>node.src));
+    await page.locator("#previous-note").click();await page.locator("#previous-content .note-image").first().waitFor();assert.equal(await page.locator("#previous-content .note-image").count(),3);
+    assert.deepEqual(await page.locator('#previous-content .note-image img').evaluateAll(nodes=>nodes.map(node=>node.src)),currentSources,'history preview uses live images, not old drawings');
+    await page.locator('#restore-previous').click();await page.locator('.modal-actions .btn-primary').click();await page.locator('#note-content h1').waitFor();
+    assert.deepEqual(await page.locator('#note-content .note-image img').evaluateAll(nodes=>nodes.map(node=>node.src)),currentSources,'restoring text preserves exact live image data');
+    const retained=JSON.parse(await fs.readFile(path.join(user,'notes',id+'.json'),'utf8'));
+    let patches;
+    if(pin) patches=await page.evaluate(async retained=>{const note=await api(`/api/notes/${retained.id}`);const key=await cachedNoteKey(note);return Promise.all(retained.history.map(async entry=>{const bytes=base64ToBytes(entry.data.ciphertext),tag=base64ToBytes(entry.data.tag),combined=new Uint8Array(bytes.length+tag.length);combined.set(bytes);combined.set(tag,bytes.length);return JSON.parse(textDecoder.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:base64ToBytes(entry.data.iv),additionalData:historyAAD(note,entry.revision),tagLength:128},key,combined)));}));},retained);
+    else patches=retained.history.map(entry=>mode==='none'?entry.data:JSON.parse(core.testables.decryptContent(entry.data,username,`${id}:history:${entry.revision}`,mode)));
+    assert.ok(patches.every(patch=>patch.v===3&&!Object.hasOwn(patch,'images')&&!JSON.stringify(patch).includes('Fixture caption')),'saved history contains only text and integrity metadata');checks+=15;
     await page.locator("#astra-ai").click();await page.locator(".agent-image-selection input").first().check();await page.locator(".astra-ai-form textarea").fill("Add a short QA label to the selected image");await page.locator(".modal-actions .btn-primary").click();
     await page.locator(".astra-ai-preview .media-image-card").first().waitFor();assert.equal(await page.locator(".astra-ai-preview .media-image-card").count(),3);await page.locator(".modal-actions .btn-primary").click();await page.waitForURL(new RegExp(`/notes/${id}$`));await page.locator("#note-content").filter({hasText:"Reviewed."}).waitFor();
     assert.equal(apiRequests.at(-1).input[1].content.filter(item=>item.type==="input_image").length,1);checks+=2;
   }
-  for(const locale of ["en","zh-Hant","ja"])for(const theme of ["dark","light"]){
+  if(!process.argv.includes('--functional-only'))for(const locale of ["en","zh-Hant","ja"])for(const theme of ["dark","light"]){
     await page.goto(base+`/notes/${first}/edit`);await page.locator(".media-image-card").first().waitFor();
     await page.evaluate(({locale,theme})=>{state.language=locale;state.theme=theme;applyLocale();document.documentElement.style.scrollBehavior="auto";},{locale,theme});
     for(const [width,height]of sizes){await page.setViewportSize({width,height});await page.waitForTimeout(70);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${locale}/${theme}/${width}`);assert.equal(await page.locator('.media-toolbar input[type="range"]').count(),0);assert.equal(await page.locator('.media-toolbar select option').count(),3);assert.doesNotMatch(await page.evaluate(()=>Object.values(AstraMedia.copy).flatMap(Object.values).join(' ')),/5\s?KB/);checks++;

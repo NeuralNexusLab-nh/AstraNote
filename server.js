@@ -1212,34 +1212,31 @@ function historyContext(note, revision) {
 }
 function resolveServerHistory(note, username, entries) {
   let payload = readServerNotePayload(note, username);
+  const live = payload;
   for (const entry of entries) {
     if (entry.kind === "snapshot") payload = readServerNotePayload({ ...note, ...entry.snapshot }, username);
     else {
       const patch = note.encryption === "none" ? entry.data : JSON.parse(decryptContent(entry.data, username, historyContext(note, entry.revision), note.encryption));
-      payload = NoteHistory.restore(payload, patch);
+      payload = NoteHistory.restore(patch.v === 1 ? NoteHistory.textState(payload) : payload, patch);
     }
   }
-  return payload;
+  return NoteHistory.retainImages(payload, live);
 }
-function recordNoteHistory(note, before, username, metadata, submittedDelta) {
+function recordNoteHistory(note, before, username, metadata, submittedDelta, format) {
   const count = normalizeHistorySettings(metadata);
   if (!count) { delete note.history; delete note.previous; return; }
   const revision = (before.revision || 0) + 1;
   let entry;
   if (isClientEncryptedMode(note.encryption)) {
-    if (submittedDelta !== undefined) {
-      if (!validClientEnvelope(submittedDelta, note.encryption))
-        throw Object.assign(new Error("Encrypted history is invalid."), { status: 400, code: "invalid_history" });
-      // Bind every delta to its save revision. AstraZero keeps exactly the same
-      // wrapped content key, but uses an independent IV and history-purpose AAD.
-      if (note.encryption === ZERO_MODE && JSON.stringify(submittedDelta.wrap) !== JSON.stringify(note.content.wrap))
-        throw Object.assign(new Error("Encrypted history key does not match."), { status: 400, code: "invalid_history" });
-      entry = { kind: "delta", revision, updatedAt: before.updatedAt, data: submittedDelta };
-    } else {
-      // Older clients remain readable. They cannot compute a plaintext delta;
-      // retain their existing encrypted snapshot rather than lose a version.
-      entry = { kind: "snapshot", updatedAt: before.updatedAt, snapshot: noteSnapshot(before) };
-    }
+    if (format !== 3 || submittedDelta === undefined)
+      throw Object.assign(new Error("Reload the editor before saving to update text-only version history."), { status: 409, code: "history_client_refresh" });
+    if (!validClientEnvelope(submittedDelta, note.encryption))
+      throw Object.assign(new Error("Encrypted history is invalid."), { status: 400, code: "invalid_history" });
+    // Bind every delta to its save revision. AstraZero keeps exactly the same
+    // wrapped content key, but uses an independent IV and history-purpose AAD.
+    if (note.encryption === ZERO_MODE && JSON.stringify(submittedDelta.wrap) !== JSON.stringify(note.content.wrap))
+      throw Object.assign(new Error("Encrypted history key does not match."), { status: 400, code: "invalid_history" });
+    entry = { kind: "delta", revision, updatedAt: before.updatedAt, data: submittedDelta };
   } else {
     const current = readServerNotePayload(note, username), previous = readServerNotePayload(before, username);
     if (current.name === previous.name && current.content === previous.content) return;
@@ -2307,6 +2304,13 @@ function emailSecurityNotice(language, type) {
 function paymentConfirmedLabel(language) {
   return language === "zh-Hant" ? "已確認" : language === "ja" ? "確認済み" : "Confirmed";
 }
+function emailProviderFailure(status, context = "SEND") {
+  const reason = status === 401 ? "INVALID_CREDENTIAL" : status === 403 ? "PERMISSION_OR_SENDER_REJECTED" : status === 429 ? "PROVIDER_LIMIT" : status === 0 ? "NETWORK_ERROR" : "REQUEST_REJECTED";
+  // Deliberately omit credentials, recipients, provider bodies and mail content.
+  console.error(`[${utcNow()}] EMAIL ${context} FAILED · provider=Zeabur · status=${status} · reason=${reason}`);
+  const code = [401,403].includes(status) ? "email_provider_configuration" : status === 429 ? "email_provider_limited" : "email_delivery_failed";
+  return Object.assign(new Error("Email delivery is temporarily unavailable."), { status: 503, code });
+}
 async function sendMail({ to, from, subject, template }) {
   if (!process.env.ZSKEY) throw Object.assign(new Error("Email delivery is unavailable."), { status: 503, code: "email_unavailable" });
   await withLock("email-limits", async () => {
@@ -2315,8 +2319,10 @@ async function sendMail({ to, from, subject, template }) {
     const current = record.day === day ? { day, total: Number(record.total) || 0 } : { day, total: 0 };
     if (current.total >= EMAIL_DAILY_LIMIT)
       throw Object.assign(new Error("Today's email sending limit has been reached. Please try again tomorrow."), { status: 429, code: "email_daily_limit" });
-    const response = await fetch(EMAIL_API_URL, { method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${process.env.ZSKEY}` }, signal: AbortSignal.timeout(12_000), body: JSON.stringify({ from, to: [to], reply_to: [SUPPORT_EMAIL], subject, html: template.html, text: template.text }) });
-    if (!response.ok) throw Object.assign(new Error("Email delivery failed."), { status: response.status >= 500 ? 503 : response.status, code: "email_delivery_failed" });
+    let response;
+    try { response = await fetch(EMAIL_API_URL, { method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${process.env.ZSKEY}` }, signal: AbortSignal.timeout(12_000), body: JSON.stringify({ from, to: [to], reply_to: [SUPPORT_EMAIL], subject, html: template.html, text: template.text }) }); }
+    catch { throw emailProviderFailure(0); }
+    if (!response.ok) throw emailProviderFailure(response.status);
     current.total += 1;
     await writeJson(EMAIL_LIMITS_FILE, current);
   });
@@ -2440,15 +2446,16 @@ async function sendAdminBroadcast({ recipients, subject, html, text, adminUserna
     // Zeabur's batch endpoint accepts at most 100 distinct messages. Each
     // recipient is its own message, so the local daily counter intentionally
     // debits recipients.length, never merely one batch request.
-    const response = await fetch(`${EMAIL_API_URL}/batch`, {
+    let response;
+    try { response = await fetch(`${EMAIL_API_URL}/batch`, {
       method: "POST",
       headers: { "content-type": "application/json", authorization: `Bearer ${process.env.ZSKEY}` },
       signal: AbortSignal.timeout(20_000),
       body: JSON.stringify({ emails: recipients.map((to) => ({ from: EMAIL_FROM, to: [to], reply_to: [SUPPORT_EMAIL], subject, html, text })) }),
-    });
+    }); } catch { throw emailProviderFailure(0, "BATCH"); }
     const result = await response.json().catch(() => ({}));
-    if (!response.ok || Number(result.total_count) !== recipients.length)
-      throw Object.assign(new Error("Email delivery failed before the broadcast was queued."), { status: response.status >= 500 ? 503 : response.status || 502, code: "email_delivery_failed" });
+    if (!response.ok) throw emailProviderFailure(response.status, "BATCH");
+    if (Number(result.total_count) !== recipients.length) throw emailProviderFailure(502, "BATCH");
     current.total += recipients.length;
     await writeJson(ADMIN_BROADCAST_LIMITS_FILE, current);
     return result.job_id || null;
@@ -4381,7 +4388,7 @@ app.put("/api/limited/note", requireLimitedEditor, limitedEditorMutationLimiter,
         writeServerNotePayload(note, record.ownerUsername, name, content);
       }
       note.updatedAt = utcNow();
-      recordNoteHistory(note, snapshot, record.ownerUsername, metadata, req.body?.historyDelta);
+      recordNoteHistory(note, snapshot, record.ownerUsername, metadata, req.body?.historyDelta, req.body?.historyFormat);
       note.revision = (note.revision || 0) + 1;
       const serialized = JSON.stringify(note, null, 2) + "\n";
       if ((await noteStorageSize(record.ownerUsername)) - originalBytes + Buffer.byteLength(serialized) > (refreshed.payload.maxBytes ?? Infinity))
@@ -4722,14 +4729,12 @@ app.post(
             note.name = encryptNoteTitle(normalizeText(req.body.name, MAX_NOTE_NAME), username, note.id);
             note.content = req.body.encrypted;
             note.payloadVersion = 3;
-          } else if (selected.entries.length === 1 && selected.entries[0].kind === "snapshot") {
-            Object.assign(note, selected.entries[0].snapshot);
           } else throw Object.assign(new Error("Unlock this version before restoring it."), { status: 400, code: "invalid_history" });
         } else {
           const payload = resolveServerHistory(note, username, selected.entries);
           writeServerNotePayload(note, username, payload.name, payload.content);
         }
-        recordNoteHistory(note, before, username, metadata, req.body.historyDelta);
+        recordNoteHistory(note, before, username, metadata, req.body.historyDelta, req.body.historyFormat);
         note.updatedAt = utcNow();
         note.revision = (note.revision || 0) + 1;
         const serialized = JSON.stringify(note, null, 2) + "\n";
@@ -5086,7 +5091,7 @@ app.put(
           note.updatedAt = utcNow();
         }
         if (!isMigration) {
-          recordNoteHistory(note, snapshot, username, metadata, req.body.historyDelta);
+          recordNoteHistory(note, snapshot, username, metadata, req.body.historyDelta, req.body.historyFormat);
           note.revision = (note.revision || 0) + 1;
         }
         const maxBytes = access.payload.maxBytes ?? Infinity;
@@ -5502,6 +5507,8 @@ module.exports = {
     emailCopy,
     emailSecurityNotice,
     emailAuditDetails,
+    sendMail,
+    emailProviderFailure,
     destroyOtherUserSessions,
     closeOrderStore: () => {
       orderStore?.close();

@@ -1971,15 +1971,21 @@ Object.assign(I18N.ja, {
   privacyRetention: "Ultra、Admin、Beta は最大20の版を保持でき、既定は3つ、無効化もできます。数を減らすと古い版は完全に削除されます。履歴とゴミ箱は容量を使います。ダウングレード後の保存でそのノートの履歴は削除されます。ゴミ箱は元の期限（1、3、7、14、30日）を維持します。アカウント削除、永久削除、上限超過による自動削除は復元可能なコピーを作りません。ロック済みノートの編集・復元には十分な容量のプランが必要です。",
 });
 
-Object.assign(I18N.en, { mediaTermsTitle: "Images, editing and Education", mediaTerms: "Each note may contain up to three images. Images, captions, drawings and complete image snapshots in history share your storage and note encryption. Compression is a target, not a quality or size guarantee; keep independent copies. Astra Agent processes readable note text and explicitly selected images through OpenAI, never your PIN or key. Results require your review before saving. Education eligibility depends on a verified email in an approved educational namespace and grants permanent Plus-equivalent features, without new paid purchases. Existing purchased time is preserved. Unverified Free includes 64 KB and half the full Free Agent allowance.", aiPrivacyText: "Generating a preview sends readable titles, note text, your instruction and explicitly selected images to OpenAI, including unlocked encrypted content. PINs and encryption keys are not sent. Do not submit content you do not want processed there. The request uses store:false; OpenAI's applicable processing and retention policies still apply. Review every result before saving." });
-Object.assign(I18N["zh-Hant"], { mediaTermsTitle: "圖片、編輯與 Education", mediaTerms: "每篇最多三張圖片；圖片、註解、繪圖及版本中的完整圖片副本，都共用筆記空間與加密。壓縮為目標，不保證大小或畫質，請自行保留副本。Astra Agent 會透過 OpenAI 處理可讀文字與明確勾選的圖片，不包含 PIN 或金鑰；結果由您檢查後儲存。Education 須驗證核可教育網域的信箱，永久提供 Plus 同等功能，不可新增付費購買；已購買的天數仍會保留。未驗證 Free 提供 64 KB 與完整 Free 額度的一半。", aiPrivacyText: "產生預覽時，可讀標題、筆記文字、指令及明確勾選的圖片會傳送至 OpenAI，包括已解鎖的加密內容；PIN 與加密金鑰不會傳送。不希望由該服務處理的資料，請勿提交。請求使用 store:false，但仍適用 OpenAI 的資料處理與保留政策。儲存前請檢查每項結果。" });
-Object.assign(I18N.ja, { mediaTermsTitle: "画像・編集・Education", mediaTerms: "1ノート3画像まで。説明・描画・履歴の完全な画像コピーは、ノートの容量と暗号化を共有します。圧縮は目標で、容量や画質を保証せず、別にもコピーを保管してください。Astra Agentは読める文章と選択画像をOpenAIで処理しますが、PINや鍵は送りません。保存前に結果を確認してください。Educationは承認済み教育ドメインのメール認証でPlus相当の機能を期限なしで提供。他プランの新規購入は不可、購入済み期間は保持。未認証Freeは64 KBと全Free枠の半分です。", aiPrivacyText: "プレビュー生成時、読めるタイトル・文章・指示と明示的に選んだ画像をOpenAIへ送信します。解除済みの暗号化内容も含みますが、PINや暗号鍵は送りません。処理させたくない情報は送信しないでください。store:falseを設定しますが、OpenAIの適用される処理・保持ポリシーに従います。保存前に結果を確認してください。" });
+Object.assign(I18N.en, { mediaTermsTitle: "Images, editing and Education", mediaTerms: "Each note may contain up to three images. Images, captions and drawings share your storage and note encryption. New history retains text differences only; restoring text keeps current images unchanged. Older stored versions remain compatible and count toward storage. Compression is a target, not a quality or size guarantee; keep independent copies. Astra Agent processes readable note text and explicitly selected images through OpenAI, never your PIN or key. Results require your review before saving. Education eligibility depends on a verified email in an approved educational namespace and grants permanent Plus-equivalent features, without new paid purchases. Existing purchased time is preserved. Unverified Free includes 64 KB and half the full Free Agent allowance.", aiPrivacyText: "Generating a preview sends readable titles, note text, your instruction and explicitly selected images to OpenAI, including unlocked encrypted content. PINs and encryption keys are not sent. Do not submit content you do not want processed there. The request uses store:false; OpenAI's applicable processing and retention policies still apply. Review every result before saving." });
+Object.assign(I18N["zh-Hant"], { mediaTermsTitle: "圖片、編輯與 Education", mediaTerms: "每篇最多三張圖片；圖片、註解與繪圖共用筆記空間與加密。新的版本紀錄只保存文字差異，還原文字時保留目前圖片；既有舊版本仍相容讀取並計入空間。壓縮為目標，不保證大小或畫質，請自行保留副本。Astra Agent 會透過 OpenAI 處理可讀文字與明確勾選的圖片，不包含 PIN 或金鑰；結果由您檢查後儲存。Education 須驗證核可教育網域的信箱，永久提供 Plus 同等功能，不可新增付費購買；已購買的天數仍會保留。未驗證 Free 提供 64 KB 與完整 Free 額度的一半。", aiPrivacyText: "產生預覽時，可讀標題、筆記文字、指令及明確勾選的圖片會傳送至 OpenAI，包括已解鎖的加密內容；PIN 與加密金鑰不會傳送。不希望由該服務處理的資料，請勿提交。請求使用 store:false，但仍適用 OpenAI 的資料處理與保留政策。儲存前請檢查每項結果。" });
+Object.assign(I18N.ja, { mediaTermsTitle: "画像・編集・Education", mediaTerms: "1ノート3画像まで。画像・説明・描画はノートの容量と暗号化を共有します。新しい履歴は文章差分のみを保存し、復元時も現在の画像を維持。旧形式の版は互換性を保ち、容量に含まれます。圧縮は目標で、容量や画質を保証せず、別にもコピーを保管してください。Astra Agentは読める文章と選択画像をOpenAIで処理しますが、PINや鍵は送りません。保存前に結果を確認してください。Educationは承認済み教育ドメインのメール認証でPlus相当の機能を期限なしで提供。他プランの新規購入は不可、購入済み期間は保持。未認証Freeは64 KBと全Free枠の半分です。", aiPrivacyText: "プレビュー生成時、読めるタイトル・文章・指示と明示的に選んだ画像をOpenAIへ送信します。解除済みの暗号化内容も含みますが、PINや暗号鍵は送りません。処理させたくない情報は送信しないでください。store:falseを設定しますが、OpenAIの適用される処理・保持ポリシーに従います。保存前に結果を確認してください。" });
 Object.assign(I18N["en"], {"emailBannerFree":"Verify your email for 128 KB, the full Free Agent allowance and email security.","emailBannerEducation":"Verify your educational email to automatically unlock free Education with Plus features.","legalUpdated":"Effective and last updated: 17 October 2026","termsUpdated":"Effective and last updated: 17 October 2026"});
 Object.assign(I18N["zh-Hant"], {"emailBannerFree":"驗證信箱，即可使用 128 KB、完整 Free Agent 額度與信箱安全功能。","emailBannerEducation":"驗證教育信箱，即可自動取得免費 Education，享 Plus 同等功能。","legalUpdated":"生效及最後更新：2026 年 10 月 17 日","termsUpdated":"生效及最後更新：2026 年 10 月 17 日"});
 Object.assign(I18N["ja"], {"emailBannerFree":"メール認証で128 KB、全Free Agent枠とメール保護を利用できます。","emailBannerEducation":"教育メールを認証して、Plus相当の無料Educationを自動で利用。","legalUpdated":"発効・最終更新：2026年10月17日","termsUpdated":"発効・最終更新：2026年10月17日"});
 Object.assign(I18N["en"], {"educationSummary":"Education: free Plus features after educational email verification.","educationUnavailable":"Unavailable for Education","educationActive":"Education included"});
 Object.assign(I18N["zh-Hant"], {"educationSummary":"Education：驗證教育信箱，免費享 Plus 同等功能。","educationUnavailable":"Education 不可升級","educationActive":"已包含 Education"});
 Object.assign(I18N["ja"], {"educationSummary":"Education：教育メール認証でPlus相当の機能を無料で。","educationUnavailable":"Educationは変更不可","educationActive":"Educationに含まれる"});
+Object.assign(I18N.en, { emailDeliveryFailed: "The email could not be sent. Please try again later; if it continues, contact astranote@nxlabtw.com.", emailProviderConfiguration: "Email delivery is unavailable because the sending service rejected access. Please contact astranote@nxlabtw.com; repeated attempts will not resolve this.", emailProviderLimited: "The email provider is temporarily limiting sends. Please wait before trying again.", previousHelp: "Only text is restored. Images stay as they are now.", restoreVersionBody: "Restore this text version? Current images, captions and drawings will stay unchanged." });
+Object.assign(I18N["zh-Hant"], { emailDeliveryFailed: "信件未能寄出，請稍後再試；若持續發生，請聯絡 astranote@nxlabtw.com。", emailProviderConfiguration: "寄信服務目前拒絕存取，暫時無法寄信。請聯絡 astranote@nxlabtw.com，重複點擊不會解決此問題。", emailProviderLimited: "寄信服務暫時限制發送，請稍候再試。", previousHelp: "僅還原文字；圖片維持目前狀態。", restoreVersionBody: "要還原這個文字版本嗎？目前的圖片、註解與繪圖都不會變動。" });
+Object.assign(I18N.ja, { emailDeliveryFailed: "メールを送信できませんでした。時間を置いてお試しください。続く場合は astranote@nxlabtw.com へご連絡ください。", emailProviderConfiguration: "送信サービスがアクセスを拒否しているため、メールを送信できません。astranote@nxlabtw.com へご連絡ください。繰り返し押しても解決しません。", emailProviderLimited: "送信サービスが一時的に送信を制限しています。少し待ってお試しください。", previousHelp: "文章だけを復元します。画像は現在の状態を保ちます。", restoreVersionBody: "この文章を復元しますか？現在の画像・説明・描画は変更されません。" });
+Object.assign(I18N.en, { historyClientRefresh: "This editor is out of date. Keep a copy of your draft, then reload the page before saving." });
+Object.assign(I18N["zh-Hant"], { historyClientRefresh: "編輯器版本已更新。請先保留草稿，再重新整理頁面後儲存。" });
+Object.assign(I18N.ja, { historyClientRefresh: "エディターが更新されました。下書きを控えてから、ページを再読み込みして保存してください。" });
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const page = document.body.dataset.page || "";
@@ -2455,8 +2461,11 @@ function historyAAD(note, revision) {
 }
 async function encryptHistoryDelta(note, previous, current, key) {
   const patch = AstraHistory.reverse(current, previous);
-  patch.fromDigest = await sha256Hex(JSON.stringify(current));
-  patch.toDigest = await sha256Hex(JSON.stringify(previous));
+  patch.fromDigest = await sha256Hex(JSON.stringify(AstraHistory.textState(current)));
+  patch.toDigest = await sha256Hex(JSON.stringify(AstraHistory.textState(previous)));
+  // Authenticated digest bridge to old full-document patches. This preserves
+  // their integrity checks after live images change, without copying images.
+  patch.legacyTargetDigest = await sha256Hex(JSON.stringify(previous));
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const bytes = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv, additionalData: historyAAD(note, (note.revision || 0) + 1), tagLength: 128 }, key, textEncoder.encode(JSON.stringify(patch))));
   return { iv: bytesToBase64(iv), ciphertext: bytesToBase64(bytes.slice(0, -16)), tag: bytesToBase64(bytes.slice(-16)), ...(note.encryption === ZERO_MODE ? { wrap: note.encrypted.wrap } : {}) };
@@ -2466,26 +2475,39 @@ async function attachClientHistory(note, request, pin = null, suppliedKey = null
   if (!isClientEncryptedMode(note.encryption) || !canRecover) return;
   const key = suppliedKey || await cachedNoteKey(note) || (await decryptConfidentialPayload(note, pin)).key;
   request.historyDelta = await encryptHistoryDelta(note, { name: note.name, content: note.content }, { name: request.name.normalize("NFC").trim(), content: request.clearContent.normalize("NFC") }, key);
+  request.historyFormat = 3;
 }
 async function decryptHistoryChain(note, response) {
   let current = { name: note.name, content: note.content };
+  const live = current;
+  let legacyDigest = null;
   const key = await cachedNoteKey(note);
   if (!key) throw new Error(t("historyUnlockAgain"));
   for (const entry of response.chain) {
     if (entry.kind === "snapshot") {
       const snapshot = { ...note, ...entry.snapshot, encrypted: entry.snapshot.content, isPrevious: true };
       current = (await decryptConfidentialPayload(snapshot, null)).payload;
+      legacyDigest = null;
       continue;
     }
     const bytes = base64ToBytes(entry.data.ciphertext), tag = base64ToBytes(entry.data.tag);
     const combined = new Uint8Array(bytes.length + tag.length); combined.set(bytes); combined.set(tag, bytes.length);
     const clear = await crypto.subtle.decrypt({ name: "AES-GCM", iv: base64ToBytes(entry.data.iv), additionalData: historyAAD(note, entry.revision), tagLength: 128 }, key, combined);
     const patch = JSON.parse(textDecoder.decode(clear));
-    if (patch.fromDigest !== await sha256Hex(JSON.stringify(current))) throw new Error(t("historyInvalid"));
-    current = AstraHistory.restore(current, patch);
-    if (patch.toDigest !== await sha256Hex(JSON.stringify(current))) throw new Error(t("historyInvalid"));
+    if (patch.v === 3) {
+      if (patch.fromDigest !== await sha256Hex(JSON.stringify(AstraHistory.textState(current)))) throw new Error(t("historyInvalid"));
+      current = AstraHistory.restore(current, patch);
+      if (patch.toDigest !== await sha256Hex(JSON.stringify(AstraHistory.textState(current))) || !/^[a-f0-9]{64}$/.test(patch.legacyTargetDigest || "")) throw new Error(t("historyInvalid"));
+      legacyDigest = patch.legacyTargetDigest;
+    } else {
+      const source = patch.v === 1 ? AstraHistory.textState(current) : current;
+      if (patch.fromDigest !== (legacyDigest || await sha256Hex(JSON.stringify(source)))) throw new Error(t("historyInvalid"));
+      current = AstraHistory.restore(source, patch);
+      if (patch.toDigest !== await sha256Hex(JSON.stringify(current))) throw new Error(t("historyInvalid"));
+      legacyDigest = null;
+    }
   }
-  return current;
+  return AstraHistory.retainImages(current, live);
 }
 
 function getStoredPreference(key) {
@@ -2654,6 +2676,7 @@ async function api(url, options = {}) {
           invalid_history: t("historyInvalid"),
           invalid_history_count: t("historyCountInvalid"),
           history_plan_required: t("historyPlanRequired"),
+          history_client_refresh: t("historyClientRefresh"),
           organization_required: t("organizationRequired"),
           storage_limit: t("storageLimit"),
           invalid_image: t("invalid_image"),
@@ -2669,6 +2692,10 @@ async function api(url, options = {}) {
           note_locked: t("noteLocked"),
           order_not_found: t("billingRetention"),
           email_daily_limit: t("emailDailyLimit"),
+          email_delivery_failed: t("emailDeliveryFailed"),
+          email_unavailable: t("emailDeliveryFailed"),
+          email_provider_configuration: t("emailProviderConfiguration"),
+          email_provider_limited: t("emailProviderLimited"),
           password_too_short: t("passwordTooShort"),
           password_too_long: t("passwordTooLong"),
           password_common: t("passwordCommon"),

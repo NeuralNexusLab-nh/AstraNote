@@ -787,3 +787,22 @@ test("new order quota counts only the current account and time window", () => {
   assert.equal(constants.ORDER_CREATION_WINDOW_MS, 60 * 60_000);
   assert.equal(constants.MAX_NEW_ORDERS_PER_ACCOUNT_WINDOW, 6);
 });
+
+test("mail provider failures never masquerade as an AstraNote sign-out or consume the local mail quota", async () => {
+  const originalFetch=global.fetch, originalError=console.error, logs=[];
+  process.env.ZSKEY="isolated-mail-test-not-a-real-key";
+  console.error=(...args)=>logs.push(args.join(" "));
+  const limits=path.join(temporaryData,"email-limits.json");
+  await fs.writeFile(limits,JSON.stringify({day:new Date().toISOString().slice(0,10),total:0}));
+  try {
+    for(const [status,code] of [[401,"email_provider_configuration"],[403,"email_provider_configuration"],[429,"email_provider_limited"],[500,"email_delivery_failed"]]){
+      global.fetch=async()=>new Response(JSON.stringify({message:"private provider details"}),{status});
+      await assert.rejects(()=>testables.sendMail({to:"qa@example.test",from:"no-reply@example.test",subject:"Test",template:{html:"test",text:"test"}}),error=>error.status===503&&error.code===code);
+    }
+    global.fetch=async()=>{throw new Error("Network failed");};
+    await assert.rejects(()=>testables.sendMail({to:"qa@example.test",from:"no-reply@example.test",subject:"Test",template:{html:"test",text:"test"}}),error=>error.status===503&&error.code==="email_delivery_failed");
+    assert.equal(JSON.parse(await fs.readFile(limits,"utf8")).total,0);
+    assert.ok(logs.some(line=>line.includes("status=401")&&line.includes("INVALID_CREDENTIAL")));
+    assert.ok(!logs.join(" ").includes("private provider details")&&!logs.join(" ").includes("qa@example.test")&&!logs.join(" ").includes("isolated-mail-test"));
+  } finally {global.fetch=originalFetch;console.error=originalError;delete process.env.ZSKEY;}
+});

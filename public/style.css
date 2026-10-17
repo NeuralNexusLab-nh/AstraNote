@@ -4115,30 +4115,37 @@ a.note-card-link:focus-visible::after {
 }
 .plan-free-included {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(180px, .8fr) minmax(0, 1.6fr) auto;
+  grid-template-areas: "heading features included" "verification verification verification";
   align-items: center;
-  gap: 26px;
+  gap: 18px 24px;
   margin-top: 20px;
   padding: 24px 28px;
 }
 .plan-free-included .plan-card-head {
+  grid-area: heading;
   align-items: center;
+  min-width: 0;
 }
 .plan-free-included p {
   margin: 4px 0 0;
   font-size: 13px;
 }
 .plan-free-included .plan-features {
-  display: flex;
-  flex-wrap: wrap;
+  grid-area: features;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px 20px;
   font-size: 13px;
 }
+.plan-free-verification { grid-area: verification; border-top: 1px solid var(--line); padding-top: 14px; color: var(--muted); line-height: 1.7; }
 .plan-included-label {
+  grid-area: included;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   color: var(--muted);
+  white-space: nowrap;
 }
 .plan-included-label i {
   color: var(--success);
@@ -4157,6 +4164,7 @@ a.note-card-link:focus-visible::after {
   }
   .plan-free-included {
     grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "heading included" "features features" "verification verification";
   }
   .plan-free-included .plan-features {
     grid-column: 1 / -1;
@@ -4251,13 +4259,15 @@ a.note-card-link:focus-visible::after {
   }
   .plan-free-included {
     grid-template-columns: minmax(0, 1fr);
-    gap: 20px;
+    grid-template-areas: "heading" "included" "features" "verification";
+    gap: 14px;
     padding: 22px;
   }
   .plan-free-included .plan-features {
     grid-column: auto;
     grid-row: auto;
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -4733,6 +4743,12 @@ a.docs-guide-card:hover { border-color: var(--primary-hover); background: var(--
   .image-text-controls .btn { flex: none; }
   .image-editor-hint { grid-column: 1 / -1; margin: 0; font-size: 11px; }
   .image-editor-workspace { flex: 1; padding: 6px; }
+}
+@media (max-width: 380px) {
+  .media-toolbar { flex-direction: column; align-items: stretch; }
+  .media-compression-group, .media-compression { width: 100%; }
+  .media-compression { justify-content: space-between; }
+  .media-compression select { flex: none; }
 }
 @media (max-height: 480px) and (min-width: 641px) {
   .image-edit-modal .modal-content { padding: 12px; }

@@ -43,6 +43,10 @@ let browser, server, core, data;
         const overflow = await page.evaluate(()=>({width:document.documentElement.scrollWidth,viewport:innerWidth,offenders:[...document.querySelectorAll("main *")].filter(el=>el.getBoundingClientRect().right>innerWidth+1).slice(0,10).map(el=>({tag:el.tagName,class:el.className,text:el.textContent.slice(0,100),width:el.getBoundingClientRect().width}))}));
         if(overflow.width>overflow.viewport){console.log(JSON.stringify({route,locale,theme,width,overflow}));await page.screenshot({path:path.join(images,"overflow.png"),fullPage:true});}
         assert.equal(overflow.width>overflow.viewport,false, `${route} ${locale} ${theme} ${width}`);
+        if(route==='/plans'){
+          const aligned=await page.locator('.plan-free-included').evaluate(card=>{const a=card.querySelector('.plan-included-label').getBoundingClientRect(),b=card.getBoundingClientRect(),help=card.querySelector('.plan-free-verification').getBoundingClientRect();return a.left>=b.left&&a.right<=b.right&&a.bottom<=help.top+1;});
+          assert.ok(aligned,'Free included label stays with the heading and above verification details');
+        }
         if (route.startsWith("/docs")) {
           const nav = page.locator(".docs-nav-details");
           assert.equal(await nav.evaluate(el=>el.open), width > 900);
@@ -59,6 +63,7 @@ let browser, server, core, data;
           await page.waitForTimeout(120);
           const file = path.join(images, `${route.replaceAll("/","_") || "home"}-${locale}-${theme}-${width}.png`);
           await page.screenshot({path:file,animations:"disabled"});
+          if(route==='/plans')await page.locator('.plan-free-included').screenshot({path:path.join(images,`free-${locale}-${theme}-${width}.png`),animations:'disabled'});
           if(route==="/") await page.locator('[data-home-plan="plus"]').screenshot({path:path.join(images,`education-${locale}-${theme}-${width}.png`),animations:"disabled"});
           if(width===320) {const list=screenshots.get(route)||[];list.push(file);screenshots.set(route,list);}
         }

@@ -89,7 +89,7 @@
       ]],
       notes: ["筆記、空間與還原", "知道哪些會占空間，也知道改錯後能怎麼回頭。", [
         ["cards", "日常操作", [["fa-magnifying-glass", "找回", "在「我的筆記」搜尋標題；不會解密所有筆記並搜尋全文。"], ["fa-thumbtack", "整理", "Plus 以上可釘選、封存和批次管理。釘選筆記排在最上方，篩選可查看已釘選或已封存項目。"]]],
-        ["text", "哪些內容會占空間？", "目前筆記檔案、加密資料、垃圾桶和保留的歷史版本會計入用量；加密會增加少量額外資料。帳號設定與登入紀錄不計入筆記額度。筆記只支援純文字，不提供圖片與檔案附件。"],
+        ["text", "哪些內容會占空間？", "筆記文字、圖片、註解、加密資料、垃圾桶與保留的版本都計入用量；加密與圖片編碼也會增加容量。帳號設定與登入紀錄不計入筆記額度。不支援大型檔案附件。"],
         ["text", "選擇保留的版本數量", "Ultra、Admin 與 Beta 首次啟用時預設保留 3 個版本。可在設定選擇 0、1、3、5、10 或 20 個；其他方案不保存新的歷史版本。在筆記開啟「版本紀錄」，選擇時間、預覽，再還原。"],
         ["steps", "歷史版本如何保存？", [["儲存修改", "新內容成為目前筆記。"], ["保留差異", "只新增回到舊版本需要的文字；若整篇重寫，大小仍可能接近完整副本。"], ["需要時還原", "客戶端加密的差異沿用該筆記金鑰，並逐版驗證完整性；舊的完整版本仍可讀取。"]]],
         ["text", "垃圾桶是有限期的退路", "Ultra 將未鎖定筆記移到垃圾桶不需人類驗證。可在設定選擇保留 1、3、7、14 或 30 天，到期前可還原，也能提前永久刪除。永久刪除需要人類驗證；到期或永久刪除後不能還原。"],
@@ -148,7 +148,7 @@
       ]],
       notes: ["ノート、容量と復元", "保存されるものと、間違えたときの戻り方を確認。", [
         ["cards", "日常の操作", [["fa-magnifying-glass", "探す", "マイノートでタイトルを検索。すべての暗号化内容を復号して全文検索する機能ではありません。"], ["fa-thumbtack", "整理", "Plus 以上はピン留め、アーカイブ、一括管理。ピン留めは先頭に並び、フィルターで対象を表示できます。"]]],
-        ["text", "容量に含まれるもの", "現在のノート、暗号化データ、ごみ箱、保存済みの版が含まれます。暗号化には追加容量が必要です。アカウント情報とセッション記録はノート枠に含まず、画像・ファイル添付は扱いません。"],
+        ["text", "容量に含まれるもの", "文章、画像、説明、暗号化データ、ごみ箱、保存済みの版が含まれます。暗号化と画像の符号化には追加容量が必要です。アカウント情報とセッション記録はノート枠に含まず、大きなファイル添付は扱いません。"],
         ["text", "保持する版の数を選ぶ", "Ultra、Admin、Beta の初回有効化時は3つの版を保持。設定で0、1、3、5、10、20から選べ、他プランは新しい履歴を保存しません。ノートの変更履歴で日時を選び、確認して復元します。"],
         ["steps", "履歴の仕組み", [["変更を保存", "新しい内容が現在のノートになります。"], ["差分を保持", "以前の版に戻るための文章を保存。全面的な書き換えは完全コピーに近い容量になることもあります。"], ["必要なら復元", "クライアント暗号化の差分は同じノート鍵を使い、版ごとに完全性を検証。従来の完全な版も読めます。"]]],
         ["text", "ごみ箱は期限付きの復元手段", "Ultra はロックされていないノートをごみ箱へ CAPTCHA なしで移せます。設定で1、3、7、14、30日の保持期間を選択。期限前に復元、または CAPTCHA を完了して完全削除できます。期限切れ・完全削除後は復元できません。"],
@@ -194,7 +194,7 @@
     en: {
       notes: [
         ["steps", "Text and images, together", [["Add up to three images", "In New note or Edit, choose PNG, JPEG or WebP, paste an image, or drop files into the image area. Text is optional; the title is required."], ["Preview the compression", "Choose Small to save space, Balanced for everyday use, or Clear to retain more detail. Each card and the editor show sizes; server-side quota checking is final."], ["Put an image where it belongs", "Use Insert in text or copy its {img_ID} reference. References work only for images in this note, outside code blocks. Images not referenced in text appear below the body."]]],
-        ["cards", "Edit without leaving your note", [["fa-paintbrush", "Draw and annotate", "Use the brush, erase new drawing, add text, undo or redo before applying. A caption stays below the image. Replace uploads keep the same reference ID."], ["fa-clock-rotate-left", "Restore the complete version", "History stores text differences and full image copies for each saved version, under the same note encryption. Images, captions and copies count toward storage. Keeping more versions also keeps more image copies, so allow room for them."]]],
+        ["cards", "Edit without leaving your note", [["fa-paintbrush", "Draw and annotate", "Use the brush, erase new drawing, add text, undo or redo before applying. A caption stays below the image. Replace uploads keep the same reference ID."], ["fa-clock-rotate-left", "Restore text, keep current images", "History saves text differences only, under the note's encryption. Restoring text keeps the current images, captions and drawings. Replaced or removed images cannot be recovered from history. Older stored revisions remain compatible."]]],
         ["text", "Markdown and image safety", "The note page renders Markdown headings, lists, code and tables. The editor keeps the source. Raw HTML, scripts, embeds, SVG and automatic remote-image fetching are disabled. Encrypted images are unlocked only with the note; no public image URL is created."],
       ],
       agent: [["text", "Image assistance—not image generation", "Explicitly select images before sending. GPT-6-Luna can analyze them and propose arrows, boxes, circles, text, crop, rotation and brightness/contrast adjustments. The client applies a limited set of commands to a preview. It does not regenerate photographs or remove objects. Image analysis uses additional allowance; manual editing does not."], ["text", "Flex first, on every plan", "All plans try Flex first, then Standard only after temporary unavailability, timeout or a retryable service error. Standard costs twice Flex for the same token usage. Text and image input share the 30-day percentage allowance. Unverified Free has half of verified Free's allowance."]],
@@ -204,7 +204,7 @@
     "zh-Hant": {
       notes: [
         ["steps", "把文字與圖片放在一起", [["每篇最多三張", "在新增或編輯筆記時選擇 PNG、JPEG、WebP，也能貼上圖片或拖放檔案到圖片區。可以只有圖片，不寫內文；標題仍必填。"], ["先確認壓縮預覽", "精簡節省空間，均衡兼顧大小與細節，清晰保留更多細節。每張圖片與編輯器都顯示大小；最終是否超額以後端檢查為準。"], ["插入需要的位置", "使用「插入內文」或複製 {img_ID} 引用。只能引用此篇筆記的圖片，程式碼區塊不會展開圖片；沒有引用的圖片會顯示在內文下方。"]]],
-        ["cards", "不用離開筆記，也能編輯圖片", [["fa-paintbrush", "繪圖與註解", "使用畫筆、擦除這次的繪圖、加入文字，套用前可復原與重做。註解顯示在圖片下方；重新上傳會保留相同引用 ID。"], ["fa-clock-rotate-left", "完整還原圖片版本", "文字保存差異；每個版本的圖片完整保存，沿用筆記加密。圖片、註解與版本副本都占空間。保留越多版本，就會保存越多份圖片，請預留所需空間。"]]],
+        ["cards", "不用離開筆記，也能編輯圖片", [["fa-paintbrush", "繪圖與註解", "使用畫筆、擦除這次的繪圖、加入文字，套用前可復原與重做。註解顯示在圖片下方；重新上傳會保留相同引用 ID。"], ["fa-clock-rotate-left", "還原文字，保留目前圖片", "版本紀錄只保存文字差異，沿用筆記加密。還原文字不會變更目前的圖片、註解與繪圖；替換或移除的圖片無法由版本紀錄找回。既有舊版本仍可相容讀取。"]]],
         ["text", "Markdown 與圖片安全", "閱讀頁呈現 Markdown 標題、清單、程式碼與表格，編輯時保留原始文字。不支援原始 HTML、腳本、嵌入、SVG 或自動載入外部圖片。圖片跟隨筆記解鎖，不建立公開圖片網址。"],
       ],
       agent: [["text", "圖片協助，不是重新生成", "先勾選這次要送出的圖片。GPT-6-Luna 能分析圖片，提出箭頭、方框、圓形、文字、裁切、旋轉與亮度／對比調整，由客戶端執行有限的指令並顯示預覽。不會重新生成照片或移除物件。分析圖片會增加用量；手動編輯不扣 AI 額度。"], ["text", "所有方案先用 Flex", "所有方案先嘗試 Flex，僅於暫時不可用、逾時或可重試的服務錯誤時改試 Standard。同樣的處理量，Standard 費率為 Flex 的兩倍。文字與圖片共用每 30 天的百分比額度；未驗證 Free 為完整 Free 額度的一半。"]],
@@ -214,7 +214,7 @@
     ja: {
       notes: [
         ["steps", "文章と画像をひとまとめに", [["3枚まで追加", "新規作成や編集でPNG・JPEG・WebPを選択。貼り付けや画像エリアへのドロップにも対応します。本文なしの画像ノートも可能ですが、タイトルは必要です。"], ["圧縮を確認", "軽量は容量を節約、バランスは日常向け、鮮明は細部を優先します。サイズを確認でき、最終的な容量判定はサーバーで行います。"], ["本文の好きな場所へ", "本文に挿入するか{img_ID}参照をコピー。同じノートの画像のみ参照でき、コードブロック内では展開しません。未参照の画像は本文の下に表示します。"]]],
-        ["cards", "ノート内で画像を編集", [["fa-paintbrush", "描画・説明", "ペン、新しい描画の消去、文字、元に戻す・やり直すに対応。説明は画像の下に表示。差し替えても参照IDを保持します。"], ["fa-clock-rotate-left", "完全な画像を復元", "文章は差分、各版の画像は完全なコピーとして同じ暗号化で保存。説明や版も容量に含まれます。保存する版が増えるほど画像コピーも増えるため、容量を確保してください。"]]],
+        ["cards", "ノート内で画像を編集", [["fa-paintbrush", "描画・説明", "ペン、新しい描画の消去、文字、元に戻す・やり直すに対応。説明は画像の下に表示。差し替えても参照IDを保持します。"], ["fa-clock-rotate-left", "文章を復元し、現在の画像を保持", "履歴は文章の差分だけをノートと同じ暗号化で保存。復元しても現在の画像・説明・描画は変わりません。差し替え・削除済みの画像は履歴から戻せません。既存の旧形式にも対応します。"]]],
         ["text", "Markdownと画像の安全性", "閲覧時に見出し・リスト・コード・表を表示し、編集時は元のMarkdownを保持します。生のHTML、スクリプト、埋め込み、SVG、外部画像の自動取得は無効。画像はノートと一緒に解除し、公開画像URLは作りません。"],
       ],
       agent: [["text", "画像を支援、再生成はしません", "送る画像を明示的に選択。GPT-6-Lunaが解析し、矢印、枠、円、文字、切り抜き、回転、明るさ・コントラストを提案。クライアントが限定コマンドをプレビューに適用します。写真再生成や物体除去はしません。画像解析は利用枠を多く使い、手動編集は消費しません。"], ["text", "全プランでFlexを先に", "一時的な利用不可・タイムアウト・再試行可能なサービスエラーの場合だけStandardを試します。同じトークン量でStandardはFlexの2倍。文章と画像は30日ごとの利用枠を共有し、未認証Freeの枠は認証済みFreeの半分です。"]],

@@ -48,19 +48,23 @@
     return parts.join("") + text.slice(offset);
   }
   const Document = typeof module !== "undefined" && module.exports ? require("./note-document") : root.AstraDocument;
+  const textState = payload => ({ name: payload.name, content: Document.unpack(payload.content).text });
+  const retainImages = (restored, current) => ({ name: restored.name, content: Document.pack(Document.unpack(restored.content).text, Document.unpack(current.content).images) });
   const reverse = (current, previous) => {
-    const a = Document.unpack(current.content), b = Document.unpack(previous.content);
-    if (!a.images.length && !b.images.length) return { v: 1, name: diff(current.name, previous.name), content: diff(current.content, previous.content) };
-    // Text is a reverse delta; each revision owns a full image snapshot, even
-    // when only its text changed. Restoring never depends on a deleted image.
-    return { v: 2, name: diff(current.name, previous.name), content: diff(a.text, b.text), images: b.images };
+    const a = textState(current), b = textState(previous);
+    // V3 never includes image bytes, captions or drawing data. Images are the
+    // current attachment set, independent of the text revision being viewed.
+    return { v: 3, name: diff(a.name, b.name), content: diff(a.content, b.content) };
   };
   function restore(current, patch) {
+    if (patch?.v === 3) return { name: apply(current.name, patch.name), content: Document.pack(apply(Document.unpack(current.content).text, patch.content), Document.unpack(current.content).images) };
+    // Decode legacy revisions internally for compatibility and integrity
+    // checks. Callers retain the live image set before displaying or saving.
     if (patch?.v === 2) return { name: apply(current.name, patch.name), content: Document.pack(apply(Document.unpack(current.content).text, patch.content), patch.images) };
     if (patch?.v !== 1) throw new Error("Unsupported history patch.");
     return { name: apply(current.name, patch.name), content: apply(current.content, patch.content) };
   }
-  const api = Object.freeze({ diff, apply, reverse, restore });
+  const api = Object.freeze({ diff, apply, reverse, restore, textState, retainImages });
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.AstraHistory = api;
 })(globalThis);

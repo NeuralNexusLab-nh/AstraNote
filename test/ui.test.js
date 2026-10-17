@@ -56,6 +56,34 @@ test("forgot-password recovery is available before the password sign-in step", (
   assert.ok(passwordGroup > -1);
   assert.ok(recoveryLink < passwordGroup);
 });
+
+test("encrypted text history preserves current images and verifies the bridge to legacy image revisions", async () => {
+  const context=browserContext(), H=require("../public/note-history"),D=require("../public/note-document");
+  const crypto=require("node:crypto").webcrypto;
+  Object.assign(context,{crypto,btoa,atob,AstraHistory:H,AstraDocument:D});
+  context.sessionStorage={getItem(){return null;},setItem(){},removeItem(){}};
+  const key=await crypto.subtle.generateKey({name:"AES-GCM",length:256},true,["encrypt","decrypt"]);
+  const image=number=>({id:"img_"+String(number).repeat(24),type:"image/png",width:1,height:1,caption:"Caption "+number,data:"AQ=="});
+  const old={name:"Old title",content:D.pack("old text",[image(1)])};
+  const middle={name:"Middle title",content:D.pack("middle text",[image(2)])};
+  const latest={name:"Latest title",content:D.pack("latest text",[image(3)])};
+  const note={id:"a".repeat(24),encryption:"astra-secret-v1",clientSalt:"test-salt",revision:2,...latest};
+  Object.assign(context,{historyKey:key,historyNote:note,historyPrevious:middle,historyCurrent:latest});
+  vm.runInContext('state.account={username:"history_owner"};state.session={csrf:"history-session"};rememberNoteKey(historyNote,historyKey);',context);
+  const v3=await vm.runInContext("encryptHistoryDelta(historyNote,historyPrevious,historyCurrent,historyKey)",context);
+  const hash=value=>require("node:crypto").createHash("sha256").update(JSON.stringify(value)).digest("hex");
+  const patch={v:2,name:H.diff(middle.name,old.name),content:H.diff(D.unpack(middle.content).text,D.unpack(old.content).text),images:D.unpack(old.content).images,fromDigest:hash(middle),toDigest:hash(old)};
+  const iv=crypto.getRandomValues(new Uint8Array(12));
+  const encrypted=Buffer.from(await crypto.subtle.encrypt({name:"AES-GCM",iv,additionalData:new TextEncoder().encode(`AstraNote history v1\0history_owner\0${note.id}\0${2}`),tagLength:128},key,new TextEncoder().encode(JSON.stringify(patch))));
+  const legacy={iv:Buffer.from(iv).toString("base64"),ciphertext:encrypted.subarray(0,-16).toString("base64"),tag:encrypted.subarray(-16).toString("base64")};
+  context.historyResponse={chain:[{kind:"delta",revision:3,data:v3},{kind:"delta",revision:2,data:legacy}]};
+  const restored=await vm.runInContext("decryptHistoryChain(historyNote,historyResponse)",context);
+  assert.equal(restored.name,old.name);assert.equal(D.unpack(restored.content).text,"old text");assert.deepEqual(D.unpack(restored.content).images,D.unpack(latest.content).images);
+  const clear=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:Buffer.from(v3.iv,"base64"),additionalData:new TextEncoder().encode(`AstraNote history v1\0history_owner\0${note.id}\0${3}`),tagLength:128},key,Buffer.concat([Buffer.from(v3.ciphertext,"base64"),Buffer.from(v3.tag,"base64")]))));
+  assert.equal(clear.v,3);assert.equal(clear.images,undefined);assert.equal(clear.legacyTargetDigest,hash(middle));assert.ok(!JSON.stringify(clear).includes("Caption"));
+  context.historyResponse.chain[1].data={...legacy,tag:Buffer.alloc(16).toString("base64")};
+  await assert.rejects(()=>vm.runInContext("decryptHistoryChain(historyNote,historyResponse)",context));
+});
 test("sign-in renders human verification before a session can be requested", () => {
   const login = fs.readFileSync(path.join(__dirname, "../public/login.html"), "utf8");
   const app = fs.readFileSync(path.join(__dirname, "../public/app.js"), "utf8");

@@ -1466,7 +1466,7 @@ test("AstraPass concurrency limits are backend-enforced and expiry releases a sl
   assert.equal((await request(user,`/api/notes/${user.metadata.notes[2].id}/limited-editor`,"POST",payload)).status,201);
 });
 
-test("image note routes enforce ownership, CSRF, safe raster storage, sharing and full-image history", async () => {
+test("image note routes enforce ownership, CSRF, safe storage and text-only history with unchanged live images", async () => {
   const user=await fixture("media_owner","ultra"), other=await fixture("media_other","ultra");
   const D=require("../public/note-document"), sharp=require("sharp");
   const image={id:"img_"+"a".repeat(24),type:"image/png",width:24,height:24,caption:"A safe caption",data:(await sharp({create:{width:24,height:24,channels:3,background:"#bbbbff"}}).png().toBuffer()).toString("base64")};
@@ -1481,13 +1481,32 @@ test("image note routes enforce ownership, CSRF, safe raster storage, sharing an
   const csrf=user.headers["x-csrf-token"]; delete user.headers["x-csrf-token"];
   assert.equal((await request(user,route,"PUT",{name:"CSRF",content:value,revision:note.revision})).status,403); user.headers["x-csrf-token"]=csrf;
   assert.equal((await request(user,route,"PUT",{name:"Media",content:"No images now",revision:note.revision})).status,200);
-  const previous=await request(user,route+"/previous"); assert.equal(D.unpack(previous.data.content).images.length,1);
+  const previous=await request(user,route+"/previous"); assert.equal(D.unpack(previous.data.content).images.length,0);
   note=(await request(user,route)).data;
   assert.equal((await request(user,route+"/previous/restore","POST",{revision:note.revision,version:1})).status,200);
   const share=await request(user,route+"/share","POST",{enabled:true}); assert.equal(share.status,200);
-  const shared=await request(user,"/api/shared/"+share.data.url.split("/").at(-1)); assert.equal(shared.status,200); assert.equal(D.unpack(shared.data.content).images.length,1);
+  const shared=await request(user,"/api/shared/"+share.data.url.split("/").at(-1)); assert.equal(shared.status,200); assert.equal(D.unpack(shared.data.content).images.length,0);
+  note=(await request(user,route)).data;
+  const replacement={...image,caption:"Current caption",data:(await sharp({create:{width:24,height:24,channels:3,background:"#ffbbcc"}}).png().toBuffer()).toString("base64")};
+  assert.equal((await request(user,route,"PUT",{name:"Media now",content:D.pack("Updated text",[replacement]),revision:note.revision})).status,200);
+  note=(await request(user,route)).data; const liveImages=D.unpack(note.content).images;
+  assert.deepEqual(D.unpack((await request(user,route+"/previous")).data.content).images,liveImages);
+  assert.equal((await request(user,route+"/previous/restore","POST",{revision:note.revision,version:1})).status,200);
+  assert.deepEqual(D.unpack((await request(user,route)).data.content).images,liveImages);
+  const stored=await read(notePath(user.name,id));
+  for(const entry of stored.history){const patch=JSON.parse(testables.decryptContent(entry.data,user.name,`${id}:history:${entry.revision}`,stored.encryption));assert.equal(patch.v,3);assert.equal(patch.images,undefined);}
   const invalid=D.pack("",[{...image,data:Buffer.from('<svg onload="alert(1)"/>').toString("base64")}]);
   assert.equal((await request(user,"/api/notes","POST",{name:"Rejected",encryption:"none",content:invalid})).status,400);
+});
+
+test("outdated encrypted editors cannot silently save full-image snapshots or break the existing text chain", async () => {
+  const user=await fixture("history_old_client","ultra",1),id=user.metadata.notes[0].id,file=notePath(user.name,id);
+  const note=await read(file);note.encryption=constants.ASTRA_SECRET_MODE;note.clientSalt=crypto.randomBytes(32).toString('base64url');note.content={...enc};note.previous=testables.noteSnapshot(note);await write(file,note);
+  const original=await fs.readFile(file,'utf8');
+  for(const extra of [{},{historyFormat:2,historyDelta:{...enc}}]){
+    const result=await request(user,`/api/notes/${id}`,'PUT',{name:'Updated',encrypted:{...enc},revision:note.revision,...extra});
+    assert.equal(result.status,409);assert.equal(result.data.error,'history_client_refresh');assert.equal(await fs.readFile(file,'utf8'),original);
+  }
 });
 
 test("Agent uses GPT-6-Luna; Free can fall back to Standard and exact tier rates are charged", async () => {

@@ -18,14 +18,17 @@ test("spoofed image MIME, SVG, HTML, corrupt pixels, dimension lies and excessiv
     await assert.rejects(async()=>Images.validate(D.pack("",[bad])),/image|document/i);
   assert.throws(()=>D.pack("",Array.from({length:4},(_,i)=>({...source,id:"img_"+String(i).repeat(24)}))));
 });
-test("every media history revision retains its own full images while text stays a reverse delta", async () => {
+test("new media history contains text only and restores never replace the live image set", async () => {
   const first = await image(), second = {...first,caption:"Revised",data:(await sharp({create:{width:32,height:32,channels:3,background:"#ff5577"}}).png().toBuffer()).toString("base64")};
   const a = {name:"Note",content:D.pack("one\nkeep\nthree",[first])}, b={name:"Note 2",content:D.pack("two\nkeep\nthree",[second])}, c={name:"Text only",content:"third"};
   const ab=H.reverse(b,a), bc=H.reverse(c,b);
-  assert.equal(ab.v,2); assert.deepEqual(ab.images,[first]);
-  assert.deepEqual(H.restore(H.restore(c,bc),ab),a);
+  assert.equal(ab.v,3); assert.equal(ab.images,undefined);
+  assert.deepEqual(H.restore(H.restore(c,bc),ab),{name:a.name,content:D.unpack(a.content).text});
   assert.ok(JSON.stringify(ab.content).length<100);
-  assert.deepEqual(H.restore(b,ab),a);
+  assert.deepEqual(H.restore(b,ab),{name:a.name,content:D.pack(D.unpack(a.content).text,[second])});
+  assert.ok(!JSON.stringify(ab).includes(first.data)&&!JSON.stringify(ab).includes(first.caption));
+  const legacy={v:2,name:H.diff(b.name,a.name),content:H.diff(D.unpack(b.content).text,D.unpack(a.content).text),images:[first]};
+  assert.deepEqual(H.retainImages(H.restore(b,legacy),b),{name:a.name,content:D.pack(D.unpack(a.content).text,[second])});
   assert.deepEqual(H.restore({name:"Legacy",content:"after"},H.reverse({name:"Legacy",content:"after"},{name:"Old",content:"before"})),{name:"Old",content:"before"});
 });
 test("Agent image edits accept only bounded declarative operations for supplied images", async () => {
